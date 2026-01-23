@@ -239,12 +239,12 @@ class BlogLayout
      */
     private static function buildActionColumn($row)
     {
-        $row->button('filter-toggle-btn')
-            ->label('Filter')
-            ->icon('LiFilter')
-            ->size('md')
-            ->variant('outline')
-            ->meta(['tooltip' => 'Toggle filter panel', 'action' => 'toggle-filter']);
+        // $row->button('filter-toggle-btn')
+        //     ->label('Filter')
+        //     ->icon('LiFilter')
+        //     ->size('md')
+        //     ->variant('outline')
+        //     ->meta(['tooltip' => 'Toggle filter panel', 'action' => 'toggle-filter']);
 
         $row->button('refresh-btn')
             ->label('Refresh')
@@ -261,6 +261,17 @@ class BlogLayout
             ->variant('lt-contained')
             ->data('type', 'drawer')
             ->data('component', 'create-blog-drawer')
+            ->data('action', 'open')
+            ->meta(['tooltip' => 'Create new blog']);
+
+        $row->button('create-btn-modal')
+            ->label('Create Modal View')
+            ->icon('LiPlus')
+            ->size('md')
+            ->color('primary')
+            ->variant('lt-contained')
+            ->data('type', 'modal')
+            ->data('component', 'create-blog-modal')
             ->data('action', 'open')
             ->meta(['tooltip' => 'Create new blog']);
 
@@ -491,16 +502,25 @@ class BlogLayout
      */
     private static function buildCreateBlogModal($masterData)
     {
-        $formComponent = BlogForm::make('create-blog-form', 'POST', '/api/blogs', $masterData);
+        $formComponent = BlogForm::make('create-blog-form-modal', 'POST', '/api/blogs', $masterData);
 
         return ModalComponent::make('create-blog-modal')
             ->children([
-                ['type' => 'header', 'title' => 'Create New Blog Post', 'icon' => 'LiFileText'],
-                ['type' => 'content', 'component' => $formComponent],
-                ['type' => 'footer', 'buttons' => [
-                    ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Create Post', 'type' => 'submit', 'color' => 'primary', 'icon' => 'LiCheck', 'dataUrl' => '/api/blogs', 'method' => 'POST'],
-                ]],
+                [
+                    'type' => 'header',
+                    'title' => 'Create New Blog Post',
+                    'icon' => 'LiFileText',
+                ],
+                [
+                    'type' => 'footer',
+                    'buttonGroup' => [
+                        'buttons' => [
+                            ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
+                            ['label' => 'Create Post', 'type' => 'submit', 'color' => 'primary', 'icon' => 'LiCheck', 'dataUrl' => '/api/blogs', 'method' => 'POST'],
+                        ],
+                    ],
+                ],
+                $formComponent
             ])
             ->ariaLabelledby('create-blog-modal-title')
             ->toArray();
@@ -513,12 +533,21 @@ class BlogLayout
     {
         return ModalComponent::make('delete-blog-modal')
             ->children([
-                ['type' => 'header', 'title' => 'Delete Blog Post', 'icon' => 'LiTrash', 'color' => 'danger'],
-                ['type' => 'content', 'content' => 'Are you sure you want to delete this blog post? This action cannot be undone and will permanently remove all associated data including comments, analytics, and media files.'],
-                ['type' => 'footer', 'buttons' => [
-                    ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Delete', 'color' => 'danger', 'icon' => 'LiTrash', 'dataUrl' => '/api/blogs/:id', 'method' => 'DELETE'],
-                ]],
+                [
+                    'type' => 'header',
+                    'title' => 'Delete Blog Post',
+                    'icon' => 'LiTrash',
+                    'color' => 'danger',
+                ],
+                [
+                    'type' => 'footer',
+                    'buttonGroup' => [
+                        'buttons' => [
+                            ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
+                            ['label' => 'Delete', 'color' => 'danger', 'icon' => 'LiTrash', 'dataUrl' => '/api/blogs/:id', 'method' => 'DELETE'],
+                        ],
+                    ],
+                ],
             ])
             ->ariaLabelledby('delete-blog-modal-title')
             ->ariaDescribedby('delete-blog-modal-description')
