@@ -1,0 +1,175 @@
+<?php
+
+namespace App\Actions\User;
+
+use Illuminate\Http\Request;
+use Litepie\Actions\BaseAction;
+use Litepie\Actions\ActionResult;
+
+/**
+ * ListUsersAction
+ * 
+ * Handles listing users with filtering, sorting, and pagination
+ * 
+ * @package App\Actions\User
+ */
+class ListUsersAction extends BaseAction
+{
+    protected function rules(): array
+    {
+        return [
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100',
+            'sort_by' => 'sometimes|string',
+            'sort_direction' => 'sometimes|in:asc,desc',
+            'search' => 'sometimes|string',
+            'filter_user_id' => 'sometimes|string',
+            'filter_name' => 'sometimes|string',
+            'filter_email' => 'sometimes|string',
+            'filter_phone' => 'sometimes|string',
+            'filter_department' => 'sometimes|string',
+            'filter_designation' => 'sometimes|string',
+            'filter_status' => 'sometimes|string',
+            'filter_employee_type' => 'sometimes|string',
+            'filter_joining_date' => 'sometimes|string',
+        ];
+    }
+
+    public function handle(): ActionResult
+    {
+        $jsonPath = storage_path('app/users.json');
+
+        if (!file_exists($jsonPath)) {
+            return ActionResult::failure('Users data not found', [], 404);
+        }
+
+        $allData = json_decode(file_get_contents($jsonPath), true);
+
+        if (!is_array($allData)) {
+            return ActionResult::failure('Invalid data format', [], 500);
+        }
+
+        // Extract parameters with defaults
+        $page = (int) ($this->data['page'] ?? 1);
+        $perPage = max(1, min((int) ($this->data['per_page'] ?? 10), 100));
+        $sortBy = $this->data['sort_by'] ?? 'user_id';
+        $sortDirection = strtolower($this->data['sort_direction'] ?? 'asc');
+        $search = $this->data['search'] ?? '';
+
+        // Validate sort direction
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        // Get filter parameters
+        $filters = [
+            'user_id' => $this->data['filter_user_id'] ?? '',
+            'name' => $this->data['filter_name'] ?? '',
+            'email' => $this->data['filter_email'] ?? '',
+            'phone' => $this->data['filter_phone'] ?? '',
+            'department' => $this->data['filter_department'] ?? '',
+            'designation' => $this->data['filter_designation'] ?? '',
+            'status' => $this->data['filter_status'] ?? '',
+            'employee_type' => $this->data['filter_employee_type'] ?? '',
+            'joining_date' => $this->data['filter_joining_date'] ?? '',
+        ];
+
+        // Apply search filter
+        if (!empty($search)) {
+            $allData = $this->applySearch($allData, $search);
+        }
+
+        // Apply column-specific filters
+        $allData = $this->applyFilters($allData, $filters);
+
+        // Apply sorting
+        $allData = $this->applySorting($allData, $sortBy, $sortDirection);
+
+        // Apply pagination
+        $paginatedResult = $this->applyPagination($allData, $page, $perPage);
+
+        return ActionResult::success([
+            'data' => $paginatedResult['data'],
+            'meta' => $paginatedResult['meta'],
+            'filters' => $filters,
+            'sort' => [
+                'by' => $sortBy,
+                'direction' => $sortDirection,
+            ],
+        ]);
+    }
+
+    protected function applySearch(array $data, string $search): array
+    {
+        $searchLower = strtolower($search);
+
+        return array_filter($data, function ($item) use ($searchLower) {
+            foreach ($item as $value) {
+                if (stripos(strtolower((string) $value), $searchLower) !== false) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    protected function applyFilters(array $data, array $filters): array
+    {
+        foreach ($filters as $column => $filterValue) {
+            if (!empty($filterValue)) {
+                $data = array_filter($data, function ($item) use ($column, $filterValue) {
+                    if (!isset($item[$column])) {
+                        return false;
+                    }
+                    $itemValue = strtolower((string) $item[$column]);
+                    $filterLower = strtolower((string) $filterValue);
+                    return stripos($itemValue, $filterLower) !== false;
+                });
+            }
+        }
+
+        return $data;
+    }
+
+    protected function applySorting(array $data, string $sortBy, string $sortDirection): array
+    {
+        if (!empty($sortBy) && isset($data[0][$sortBy])) {
+            usort($data, function ($a, $b) use ($sortBy, $sortDirection) {
+                $aVal = $a[$sortBy] ?? '';
+                $bVal = $b[$sortBy] ?? '';
+
+                if ($sortDirection === 'asc') {
+                    return $aVal <=> $bVal;
+                } else {
+                    return $bVal <=> $aVal;
+                }
+            });
+        }
+
+        return $data;
+    }
+
+    protected function applyPagination(array $data, int $page, int $perPage): array
+    {
+        $total = count($data);
+        $offset = ($page - 1) * $perPage;
+        $paginatedData = array_slice($data, $offset, $perPage);
+
+        return [
+            'data' => array_values($paginatedData),
+            'meta' => [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $total,
+                'last_page' => ceil($total / $perPage),
+                'from' => $offset + 1,
+                'to' => min($offset + $perPage, $total),
+            ],
+        ];
+    }
+
+    public function getName(): string
+    {
+        return 'list-users';
+    }
+}
