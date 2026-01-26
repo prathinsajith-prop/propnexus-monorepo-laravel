@@ -11,9 +11,12 @@
         "laravel/tinker": "^2.10.1",
         "litepie/actions": "^1.0",
         "litepie/database": "^1.0",
+        "litepie/filehub": "^1.0",
         "litepie/flow": "^1.0",
         "litepie/form": "^1.0",
-        "litepie/layout": "^1.0"
+        "litepie/hashids": "^1.0",
+        "litepie/layout": "^1.0",
+        "litepie/logs": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

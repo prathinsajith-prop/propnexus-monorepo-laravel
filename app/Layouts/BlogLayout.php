@@ -40,8 +40,6 @@ class BlogLayout
             ])
             ->section('header', fn($section) => self::buildHeaderSection($section))
             ->section('main', fn($section) => self::buildMainSection($section, $masterData))
-            ->section('drawers', fn($section) => self::buildDrawersSection($section, $masterData))
-            ->section('modals', fn($section) => self::buildModalsSection($section, $masterData))
             ->build();
     }
 
@@ -95,10 +93,10 @@ class BlogLayout
             ->responsive(true)
             ->gridColumnSpan(7);
 
-        self::buildStatsCard($statsGrid, 'stat-total-posts', 'Total Posts', '0', 'primary', 'LiList', '+12%', 'up');
-        self::buildStatsCard($statsGrid, 'stat-published', 'Published', '0', 'success', 'LiListCheck', '+8%', 'up');
-        self::buildStatsCard($statsGrid, 'stat-drafts', 'Drafts', '0', 'warning', 'LiPen', '+0%', 'neutral');
-        self::buildStatsCard($statsGrid, 'stat-total-views', 'Total Views', '0', 'info', 'LiEyeOpen', '+15%', 'up');
+        self::buildStatsCard($statsGrid, 'stat-total-posts', 'Total Posts', '12', 'primary', 'LiList', '+12%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-published', 'Published', '8', 'success', 'LiListCheck', '+8%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-drafts', 'Drafts', '0', 'warning', 'LiPen', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-total-views', 'Total Views', '15', 'info', 'LiEyeOpen', '+15%', 'up', 'trend-1');
     }
 
     /**
@@ -114,7 +112,7 @@ class BlogLayout
      * @param string $trendDir Trend direction ('up', 'down', or 'neutral')
      * @return \Litepie\Layout\Components\CardComponent
      */
-    private static function buildStatsCard($grid, string $id, string $title, string $value, string $color, string $icon, string $trend, string $trendDir)
+    private static function buildStatsCard($grid, string $id, string $title, string $value, string $color, string $icon, string $trend, string $trendDir, string $displayType)
     {
         // Theme color mapping for consistent styling
         $colorMap = [
@@ -141,6 +139,7 @@ class BlogLayout
                 'iconBgColor' => $colors['bg'],
                 'trend' => $trend,
                 'trendDirection' => $trendDir,
+                'displayType' => $displayType,
             ]);
     }
 
@@ -175,8 +174,10 @@ class BlogLayout
 
         // Add data table
         $mainGrid->row('table-row')->gap('none')->table('blogs-table')
+            // ->asTable()
             ->dataUrl('/api/blogs')
             ->columns(self::getBlogTableColumns())
+            ->selectable(true)
             ->pagination(true)
             ->perPage(10)
             ->hoverable(true)
@@ -186,9 +187,171 @@ class BlogLayout
                 'responsive' => true,
                 'stickyHeader' => true,
                 'variant' => 'outlined',
+                'displayMode' => 'table',
                 'rowClickable' => true,
                 'rowActions' => ['type' => 'drawer', 'component' => 'view-blog-drawer', 'dataUrl' => '/api/blogs/:id'],
             ]);
+
+        $mainGrid->row('table-row')->gap('none')->table('blogs-table-lists')
+            ->dataUrl('/api/blogs')
+            ->columns(self::getBlogTableListColumns())
+            // ->asList()
+            ->selectable(true)
+            ->pagination(true)
+            ->perPage(10)
+            ->hoverable(true)
+            ->striped(true)
+            ->meta([
+                'card' => true,
+                'responsive' => true,
+                'stickyHeader' => true,
+                'variant' => 'outlined',
+                'displayMode' => 'list',
+                'rowClickable' => true,
+                'rowActions' => ['type' => 'drawer', 'component' => 'view-blog-drawer', 'dataUrl' => '/api/blogs/:id'],
+            ]);
+    }
+
+    /**
+     * Build blog list view component
+     * 
+     * @param mixed $grid Grid component
+     * @return void
+     */
+    private static function buildBlogListView($grid)
+    {
+        // Use ListComponent with meta configuration for dynamic data
+        $grid->row('list-row')->gap('none')->list('blogs-list')
+            ->dense(false)
+            ->disablePadding(false)
+            ->meta([
+                // Data configuration
+                'dataUrl' => '/api/blogs',
+                'dynamic' => true,
+                'fetchOnMount' => true,
+
+                // Item template configuration
+                'itemTemplate' => self::getBlogListItemTemplate(),
+
+                // Actions for each item
+                'itemActions' => self::getBlogListItemActions(),
+
+                // List behavior
+                'selectable' => true,
+                'multiSelect' => false,
+                'hoverable' => true,
+                'itemClickable' => true,
+                'clickAction' => [
+                    'type' => 'drawer',
+                    'component' => 'view-blog-drawer',
+                ],
+
+                // Pagination
+                'pagination' => true,
+                'perPage' => 10,
+                'paginationType' => 'standard', // standard, cursor, fast, optimized, cached
+
+                // Layout
+                'layout' => 'grid', // grid, list, compact, masonry
+                'gridColumns' => 3,
+                'gap' => 'md',
+
+                // Styling
+                'card' => true,
+                'variant' => 'outlined',
+                'elevation' => 1,
+
+                // Display options
+                'showImage' => true,
+                'showMeta' => true,
+                'showActions' => true,
+                'showSelection' => true,
+
+                // Empty state
+                'emptyMessage' => 'No blog posts found',
+                'emptyIcon' => 'LiFileText',
+                'emptyAction' => [
+                    'label' => 'Create Blog Post',
+                    'icon' => 'LiPlus',
+                    'component' => 'create-blog-drawer',
+                    'componentType' => 'drawer',
+                ],
+
+                // Loading state
+                'loadingMessage' => 'Loading blog posts...',
+                'skeletonCount' => 6,
+            ]);
+    }
+
+    /**
+     * Get blog list item template configuration
+     * 
+     * @return array
+     */
+    private static function getBlogListItemTemplate(): array
+    {
+        return [
+            'id' => '{{id}}',
+            'title' => '{{title}}',
+            'subtitle' => '{{excerpt}}',
+            'description' => '{{content}}',
+            'image' => '{{featured_image}}',
+            'status' => '{{status}}',
+            'category' => '{{category}}',
+            'author' => '{{author.name}}',
+            'date' => '{{published_at}}',
+            'views' => '{{views_count}}',
+            'likes' => '{{likes_count}}',
+            'badge' => '{{status}}',
+            'icon' => 'LiFileText',
+        ];
+    }
+
+    /**
+     * Get blog list item actions configuration
+     * 
+     * @return array
+     */
+    private static function getBlogListItemActions(): array
+    {
+        return [
+            [
+                'type' => 'button',
+                'name' => 'view',
+                'icon' => 'LiEyeOpen',
+                'variant' => 'outlined',
+                'size' => 'sm',
+                'color' => 'primary',
+                'tooltip' => 'View Details',
+                'action' => 'open',
+                'component' => 'view-blog-drawer',
+                'componentType' => 'drawer',
+            ],
+            [
+                'type' => 'button',
+                'name' => 'edit',
+                'icon' => 'LiEdit',
+                'variant' => 'outlined',
+                'size' => 'sm',
+                'color' => 'primary',
+                'tooltip' => 'Edit',
+                'action' => 'open',
+                'component' => 'edit-blog-drawer',
+                'componentType' => 'drawer',
+            ],
+            [
+                'type' => 'button',
+                'name' => 'delete',
+                'icon' => 'LiTrash',
+                'variant' => 'outlined',
+                'size' => 'sm',
+                'color' => 'danger',
+                'tooltip' => 'Delete',
+                'action' => 'open',
+                'component' => 'delete-blog-modal',
+                'componentType' => 'modal',
+            ],
+        ];
     }
 
     /**
@@ -282,6 +445,66 @@ class BlogLayout
             ->variant('outline')
             ->meta(['tooltip' => 'Export data']);
 
+        // View mode toggle button group (Table, Board, List)
+        // $row->button('table-view-btn')
+        //     ->label('')
+        //     ->icon('LiTable')
+        //     ->size('md')
+        //     ->variant('outlined')
+        //     ->data('view-mode', 'table')
+        //     ->data('action', 'switch-view')
+        //     ->data('group', 'view-mode-group')
+        //     ->meta([
+        //         'tooltip' => 'Table View',
+        //         'active' => true,
+        //         'group' => 'view-mode-group',
+        //         'groupPosition' => 'first'
+        //     ]);
+
+        // $row->button('board-view-btn')
+        //     ->label('')
+        //     ->icon('LiColumns')
+        //     ->size('md')
+        //     ->variant('outlined')
+        //     ->data('view-mode', 'board')
+        //     ->data('action', 'switch-view')
+        //     ->data('group', 'view-mode-group')
+        //     ->meta([
+        //         'tooltip' => 'Board View (Kanban)',
+        //         'group' => 'view-mode-group',
+        //         'groupPosition' => 'middle'
+        //     ]);
+
+        // $row->button('list-view-btn')
+        //     ->label('')
+        //     ->icon('LiList')
+        //     ->size('md')
+        //     ->variant('outlined')
+        //     ->data('view-mode', 'list')
+        //     ->data('action', 'switch-view')
+        //     ->data('group', 'view-mode-group')
+        //     ->meta([
+        //         'tooltip' => 'List View',
+        //         'group' => 'view-mode-group',
+        //         'groupPosition' => 'last'
+        //     ]);
+
+        $row->button('more-btn-icon')
+            ->label('')
+            ->icon('LiChevronDown')
+            ->size('md')
+            ->variant('outline')
+            ->dropdown([
+                'id' => 'more-options',
+                'placement' => 'bottom-end',
+                'iconOnly' => true,
+                'offset' => [0, 8],
+                'closeOnClick' => true,
+                'defaultIcon' => current(self::getMoreOptionsDropdownIconItems())['icon'] ?? null,
+                'items' => self::getMoreOptionsDropdownIconItems(),
+            ])
+            ->meta(['tooltip' => 'More options']);
+
         $row->button('more-btn')
             ->label('')
             ->icon('LiChevronDown')
@@ -312,6 +535,14 @@ class BlogLayout
         ];
     }
 
+    private static function getMoreOptionsDropdownIconItems()
+    {
+        return [
+            self::buildDropdownButton(id: 'list-view', label: '', icon: 'LiList', action: 'list-view', color: 'primary', value: 'list'),
+            self::buildDropdownButton(id: 'table-view', label: '', icon: 'LiCols', action: 'table-view', color: 'primary', value: 'table'),
+        ];
+    }
+
     /**
      * Build dropdown button item
      * 
@@ -320,16 +551,19 @@ class BlogLayout
      * @param string $icon Icon name
      * @param string $action Action to trigger
      * @param string $color Optional color (primary, danger, etc.)
+     * @param string $value Optional value
      * @return array
      */
-    private static function buildDropdownButton(string $id, string $label, string $icon, string $action, string $color = null)
+    private static function buildDropdownButton(string $id, string $label, string $icon, string $action, string $color = null, string $value = null)
     {
         $item = [
             'id' => $id,
             'label' => $label,
             'icon' => $icon,
             'action' => $action,
+            'color' => $color,
             'type' => 'button',
+            'value' => $value,
         ];
 
         if ($color) {
@@ -397,6 +631,53 @@ class BlogLayout
                     'tooltip' => 'Delete',
                     'dataAttributes' => ['type' => 'modal', 'component' => 'delete-blog-modal', 'action' => 'open'],
                     'dataKey' => 'id',
+                ],
+            ]],
+        ];
+    }
+
+    private static function getBlogTableListColumns()
+    {
+        return [
+            ['key' => 'title', 'label' => 'Title', 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
+            ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
+            ['key' => 'category', 'label' => 'Category', 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
+            ['key' => 'author', 'label' => 'Author', 'sortable' => true, 'width' => '120px'],
+            ['key' => 'views_count', 'label' => 'Views', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'published_at', 'label' => 'Published', 'sortable' => true, 'width' => '120px'],
+            ['key' => 'actions', 'label' => 'Actions', 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => [
+                [
+                    'type' => 'button',
+                    'name' => 'view',
+                    'icon' => 'LiEyeOpen',
+                    'variant' => 'outlined',
+                    'size' => 'sm',
+                    'color' => 'primary',
+                    'tooltip' => 'View Details',
+                    'dataAttributes' => ['type' => 'drawer', 'component' => 'view-blog-drawer', 'action' => 'open'],
+                    'dataKey' => 'id',
+                ],
+                [
+                    'type' => 'button',
+                    'name' => 'edit',
+                    'icon' => 'LiEdit',
+                    'variant' => 'outlined',
+                    'size' => 'sm',
+                    'color' => 'primary',
+                    'tooltip' => 'Edit',
+                    'dataAttributes' => ['type' => 'drawer', 'component' => 'edit-blog-drawer', 'action' => 'open'],
+                    'dataKey' => 'id',
+                ],
+                [
+                    'type' => 'button',
+                    'name' => 'delete',
+                    'icon' => 'LiTrash',
+                    'variant' => 'outlined',
+                    'size' => 'sm',
+                    'color' => 'danger',
+                    'tooltip' => 'Delete',
+                    'dataAttributes' => ['type' => 'modal', 'component' => 'delete-blog-modal',  'action' =>  'open'],
+                    'dataKey' =>  'id',
                 ],
             ]],
         ];

@@ -2,19 +2,48 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+// Litepie Database Traits - ALL 14 FEATURES
+use Litepie\Database\Traits\Aggregatable;
+use Litepie\Database\Traits\Archivable;
+use Litepie\Database\Traits\Batchable;
+use Litepie\Database\Traits\Cacheable;
+use Litepie\Database\Traits\Exportable;
+use Litepie\Database\Traits\Importable;
+use Litepie\Database\Traits\Measurable;
+use Litepie\Database\Traits\Metable;
+use Litepie\Database\Traits\Paginatable;
 use Litepie\Database\Traits\Searchable;
+use Litepie\Database\Traits\Sluggable;
+use Litepie\Database\Traits\Sortable;
+use Litepie\Database\Traits\Translatable;
+use Litepie\Database\Traits\Versionable;
 
 /**
- * Blog Model
- * 
- * Comprehensive blog model with advanced features:
+ * Blog Model - Full Litepie Database Package Implementation
+ *
+ * This model demonstrates ALL 14 Litepie Database traits:
+ *
+ * 📦 Versionable - Track complete version history with rollback
+ * 🏷️ Metable - WordPress-style flexible metadata storage
+ * 🌍 Translatable - Multi-language content support
+ * 🔍 Searchable - Powerful search (full-text, fuzzy, weighted, boolean)
+ * ⚡ Cacheable - Smart caching with tags and invalidation
+ * 🔗 Sluggable - Advanced slug generation with strategies
+ * 📄 Paginatable - Cursor, seek, window, cached pagination
+ * 📊 Aggregatable - Statistical analysis and reporting (23 methods)
+ * 🗃️ Archivable - Soft archiving with reasons and user tracking
+ * 📤 Exportable - Export to CSV, Excel, JSON formats
+ * 📥 Importable - Import and validate data from CSV
+ * 🔢 Sortable - Manual ordering and drag-drop support
+ * 📋 Batchable - Efficient bulk operations for large datasets
+ * 📏 Measurable - Query performance monitoring and optimization
+ *
+ * Plus standard features:
  * - SEO optimization (meta tags, keywords, schema)
- * - Multi-language support
- * - Content versioning
  * - Advanced categorization and tagging
  * - Author and co-author management
  * - Publishing workflow (draft, review, published, archived)
@@ -22,55 +51,29 @@ use Litepie\Database\Traits\Searchable;
  * - Featured content support
  * - Social media integration
  * - Content scheduling
- * 
- * @package App\Models
- * 
- * @property int $id
- * @property string $blog_id Unique blog identifier
- * @property string $title Blog title
- * @property string $slug URL-friendly slug
- * @property string $excerpt Short description
- * @property string $content Main blog content
- * @property string $status Publication status
- * @property string $visibility Public, private, or password protected
- * @property string|null $password Password for protected posts
- * @property int $author_id Primary author
- * @property array $co_authors Additional authors
- * @property string|null $category Primary category
- * @property array $categories All categories
- * @property array $tags Post tags
- * @property string|null $featured_image Featured image URL
- * @property array $gallery Image gallery
- * @property string|null $video_url Embedded video
- * @property array $attachments File attachments
- * @property string $language Content language
- * @property array $translations Translated versions
- * @property array $seo_meta SEO metadata
- * @property array $schema_markup Structured data
- * @property bool $is_featured Featured post flag
- * @property bool $is_sticky Sticky post flag
- * @property bool $allow_comments Comments enabled
- * @property int $comments_count Number of comments
- * @property int $views_count View counter
- * @property int $likes_count Like counter
- * @property int $shares_count Share counter
- * @property float $reading_time Estimated reading time in minutes
- * @property array $related_posts Related post IDs
- * @property \DateTime|null $published_at Publication date
- * @property \DateTime|null $scheduled_at Scheduled publication
- * @property \DateTime|null $expired_at Expiration date
- * @property \DateTime|null $last_edited_at Last edit timestamp
- * @property int|null $last_edited_by Last editor user ID
- * @property int $revision_number Content version number
- * @property array $custom_fields Additional metadata
- * @property array $analytics Analytics data
- * @property \DateTime $created_at
- * @property \DateTime $updated_at
- * @property \DateTime|null $deleted_at Soft delete timestamp
  */
 class Blog extends Model
 {
-    use HasFactory, SoftDeletes, Searchable;
+    use Aggregatable,
+        Archivable,
+        Batchable,
+        Cacheable,
+        Exportable,
+        HasFactory,
+        Importable,
+        Measurable,
+        Metable,
+        Paginatable,
+        Searchable,
+        Sluggable,
+        SoftDeletes,
+        Sortable,
+        Translatable,
+        Versionable {
+        // Resolve trait conflicts by specifying which methods to use from which trait
+        Paginatable::generatePaginationCacheKey insteadof Cacheable;
+        Exportable::formatBytes insteadof Importable, Batchable, Measurable;
+    }
 
     /**
      * The table associated with the model.
@@ -78,6 +81,150 @@ class Blog extends Model
      * @var string
      */
     protected $table = 'blogs';
+
+    // ===============================================================
+    // LITEPIE DATABASE TRAIT CONFIGURATIONS (All 14 Traits)
+    // Note: We don't redeclare trait properties to avoid conflicts.
+    // The traits will use their default values, or we can override
+    // them using boot methods or accessor methods.
+    // ===============================================================
+
+    /**
+     * Column names for archiving (Archivable Trait)
+     */
+    const ARCHIVED_AT = 'archived_at';
+
+    const ARCHIVED_BY = 'archived_by';
+
+    const ARCHIVED_REASON = 'archived_reason';
+
+    /**
+     * Create a new Eloquent model instance and initialize trait properties
+     *
+     * @param  array  $attributes
+     * @return void
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // Initialize trait properties
+        $this->initializeTraitProperties();
+    }
+
+    /**
+     * Configure traits that require property definitions
+     * (Defined dynamically to avoid trait conflicts)
+     */
+    protected function initializeTraitProperties()
+    {
+        // Sluggable configuration
+        if (!property_exists($this, 'slugs') || empty($this->slugs)) {
+            $this->slugs = ['slug' => 'title'];
+        }
+
+        // Translatable configuration
+        if (!property_exists($this, 'translatable') || empty($this->translatable)) {
+            $this->translatable = ['title', 'excerpt', 'content', 'seo_meta'];
+        }
+
+        // Searchable configuration
+        if (!property_exists($this, 'searchable') || empty($this->searchable)) {
+            $this->searchable = ['title', 'excerpt', 'content', 'tags', 'category'];
+        }
+
+        if (! property_exists($this, 'fullTextSearchable') || empty($this->fullTextSearchable)) {
+            $this->fullTextSearchable = ['title', 'excerpt', 'content'];
+        }
+
+        if (!property_exists($this, 'searchWeights') || empty($this->searchWeights)) {
+            $this->searchWeights = [
+                'title' => 10,
+                'excerpt' => 7,
+                'content' => 5,
+                'tags' => 8,
+                'category' => 6,
+            ];
+        }
+    }
+
+    /**
+     * Boot method to configure all Litepie traits
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Initialize model instance for property access
+        static::retrieved(function ($blog) {
+            $blog->initializeTraitProperties();
+        });
+
+        static::creating(function ($blog) {
+            $blog->initializeTraitProperties();
+        });
+
+        // Configure traits using boot lifecycle
+        static::bootLitepieTraits();
+
+        // Auto-generate blog_id before creating
+        static::creating(function ($blog) {
+            if (empty($blog->blog_id)) {
+                $blog->blog_id = 'BLOG-' . strtoupper(uniqid());
+            }
+
+            // Calculate reading time
+            if (!empty($blog->content)) {
+                $blog->reading_time = self::calculateReadingTime($blog->content);
+            }
+        });
+
+        // Update timestamps and version on update
+        static::updating(function ($blog) {
+            $blog->last_edited_at = now();
+            $blog->revision_number++;
+
+            // Recalculate reading time if content changed
+            if ($blog->isDirty('content')) {
+                $blog->reading_time = self::calculateReadingTime($blog->content);
+            }
+        });
+    }
+
+    /**
+     * Configure all Litepie Database traits
+     */
+    protected static function bootLitepieTraits()
+    {
+        // If traits support boot{TraitName} methods, they'll be called automatically
+        // Some traits might need property initialization here
+    }
+
+    // ===============================================================
+    // FIXES FOR LITEPIE TRAIT COMPATIBILITY ISSUES
+    // ===============================================================
+
+    /**
+     * Override getDateFormat() to fix Aggregatable trait compatibility
+     * The trait incorrectly tries to use this as a static method
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        return $this->dateFormat ?? parent::getDateFormat();
+    }
+
+    /**
+     * Override getForeignKey() to fix Sortable trait access level issue
+     * The trait defines this as protected, but Model requires public
+     *
+     * @return string
+     */
+    public function getForeignKey()
+    {
+        return parent::getForeignKey();
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -123,6 +270,18 @@ class Blog extends Model
         'revision_number',
         'custom_fields',
         'analytics',
+        // Litepie Database fields
+        'position',
+        'meta_data',
+        'version_count',
+        'version_created_by',
+        'last_exported_at',
+        'last_imported_at',
+        'performance_metrics',
+        'cache_warmed_at',
+        'archived_at',
+        'archived_by',
+        'archived_reason',
     ];
 
     /**
@@ -159,6 +318,15 @@ class Blog extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
+        // Litepie Database casts
+        'position' => 'integer',
+        'meta_data' => 'array',
+        'version_count' => 'integer',
+        'performance_metrics' => 'array',
+        'last_exported_at' => 'datetime',
+        'last_imported_at' => 'datetime',
+        'cache_warmed_at' => 'datetime',
+        'archived_at' => 'datetime',
     ];
 
     /**
@@ -191,62 +359,6 @@ class Blog extends Model
     ];
 
     /**
-     * Boot the model
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        // Auto-generate blog_id before creating
-        static::creating(function ($blog) {
-            if (empty($blog->blog_id)) {
-                $blog->blog_id = 'BLOG-' . strtoupper(uniqid());
-            }
-
-            // Auto-generate slug from title if not provided
-            if (empty($blog->slug) && !empty($blog->title)) {
-                $blog->slug = self::generateSlug($blog->title);
-            }
-
-            // Calculate reading time
-            if (!empty($blog->content)) {
-                $blog->reading_time = self::calculateReadingTime($blog->content);
-            }
-        });
-
-        // Update timestamps and version on update
-        static::updating(function ($blog) {
-            $blog->last_edited_at = now();
-            $blog->revision_number++;
-
-            // Recalculate reading time if content changed
-            if ($blog->isDirty('content')) {
-                $blog->reading_time = self::calculateReadingTime($blog->content);
-            }
-        });
-    }
-
-    /**
-     * Generate a unique slug from title
-     *
-     * @param string $title
-     * @return string
-     */
-    public static function generateSlug(string $title): string
-    {
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
-        $originalSlug = $slug;
-        $count = 1;
-
-        // Ensure uniqueness
-        while (self::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count++;
-        }
-
-        return $slug;
-    }
-
-    /**
      * Calculate reading time based on content
      * Average reading speed: 200 words per minute
      *
@@ -256,6 +368,7 @@ class Blog extends Model
     public static function calculateReadingTime(string $content): float
     {
         $wordCount = str_word_count(strip_tags($content));
+
         return round($wordCount / 200, 1);
     }
 
@@ -310,19 +423,6 @@ class Blog extends Model
     public function scopeByLanguage($query, string $language)
     {
         return $query->where('language', $language);
-    }
-
-    /**
-     * Scope: Search posts
-     */
-    public function scopeSearch($query, string $search)
-    {
-        return $query->where(function ($q) use ($search) {
-            $q->where('title', 'like', "%{$search}%")
-                ->orWhere('excerpt', 'like', "%{$search}%")
-                ->orWhere('content', 'like', "%{$search}%")
-                ->orWhereJsonContains('tags', $search);
-        });
     }
 
     /**
@@ -408,212 +508,5 @@ class Blog extends Model
     public function getSeoKeywords(): array
     {
         return $this->seo_meta['keywords'] ?? $this->tags ?? [];
-    }
-
-    /**
-     * Scope to apply structured filters.
-     * 
-     * Parses filter string format: field:OPERATOR(value);field2:OPERATOR(value2)
-     * Supports operators: EQ, NE, GT, GTE, LT, LTE, LIKE, IN, NIN, BETWEEN, NULL, NOTNULL
-     *
-     * Example: status:EQ(published);category:IN(Technology,Science);author_id:GT(5)
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array|string $filters Array of filters or semicolon-separated string
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeFilter($query, $filters)
-    {
-        if (empty($filters)) {
-            return $query;
-        }
-
-        // If filters is a string, parse it
-        if (is_string($filters)) {
-            $filters = $this->parseFilterString($filters);
-        }
-
-        // Apply each filter
-        foreach ($filters as $field => $condition) {
-            // Skip if field not in fillable or searchable
-            if (!in_array($field, $this->fillable) && !in_array($field, $this->searchable ?? [])) {
-                continue;
-            }
-
-            // Parse condition if it's a string with operator
-            if (is_string($condition)) {
-                $this->applyFilterCondition($query, $field, $condition);
-            } elseif (is_array($condition)) {
-                // Handle array values as IN condition
-                $query->whereIn($field, $condition);
-            } else {
-                // Simple equality
-                $query->where($field, $condition);
-            }
-        }
-
-        return $query;
-    }
-
-    /**
-     * Parse filter string into array of conditions
-     * Format: field:OPERATOR(value);field2:OPERATOR(value2)
-     *
-     * @param string $filterString
-     * @return array
-     */
-    protected function parseFilterString(string $filterString): array
-    {
-        $filters = [];
-        $parts = explode(';', $filterString);
-
-        foreach ($parts as $part) {
-            $part = trim($part);
-            if (empty($part)) {
-                continue;
-            }
-
-            // Match pattern: field:OPERATOR(value)
-            if (preg_match('/^([^:]+):(.+)$/', $part, $matches)) {
-                $field = trim($matches[1]);
-                $condition = trim($matches[2]);
-                $filters[$field] = $condition;
-            } elseif (strpos($part, '=') !== false) {
-                // Simple key=value format
-                list($field, $value) = explode('=', $part, 2);
-                $filters[trim($field)] = trim($value);
-            }
-        }
-
-        return $filters;
-    }
-
-    /**
-     * Apply a filter condition with operator
-     *
-     * Supported operators:
-     * - Text: LIKE, NOT_LIKE, EQ, NEQ, STARTS_WITH, ENDS_WITH
-     * - Comparison: GT, GTE, LT, LTE
-     * - Array: IN, NOT_IN
-     * - Range: BETWEEN, NOT_BETWEEN
-     * - Date: DATE_EQ, DATE_GT, DATE_GTE, DATE_LT, DATE_LTE, DATE_BETWEEN
-     * - Null: IS_NULL, IS_NOT_NULL
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $field
-     * @param string $condition Format: OPERATOR(value)
-     * @return void
-     */
-    protected function applyFilterCondition($query, string $field, string $condition): void
-    {
-        // Match operator and value: OPERATOR(value)
-        if (preg_match('/^([A-Z_]+)\((.*)?\)$/s', $condition, $matches)) {
-            $operator = $matches[1];
-            $value = $matches[2] ?? '';
-
-            switch ($operator) {
-                // Equality operators
-                case 'EQ':
-                    $query->where($field, '=', $value);
-                    break;
-                case 'NEQ':
-                case 'NE':
-                    $query->where($field, '!=', $value);
-                    break;
-
-                // Comparison operators
-                case 'GT':
-                    $query->where($field, '>', $value);
-                    break;
-                case 'GTE':
-                    $query->where($field, '>=', $value);
-                    break;
-                case 'LT':
-                    $query->where($field, '<', $value);
-                    break;
-                case 'LTE':
-                    $query->where($field, '<=', $value);
-                    break;
-
-                // Text operators
-                case 'LIKE':
-                    $query->where($field, 'LIKE', "%{$value}%");
-                    break;
-                case 'NOT_LIKE':
-                    $query->where($field, 'NOT LIKE', "%{$value}%");
-                    break;
-                case 'STARTS_WITH':
-                    $query->where($field, 'LIKE', "{$value}%");
-                    break;
-                case 'ENDS_WITH':
-                    $query->where($field, 'LIKE', "%{$value}");
-                    break;
-
-                // Array operators
-                case 'IN':
-                    $values = is_array($value) ? $value : array_map('trim', explode(',', $value));
-                    $query->whereIn($field, $values);
-                    break;
-                case 'NOT_IN':
-                case 'NIN':
-                    $values = is_array($value) ? $value : array_map('trim', explode(',', $value));
-                    $query->whereNotIn($field, $values);
-                    break;
-
-                // Range operators
-                case 'BETWEEN':
-                    $values = is_array($value) ? $value : array_map('trim', explode(',', $value));
-                    if (count($values) === 2) {
-                        $query->whereBetween($field, $values);
-                    }
-                    break;
-                case 'NOT_BETWEEN':
-                    $values = is_array($value) ? $value : array_map('trim', explode(',', $value));
-                    if (count($values) === 2) {
-                        $query->whereNotBetween($field, $values);
-                    }
-                    break;
-
-                // Date operators
-                case 'DATE_EQ':
-                    $query->whereDate($field, '=', $value);
-                    break;
-                case 'DATE_GT':
-                    $query->whereDate($field, '>', $value);
-                    break;
-                case 'DATE_GTE':
-                    $query->whereDate($field, '>=', $value);
-                    break;
-                case 'DATE_LT':
-                    $query->whereDate($field, '<', $value);
-                    break;
-                case 'DATE_LTE':
-                    $query->whereDate($field, '<=', $value);
-                    break;
-                case 'DATE_BETWEEN':
-                    $values = is_array($value) ? $value : array_map('trim', explode(',', $value));
-                    if (count($values) === 2) {
-                        $query->whereBetween($field, $values);
-                    }
-                    break;
-
-                // Null operators
-                case 'IS_NULL':
-                case 'NULL':
-                    $query->whereNull($field);
-                    break;
-                case 'IS_NOT_NULL':
-                case 'NOTNULL':
-                    $query->whereNotNull($field);
-                    break;
-
-                // Default fallback
-                default:
-                    $query->where($field, '=', $value);
-            }
-        } else {
-            // No operator found, treat as equality
-            $query->where($field, '=', $condition);
-        }
     }
 }

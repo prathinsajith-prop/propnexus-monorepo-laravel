@@ -138,28 +138,20 @@ class BlogController extends Controller
      */
     public function list(Request $request)
     {
-        try {
-            $blogs = Blog::filterAndPaginate();
-
-            return response()->json([
-                'success' => true,
-                'data' => $blogs->items(),
-                'meta' => [
-                    'current_page' => $blogs->currentPage(),
-                    'per_page' => $blogs->perPage(),
-                    'total' => $blogs->total(),
-                    'last_page' => $blogs->lastPage(),
-                    'from' => $blogs->firstItem(),
-                    'to' => $blogs->lastItem(),
-                ],
-            ]);
-        } catch (\Exception $e) {
+        $result = ListBlogsAction::make(null, $request->all())->run();
+        if (!$result->isSuccess()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retrieve blogs',
-                'error' => $e->getMessage(),
-            ], 500);
+                'message' => $result->getMessage(),
+                'errors' => $result->getErrors(),
+            ], $result->getData()['code'] ?? 400);
         }
+
+        return response()->json([
+            'success' => true,
+            'data' => $result->getData()['data'] ?? [],
+            'meta' => $result->getData()['meta'] ?? [],
+        ]);
     }
 
     /**

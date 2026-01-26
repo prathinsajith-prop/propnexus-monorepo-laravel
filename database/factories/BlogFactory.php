@@ -20,13 +20,16 @@ class BlogFactory extends Factory
     public function definition(): array
     {
         $title = fake()->sentence(rand(4, 8));
+        $slug = \Illuminate\Support\Str::slug($title);
         $categories = ['Technology', 'Business', 'Lifestyle', 'Education', 'Health', 'Travel', 'Food', 'Science', 'Entertainment', 'Sports'];
         $tags = ['Tutorial', 'Guide', 'News', 'Opinion', 'Review', 'Comparison', 'Tips', 'How-to', 'Best Practices', 'Case Study'];
         $statuses = ['draft', 'review', 'published', 'archived'];
         $languages = ['en', 'es', 'fr', 'de'];
 
         return [
+            'blog_id' => 'BLOG-' . strtoupper(uniqid()),
             'title' => $title,
+            'slug' => $slug,
             'excerpt' => fake()->paragraph(2),
             'content' => $this->generateContent(),
             'status' => fake()->randomElement($statuses),
