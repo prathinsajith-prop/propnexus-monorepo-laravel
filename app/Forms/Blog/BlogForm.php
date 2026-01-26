@@ -53,7 +53,7 @@ class BlogForm
             // === CONTENT SECTION ===
             $contentGroup = $form->group('content-info')
                 ->title('Blog Content')
-                ->icon('LiFileText')
+                ->icon('documentfull')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -84,7 +84,7 @@ class BlogForm
             // === PUBLICATION SECTION ===
             $publicationGroup = $form->group('publication-info')
                 ->title('Publication Settings')
-                ->icon('LiCalendar')
+                ->icon('calendar')
                 ->variant('bordered')
                 ->columns(3);
 
@@ -127,7 +127,7 @@ class BlogForm
             // === MEDIA SECTION ===
             $mediaGroup = $form->group('media-info')
                 ->title('Media & Attachments')
-                ->icon('LiImage')
+                ->icon('image')
                 ->variant('bordered')
                 ->columns(1);
 
@@ -148,7 +148,7 @@ class BlogForm
                 ->multiple(true)
                 ->maxSize(10240)
                 ->width(12);
-                
+
             $mediaGroup->file('attachments')
                 ->label('Attachments')
                 ->multiple(true)
@@ -158,7 +158,7 @@ class BlogForm
             // === CATEGORIZATION SECTION ===
             $categoryGroup = $form->group('category-info')
                 ->title('Categories & Tags')
-                ->icon('LiTag')
+                ->icon('tag')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -196,7 +196,7 @@ class BlogForm
             // === SEO SECTION ===
             $seoGroup = $form->group('seo-info')
                 ->title('SEO & Metadata')
-                ->icon('LiSearch')
+                ->icon('search')
                 ->variant('bordered')
                 ->columns(1);
 
@@ -232,7 +232,7 @@ class BlogForm
             // === SETTINGS SECTION ===
             $settingsGroup = $form->group('settings-info')
                 ->title('Post Settings')
-                ->icon('LiSettings')
+                ->icon('settings')
                 ->variant('bordered')
                 ->columns(3);
 
@@ -261,7 +261,7 @@ class BlogForm
             // === ANALYTICS SECTION ===
             $analyticsGroup = $form->group('analytics-info')
                 ->title('Analytics & Metrics')
-                ->icon('LiBarChart')
+                ->icon('barchart')
                 ->variant('bordered')
                 ->columns(4);
 
@@ -288,7 +288,7 @@ class BlogForm
             // === CUSTOM FIELDS SECTION ===
             $customGroup = $form->group('custom-info')
                 ->title('Custom Fields')
-                ->icon('LiCode')
+                ->icon('code')
                 ->variant('bordered')
                 ->columns(1);
 

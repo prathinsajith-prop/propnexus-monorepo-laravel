@@ -76,8 +76,8 @@ class BlogLayout
         $headerInfoGrid->pageHeader('page-header')
             ->title('Blog Management')
             ->breadcrumbs([
-                ['label' => 'Dashboard', 'link' => '/', 'icon' => 'LiHome'],
-                ['label' => 'Blogs', 'active' => true, 'icon' => 'LiFileText'],
+                ['label' => 'Dashboard', 'link' => '/', 'icon' => 'home'],
+                ['label' => 'Blogs', 'active' => true, 'icon' => 'documentfull'],
             ])
             ->align('left')
             ->spacing('md')
@@ -93,10 +93,10 @@ class BlogLayout
             ->responsive(true)
             ->gridColumnSpan(7);
 
-        self::buildStatsCard($statsGrid, 'stat-total-posts', 'Total Posts', '12', 'primary', 'LiList', '+12%', 'up', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-published', 'Published', '8', 'success', 'LiListCheck', '+8%', 'up', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-drafts', 'Drafts', '0', 'warning', 'LiPen', '+0%', 'neutral', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-total-views', 'Total Views', '15', 'info', 'LiEyeOpen', '+15%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-total-posts', 'Total Posts', '12', 'primary', 'list', '+12%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-published', 'Published', '8', 'success', 'listcheck', '+8%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-drafts', 'Drafts', '0', 'warning', 'pen', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-total-views', 'Total Views', '15', 'info', 'eyeopen', '+15%', 'up', 'trend-1');
     }
 
     /**
@@ -213,101 +213,6 @@ class BlogLayout
     }
 
     /**
-     * Build blog list view component
-     * 
-     * @param mixed $grid Grid component
-     * @return void
-     */
-    private static function buildBlogListView($grid)
-    {
-        // Use ListComponent with meta configuration for dynamic data
-        $grid->row('list-row')->gap('none')->list('blogs-list')
-            ->dense(false)
-            ->disablePadding(false)
-            ->meta([
-                // Data configuration
-                'dataUrl' => '/api/blogs',
-                'dynamic' => true,
-                'fetchOnMount' => true,
-
-                // Item template configuration
-                'itemTemplate' => self::getBlogListItemTemplate(),
-
-                // Actions for each item
-                'itemActions' => self::getBlogListItemActions(),
-
-                // List behavior
-                'selectable' => true,
-                'multiSelect' => false,
-                'hoverable' => true,
-                'itemClickable' => true,
-                'clickAction' => [
-                    'type' => 'drawer',
-                    'component' => 'view-blog-drawer',
-                ],
-
-                // Pagination
-                'pagination' => true,
-                'perPage' => 10,
-                'paginationType' => 'standard', // standard, cursor, fast, optimized, cached
-
-                // Layout
-                'layout' => 'grid', // grid, list, compact, masonry
-                'gridColumns' => 3,
-                'gap' => 'md',
-
-                // Styling
-                'card' => true,
-                'variant' => 'outlined',
-                'elevation' => 1,
-
-                // Display options
-                'showImage' => true,
-                'showMeta' => true,
-                'showActions' => true,
-                'showSelection' => true,
-
-                // Empty state
-                'emptyMessage' => 'No blog posts found',
-                'emptyIcon' => 'LiFileText',
-                'emptyAction' => [
-                    'label' => 'Create Blog Post',
-                    'icon' => 'LiPlus',
-                    'component' => 'create-blog-drawer',
-                    'componentType' => 'drawer',
-                ],
-
-                // Loading state
-                'loadingMessage' => 'Loading blog posts...',
-                'skeletonCount' => 6,
-            ]);
-    }
-
-    /**
-     * Get blog list item template configuration
-     * 
-     * @return array
-     */
-    private static function getBlogListItemTemplate(): array
-    {
-        return [
-            'id' => '{{id}}',
-            'title' => '{{title}}',
-            'subtitle' => '{{excerpt}}',
-            'description' => '{{content}}',
-            'image' => '{{featured_image}}',
-            'status' => '{{status}}',
-            'category' => '{{category}}',
-            'author' => '{{author.name}}',
-            'date' => '{{published_at}}',
-            'views' => '{{views_count}}',
-            'likes' => '{{likes_count}}',
-            'badge' => '{{status}}',
-            'icon' => 'LiFileText',
-        ];
-    }
-
-    /**
      * Get blog list item actions configuration
      * 
      * @return array
@@ -318,7 +223,7 @@ class BlogLayout
             [
                 'type' => 'button',
                 'name' => 'view',
-                'icon' => 'LiEyeOpen',
+                'icon' => 'eyeopen',
                 'variant' => 'outlined',
                 'size' => 'sm',
                 'color' => 'primary',
@@ -330,7 +235,7 @@ class BlogLayout
             [
                 'type' => 'button',
                 'name' => 'edit',
-                'icon' => 'LiEdit',
+                'icon' => 'edit',
                 'variant' => 'outlined',
                 'size' => 'sm',
                 'color' => 'primary',
@@ -342,7 +247,7 @@ class BlogLayout
             [
                 'type' => 'button',
                 'name' => 'delete',
-                'icon' => 'LiTrash',
+                'icon' => 'trash',
                 'variant' => 'outlined',
                 'size' => 'sm',
                 'color' => 'danger',
@@ -404,21 +309,21 @@ class BlogLayout
     {
         // $row->button('filter-toggle-btn')
         //     ->label('Filter')
-        //     ->icon('LiFilter')
+        //     ->icon('filter')
         //     ->size('md')
         //     ->variant('outline')
         //     ->meta(['tooltip' => 'Toggle filter panel', 'action' => 'toggle-filter']);
 
         $row->button('refresh-btn')
             ->label('Refresh')
-            ->icon('LiRefresh')
+            ->icon('refresh')
             ->size('md')
             ->variant('outline')
             ->meta(['tooltip' => 'Refresh data']);
 
         $row->button('create-btn')
             ->label('Create')
-            ->icon('LiPlus')
+            ->icon('plus')
             ->size('md')
             ->color('primary')
             ->variant('lt-contained')
@@ -429,7 +334,7 @@ class BlogLayout
 
         $row->button('create-btn-modal')
             ->label('Create Modal View')
-            ->icon('LiPlus')
+            ->icon('plus')
             ->size('md')
             ->color('primary')
             ->variant('lt-contained')
@@ -440,7 +345,7 @@ class BlogLayout
 
         $row->button('export-btn')
             ->label('Export')
-            ->icon('LiDownloadCloud')
+            ->icon('downloadcloud')
             ->size('md')
             ->variant('outline')
             ->meta(['tooltip' => 'Export data']);
@@ -448,7 +353,7 @@ class BlogLayout
         // View mode toggle button group (Table, Board, List)
         // $row->button('table-view-btn')
         //     ->label('')
-        //     ->icon('LiTable')
+        //     ->icon('table')
         //     ->size('md')
         //     ->variant('outlined')
         //     ->data('view-mode', 'table')
@@ -463,7 +368,7 @@ class BlogLayout
 
         // $row->button('board-view-btn')
         //     ->label('')
-        //     ->icon('LiColumns')
+        //     ->icon('columns')
         //     ->size('md')
         //     ->variant('outlined')
         //     ->data('view-mode', 'board')
@@ -477,7 +382,7 @@ class BlogLayout
 
         // $row->button('list-view-btn')
         //     ->label('')
-        //     ->icon('LiList')
+        //     ->icon('list')
         //     ->size('md')
         //     ->variant('outlined')
         //     ->data('view-mode', 'list')
@@ -491,7 +396,7 @@ class BlogLayout
 
         $row->button('more-btn-icon')
             ->label('')
-            ->icon('LiChevronDown')
+            ->icon('chevrondown')
             ->size('md')
             ->variant('outline')
             ->dropdown([
@@ -507,7 +412,7 @@ class BlogLayout
 
         $row->button('more-btn')
             ->label('')
-            ->icon('LiChevronDown')
+            ->icon('chevrondown')
             ->size('md')
             ->variant('outline')
             ->dropdown([
@@ -528,18 +433,18 @@ class BlogLayout
     private static function getMoreOptionsDropdownItems()
     {
         return [
-            self::buildDropdownButton('bulk-publish', 'Bulk Publish', 'LiCheckFull', 'bulk-publish'),
-            self::buildDropdownButton('bulk-delete', 'Bulk Delete', 'LiBin', 'bulk-delete'),
+            self::buildDropdownButton('bulk-publish', 'Bulk Publish', 'checkfull', 'bulk-publish'),
+            self::buildDropdownButton('bulk-delete', 'Bulk Delete', 'bin', 'bulk-delete'),
             self::buildDropdownDivider(),
-            self::buildDropdownButton('settings', 'Settings', 'LiSettings', 'settings'),
+            self::buildDropdownButton('settings', 'Settings', 'settings', 'settings'),
         ];
     }
 
     private static function getMoreOptionsDropdownIconItems()
     {
         return [
-            self::buildDropdownButton(id: 'list-view', label: '', icon: 'LiList', action: 'list-view', color: 'primary', value: 'list'),
-            self::buildDropdownButton(id: 'table-view', label: '', icon: 'LiCols', action: 'table-view', color: 'primary', value: 'table'),
+            self::buildDropdownButton(id: 'list-view', label: '', icon: 'list', action: 'list-view', color: 'primary', value: 'list'),
+            self::buildDropdownButton(id: 'table-view', label: '', icon: 'cols', action: 'table-view', color: 'primary', value: 'table'),
         ];
     }
 
@@ -602,7 +507,7 @@ class BlogLayout
                 [
                     'type' => 'button',
                     'name' => 'view',
-                    'icon' => 'LiEyeOpen',
+                    'icon' => 'eyeopen',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'primary',
@@ -613,7 +518,7 @@ class BlogLayout
                 [
                     'type' => 'button',
                     'name' => 'edit',
-                    'icon' => 'LiEdit',
+                    'icon' => 'edit',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'primary',
@@ -624,7 +529,7 @@ class BlogLayout
                 [
                     'type' => 'button',
                     'name' => 'delete',
-                    'icon' => 'LiTrash',
+                    'icon' => 'trash',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'danger',
@@ -649,7 +554,7 @@ class BlogLayout
                 [
                     'type' => 'button',
                     'name' => 'view',
-                    'icon' => 'LiEyeOpen',
+                    'icon' => 'eyeopen',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'primary',
@@ -660,7 +565,7 @@ class BlogLayout
                 [
                     'type' => 'button',
                     'name' => 'edit',
-                    'icon' => 'LiEdit',
+                    'icon' => 'edit',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'primary',
@@ -671,7 +576,7 @@ class BlogLayout
                 [
                     'type' => 'button',
                     'name' => 'delete',
-                    'icon' => 'LiTrash',
+                    'icon' => 'trash',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'danger',
@@ -790,14 +695,14 @@ class BlogLayout
                 [
                     'type' => 'header',
                     'title' => 'Create New Blog Post',
-                    'icon' => 'LiFileText',
+                    'icon' => 'documentfull',
                 ],
                 [
                     'type' => 'footer',
                     'buttonGroup' => [
                         'buttons' => [
                             ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                            ['label' => 'Create Post', 'type' => 'submit', 'color' => 'primary', 'icon' => 'LiCheck', 'dataUrl' => '/api/blogs', 'method' => 'POST'],
+                            ['label' => 'Create Post', 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/blogs', 'method' => 'POST'],
                         ],
                     ],
                 ],
@@ -817,7 +722,7 @@ class BlogLayout
                 [
                     'type' => 'header',
                     'title' => 'Delete Blog Post',
-                    'icon' => 'LiTrash',
+                    'icon' => 'trash',
                     'color' => 'danger',
                 ],
                 [
@@ -825,7 +730,7 @@ class BlogLayout
                     'buttonGroup' => [
                         'buttons' => [
                             ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                            ['label' => 'Delete', 'color' => 'danger', 'icon' => 'LiTrash', 'dataUrl' => '/api/blogs/:id', 'method' => 'DELETE'],
+                            ['label' => 'Delete', 'color' => 'danger', 'icon' => 'trash', 'dataUrl' => '/api/blogs/:id', 'method' => 'DELETE'],
                         ],
                     ],
                 ],
@@ -850,7 +755,7 @@ class BlogLayout
             ->header([
                 'title' => 'Create New Blog Post',
                 'subtitle' => 'Add a new blog post to your collection',
-                'icon' => 'LiPlus',
+                'icon' => 'plus',
             ])
             ->content([
                 'component' => $formComponent,
@@ -859,7 +764,7 @@ class BlogLayout
                 'type' => 'button-group',
                 'buttons' => [
                     ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Create Post', 'type' => 'submit', 'color' => 'primary', 'icon' => 'LiCheck', 'dataUrl' => '/api/blogs', 'method' => 'POST'],
+                    ['label' => 'Create Post', 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/blogs', 'method' => 'POST'],
                 ],
             ])
             ->toArray();
@@ -880,7 +785,7 @@ class BlogLayout
             ->header([
                 'title' => 'Edit Blog Post',
                 'subtitle' => 'Update blog post information',
-                'icon' => 'LiEdit',
+                'icon' => 'edit',
             ])
             ->content([
                 'component' => $formComponent,
@@ -889,7 +794,7 @@ class BlogLayout
                 'type' => 'button-group',
                 'buttons' => [
                     ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Update Post', 'type' => 'submit', 'color' => 'success', 'icon' => 'LiCheck', 'dataUrl' => '/api/blogs/:id', 'method' => 'PUT'],
+                    ['label' => 'Update Post', 'type' => 'submit', 'color' => 'success', 'icon' => 'check', 'dataUrl' => '/api/blogs/:id', 'method' => 'PUT'],
                 ],
             ])
             ->toArray();
@@ -912,20 +817,20 @@ class BlogLayout
             ->header([
                 'title' => 'Blog Post Details',
                 'subtitle' => 'View complete blog post information',
-                'icon' => 'LiFileText',
+                'icon' => 'documentfull',
                 'actions' => [
                     [
                         'type' => 'chip',
                         'label' => 'Published',
                         'color' => 'success',
                         'size' => 'sm',
-                        'icon' => 'LiCheckCircle',
+                        'icon' => 'checkcircle',
                     ],
                     [
                         'type' => 'drawer',
                         'actionType' => 'drawer',
                         'label' => 'Edit',
-                        'icon' => 'LiPen',
+                        'icon' => 'pen',
                         'variant' => 'outlined',
                         'size' => 'sm',
                         'color' => 'primary',
@@ -936,7 +841,7 @@ class BlogLayout
                     [
                         'type' => 'button',
                         'label' => 'Delete',
-                        'icon' => 'LiBinEmpty',
+                        'icon' => 'binempty',
                         'variant' => 'outlined',
                         'size' => 'sm',
                         'color' => 'error',
@@ -961,7 +866,7 @@ class BlogLayout
                 'type' => 'button-group',
                 'buttons' => [
                     ['label' => 'Close', 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'close'],
-                    ['label' => 'View Fullscreen', 'color' => 'primary', 'icon' => 'LiExpand', 'type' => 'drawer', 'component' => 'view-blog-drawer-fullscreen', 'action' => 'view'],
+                    ['label' => 'View Fullscreen', 'color' => 'primary', 'icon' => 'expand', 'type' => 'drawer', 'component' => 'view-blog-drawer-fullscreen', 'action' => 'view'],
                 ],
             ])
             ->toArray();
@@ -999,7 +904,7 @@ class BlogLayout
             ->header([
                 'title' => 'Create New Blog Post (Fullscreen)',
                 'subtitle' => 'Add a new blog post with full editor',
-                'icon' => 'LiPlus',
+                'icon' => 'plus',
             ])
             ->content([
                 'component' => $formComponent,
@@ -1008,7 +913,7 @@ class BlogLayout
                 'type' => 'button-group',
                 'buttons' => [
                     ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Create Post', 'type' => 'submit', 'color' => 'primary', 'icon' => 'LiCheck', 'dataUrl' => '/api/blogs', 'method' => 'POST'],
+                    ['label' => 'Create Post', 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/blogs', 'method' => 'POST'],
                 ],
             ])
             ->toArray();
@@ -1030,7 +935,7 @@ class BlogLayout
             ->header([
                 'title' => 'Edit Blog Post (Fullscreen)',
                 'subtitle' => 'Update blog post with full editor',
-                'icon' => 'LiEdit',
+                'icon' => 'edit',
             ])
             ->content([
                 'component' => $formComponent,
@@ -1039,7 +944,7 @@ class BlogLayout
                 'type' => 'button-group',
                 'buttons' => [
                     ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Update Post', 'type' => 'submit', 'color' => 'success', 'icon' => 'LiCheck', 'dataUrl' => '/api/blogs/:id', 'method' => 'PUT'],
+                    ['label' => 'Update Post', 'type' => 'submit', 'color' => 'success', 'icon' => 'check', 'dataUrl' => '/api/blogs/:id', 'method' => 'PUT'],
                 ],
             ])
             ->toArray();

@@ -80,8 +80,8 @@ class UserLayout
         $headerInfoGrid->pageHeader('page-header')
             ->title('User Management')
             ->breadcrumbs([
-                ['label' => 'Dashboard', 'link' => '/', 'icon' => 'LiHome'],
-                ['label' => 'Users', 'active' => true, 'icon' => 'LiUsers'],
+                ['label' => 'Dashboard', 'link' => '/', 'icon' => 'home'],
+                ['label' => 'Users', 'active' => true, 'icon' => 'users'],
             ])
             ->align('left')
             ->spacing('md')
@@ -96,10 +96,10 @@ class UserLayout
             ->responsive(true)
             ->gridColumnSpan(7);
 
-        self::buildStatsCard($statsGrid, 'stat-total-users', 'Total Users', '1,284', 'primary', 'LiUsers', '+12.5%', 'up');
-        self::buildStatsCard($statsGrid, 'stat-active', 'Active Users', '1,156', 'success', 'LiUserCheck', '+3.2%', 'up');
-        self::buildStatsCard($statsGrid, 'stat-new-users', 'New Hires', '42', 'info', 'LiUserPlus', '+15.8%', 'up');
-        self::buildStatsCard($statsGrid, 'stat-pending', 'Pending Review', '15', 'warning', 'LiUserWarning', '-5.4%', 'down');
+        self::buildStatsCard($statsGrid, 'stat-total-users', 'Total Users', '1,284', 'primary', 'users', '+12.5%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-active', 'Active Users', '1,156', 'success', 'usercheck', '+3.2%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-new-users', 'New Hires', '42', 'info', 'userplus', '+15.8%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-pending', 'Pending Review', '15', 'warning', 'userwarning', '-5.4%', 'down', 'trend-1');
     }
     /**
      * Build a statistics card with icon, value, and trend indicator
@@ -114,7 +114,7 @@ class UserLayout
      * @param string $trendDir Trend direction ('up' or 'down')
      * @return \Litepie\Layout\Components\CardComponent
      */
-    private static function buildStatsCard($grid, string $id, string $title, string $value, string $color, string $icon, string $trend, string $trendDir)
+    private static function buildStatsCard($grid, string $id, string $title, string $value, string $color, string $icon, string $trend, string $trendDir, string $displayType)
     {
         // Theme color mapping for consistent styling
         $colorMap = [
@@ -141,6 +141,7 @@ class UserLayout
                 'iconBgColor' => $colors['bg'],
                 'trend' => $trend,
                 'trendDirection' => $trendDir,
+                'displayType' => $displayType,
             ]);
     }
 
@@ -164,6 +165,7 @@ class UserLayout
         $mainGrid->row('table-row')->gap('none')->table('users-table')
             ->dataUrl('/api/users')
             ->columns(self::getUserTableColumns())
+            ->selectable(true)
             ->pagination(true)
             ->perPage(10)
             ->hoverable(true)
@@ -173,6 +175,7 @@ class UserLayout
                 'responsive' => true,
                 'stickyHeader' => true,
                 'variant' => 'outlined',
+                'displayMode' => 'table',
                 'rowClickable' => true,
                 'rowActions' => ['type' => 'drawer', 'component' => 'view-user-drawer', 'dataUrl' => '/api/users/:id'],
             ]);
@@ -269,14 +272,14 @@ class UserLayout
         // Filter control buttons
         $row->button('filter-toggle-btn')
             ->label('Filter')
-            ->icon('LiFilter')
+            ->icon('filter')
             ->size('md')
             ->variant('outline')
             ->meta(['tooltip' => 'Toggle filter panel', 'action' => 'toggle-filter']);
 
         $row->button('refresh-btn')
             ->label('Refresh')
-            ->icon('LiRefresh')
+            ->icon('refresh')
             ->size('md')
             ->variant('outline')
             ->meta(['tooltip' => 'Refresh data']);
@@ -284,7 +287,7 @@ class UserLayout
         // Main action buttons
         $row->button('create-btn')
             ->label('Create')
-            ->icon('LiPlus')
+            ->icon('plus')
             ->size('md')
             ->color('primary')
             ->variant('lt-contained')
@@ -296,7 +299,7 @@ class UserLayout
         // Create User Fullscreen Drawer
         $row->button('create-fullscreen-btn')
             ->label('Create Fullscreen')
-            ->icon('LiPlus')
+            ->icon('plus')
             ->size('md')
             ->color('primary')
             ->data('type', 'drawer')
@@ -307,7 +310,7 @@ class UserLayout
 
         $row->button('export-btn')
             ->label('Export')
-            ->icon('LiDownloadCloud')
+            ->icon('downloadcloud')
             ->size('md')
             ->variant('outline')
             ->meta(['tooltip' => 'Export data']);
@@ -315,7 +318,7 @@ class UserLayout
         // More Options - Button with Dropdown Menu
         $row->button('more-btn')
             ->label('')
-            ->icon('LiMoreHorizontal')
+            ->icon('morehorizontal')
             ->size('md')
             ->variant('outline')
             // ->isIconButton(true)
@@ -329,14 +332,14 @@ class UserLayout
                     [
                         'id' => 'import-data',
                         'label' => 'Import Data',
-                        'icon' => 'LiUploadCloud',
+                        'icon' => 'uploadcloud',
                         'action' => 'import',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'bulk-actions',
                         'label' => 'Bulk Actions',
-                        'icon' => 'LiListCheck',
+                        'icon' => 'listcheck',
                         'action' => 'bulk-actions',
                         'type' => 'button',
                     ],
@@ -346,14 +349,14 @@ class UserLayout
                     [
                         'id' => 'print',
                         'label' => 'Print',
-                        'icon' => 'LiPrinter',
+                        'icon' => 'printer',
                         'action' => 'print',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'archive',
                         'label' => 'Archive',
-                        'icon' => 'LiArchive',
+                        'icon' => 'archive',
                         'action' => 'archive',
                         'type' => 'button',
                     ],
@@ -363,7 +366,7 @@ class UserLayout
                     [
                         'id' => 'settings',
                         'label' => 'Settings',
-                        'icon' => 'LiSettings',
+                        'icon' => 'settings',
                         'action' => 'settings',
                         'type' => 'button',
                     ],
@@ -388,7 +391,7 @@ class UserLayout
                 [
                     'type' => 'button',
                     'name' => 'view',
-                    'icon' => 'LiEyeOpen',
+                    'icon' => 'eyeopen',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'primary',
@@ -399,7 +402,7 @@ class UserLayout
                 [
                     'type' => 'button',
                     'name' => 'edit',
-                    'icon' => 'LiPen',
+                    'icon' => 'pen',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'success',
@@ -410,7 +413,7 @@ class UserLayout
                 [
                     'type' => 'button',
                     'name' => 'delete',
-                    'icon' => 'LiBinEmpty',
+                    'icon' => 'binempty',
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'error',
@@ -463,11 +466,11 @@ class UserLayout
 
         return ModalComponent::make('create-user-modal')
             ->children([
-                ['type' => 'header', 'title' => 'Create New User', 'icon' => 'LiUserPlus'],
+                ['type' => 'header', 'title' => 'Create New User', 'icon' => 'userplus'],
                 ['type' => 'content', 'component' => $formComponent],
                 ['type' => 'footer', 'buttons' => [
                     ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Create User', 'type' => 'submit', 'color' => 'primary', 'icon' => 'LiCheck', 'dataUrl' => '/api/users', 'method' => 'POST'],
+                    ['label' => 'Create User', 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/users', 'method' => 'POST'],
                 ]],
             ])
             ->ariaLabelledby('create-user-modal-title')
@@ -480,11 +483,11 @@ class UserLayout
 
         return ModalComponent::make('edit-user-modal')
             ->children([
-                ['type' => 'header', 'title' => 'Edit User', 'icon' => 'LiPen'],
+                ['type' => 'header', 'title' => 'Edit User', 'icon' => 'pen'],
                 ['type' => 'content', 'component' => $formComponent],
                 ['type' => 'footer', 'buttons' => [
                     ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Update User', 'type' => 'submit', 'color' => 'success', 'icon' => 'LiCheck', 'dataUrl' => '/api/users/:id', 'method' => 'PUT'],
+                    ['label' => 'Update User', 'type' => 'submit', 'color' => 'success', 'icon' => 'check', 'dataUrl' => '/api/users/:id', 'method' => 'PUT'],
                 ]],
             ])
             ->ariaLabelledby('edit-user-modal-title')
@@ -508,20 +511,20 @@ class UserLayout
             ->header([
                 'title' => 'User Details',
                 'subtitle' => 'View complete employee information',
-                'icon' => 'LiUser',
+                'icon' => 'user',
                 'actions' => [
                     [
                         'type' => 'chip',
                         'label' => 'Active',
                         'color' => 'success',
                         'size' => 'sm',
-                        'icon' => 'LiCheck',
+                        'icon' => 'check',
                     ],
                     [
                         'type' => 'drawer',
                         'actionType' => 'drawer',
                         'label' => 'Edit',
-                        'icon' => 'LiPen',
+                        'icon' => 'pen',
                         'variant' => 'outlined',
                         'size' => 'sm',
                         'color' => 'primary',
@@ -532,7 +535,7 @@ class UserLayout
                     [
                         'type' => 'button',
                         'label' => 'Delete',
-                        'icon' => 'LiBinEmpty',
+                        'icon' => 'binempty',
                         'variant' => 'outlined',
                         'size' => 'sm',
                         'color' => 'error',
@@ -551,7 +554,7 @@ class UserLayout
                     [
                         'type' => 'button',
                         'label' => '',
-                        'icon' => 'LiExternal',
+                        'icon' => 'external',
                         'variant' => 'outlined',
                         'size' => 'sm',
                         'color' => 'info',
@@ -562,7 +565,7 @@ class UserLayout
                     [
                         'type' => 'button',
                         'label' => '',
-                        'icon' => 'LiDownloadCloud',
+                        'icon' => 'downloadcloud',
                         'variant' => 'outlined',
                         'size' => 'sm',
                         'color' => 'success',
@@ -579,7 +582,7 @@ class UserLayout
                 'type' => 'button-group',
                 'buttons' => [
                     ['label' => 'Close', 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'close'],
-                    ['label' => 'View Fullscreen', 'color' => 'primary', 'icon' => 'LiExpand', 'type' => 'drawer', 'component' => 'view-user-drawer-fullscreen', 'action' => 'view'],
+                    ['label' => 'View Fullscreen', 'color' => 'primary', 'icon' => 'expand', 'type' => 'drawer', 'component' => 'view-user-drawer-fullscreen', 'action' => 'view'],
                 ],
             ])
             ->toArray();
@@ -617,7 +620,7 @@ class UserLayout
             ->header([
                 'title' => 'New User (Full Screen)',
                 'subtitle' => 'Complete onboarding walkthrough',
-                'icon' => 'LiUserPlus',
+                'icon' => 'userplus',
             ])
             ->content([
                 'component' => $formComponent,
@@ -626,7 +629,7 @@ class UserLayout
                 'type' => 'button-group',
                 'buttons' => [
                     ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Create User', 'type' => 'submit', 'color' => 'primary', 'icon' => 'LiCheck', 'dataUrl' => '/api/users', 'method' => 'POST'],
+                    ['label' => 'Create User', 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/users', 'method' => 'POST'],
                 ],
             ])
             ->toArray();
@@ -646,7 +649,7 @@ class UserLayout
             ->header([
                 'title' => 'Edit User (Full Screen)',
                 'subtitle' => 'Update detailed employee record',
-                'icon' => 'LiPen',
+                'icon' => 'pen',
             ])
             ->content([
                 'component' => $formComponent,
@@ -655,7 +658,7 @@ class UserLayout
                 'type' => 'button-group',
                 'buttons' => [
                     ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Update User', 'type' => 'submit', 'color' => 'success', 'icon' => 'LiCheck', 'dataUrl' => '/api/users/:id', 'method' => 'PUT'],
+                    ['label' => 'Update User', 'type' => 'submit', 'color' => 'success', 'icon' => 'check', 'dataUrl' => '/api/users/:id', 'method' => 'PUT'],
                 ],
             ])
             ->toArray();

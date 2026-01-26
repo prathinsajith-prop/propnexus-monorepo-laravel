@@ -64,7 +64,7 @@ class UserViewForm
             // === PERSONAL INFORMATION ===
             $personalGroup = $form->group('personal-info')
                 ->title('Personal Information')
-                ->icon('LiUser')
+                ->icon('user')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -101,7 +101,7 @@ class UserViewForm
             // === EMPLOYMENT INFORMATION ===
             $employmentGroup = $form->group('employment-info')
                 ->title('Employment Information')
-                ->icon('LiBriefcase')
+                ->icon('briefcase')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -128,7 +128,7 @@ class UserViewForm
             // === DOCUMENTS & MEDIA ===
             $mediaGroup = $form->group('media-info')
                 ->title('Documents & Media')
-                ->icon('LiImage')
+                ->icon('image')
                 ->variant('bordered')
                 ->columns(1);
 
@@ -145,7 +145,7 @@ class UserViewForm
             // === ACCOUNT & SECURITY ===
             $securityGroup = $form->group('security-info')
                 ->title('Account & Security')
-                ->icon('LiLock')
+                ->icon('lock')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -162,7 +162,7 @@ class UserViewForm
             // === SKILLS & EXPERTISE ===
             $skillsGroup = $form->group('skills-info')
                 ->title('Skills & Expertise')
-                ->icon('LiAward')
+                ->icon('award')
                 ->variant('bordered')
                 ->columns(1);
 
@@ -180,7 +180,7 @@ class UserViewForm
             // === ADDRESS INFORMATION ===
             $addressGroup = $form->group('address-info')
                 ->title('Address')
-                ->icon('LiMapPin')
+                ->icon('mappin')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -217,7 +217,7 @@ class UserViewForm
             // === ADDITIONAL INFORMATION ===
             $additionalGroup = $form->group('additional-info')
                 ->title('Additional Information')
-                ->icon('LiInfo')
+                ->icon('info')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -244,7 +244,7 @@ class UserViewForm
             // === SYSTEM & AUDIT ===
             $auditGroup = $form->group('audit-info')
                 ->title('System & Audit Trail')
-                ->icon('LiClock')
+                ->icon('clock')
                 ->variant('bordered')
                 ->columns(2);
 

@@ -37,7 +37,7 @@ class UserForm
             // --- Personal Information Section ---
             $personalGroup = $form->group('personal-info')
                 ->title('Personal Information')
-                ->icon('LiUser')
+                ->icon('user')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -61,7 +61,7 @@ class UserForm
             // --- Employment Section ---
             $employmentGroup = $form->group('employment-info')
                 ->title('Employment Info')
-                ->icon('LiBriefcase')
+                ->icon('briefcase')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -75,7 +75,7 @@ class UserForm
             // --- Media & Files ---
             $mediaGroup = $form->group('media-info')
                 ->title('Documents & Media')
-                ->icon('LiImage')
+                ->icon('image')
                 ->variant('bordered')
                 ->columns(1);
 
@@ -92,7 +92,7 @@ class UserForm
             // --- Account & Security ---
             $securityGroup = $form->group('security-info')
                 ->title('Account & Security')
-                ->icon('LiLock')
+                ->icon('lock')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -106,7 +106,7 @@ class UserForm
             // --- Technical Skills ---
             $skillsGroup = $form->group('skills-info')
                 ->title('Technical Skills')
-                ->icon('LiStar')
+                ->icon('star')
                 ->variant('bordered')
                 ->columns(3);
 
@@ -120,7 +120,7 @@ class UserForm
             // --- Address & Additional Info ---
             $addressGroup = $form->group('address-info')
                 ->title('Address & Preferences')
-                ->icon('LiMapPin')
+                ->icon('mappin')
                 ->variant('bordered')
                 ->columns(2);
 
