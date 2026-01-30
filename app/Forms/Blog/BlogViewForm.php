@@ -244,7 +244,7 @@ class BlogViewForm
             // === ANALYTICS SECTION ===
             $analyticsGroup = $form->group('analytics-info')
                 ->title('Analytics & Metrics')
-                ->icon('barchart')
+                ->icon('chartbar')
                 ->variant('bordered')
                 ->columns(2);
 

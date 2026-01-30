@@ -1175,7 +1175,7 @@ class GeneralController extends Controller
             // --- Section 5: Documents & Media ---
             $docsGroup = $viewForm->group('documents-info')
                 ->title('Verification Documents')
-                ->icon('LiFileText')
+                ->icon('documentfull')
                 ->variant('bordered')
                 ->columns(1);
 

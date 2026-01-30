@@ -21,11 +21,13 @@ use Litepie\Database\Traits\Sluggable;
 use Litepie\Database\Traits\Sortable;
 use Litepie\Database\Traits\Translatable;
 use Litepie\Database\Traits\Versionable;
+// Litepie Hashids Trait
+use Litepie\Hashids\Traits\Hashids;
 
 /**
  * Blog Model - Full Litepie Database Package Implementation
  *
- * This model demonstrates ALL 14 Litepie Database traits:
+ * This model demonstrates ALL 14 Litepie Database traits + Hashids:
  *
  * 📦 Versionable - Track complete version history with rollback
  * 🏷️ Metable - WordPress-style flexible metadata storage
@@ -41,6 +43,7 @@ use Litepie\Database\Traits\Versionable;
  * 🔢 Sortable - Manual ordering and drag-drop support
  * 📋 Batchable - Efficient bulk operations for large datasets
  * 📏 Measurable - Query performance monitoring and optimization
+ * 🔐 Hashids - Encode/decode IDs for secure, obfuscated URLs
  *
  * Plus standard features:
  * - SEO optimization (meta tags, keywords, schema)
@@ -60,6 +63,7 @@ class Blog extends Model
         Cacheable,
         Exportable,
         HasFactory,
+        Hashids,
         Importable,
         Measurable,
         Metable,
@@ -307,8 +311,8 @@ class Blog extends Model
         'shares_count' => 'integer',
         'reading_time' => 'float',
         'related_posts' => 'array',
-        'published_at' => 'datetime',
-        'scheduled_at' => 'datetime',
+        'published_at' => 'datetime:j F Y h:i A',
+        'scheduled_at' => 'datetime:j F Y h:i A',
         'expired_at' => 'datetime',
         'last_edited_at' => 'datetime',
         'last_edited_by' => 'integer',
@@ -508,5 +512,28 @@ class Blog extends Model
     public function getSeoKeywords(): array
     {
         return $this->seo_meta['keywords'] ?? $this->tags ?? [];
+    }
+
+    /**
+     * Convert the model to an array with hashid as 'id'
+     * Keeps the original numeric ID as 'numeric_id' for internal use
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        // Store original numeric ID as 'numeric_id' for reference
+        if (isset($array['id'])) {
+            $array['numeric_id'] = $array['id'];
+            // Replace 'id' with encoded hashid
+            $array['id'] = $this->eid;
+        }
+
+        // Also add 'eid' field for backward compatibility
+        $array['eid'] = $this->eid;
+
+        return $array;
     }
 }
