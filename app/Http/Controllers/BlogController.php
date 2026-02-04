@@ -182,16 +182,16 @@ class BlogController extends Controller
 
     /**
      * Get a single blog post by ID
-     * Uses GetBlogAction
+     * Uses GetBlogAction with route model binding
      *
-     * @param string $id Blog ID, blog_id, or slug
+     * @param \App\Models\Blog $blog Blog model instance (auto-injected)
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id, Request $request)
+    public function show(Blog $blog, Request $request)
     {
         $result = GetBlogAction::make(null, [
-            'id' => $id,
+            'id' => $blog->id,
             'increment_views' => $request->input('increment_views', false),
         ])->run();
 
@@ -211,15 +211,15 @@ class BlogController extends Controller
 
     /**
      * Update an existing blog post
-     * Uses UpdateBlogAction
+     * Uses UpdateBlogAction with route model binding
      *
-     * @param string $id Blog ID, blog_id, or slug
+     * @param \App\Models\Blog $blog Blog model instance (auto-injected)
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id, Request $request)
+    public function update(Blog $blog, Request $request)
     {
-        $data = array_merge($request->all(), ['id' => $id]);
+        $data = array_merge($request->all(), ['id' => $blog->id]);
         $result = UpdateBlogAction::make(null, $data)->run();
 
         if (!$result->isSuccess()) {
@@ -239,16 +239,16 @@ class BlogController extends Controller
 
     /**
      * Delete a blog post
-     * Uses DeleteBlogAction
+     * Uses DeleteBlogAction with route model binding
      *
-     * @param string $id Blog ID, blog_id, or slug
+     * @param \App\Models\Blog $blog Blog model instance (auto-injected)
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id, Request $request)
+    public function destroy(Blog $blog, Request $request)
     {
         $result = DeleteBlogAction::make(null, [
-            'id' => $id,
+            'id' => $blog->id,
             'soft_delete' => $request->input('soft_delete', false),
         ])->run();
 
@@ -268,21 +268,28 @@ class BlogController extends Controller
 
     /**
      * Get statistics for blog posts
+     * Cached for better performance
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function stats()
     {
-        $stats = [
-            'total' => \App\Models\Blog::count(),
-            'published' => \App\Models\Blog::where('status', 'published')->count(),
-            'drafts' => \App\Models\Blog::where('status', 'draft')->count(),
-            'in_review' => \App\Models\Blog::where('status', 'review')->count(),
-            'archived' => \App\Models\Blog::where('status', 'archived')->count(),
-            'total_views' => \App\Models\Blog::sum('views_count'),
-            'total_likes' => \App\Models\Blog::sum('likes_count'),
-            'total_comments' => \App\Models\Blog::sum('comments_count'),
-        ];
+        $stats = cache()->remember(
+            'blogs:stats:all',
+            config('performance.cache.stats_ttl', 300),
+            function () {
+                return [
+                    'total' => \App\Models\Blog::count(),
+                    'published' => \App\Models\Blog::where('status', 'published')->count(),
+                    'drafts' => \App\Models\Blog::where('status', 'draft')->count(),
+                    'in_review' => \App\Models\Blog::where('status', 'review')->count(),
+                    'archived' => \App\Models\Blog::where('status', 'archived')->count(),
+                    'total_views' => \App\Models\Blog::sum('views_count'),
+                    'total_likes' => \App\Models\Blog::sum('likes_count'),
+                    'total_comments' => \App\Models\Blog::sum('comments_count'),
+                ];
+            }
+        );
 
         return response()->json([
             'success' => true,
@@ -292,14 +299,15 @@ class BlogController extends Controller
 
     /**
      * Increment view count for a blog post
+     * Uses route model binding
      *
-     * @param string $id Blog ID, blog_id, or slug
+     * @param \App\Models\Blog $blog Blog model instance (auto-injected)
      * @return \Illuminate\Http\JsonResponse
      */
-    public function incrementView($id)
+    public function incrementView(Blog $blog)
     {
         $result = GetBlogAction::make(null, [
-            'id' => $id,
+            'id' => $blog->id,
             'increment_views' => true,
         ])->run();
 
@@ -337,60 +345,72 @@ class BlogController extends Controller
      *
      * @return array
      */
+    /**
+     * Get master data for dropdowns and forms
+     * Cached for better performance as this data changes infrequently
+     *
+     * @return array
+     */
     private function getMasterData(): array
     {
-        return [
-            'statuses' => [
-                ['value' => 'draft', 'label' => 'Draft'],
-                ['value' => 'review', 'label' => 'In Review'],
-                ['value' => 'published', 'label' => 'Published'],
-                ['value' => 'archived', 'label' => 'Archived'],
-                ['value' => 'trash', 'label' => 'Trash'],
-            ],
-            'visibilities' => [
-                ['value' => 'public', 'label' => 'Public'],
-                ['value' => 'private', 'label' => 'Private'],
-                ['value' => 'password', 'label' => 'Password Protected'],
-            ],
-            'categories' => [
-                ['value' => 'Technology', 'label' => 'Technology'],
-                ['value' => 'Business', 'label' => 'Business'],
-                ['value' => 'Lifestyle', 'label' => 'Lifestyle'],
-                ['value' => 'Education', 'label' => 'Education'],
-                ['value' => 'Health', 'label' => 'Health'],
-                ['value' => 'Travel', 'label' => 'Travel'],
-                ['value' => 'Food', 'label' => 'Food'],
-                ['value' => 'Science', 'label' => 'Science'],
-                ['value' => 'Entertainment', 'label' => 'Entertainment'],
-                ['value' => 'Sports', 'label' => 'Sports'],
-            ],
-            'tags' => [
-                ['value' => 'Tutorial', 'label' => 'Tutorial'],
-                ['value' => 'Guide', 'label' => 'Guide'],
-                ['value' => 'News', 'label' => 'News'],
-                ['value' => 'Opinion', 'label' => 'Opinion'],
-                ['value' => 'Review', 'label' => 'Review'],
-                ['value' => 'Comparison', 'label' => 'Comparison'],
-                ['value' => 'Tips', 'label' => 'Tips'],
-                ['value' => 'Howto', 'label' => 'How-to'],
-            ],
-            'languages' => [
-                ['value' => 'en', 'label' => 'English'],
-                ['value' => 'es', 'label' => 'Spanish'],
-                ['value' => 'fr', 'label' => 'French'],
-                ['value' => 'de', 'label' => 'German'],
-                ['value' => 'it', 'label' => 'Italian'],
-                ['value' => 'pt', 'label' => 'Portuguese'],
-                ['value' => 'ja', 'label' => 'Japanese'],
-                ['value' => 'zh', 'label' => 'Chinese'],
-            ],
-            'authors' => [
-                ['value' => '1', 'label' => 'John Doe'],
-                ['value' => '2', 'label' => 'Jane Smith'],
-                ['value' => '3', 'label' => 'Bob Johnson'],
-                ['value' => '4', 'label' => 'Alice Williams'],
-            ],
-        ];
+        return cache()->remember(
+            'blogs:master-data',
+            config('performance.cache.master_data_ttl', 1800),
+            function () {
+                return [
+                    'statuses' => [
+                        ['value' => 'draft', 'label' => 'Draft'],
+                        ['value' => 'review', 'label' => 'In Review'],
+                        ['value' => 'published', 'label' => 'Published'],
+                        ['value' => 'archived', 'label' => 'Archived'],
+                        ['value' => 'trash', 'label' => 'Trash'],
+                    ],
+                    'visibilities' => [
+                        ['value' => 'public', 'label' => 'Public'],
+                        ['value' => 'private', 'label' => 'Private'],
+                        ['value' => 'password', 'label' => 'Password Protected'],
+                    ],
+                    'categories' => [
+                        ['value' => 'Technology', 'label' => 'Technology'],
+                        ['value' => 'Business', 'label' => 'Business'],
+                        ['value' => 'Lifestyle', 'label' => 'Lifestyle'],
+                        ['value' => 'Education', 'label' => 'Education'],
+                        ['value' => 'Health', 'label' => 'Health'],
+                        ['value' => 'Travel', 'label' => 'Travel'],
+                        ['value' => 'Food', 'label' => 'Food'],
+                        ['value' => 'Science', 'label' => 'Science'],
+                        ['value' => 'Entertainment', 'label' => 'Entertainment'],
+                        ['value' => 'Sports', 'label' => 'Sports'],
+                    ],
+                    'tags' => [
+                        ['value' => 'Tutorial', 'label' => 'Tutorial'],
+                        ['value' => 'Guide', 'label' => 'Guide'],
+                        ['value' => 'News', 'label' => 'News'],
+                        ['value' => 'Opinion', 'label' => 'Opinion'],
+                        ['value' => 'Review', 'label' => 'Review'],
+                        ['value' => 'Comparison', 'label' => 'Comparison'],
+                        ['value' => 'Tips', 'label' => 'Tips'],
+                        ['value' => 'Howto', 'label' => 'How-to'],
+                    ],
+                    'languages' => [
+                        ['value' => 'en', 'label' => 'English'],
+                        ['value' => 'es', 'label' => 'Spanish'],
+                        ['value' => 'fr', 'label' => 'French'],
+                        ['value' => 'de', 'label' => 'German'],
+                        ['value' => 'it', 'label' => 'Italian'],
+                        ['value' => 'pt', 'label' => 'Portuguese'],
+                        ['value' => 'ja', 'label' => 'Japanese'],
+                        ['value' => 'zh', 'label' => 'Chinese'],
+                    ],
+                    'authors' => [
+                        ['value' => '1', 'label' => 'John Doe'],
+                        ['value' => '2', 'label' => 'Jane Smith'],
+                        ['value' => '3', 'label' => 'Bob Johnson'],
+                        ['value' => '4', 'label' => 'Alice Williams'],
+                    ],
+                ];
+            }
+        );
     }
 
     /**

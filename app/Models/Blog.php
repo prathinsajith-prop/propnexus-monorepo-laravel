@@ -231,6 +231,37 @@ class Blog extends Model
     }
 
     /**
+     * Retrieve the model for a bound value.
+     * Supports finding by ID, hashid (eid), blog_id, or slug
+     *
+     * @param  mixed  $value
+     * @param  string|null  $field
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        // Try to find by primary key (ID)
+        if (is_numeric($value)) {
+            return $this->where('id', $value)->first();
+        }
+
+        // Try to decode hashid to get the actual ID
+        $decoded = hashids_decode($value);
+        if ($decoded) {
+            return $this->where('id', $decoded)->first();
+        }
+
+        // Try to find by blog_id
+        $model = $this->where('blog_id', $value)->first();
+        if ($model) {
+            return $model;
+        }
+
+        // Try to find by slug
+        return $this->where('slug', $value)->first();
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<string>

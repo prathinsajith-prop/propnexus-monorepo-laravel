@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             '/api/*',
         ]);
+        
+        // Register cache headers middleware alias
+        $middleware->alias([
+            'cache.headers' => \App\Http\Middleware\AddCacheHeaders::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

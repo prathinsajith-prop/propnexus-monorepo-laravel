@@ -7,8 +7,11 @@ use App\Forms\Blog\BlogFollowUpsForm;
 use App\Forms\Blog\BlogForm;
 use App\Forms\Blog\BlogNotesForm;
 use App\Forms\Blog\BlogViewForm;
+use Litepie\Layout\Components\AlertComponent;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
+use Litepie\Layout\Components\DividerComponent;
+use Litepie\Layout\Components\DocumentComponent;
 use Litepie\Layout\Components\ListComponent;
 use Litepie\Layout\Components\ModalComponent;
 use Litepie\Layout\Components\TableComponent;
@@ -19,6 +22,7 @@ use Litepie\Layout\Sections\DetailSection;
 use Litepie\Layout\Sections\FooterSection;
 use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\Sections\HeaderSection;
+use Litepie\Layout\Sections\RowSection;
 use Litepie\Layout\SlotManager;
 
 /**
@@ -250,6 +254,7 @@ class BlogLayout
                     'height' => '100vh',
                     'anchor' => 'right',
                     'backdrop' => true,
+                    'componentType' => 'aside',
                 ]
             )
             ->meta([
@@ -277,6 +282,7 @@ class BlogLayout
                     'height' => '100vh',
                     'anchor' => 'right',
                     'backdrop' => true,
+                    'componentType' => 'aside',
                 ]
             )
             ->meta([
@@ -797,22 +803,30 @@ class BlogLayout
         $mainGrid->add(
             BlogForm::make('create-blog-aside-fs', 'POST', '/api/blogs', $masterData)->gridColumnSpan(12),
         );
+        // Use the reusable blog form component builder
+        $blogFormGrid = self::buildBlogFormComponent(
+            formId: 'blog-form-activity',
+            method: 'POST',
+            submitUrl: '/api/blogs',
+            masterData: $masterData,
+            config: [
+                'columns' => 1,
+                'rows' => 1,
+                'gap' => 'md',
+                'styling' => 'w-full'
+            ]
+        );
 
         // Build aside using DetailSection
         return DetailSection::make('view-blog-form-activity-aside')
-            ->anchor('right')
-            ->width('100vw')
-            ->height('100vh')
-            ->backdrop(true)
-            ->closeOnBackdrop(false)
             ->setHeader(
                 self::buildAsideHeaderWithGrid()
             )
             ->setMain(
                 $mainSlot->setSection($mainGrid)
+                    ->setSection($blogFormGrid)
                     ->setComponent(self::textComponent())
-                    ->setComponent(self::tableComponent())
-                    ->setPriority(SlotManager::PRIORITY_COMPONENT)
+                    ->setPriority(SlotManager::PRIORITY_SECTION)
             )
             ->setLeft(
                 self::buildLeftSidebarGrid()
@@ -826,6 +840,123 @@ class BlogLayout
             ->toArray();
     }
 
+    /**
+     * Build comprehensive blog form component with all features
+     * 
+     * Returns a fully-featured blog form wrapped in a grid section for easy integration
+     * into any layout (asides, modals, detail sections, etc.)
+     *
+     * @param string $formId Unique form identifier
+     * @param string $method HTTP method (POST, PUT, PATCH)
+     * @param string $submitUrl URL for form submission
+     * @param array $masterData Master data for form dropdowns and options
+     * @param string|null $dataUrl Optional URL to fetch existing data for editing
+     * @param array $config Optional configuration overrides
+     * @return GridSection Grid section containing the blog form
+     */
+    private static function buildBlogFormComponent(
+        string $formId = 'blog-form',
+        string $method = 'POST',
+        string $submitUrl = '/api/blogs',
+        array $masterData = [],
+        ?string $dataUrl = null,
+        array $config = []
+    ): GridSection {
+        // Default configuration
+        $defaultConfig = [
+            'columns' => 1,
+            'rows' => 1,
+            'gap' => 'md',
+            'gridColumnSpan' => 12,
+            'styling' => 'w-full',
+        ];
+
+        // Merge with provided config
+        $config = array_merge($defaultConfig, $config);
+
+        // Create grid container for the form
+        $formGrid = GridSection::make("{$formId}-grid", $config['columns'])
+            ->rows($config['rows'])
+            ->gap($config['gap']);
+
+        // Apply meta styling if provided
+        if (isset($config['styling'])) {
+            $formGrid->meta(['styling' => $config['styling']]);
+        }
+
+        // Create the blog form with all parameters
+        $blogForm = $dataUrl
+            ? BlogForm::make($formId, $method, $submitUrl, $masterData, $dataUrl)
+            : BlogForm::make($formId, $method, $submitUrl, $masterData);
+
+        // Apply column span
+        $blogForm->gridColumnSpan($config['gridColumnSpan']);
+
+        // Add form to grid
+        $formGrid->add($blogForm);
+
+        return $formGrid;
+    }
+
+    /**
+     * Quick helper to create a create blog form
+     *
+     * @param array $masterData Master data for form
+     * @param string $formId Optional form ID
+     * @return GridSection
+     */
+    private static function createBlogForm(array $masterData = [], string $formId = 'create-blog-form'): GridSection
+    {
+        return self::buildBlogFormComponent(
+            formId: $formId,
+            method: 'POST',
+            submitUrl: '/api/blogs',
+            masterData: $masterData
+        );
+    }
+
+    /**
+     * Quick helper to create an edit blog form
+     *
+     * @param array $masterData Master data for form
+     * @param string $formId Optional form ID
+     * @return GridSection
+     */
+    private static function editBlogForm(array $masterData = [], string $formId = 'edit-blog-form'): GridSection
+    {
+        return self::buildBlogFormComponent(
+            formId: $formId,
+            method: 'PUT',
+            submitUrl: '/api/blogs/:id',
+            masterData: $masterData,
+            dataUrl: '/api/blogs/:id'
+        );
+    }
+
+    /**
+     * Quick helper to create a view-only blog form
+     *
+     * @param array $masterData Master data for form
+     * @param string $formId Optional form ID
+     * @return GridSection
+     */
+    private static function viewBlogForm(array $masterData = [], string $formId = 'view-blog-form'): GridSection
+    {
+        return self::buildBlogFormComponent(
+            formId: $formId,
+            method: 'GET',
+            submitUrl: '/api/blogs/:id',
+            masterData: $masterData,
+            dataUrl: '/api/blogs/:id',
+            config: ['readonly' => true]
+        );
+    }
+
+    /**
+     * Method tableComponent
+     *
+     * @return TableComponent
+     */
     private static function tableComponent(): TableComponent
     {
         return TableComponent::make('info-table')
@@ -860,10 +991,22 @@ class BlogLayout
     private static function buildAsideHeaderWithGrid(): SlotManager
     {
         $headerSlot = SlotManager::make('header-slot');
+
+        // $centerGrid = GridSection::make('header-center-grid', 1)
+        //     ->gap('md')
+        //     ->alignItems('center');
+
+        // $centerGrid->add(
+        //     TextComponent::make('title')
+        //         ->content('Blog Details')
+        //         ->variant('h4')
+        //         ->meta(['fontWeight' => 'bold'])
+        // );
+
         // Create grid section for center with 3 columns
-        $centerGrid = GridSection::make('header-center-grid', 3)
+        $leftGrid = GridSection::make('header-center-grid', 3)
             ->gap('md')
-            ->alignItems('center');
+            ->alignItems('left');
 
         // Column 2: Title and Subtitle (create a nested grid for vertical stacking)
         $titleGrid = GridSection::make('title-section', 1)
@@ -884,13 +1027,19 @@ class BlogLayout
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        $centerGrid->add($titleGrid);
+        $leftGrid->add($titleGrid);
 
         // Create right grid for action buttons
-        $rightGrid = GridSection::make('header-right-grid', 5)
+        $rightGrid = GridSection::make('header-right-grid', 1)
             ->gap('sm');
 
-        $rightGrid->add(
+        // Create right section for action buttons
+        $rightRow = RowSection::make('header-right-row')
+            ->gap('xs')
+            ->align('center')
+            ->justify('end');
+
+        $rightRow->add(
             ButtonComponent::make('edit-btn')
                 ->icon('pen')
                 ->variant('text')
@@ -898,7 +1047,7 @@ class BlogLayout
                 ->meta(['action' => 'edit', 'tooltip' => 'Edit'])
         );
 
-        $rightGrid->add(
+        $rightRow->add(
             ButtonComponent::make('share-btn')
                 ->icon('share')
                 ->variant('text')
@@ -906,7 +1055,7 @@ class BlogLayout
                 ->meta(['action' => 'share', 'tooltip' => 'Share'])
         );
 
-        $rightGrid->add(
+        $rightRow->add(
             ButtonComponent::make('print-btn')
                 ->icon('printer')
                 ->variant('text')
@@ -914,7 +1063,7 @@ class BlogLayout
                 ->meta(['action' => 'print', 'tooltip' => 'Print'])
         );
 
-        $rightGrid->add(
+        $rightRow->add(
             ButtonComponent::make('delete-btn')
                 ->icon('binempty')
                 ->isIconButton(true)
@@ -922,7 +1071,7 @@ class BlogLayout
                 ->meta(['action' => 'delete', 'tooltip' => 'Delete', 'color' => 'danger'])
         );
 
-        $rightGrid->add(
+        $rightRow->add(
             ButtonComponent::make('more-btn')
                 ->icon('ellipsisvertical')
                 ->variant('text')
@@ -936,25 +1085,30 @@ class BlogLayout
                 ->meta(['tooltip' => 'More options'])
         );
 
-        // Create header component with grid in center
+        $rightRow->add(
+            ButtonComponent::make('close-btn')
+                ->icon('cross')
+                ->isIconButton(true)
+                ->variant('text')
+                ->meta(['action' => 'close', 'tooltip' => 'Close'])
+        );
+
+        $rightGrid->add($rightRow);
+
+        // Create header component with row in right section
         return $headerSlot->setSection(
             HeaderSection::make('aside-header')
-                ->setLeft($centerGrid)
+                ->setLeft($leftGrid)
+                // ->setCenter($centerGrid)
                 ->setRight($rightGrid)
                 ->variant('elevated')
                 ->padding('md')
                 ->configSections([
                     'left' => [
-                        'width' => '60px',
-                        'flex' => '0 0 auto',
-                    ],
-                    'center' => [
-                        'flex' => '1 1 auto',
-                        'minWidth' => '0',
+                        'colSpan' => '10',
                     ],
                     'right' => [
-                        'width' => '60px',
-                        'flex' => '0 0 auto',
+                        'colSpan' => '2',
                     ],
                 ])
         )
@@ -1066,29 +1220,43 @@ class BlogLayout
             ->gap('sm');
 
         $footerGrid->add(
-            ButtonComponent::make('help-btn')
-                ->label('Need Help?')
-                ->variant('text')
-                ->meta(['action' => 'help'])
+            RowSection::make('footer-left-row')
+                ->gap('xs')
+                ->align('left')
+                ->justify('start')
+                ->add(
+                    ButtonComponent::make('help-btn')
+                        ->label('Need Help?')
+                        ->variant('text')
+                        ->meta(['action' => 'help'])
+                )
         );
 
         // Create right grid for action buttons
-        $footerRightGrid = GridSection::make('footer-right-grid', 2)
-            ->gap('sm');
+        $footerRightGrid = GridSection::make('footer-right-grid', 1)
+            ->gap('sm')
+            ->alignItems('right');
 
-        $footerRightGrid->add(
+        $footerRightRow = RowSection::make('footer-right-row')
+            ->gap('xs')
+            ->align('right')
+            ->justify('end');
+
+        $footerRightRow->add(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
 
-        $footerRightGrid->add(
+        $footerRightRow->add(
             ButtonComponent::make('save-btn')
                 ->label('Save Changes')
                 ->variant('contained')
                 ->meta(['action' => 'save'])
         );
+
+        $footerRightGrid->add($footerRightRow);
 
         // Create footer component with grid sections
         return $footerSlot->setSection(
@@ -1099,12 +1267,10 @@ class BlogLayout
                 ->padding('md')
                 ->configSections([
                     'left' => [
-                        'flex' => '0 0 auto',
+                        'colSpan' => '6',
                     ],
                     'right' => [
-                        'flex' => '0 0 auto',
-                        'display' => 'flex',
-                        'gap' => '8px',
+                        'colSpan' => '6',
                     ],
                 ])
         );
@@ -1366,7 +1532,7 @@ class BlogLayout
     private static function buildAlertsAndBadgesCard($column)
     {
         // Alert Components
-        $alertComponent = \Litepie\Layout\Components\AlertComponent::make('success-alert')
+        $alertComponent = AlertComponent::make('success-alert')
             ->title('Success!')
             ->message('Your blog post has been published successfully.')
             ->success()
@@ -1374,34 +1540,34 @@ class BlogLayout
             ->dismissible(true)
             ->icon('checksquare');
 
-        $warningAlert = \Litepie\Layout\Components\AlertComponent::make('warning-alert')
+        $warningAlert = AlertComponent::make('warning-alert')
             ->title('Warning')
             ->message('Please review your SEO settings before publishing.')
             ->warning()
             ->dismissible(true)
             ->icon('alerttriangle');
 
-        $infoAlert = \Litepie\Layout\Components\AlertComponent::make('info-alert')
+        $infoAlert = AlertComponent::make('info-alert')
             ->message('Remember to add relevant tags for better discoverability.')
             ->info()
             ->bordered(true)
             ->icon('infocircle');
 
         // Badge Components
-        $statusBadge = \Litepie\Layout\Components\BadgeComponent::make('status-badge')
+        $statusBadge = BadgeComponent::make('status-badge')
             ->content('Published')
             ->color('success')
             ->variant('standard')
             ->meta(['size' => 'md']);
 
-        $countBadge = \Litepie\Layout\Components\BadgeComponent::make('count-badge')
+        $countBadge = BadgeComponent::make('count-badge')
             ->content('24')
             ->color('primary')
             ->variant('standard')
             ->meta(['size' => 'sm']);
 
         // Divider
-        $divider = \Litepie\Layout\Components\DividerComponent::make('alerts-divider')
+        $divider = DividerComponent::make('alerts-divider')
             ->orientation('horizontal')
             ->variant('fullWidth')
             ->spacing('md')
@@ -1636,7 +1802,7 @@ class BlogLayout
     private static function buildDocumentTableTextCard($column)
     {
         // Text Component
-        $text = \Litepie\Layout\Components\TextComponent::make('intro-text')
+        $text = TextComponent::make('intro-text')
             ->content('This section showcases Document, Table, and Text components from the Litepie Layout package.')
             ->size('md')
             ->color('text-secondary')
@@ -1644,7 +1810,7 @@ class BlogLayout
             ->gutterBottom(true);
 
         // Table Component
-        $table = \Litepie\Layout\Components\TableComponent::make('blog-stats-table')
+        $table = TableComponent::make('blog-stats-table')
             ->addColumn('metric', 'Metric', ['width' => '40%'])
             ->addColumn('value', 'Value', ['width' => '30%', 'align' => 'right'])
             ->addColumn('change', 'Change', ['width' => '30%', 'align' => 'right'])
@@ -1662,7 +1828,7 @@ class BlogLayout
             ]);
 
         // Document Component (Upload)
-        $document = \Litepie\Layout\Components\DocumentComponent::make('blog-attachments')
+        $document = DocumentComponent::make('blog-attachments')
             ->upload()
             ->allowedTypes(['pdf', 'doc', 'docx', 'txt', 'md'])
             ->maxSize(10)
@@ -1825,64 +1991,83 @@ class BlogLayout
     {
         $formComponent = BlogForm::make('create-blog-form', 'POST', '/api/blogs', $masterData);
 
+        // Create main grid for form
+        $mainGrid = GridSection::make('create-main-grid', 1)
+            ->rows(1)
+            ->gap('md');
+        $mainGrid->add($formComponent);
+
+        // Create header center grid
+        $centerGrid = GridSection::make('create-header-center', 1)
+            ->rows(2)
+            ->gap('xs');
+
+        $centerGrid->add(
+            TextComponent::make('title')
+                ->content('Create New Blog Post')
+                ->variant('h4')
+                ->meta(['fontWeight' => 'bold'])
+        );
+        $centerGrid->add(
+            TextComponent::make('subtitle')
+                ->content('Add a new blog post to your collection')
+                ->variant('caption')
+                ->meta(['color' => 'text-gray-600'])
+        );
+
+        // Create header right grid
+        $rightGrid = GridSection::make('create-header-right', 1)
+            ->gap('sm');
+        $rightGrid->add(
+            ButtonComponent::make('close-btn')
+                ->icon('cross')
+                ->variant('text')
+                ->meta(['action' => 'close'])
+        );
+
+        // Create footer right grid
+        $footerRightGrid = GridSection::make('create-footer-right', 2)
+            ->gap('sm');
+        $footerRightGrid->add(
+            ButtonComponent::make('cancel-btn')
+                ->label('Cancel')
+                ->variant('outlined')
+                ->meta(['action' => 'close'])
+        );
+        $footerRightGrid->add(
+            ButtonComponent::make('create-btn')
+                ->label('Create Post')
+                ->icon('check')
+                ->variant('contained')
+                ->meta(['action' => 'submit', 'dataUrl' => '/api/blogs', 'method' => 'POST', 'color' => 'primary'])
+        );
+
+        // Wrap header in SlotManager
+        $headerSlot = SlotManager::make('header-slot');
+        $headerSlot->setSection(
+            HeaderSection::make('create-aside-header')
+                ->setCenter($centerGrid)
+                ->setRight($rightGrid)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        // Wrap footer in SlotManager
+        $footerSlot = SlotManager::make('footer-slot');
+        $footerSlot->setSection(
+            FooterComponent::make('create-aside-footer')
+                ->setRight($footerRightGrid)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
         return DetailSection::make('create-blog')
-            ->anchor('right')
-            ->width('800px')
-            ->backdrop(true)
-            ->closeOnBackdrop(true)
-            ->header(
-                HeaderSection::make('create-aside-header')
-                    ->center([
-                        TextComponent::make('title')
-                            ->content('Create New Blog Post')
-                            ->variant('h4')
-                            ->meta(['subtitle' => 'Add a new blog post to your collection']),
-                    ])
-                    ->right([
-                        ButtonComponent::make('close-btn')
-                            ->icon('LiX')
-                            ->variant('text')
-                            ->meta(['action' => 'close']),
-                    ])
-                    ->padding('md')
-                    ->configSections([
-                        'center' => [
-                            'flex' => '1 1 auto',
-                            'textAlign' => 'center',
-                        ],
-                        'right' => [
-                            'width' => '60px',
-                            'flex' => '0 0 auto',
-                        ],
-                    ])
-                    ->toArray()
+            ->setHeader($headerSlot)
+            ->setMain(
+                SlotManager::make('create-main-slot')
+                    ->setSection($mainGrid)
             )
-            ->main([$formComponent->toArray()])
-            ->footer(
-                FooterComponent::make('create-aside-footer')
-                    ->right([
-                        ButtonComponent::make('cancel-btn')
-                            ->label('Cancel')
-                            ->variant('outlined')
-                            ->meta(['action' => 'close']),
-                        ButtonComponent::make('create-btn')
-                            ->label('Create Post')
-                            ->icon('LiCheck')
-                            ->variant('contained')
-                            ->meta(['action' => 'submit', 'dataUrl' => '/api/blogs', 'method' => 'POST']),
-                    ])
-                    ->padding('md')
-                    ->withBorder()
-                    ->configSections([
-                        'right' => [
-                            'flex' => '0 0 auto',
-                            'display' => 'flex',
-                            'gap' => '12px',
-                            'justifyContent' => 'flex-end',
-                        ],
-                    ])
-                    ->toArray()
-            )
+            ->setFooter($footerSlot)
             ->toArray();
     }
 
@@ -1893,64 +2078,82 @@ class BlogLayout
     {
         $formComponent = BlogForm::make('edit-blog-form', 'PUT', '/api/blogs/:id', $masterData, '/api/blogs/:id');
 
+        // Create main grid for form
+        $mainGrid = GridSection::make('edit-main-grid', 1)
+            ->rows(1)
+            ->gap('md');
+        $mainGrid->add($formComponent);
+
+        // Create header center grid
+        $centerGrid = GridSection::make('edit-header-center', 1)
+            ->rows(2)
+            ->gap('xs');
+        $centerGrid->add(
+            TextComponent::make('title')
+                ->content('Edit Blog Post')
+                ->variant('h4')
+                ->meta(['fontWeight' => 'bold'])
+        );
+        $centerGrid->add(
+            TextComponent::make('subtitle')
+                ->content('Update blog post information')
+                ->variant('caption')
+                ->meta(['color' => 'text-gray-600'])
+        );
+
+        // Create header right grid
+        $rightGrid = GridSection::make('edit-header-right', 1)
+            ->gap('sm');
+        $rightGrid->add(
+            ButtonComponent::make('close-btn')
+                ->icon('cross')
+                ->variant('text')
+                ->meta(['action' => 'close'])
+        );
+
+        // Create footer right grid
+        $footerRightGrid = GridSection::make('edit-footer-right', 2)
+            ->gap('sm');
+        $footerRightGrid->add(
+            ButtonComponent::make('cancel-btn')
+                ->label('Cancel')
+                ->variant('outlined')
+                ->meta(['action' => 'close'])
+        );
+        $footerRightGrid->add(
+            ButtonComponent::make('update-btn')
+                ->label('Update Post')
+                ->icon('check')
+                ->variant('contained')
+                ->meta(['action' => 'submit', 'dataUrl' => '/api/blogs/:id', 'method' => 'PUT', 'color' => 'success'])
+        );
+
+        // Wrap header in SlotManager
+        $headerSlot = SlotManager::make('header-slot');
+        $headerSlot->setSection(
+            HeaderSection::make('edit-aside-header')
+                ->setCenter($centerGrid)
+                ->setRight($rightGrid)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        // Wrap footer in SlotManager
+        $footerSlot = SlotManager::make('footer-slot');
+        $footerSlot->setSection(
+            FooterComponent::make('edit-aside-footer')
+                ->setRight($footerRightGrid)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
         return DetailSection::make('edit-blog')
-            ->anchor('right')
-            ->width('800px')
-            ->backdrop(true)
-            ->closeOnBackdrop(true)
-            ->header(
-                HeaderSection::make('edit-aside-header')
-                    ->center([
-                        TextComponent::make('title')
-                            ->content('Edit Blog Post')
-                            ->variant('h4')
-                            ->meta(['subtitle' => 'Update blog post information']),
-                    ])
-                    ->right([
-                        ButtonComponent::make('close-btn')
-                            ->icon('LiX')
-                            ->variant('text')
-                            ->meta(['action' => 'close']),
-                    ])
-                    ->padding('md')
-                    ->configSections([
-                        'center' => [
-                            'flex' => '1 1 auto',
-                            'textAlign' => 'center',
-                        ],
-                        'right' => [
-                            'width' => '60px',
-                            'flex' => '0 0 auto',
-                        ],
-                    ])
-                    ->toArray()
+            ->setHeader($headerSlot)
+            ->setMain(
+                SlotManager::make('edit-main-slot')
+                    ->setSection($mainGrid)
             )
-            ->main([$formComponent->toArray()])
-            ->footer(
-                FooterComponent::make('edit-aside-footer')
-                    ->right([
-                        ButtonComponent::make('cancel-btn')
-                            ->label('Cancel')
-                            ->variant('outlined')
-                            ->meta(['action' => 'close']),
-                        ButtonComponent::make('update-btn')
-                            ->label('Update Post')
-                            ->icon('LiCheck')
-                            ->variant('contained')
-                            ->meta(['action' => 'submit', 'dataUrl' => '/api/blogs/:id', 'method' => 'PUT']),
-                    ])
-                    ->padding('md')
-                    ->withBorder()
-                    ->configSections([
-                        'right' => [
-                            'flex' => '0 0 auto',
-                            'display' => 'flex',
-                            'gap' => '12px',
-                            'justifyContent' => 'flex-end',
-                        ],
-                    ])
-                    ->toArray()
-            )
+            ->setFooter($footerSlot)
             ->toArray();
     }
 
@@ -1972,6 +2175,7 @@ class BlogLayout
         $centerGrid = GridSection::make('view-header-center', 1)
             ->rows(2)
             ->gap('xs');
+
         $centerGrid->add(
             TextComponent::make('title')
                 ->content('Blog Post Details')
@@ -2025,14 +2229,16 @@ class BlogLayout
         );
         $rightGrid->add(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
 
         // Create footer with action buttons
         $footerRightGrid = GridSection::make('view-footer-right', 3)
-            ->gap('sm');
+            ->gap('sm')
+            ->alignItems('right');
+
         $footerRightGrid->add(
             ButtonComponent::make('close-footer-btn')
                 ->label('Close')
@@ -2056,18 +2262,20 @@ class BlogLayout
 
         // Build aside using DetailSection
         return DetailSection::make('view-blog')
-            ->anchor('right')
-            ->width('900px')
-            ->backdrop(true)
-            ->closeOnBackdrop(true)
             ->setHeader(
-                HeaderSection::make('view-aside-header')
-                    ->setLeft($centerGrid)
-                    ->setRight($rightGrid)
-                    ->variant('elevated')
-                    ->padding('md')
+                SlotManager::make('view-header-slot')
+                    ->setSection(
+                        HeaderSection::make('view-aside-header')
+                            ->setLeft($centerGrid)
+                            ->setRight($rightGrid)
+                            ->variant('elevated')
+                            ->padding('md')
+                    )
             )
-            ->setMain($mainGrid)
+            ->setMain(
+                SlotManager::make('view-main-slot')
+                    ->setSection($mainGrid)
+            )
             ->setFooter(
                 FooterComponent::make('view-aside-footer')
                     ->setRight($footerRightGrid)
@@ -2148,7 +2356,7 @@ class BlogLayout
         );
         $rightGrid->add(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
@@ -2179,18 +2387,20 @@ class BlogLayout
 
         // Build aside using DetailSection
         return DetailSection::make('view-blog-fa')
-            ->anchor('right')
-            ->width('900px')
-            ->backdrop(true)
-            ->closeOnBackdrop(true)
             ->setHeader(
-                HeaderSection::make('view-fa-aside-header')
-                    ->setLeft($centerGrid)
-                    ->setRight($rightGrid)
-                    ->variant('elevated')
-                    ->padding('md')
+                SlotManager::make('view-fa-header-slot')
+                    ->setSection(
+                        HeaderSection::make('view-fa-aside-header')
+                            ->setLeft($centerGrid)
+                            ->setRight($rightGrid)
+                            ->variant('elevated')
+                            ->padding('md')
+                    )
             )
-            ->setMain($mainGrid)
+            ->setMain(
+                SlotManager::make('view-fa-main-slot')
+                    ->setSection($mainGrid)
+            )
             ->setFooter(
                 FooterComponent::make('view-fa-aside-footer')
                     ->setRight($footerRightGrid)
@@ -2209,8 +2419,6 @@ class BlogLayout
 
         if (is_array($asideData)) {
             $asideData['name'] = 'view-blog-full';
-            $asideData['width'] = '100vw';
-            $asideData['height'] = '100vh';
         }
 
         return $asideData;
@@ -2225,8 +2433,6 @@ class BlogLayout
 
         if (is_array($asideData)) {
             $asideData['name'] = 'view-blog-fa-full';
-            $asideData['width'] = '100vw';
-            $asideData['height'] = '100vh';
         }
 
         return $asideData;
@@ -2266,7 +2472,7 @@ class BlogLayout
             ->gap('sm');
         $rightGrid->add(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
@@ -2289,19 +2495,20 @@ class BlogLayout
         );
 
         return DetailSection::make('create-blog-full')
-            ->anchor('right')
-            ->width('100vw')
-            ->height('100vh')
-            ->backdrop(true)
-            ->closeOnBackdrop(false)
             ->setHeader(
-                HeaderSection::make('create-fs-aside-header')
-                    ->setLeft($centerGrid)
-                    ->setRight($rightGrid)
-                    ->variant('elevated')
-                    ->padding('md')
+                SlotManager::make('create-fs-header-slot')
+                    ->setSection(
+                        HeaderSection::make('create-fs-aside-header')
+                            ->setLeft($centerGrid)
+                            ->setRight($rightGrid)
+                            ->variant('elevated')
+                            ->padding('md')
+                    )
             )
-            ->setMain($mainGrid)
+            ->setMain(
+                SlotManager::make('create-fs-main-slot')
+                    ->setSection($mainGrid)
+            )
             ->setFooter(
                 FooterComponent::make('create-fs-aside-footer')
                     ->setRight($footerRightGrid)
@@ -2345,7 +2552,7 @@ class BlogLayout
             ->gap('sm');
         $rightGrid->add(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
@@ -2368,19 +2575,20 @@ class BlogLayout
         );
 
         return DetailSection::make('edit-blog-full')
-            ->anchor('right')
-            ->width('100vw')
-            ->height('100vh')
-            ->backdrop(true)
-            ->closeOnBackdrop(false)
             ->setHeader(
-                HeaderSection::make('edit-fs-aside-header')
-                    ->setLeft($centerGrid)
-                    ->setRight($rightGrid)
-                    ->variant('elevated')
-                    ->padding('md')
+                SlotManager::make('edit-fs-header-slot')
+                    ->setSection(
+                        HeaderSection::make('edit-fs-aside-header')
+                            ->setLeft($centerGrid)
+                            ->setRight($rightGrid)
+                            ->variant('elevated')
+                            ->padding('md')
+                    )
             )
-            ->setMain($mainGrid)
+            ->setMain(
+                SlotManager::make('edit-fs-main-slot')
+                    ->setSection($mainGrid)
+            )
             ->setFooter(
                 FooterComponent::make('edit-fs-aside-footer')
                     ->setRight($footerRightGrid)
@@ -2442,10 +2650,6 @@ class BlogLayout
         );
 
         return DetailSection::make('create-blog-detail')
-            ->anchor('right')
-            ->width('800px')
-            ->backdrop(true)
-            ->closeOnBackdrop(true)
             ->setHeader($headerGrid)
             ->setMain($mainGrid)
             ->setFooter($footerGrid)
@@ -2500,10 +2704,6 @@ class BlogLayout
         );
 
         return DetailSection::make('edit-blog-detail')
-            ->anchor('right')
-            ->width('800px')
-            ->backdrop(true)
-            ->closeOnBackdrop(true)
             ->setHeader($headerGrid)
             ->setMain($mainGrid)
             ->setFooter($footerGrid)
@@ -2557,10 +2757,6 @@ class BlogLayout
         );
 
         return DetailSection::make('view-blog-detail')
-            ->anchor('right')
-            ->width('900px')
-            ->backdrop(true)
-            ->closeOnBackdrop(true)
             ->setHeader($headerGrid)
             ->setMain($mainGrid)
             ->setFooter($footerGrid)

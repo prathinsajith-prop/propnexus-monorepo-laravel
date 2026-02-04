@@ -44,12 +44,6 @@ class HeaderSection extends BaseSection
     // Visual properties
     protected ?string $variant = null; // default, elevated, bordered, transparent
     protected ?string $padding = 'md'; // none, sm, md, lg, xl
-    protected ?string $height = null; // sm, md, lg, auto
-    protected ?string $backgroundColor = null;
-    protected ?string $textColor = null;
-    protected bool $sticky = false;
-    protected bool $bordered = false;
-    protected bool $shadow = false;
 
     public function __construct(string $name)
     {
@@ -130,31 +124,6 @@ class HeaderSection extends BaseSection
     }
 
     /**
-     * Set elevated variant (with shadow)
-     */
-    public function elevated(): self
-    {
-        return $this->variant('elevated');
-    }
-
-    /**
-     * Set bordered variant (bottom border)
-     */
-    public function withBorder(): self
-    {
-        $this->bordered = true;
-        return $this;
-    }
-
-    /**
-     * Set transparent variant
-     */
-    public function transparent(): self
-    {
-        return $this->variant('transparent');
-    }
-
-    /**
      * Set padding
      * 
      * @param string $padding none|sm|md|lg|xl
@@ -162,53 +131,6 @@ class HeaderSection extends BaseSection
     public function padding(string $padding): self
     {
         $this->padding = $padding;
-        return $this;
-    }
-
-    /**
-     * Set height
-     * 
-     * @param string $height sm|md|lg|auto
-     */
-    public function height(string $height): self
-    {
-        $this->height = $height;
-        return $this;
-    }
-
-    /**
-     * Set background color
-     */
-    public function backgroundColor(string $color): self
-    {
-        $this->backgroundColor = $color;
-        return $this;
-    }
-
-    /**
-     * Set text color
-     */
-    public function textColor(string $color): self
-    {
-        $this->textColor = $color;
-        return $this;
-    }
-
-    /**
-     * Make header sticky
-     */
-    public function sticky(bool $sticky = true): self
-    {
-        $this->sticky = $sticky;
-        return $this;
-    }
-
-    /**
-     * Add shadow
-     */
-    public function shadow(bool $shadow = true): self
-    {
-        $this->shadow = $shadow;
         return $this;
     }
 
@@ -251,31 +173,6 @@ class HeaderSection extends BaseSection
         return $this;
     }
 
-    /**
-     * Get configuration for a specific section
-     */
-    public function getSectionConfig(string $section): ?array
-    {
-        return $this->sectionConfig[$section] ?? null;
-    }
-
-    /**
-     * Get all section configurations
-     */
-    public function getAllSectionConfigs(): array
-    {
-        return $this->sectionConfig;
-    }
-
-    /**
-     * Clear configuration for a specific section
-     */
-    public function clearSectionConfig(string $section): self
-    {
-        unset($this->sectionConfig[$section]);
-        return $this;
-    }
-
     // ========================================================================
     // Helper Methods
     // ========================================================================
@@ -301,34 +198,30 @@ class HeaderSection extends BaseSection
      */
     public function toArray(): array
     {
-        $sections = array_filter($this->getSections(), fn($section) => !empty($section));
+        $result = [
+            'name' => $this->name,
+            'type' => $this->type,
+        ];
 
-        $result = array_merge(parent::getCommonProperties(), $this->filterNullValues([
-            'variant' => $this->variant,
-            'padding' => $this->padding,
-            'height' => $this->height,
-            'backgroundColor' => $this->backgroundColor,
-            'textColor' => $this->textColor,
-            'sticky' => $this->sticky,
-            'bordered' => $this->bordered,
-            'shadow' => $this->shadow,
-        ]));
-
-        // Only add sections if there's content
-        if (!empty($sections)) {
-            $result['sections'] = $sections;
+        // Add variant and padding if set
+        if ($this->variant !== null) {
+            $result['variant'] = $this->variant;
+        }
+        if ($this->padding !== null) {
+            $result['padding'] = $this->padding;
         }
 
-        // Only add sectionConfig for sections that have content
-        if (!empty($this->sectionConfig)) {
-            $filteredSectionConfig = array_filter(
-                $this->sectionConfig,
-                fn($key) => isset($sections[$key]),
-                ARRAY_FILTER_USE_KEY
-            );
+        // Add sections (only non-empty)
+        $sections = array_filter($this->getSections(), fn($section) => !empty($section));
+        if (!empty($sections)) {
+            $result['sections'] = $sections;
 
-            if (!empty($filteredSectionConfig)) {
-                $result['sectionConfig'] = $filteredSectionConfig;
+            // Add section config only for sections that have content
+            if (!empty($this->sectionConfig)) {
+                $sectionConfig = array_intersect_key($this->sectionConfig, $sections);
+                if (!empty($sectionConfig)) {
+                    $result['sectionConfig'] = $sectionConfig;
+                }
             }
         }
 
@@ -341,13 +234,5 @@ class HeaderSection extends BaseSection
     public function render(): array
     {
         return $this->toArray();
-    }
-
-    /**
-     * Filter out null values from array
-     */
-    protected function filterNullValues(array $array): array
-    {
-        return array_filter($array, fn($value) => $value !== null);
     }
 }

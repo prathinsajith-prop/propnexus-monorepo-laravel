@@ -2,15 +2,18 @@
 
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ListingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [GeneralController::class, 'index']);
 Route::get('/blog', [BlogController::class, 'index'])->name('blogs.index');
+Route::get('/listing', [ListingController::class, 'index'])->name('listings.index');
 Route::get('/documentation', [GeneralController::class, 'documentation'])->name('documentation');
 
-Route::prefix('pages')->group(function () {
+Route::prefix('pages')->middleware('cache.headers:layout')->group(function () {
     Route::get('/sample', [GeneralController::class, 'sample'])->name('sample');
     Route::get('/blog', [BlogController::class, 'blog'])->name('blog');
+    Route::get('/listing', [ListingController::class, 'listing'])->name('listing');
 });
 
 Route::prefix('api')->group(function () {
@@ -20,18 +23,18 @@ Route::prefix('api')->group(function () {
     Route::get('/users/{identifier}', [GeneralController::class, 'getUser'])->name('api.users.show');
     Route::put('/users/{identifier}', [GeneralController::class, 'update'])->name('api.users.update');
     Route::delete('/users/{identifier}', [GeneralController::class, 'destroy'])->name('api.users.destroy');
-    Route::get('/users-master-data', [GeneralController::class, 'masterData'])->name('api.users.master-data');
+    Route::get('/users-master-data', [GeneralController::class, 'masterData'])->middleware('cache.headers:static')->name('api.users.master-data');
 
-    // Blog routes
+    // Blog routes - using route model binding
     Route::get('/blogs', [BlogController::class, 'list'])->name('api.blogs.index');
     Route::get('/blogs-list', [BlogController::class, 'lists'])->name('api.blogs.lists');
     Route::post('/blogs', [BlogController::class, 'store'])->name('api.blogs.store');
-    Route::get('/blogs/stats', [BlogController::class, 'stats'])->name('api.blogs.stats');
-    Route::get('/blogs/{id}', [BlogController::class, 'show'])->name('api.blogs.show');
-    Route::put('/blogs/{id}', [BlogController::class, 'update'])->name('api.blogs.update');
-    Route::delete('/blogs/{id}', [BlogController::class, 'destroy'])->name('api.blogs.destroy');
-    Route::post('/blogs/{id}/view', [BlogController::class, 'incrementView'])->name('api.blogs.view');
-    Route::get('/blogs-master-data', [BlogController::class, 'masterData'])->name('api.blogs.master-data');
+    Route::get('/blogs/stats', [BlogController::class, 'stats'])->middleware('cache.headers:api')->name('api.blogs.stats');
+    Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('api.blogs.show');
+    Route::put('/blogs/{blog}', [BlogController::class, 'update'])->name('api.blogs.update');
+    Route::delete('/blogs/{blog}', [BlogController::class, 'destroy'])->name('api.blogs.destroy');
+    Route::post('/blogs/{blog}/view', [BlogController::class, 'incrementView'])->name('api.blogs.view');
+    Route::get('/blogs-master-data', [BlogController::class, 'masterData'])->middleware('cache.headers:static')->name('api.blogs.master-data');
 
     // File upload routes
     Route::post('/upload/image', [BlogController::class, 'uploadImage'])->name('api.upload.image');
@@ -41,9 +44,19 @@ Route::prefix('api')->group(function () {
     Route::post('/upload/attachment', [BlogController::class, 'uploadAttachment'])->name('api.upload.attachment');
     Route::post('/upload', [BlogController::class, 'upload'])->name('api.upload.generic');
     Route::delete('/files/{path}', [BlogController::class, 'deleteFile'])->name('api.files.delete')->where('path', '.*');
+
+    // Listing routes - using route model binding
+    Route::get('/listing', [ListingController::class, 'list'])->name('api.listings.index');
+    Route::post('/listing', [ListingController::class, 'create'])->name('api.listings.store');
+    Route::get('/listing-master-data', [ListingController::class, 'getMasterDataApi'])->middleware('cache.headers:static')->name('api.listings.master-data');
+    Route::get('/listing/stats/{id}', [ListingController::class, 'getStats'])->middleware('cache.headers:api')->name('api.listings.stats');
+    Route::get('/listing/{listing}', [ListingController::class, 'show'])->name('api.listings.show');
+    Route::put('/listing/{listing}', [ListingController::class, 'update'])->name('api.listings.update');
+    Route::delete('/listing/{listing}', [ListingController::class, 'delete'])->name('api.listings.destroy');
 });
 
-Route::prefix('layouts')->group(function () {
+Route::prefix('layouts')->middleware('cache.headers:layout')->group(function () {
     Route::get('/sample/{type}/{component}', [GeneralController::class, 'getComponentSection'])->name('layouts.user-layout.show');
     Route::get('/blog/{type}/{component}', [BlogController::class, 'getComponentSection'])->name('layouts.blog-layout.show');
+    Route::get('/listing/{type}/{component}', [ListingController::class, 'getComponentSection'])->name('layouts.listing-layout.show');
 });
