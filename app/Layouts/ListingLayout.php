@@ -4,6 +4,8 @@ namespace App\Layouts;
 
 use App\Forms\Listing\ListingForm;
 use App\Forms\Listing\ListingViewForm;
+use App\Slots\Listing\ListingFooterSlot;
+use App\Slots\Listing\ListingHeaderSlot;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\ListComponent;
@@ -309,6 +311,11 @@ class ListingLayout
                 'label' => 'Actions',
                 'sortable' => false,
                 'width' => '120px',
+                'actions' => [
+                    self::buildViewButtonAction(),
+                    self::buildEditButtonAction(),
+                    self::buildDeleteButtonAction(),
+                ],
             ],
         ];
     }
@@ -473,6 +480,10 @@ class ListingLayout
                     'color' => 'danger',
                 ],
                 [
+                    'type' => 'body',
+                    'content' => 'Are you sure you want to delete this listing? This action cannot be undone.',
+                ],
+                [
                     'type' => 'footer',
                     'buttonGroup' => [
                         'buttons' => [
@@ -488,6 +499,85 @@ class ListingLayout
     }
 
     /**
+     * Build view button action using ButtonComponent
+     *
+     * @return array
+     */
+    private static function buildViewButtonAction()
+    {
+        $button = ButtonComponent::make('view')
+            ->icon('eyeopen')
+            ->variant('outlined')
+            ->size('sm')
+            ->isIconButton(true)
+            ->data('type', 'aside')
+            ->data('component', 'view-listing-aside')
+            ->data('action', 'open')
+            ->meta([
+                'tooltip' => 'View Details',
+            ])
+            ->toArray();
+
+        // Add dataKey for table row binding
+        $button['dataKey'] = 'id';
+
+        return $button;
+    }
+
+    /**
+     * Build edit button action using ButtonComponent
+     *
+     * @return array
+     */
+    private static function buildEditButtonAction()
+    {
+        $button = ButtonComponent::make('edit')
+            ->icon('editpen')
+            ->variant('outlined')
+            ->size('sm')
+            ->isIconButton(true)
+            ->data('type', 'aside')
+            ->data('component', 'edit-listing')
+            ->data('action', 'open')
+            ->meta([
+                'tooltip' => 'Edit Listing',
+            ])
+            ->toArray();
+
+        // Add dataKey for table row binding
+        $button['dataKey'] = 'id';
+
+        return $button;
+    }
+
+    /**
+     * Build delete button action using ButtonComponent
+     *
+     * @return array
+     */
+    private static function buildDeleteButtonAction()
+    {
+        $button = ButtonComponent::make('delete')
+            ->icon('binempty')
+            ->variant('outlined')
+            ->size('sm')
+            ->color('danger')
+            ->isIconButton(true)
+            ->data('type', 'modal')
+            ->data('component', 'delete-listing-modal')
+            ->data('action', 'open')
+            ->meta([
+                'tooltip' => 'Delete',
+            ])
+            ->toArray();
+
+        // Add dataKey for table row binding
+        $button['dataKey'] = 'id';
+
+        return $button;
+    }
+
+    /**
      * Build create listing aside
      */
     private static function buildCreateListingAside($masterData)
@@ -500,70 +590,51 @@ class ListingLayout
             ->gap('md');
         $mainGrid->add($formComponent);
 
-        // Create header center grid
-        $centerGrid = GridSection::make('create-header-center', 1)
-            ->rows(2)
-            ->gap('xs');
-        $centerGrid->add(
+        // Create header center slot
+        $centerSlot = SlotManager::make('create-header-center');
+        $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Create New Listing')
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
-        $centerGrid->add(
+        $centerSlot->setComponent(
             TextComponent::make('subtitle')
                 ->content('Add a new property to your listings')
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        // Create header right grid
-        $rightGrid = GridSection::make('create-header-right', 1)
-            ->gap('sm');
-
-        // Create header right row for buttons
-        $rightRow = RowSection::make('create-header-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-        $rightRow->add(
+        // Create header right slot
+        $rightSlot = SlotManager::make('create-header-right');
+        $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('x')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
 
-        $rightGrid->add($rightRow);
-
-        // Create footer right grid
-        $footerRightGrid = GridSection::make('create-footer-right', 2)
-            ->gap('sm');
-        // Create footer right row for buttons
-        $footerRightRow = RowSection::make('create-footer-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-        $footerRightRow->add(
+        // Create footer right slot
+        $footerRightSlot = SlotManager::make('create-footer-right');
+        $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
-        $footerRightRow->add(
+        $footerRightSlot->setComponent(
             ButtonComponent::make('create-btn')
                 ->label('Create Listing')
                 ->icon('check')
                 ->variant('contained')
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/listing', 'method' => 'POST', 'color' => 'primary'])
         );
-
-        $footerRightGrid->add($footerRightRow);
         // Wrap header in SlotManager
         $headerSlot = SlotManager::make('header-slot');
         $headerSlot->setSection(
             HeaderSection::make('create-aside-header')
-                ->setCenter($centerGrid)
-                ->setRight($rightGrid)
+                ->setCenter($centerSlot)
+                ->setRight($rightSlot)
                 ->variant('elevated')
                 ->padding('md')
         );
@@ -572,7 +643,7 @@ class ListingLayout
         $footerSlot = SlotManager::make('footer-slot');
         $footerSlot->setSection(
             FooterSection::make('create-aside-footer')
-                ->setRight($footerRightGrid)
+                ->setRight($footerRightSlot)
                 ->variant('elevated')
                 ->padding('md')
         );
@@ -600,58 +671,39 @@ class ListingLayout
             ->gap('md');
         $mainGrid->add($formComponent);
 
-        // Create header center grid
-        $centerGrid = GridSection::make('edit-header-center', 1)
-            ->rows(2)
-            ->gap('xs');
-        $centerGrid->add(
+        // Create header center slot
+        $centerSlot = SlotManager::make('edit-header-center');
+        $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Edit Listing')
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
-        $centerGrid->add(
+        $centerSlot->setComponent(
             TextComponent::make('subtitle')
                 ->content('Update property information')
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        // Create header right grid
-        $rightGrid = GridSection::make('edit-header-right', 1)
-            ->gap('sm');
-
-        // Create header right row for buttons
-        $rightRow = RowSection::make('edit-header-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $rightRow->add(
+        // Create header right slot
+        $rightSlot = SlotManager::make('edit-header-right');
+        $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('x')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
 
-        $rightGrid->add($rightRow);
-
-        // Create footer right grid
-        $footerRightGrid = GridSection::make('edit-footer-right', 2)
-            ->gap('sm');
-
-        // Create footer right row for buttons
-        $footerRightRow = RowSection::make('edit-footer-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-        $footerRightRow->add(
+        // Create footer right slot
+        $footerRightSlot = SlotManager::make('edit-footer-right');
+        $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
-        $footerRightRow->add(
+        $footerRightSlot->setComponent(
             ButtonComponent::make('save-btn')
                 ->label('Save Changes')
                 ->icon('check')
@@ -659,15 +711,12 @@ class ListingLayout
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/listing/:id', 'method' => 'PUT', 'color' => 'primary'])
         );
 
-
-        $footerRightGrid->add($footerRightRow);
-
         // Wrap header in SlotManager
         $headerSlot = SlotManager::make('header-slot');
         $headerSlot->setSection(
             HeaderSection::make('edit-aside-header')
-                ->setCenter($centerGrid)
-                ->setRight($rightGrid)
+                ->setCenter($centerSlot)
+                ->setRight($rightSlot)
                 ->variant('elevated')
                 ->padding('md')
         );
@@ -676,7 +725,7 @@ class ListingLayout
         $footerSlot = SlotManager::make('footer-slot');
         $footerSlot->setSection(
             FooterSection::make('edit-aside-footer')
-                ->setRight($footerRightGrid)
+                ->setRight($footerRightSlot)
                 ->variant('elevated')
                 ->padding('md')
         );
@@ -706,78 +755,56 @@ class ListingLayout
             ->gap('md');
         $mainGrid->add($formComponent);
 
-        // Create header with title and action buttons
-        $centerGrid = GridSection::make('view-header-center', 1)
-            ->rows(2)
-            ->gap('xs');
-        $centerGrid->add(
+        // Create header center slot
+        $centerSlot = SlotManager::make('view-header-center');
+        $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Listing Details')
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
-        $centerGrid->add(
+        $centerSlot->setComponent(
             TextComponent::make('subtitle')
                 ->content('View property information')
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        // Create header right grid with action buttons
-        $rightGrid = GridSection::make('view-header-right', 3)
-            ->gap('sm');
-
-        // Create header right row with action buttons
-        $rightRow = RowSection::make('view-header-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $rightRow->add(
+        // Create header right slot
+        $rightSlot = SlotManager::make('view-header-right');
+        $rightSlot->setComponent(
             ButtonComponent::make('edit-btn')
                 ->icon('pen')
                 ->variant('outlined')
                 ->meta(['action' => 'edit', 'tooltip' => 'Edit listing'])
         );
-        $rightRow->add(
+        $rightSlot->setComponent(
             ButtonComponent::make('delete-btn')
                 ->icon('binempty')
                 ->variant('outlined')
                 ->meta(['action' => 'delete', 'color' => 'danger', 'tooltip' => 'Delete listing'])
         );
-        $rightRow->add(
+        $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('x')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
 
-        $rightGrid->add($rightRow);
-
-        // Create footer right grid
-        $footerRightGrid = GridSection::make('view-footer-right', 1)
-            ->gap('sm');
-
-        // Create footer right row for buttons
-        $footerRightRow = RowSection::make('view-footer-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $footerRightRow->add(
+        // Create footer right slot
+        $footerRightSlot = SlotManager::make('view-footer-right');
+        $footerRightSlot->setComponent(
             ButtonComponent::make('close-footer-btn')
                 ->label('Close')
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
 
-        $footerRightGrid->add($footerRightRow);
-
         // Wrap footer in SlotManager
         $footerSlot = SlotManager::make('footer-slot');
         $footerSlot->setSection(
             FooterSection::make('view-aside-footer')
-                ->setRight($footerRightGrid)
+                ->setRight($footerRightSlot)
                 ->variant('elevated')
                 ->padding('md')
         );
@@ -788,8 +815,8 @@ class ListingLayout
                 SlotManager::make('view-header-slot')
                     ->setSection(
                         HeaderSection::make('view-aside-header')
-                            ->setLeft($centerGrid)
-                            ->setRight($rightGrid)
+                            ->setLeft($centerSlot)
+                            ->setRight($rightSlot)
                             ->variant('elevated')
                             ->padding('md')
                     )
@@ -1103,96 +1130,7 @@ class ListingLayout
      */
     private static function buildAsideHeaderWithGrid(): SlotManager
     {
-        $headerSlot = SlotManager::make('header-slot');
-
-        // Create grid section for center with 3 columns
-        $leftGrid = GridSection::make('header-center-grid', 3)
-            ->gap('md')
-            ->alignItems('center');
-
-        // Column 2: Title and Subtitle (create a nested grid for vertical stacking)
-        $titleGrid = GridSection::make('title-section', 1)
-            ->gap('xs')
-            ->rows(2);
-
-        $titleGrid->add(
-            TextComponent::make('title')
-                ->content('Listing Details')
-                ->variant('h4')
-                ->meta(['fontWeight' => 'bold'])
-        );
-
-        $titleGrid->add(
-            TextComponent::make('subtitle')
-                ->content('View and manage property information')
-                ->variant('caption')
-                ->meta(['color' => 'text-gray-600'])
-        );
-
-        $leftGrid->add($titleGrid);
-
-        // Create right grid for action buttons
-        $rightGrid = GridSection::make('header-right-grid', 1)
-            ->gap('sm');
-
-        // Create right section for action buttons
-        $rightRow = RowSection::make('header-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $rightRow->add(
-            ButtonComponent::make('edit-header-btn')
-                ->icon('pen')
-                ->variant('outlined')
-                ->meta(['action' => 'edit', 'tooltip' => 'Edit listing'])
-        );
-
-        $rightRow->add(
-            ButtonComponent::make('share-header-btn')
-                ->icon('share')
-                ->variant('outlined')
-                ->meta(['action' => 'share', 'tooltip' => 'Share listing'])
-        );
-
-        $rightRow->add(
-            ButtonComponent::make('print-header-btn')
-                ->icon('print')
-                ->variant('outlined')
-                ->meta(['action' => 'print', 'tooltip' => 'Print listing'])
-        );
-
-        $rightRow->add(
-            ButtonComponent::make('delete-header-btn')
-                ->icon('binempty')
-                ->variant('outlined')
-                ->meta(['action' => 'delete', 'color' => 'danger', 'tooltip' => 'Delete listing'])
-        );
-
-        $rightRow->add(
-            ButtonComponent::make('more-header-btn')
-                ->icon('more')
-                ->variant('outlined')
-                ->meta(['action' => 'more', 'tooltip' => 'More options'])
-        );
-
-        $rightRow->add(
-            ButtonComponent::make('close-header-btn')
-                ->icon('x')
-                ->variant('text')
-                ->meta(['action' => 'close'])
-        );
-
-        $rightGrid->add($rightRow);
-
-        // Create header component with row in right section
-        return $headerSlot->setSection(
-            HeaderSection::make('aside-header')
-                ->setCenter($leftGrid)
-                ->setRight($rightGrid)
-                ->variant('elevated')
-                ->padding('md')
-        );
+        return ListingHeaderSlot::make();
     }
 
     /**
@@ -1200,56 +1138,7 @@ class ListingLayout
      */
     private static function buildAsideFooter(): SlotManager
     {
-        $footerSlot = SlotManager::make('footer-slot');
-
-        // Create left grid for help button
-        $footerGrid = GridSection::make('footer-left-grid', 1)
-            ->gap('sm')
-            ->alignItems('center');
-
-        $footerGrid->add(
-            ButtonComponent::make('help-btn')
-                ->label('Help')
-                ->icon('help')
-                ->variant('text')
-                ->meta(['action' => 'help', 'tooltip' => 'Get help'])
-        );
-
-        // Create right grid for action buttons
-        $footerRightGrid = GridSection::make('footer-right-grid', 2)
-            ->gap('sm')
-            ->alignItems('center');
-
-        $footerRightRow = RowSection::make('footer-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $footerRightRow->add(
-            ButtonComponent::make('cancel-footer-btn')
-                ->label('Cancel')
-                ->variant('outlined')
-                ->meta(['action' => 'close'])
-        );
-
-        $footerRightRow->add(
-            ButtonComponent::make('save-footer-btn')
-                ->label('Save Changes')
-                ->icon('check')
-                ->variant('contained')
-                ->meta(['action' => 'submit', 'color' => 'primary'])
-        );
-
-        $footerRightGrid->add($footerRightRow);
-
-        // Create footer component with grid sections
-        return $footerSlot->setSection(
-            FooterSection::make('aside-footer')
-                ->setLeft($footerGrid)
-                ->setRight($footerRightGrid)
-                ->variant('elevated')
-                ->padding('md')
-        );
+        return ListingFooterSlot::make();
     }
 
     /**
@@ -1265,54 +1154,38 @@ class ListingLayout
             ->gap('md');
         $mainGrid->add($formComponent);
 
-        // Create header
-        $centerGrid = GridSection::make('create-fs-header-center', 1)
-            ->rows(2)
-            ->gap('xs');
-        $centerGrid->add(
+        // Create header center slot
+        $centerSlot = SlotManager::make('create-fs-header-center');
+        $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Create New Listing (Fullscreen)')
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
-        $centerGrid->add(
+        $centerSlot->setComponent(
             TextComponent::make('subtitle')
                 ->content('Add a new property with full editor')
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        $rightGrid = GridSection::make('create-fs-header-right', 1)
-            ->gap('sm');
-
-        $rightRow = RowSection::make('create-fs-header-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $rightRow->add(
+        $rightSlot = SlotManager::make('create-fs-header-right');
+        $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('x')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
 
-        // Create footer right row for buttons
-        $footerRightRow = RowSection::make('create-fs-footer-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $footerRightGrid = GridSection::make('create-fs-footer-right', 1)
-            ->gap('sm');
-
-        $footerRightRow->add(
+        // Create footer right slot
+        $footerRightSlot = SlotManager::make('create-fs-footer-right');
+        $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
-        $footerRightRow->add(
+        $footerRightSlot->setComponent(
             ButtonComponent::make('create-btn')
                 ->label('Create Listing')
                 ->icon('check')
@@ -1320,15 +1193,13 @@ class ListingLayout
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/listing', 'method' => 'POST', 'color' => 'primary'])
         );
 
-        $footerRightGrid->add($footerRightRow);
-
         return DetailSection::make('create-listing-full')
             ->setHeader(
                 SlotManager::make('create-fs-header-slot')
                     ->setSection(
                         HeaderSection::make('create-fs-aside-header')
-                            ->setLeft($centerGrid)
-                            ->setRight($rightGrid)
+                            ->setLeft($centerSlot)
+                            ->setRight($rightSlot)
                             ->variant('elevated')
                             ->padding('md')
                     )
@@ -1341,7 +1212,7 @@ class ListingLayout
                 SlotManager::make('create-fs-footer-slot')
                     ->setSection(
                         FooterSection::make('create-fs-aside-footer')
-                            ->setRight($footerRightGrid)
+                            ->setRight($footerRightSlot)
                             ->variant('elevated')
                             ->padding('md')
                     )
@@ -1362,57 +1233,38 @@ class ListingLayout
             ->gap('md');
         $mainGrid->add($formComponent);
 
-        // Create header
-        $centerGrid = GridSection::make('edit-fs-header-center', 1)
-            ->rows(2)
-            ->gap('xs');
-        $centerGrid->add(
+        // Create header center slot
+        $centerSlot = SlotManager::make('edit-fs-header-center');
+        $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Edit Listing (Fullscreen)')
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
-        $centerGrid->add(
+        $centerSlot->setComponent(
             TextComponent::make('subtitle')
                 ->content('Update property with full editor')
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        $rightGrid = GridSection::make('edit-fs-header-right', 1)
-            ->gap('sm');
-
-        $rightRow = RowSection::make('edit-fs-header-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $rightRow->add(
+        $rightSlot = SlotManager::make('edit-fs-header-right');
+        $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('x')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
 
-        $rightGrid->add($rightRow);
-
-        // Create footer
-        $footerRightGrid = GridSection::make('edit-fs-footer-right', 2)
-            ->gap('sm');
-
-        // Create footer right row for buttons
-        $footerRightRow = RowSection::make('edit-fs-footer-right-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $footerRightRow->add(
+        // Create footer right slot
+        $footerRightSlot = SlotManager::make('edit-fs-footer-right');
+        $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
-        $footerRightRow->add(
+        $footerRightSlot->setComponent(
             ButtonComponent::make('save-btn')
                 ->label('Save Changes')
                 ->icon('check')
@@ -1420,15 +1272,13 @@ class ListingLayout
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/listing/:id', 'method' => 'PUT', 'color' => 'primary'])
         );
 
-        $footerRightGrid->add($footerRightRow);
-
         return DetailSection::make('edit-listing-full')
             ->setHeader(
                 SlotManager::make('edit-fs-header-slot')
                     ->setSection(
                         HeaderSection::make('edit-fs-aside-header')
-                            ->setLeft($centerGrid)
-                            ->setRight($rightGrid)
+                            ->setLeft($centerSlot)
+                            ->setRight($rightSlot)
                             ->variant('elevated')
                             ->padding('md')
                     )
@@ -1441,7 +1291,7 @@ class ListingLayout
                 SlotManager::make('edit-fs-footer-slot')
                     ->setSection(
                         FooterSection::make('edit-fs-aside-footer')
-                            ->setRight($footerRightGrid)
+                            ->setRight($footerRightSlot)
                             ->variant('elevated')
                             ->padding('md')
                     )
@@ -1473,9 +1323,8 @@ class ListingLayout
 
         // Build header
         $headerSlot = SlotManager::make('header-slot');
-        $centerGrid = GridSection::make('create-detail-header-center', 1)
-            ->gap('xs');
-        $centerGrid->add(
+        $centerSlot = SlotManager::make('create-detail-header-center');
+        $centerSlot->setComponent(
             TextComponent::make('header-title')
                 ->content('Create New Listing')
                 ->variant('h3')
@@ -1483,29 +1332,21 @@ class ListingLayout
         );
         $headerSlot->setSection(
             HeaderSection::make('create-detail-header')
-                ->setCenter($centerGrid)
+                ->setCenter($centerSlot)
                 ->variant('default')
                 ->padding('lg')
         );
 
         // Build footer
         $footerSlot = SlotManager::make('footer-slot');
-        $footerRightGrid = GridSection::make('create-detail-footer-right', 2)
-            ->gap('sm');
-
-        $footerRightRow = RowSection::make('create-detail-footer-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $footerRightRow->add(
+        $footerRightSlot = SlotManager::make('create-detail-footer-right');
+        $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-detail-btn')
                 ->label('Cancel')
                 ->variant('outlined')
                 ->meta(['action' => 'cancel'])
         );
-
-        $footerRightRow->add(
+        $footerRightSlot->setComponent(
             ButtonComponent::make('create-detail-btn')
                 ->label('Create Listing')
                 ->icon('check')
@@ -1513,11 +1354,9 @@ class ListingLayout
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/listing', 'method' => 'POST', 'color' => 'primary'])
         );
 
-        $footerRightGrid->add($footerRightRow);
-
         $footerSlot->setSection(
             FooterSection::make('create-detail-footer')
-                ->setRight($footerRightGrid)
+                ->setRight($footerRightSlot)
                 ->variant('default')
                 ->padding('lg')
         );
@@ -1552,9 +1391,8 @@ class ListingLayout
 
         // Build header
         $headerSlot = SlotManager::make('header-slot');
-        $centerGrid = GridSection::make('edit-detail-header-center', 1)
-            ->gap('xs');
-        $centerGrid->add(
+        $centerSlot = SlotManager::make('edit-detail-header-center');
+        $centerSlot->setComponent(
             TextComponent::make('header-title')
                 ->content('Edit Listing')
                 ->variant('h3')
@@ -1562,29 +1400,21 @@ class ListingLayout
         );
         $headerSlot->setSection(
             HeaderSection::make('edit-detail-header')
-                ->setCenter($centerGrid)
+                ->setCenter($centerSlot)
                 ->variant('default')
                 ->padding('lg')
         );
 
         // Build footer
         $footerSlot = SlotManager::make('footer-slot');
-        $footerRightGrid = GridSection::make('edit-detail-footer-right', 2)
-            ->gap('sm');
-
-        $footerRightRow = RowSection::make('edit-detail-footer-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $footerRightRow->add(
+        $footerRightSlot = SlotManager::make('edit-detail-footer-right');
+        $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-detail-btn')
                 ->label('Cancel')
                 ->variant('outlined')
                 ->meta(['action' => 'cancel'])
         );
-
-        $footerRightRow->add(
+        $footerRightSlot->setComponent(
             ButtonComponent::make('save-detail-btn')
                 ->label('Save Changes')
                 ->icon('check')
@@ -1592,11 +1422,9 @@ class ListingLayout
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/listing/:id', 'method' => 'PUT', 'color' => 'primary'])
         );
 
-        $footerRightGrid->add($footerRightRow);
-
         $footerSlot->setSection(
             FooterSection::make('edit-detail-footer')
-                ->setRight($footerRightGrid)
+                ->setRight($footerRightSlot)
                 ->variant('default')
                 ->padding('lg')
         );
@@ -1631,9 +1459,8 @@ class ListingLayout
 
         // Build header
         $headerSlot = SlotManager::make('header-slot');
-        $centerGrid = GridSection::make('view-detail-header-center', 1)
-            ->gap('xs');
-        $centerGrid->add(
+        $centerSlot = SlotManager::make('view-detail-header-center');
+        $centerSlot->setComponent(
             TextComponent::make('header-title')
                 ->content('Listing Details')
                 ->variant('h3')
@@ -1641,33 +1468,24 @@ class ListingLayout
         );
         $headerSlot->setSection(
             HeaderSection::make('view-detail-header')
-                ->setCenter($centerGrid)
+                ->setCenter($centerSlot)
                 ->variant('default')
                 ->padding('lg')
         );
 
         // Build footer
         $footerSlot = SlotManager::make('footer-slot');
-        $footerRightGrid = GridSection::make('view-detail-footer-right', 1)
-            ->gap('sm');
-
-        $footerRightRow = RowSection::make('view-detail-footer-row')
-            ->gap('xs')
-            ->align('center')
-            ->justify('end');
-
-        $footerRightRow->add(
+        $footerRightSlot = SlotManager::make('view-detail-footer-right');
+        $footerRightSlot->setComponent(
             ButtonComponent::make('close-detail-btn')
                 ->label('Close')
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
 
-        $footerRightGrid->add($footerRightRow);
-
         $footerSlot->setSection(
             FooterSection::make('view-detail-footer')
-                ->setRight($footerRightGrid)
+                ->setRight($footerRightSlot)
                 ->variant('default')
                 ->padding('lg')
         );

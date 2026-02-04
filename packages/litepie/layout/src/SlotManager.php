@@ -55,18 +55,43 @@ class SlotManager
     protected string $priority = self::PRIORITY_SECTION;
 
     /**
+     * Order of sections/components
+     *
+     * @var array
+     */
+    protected array $order = [];
+
+    /**
+     * Automatic insertion order tracking
+     *
+     * @var array
+     */
+    protected array $insertionOrder = [];
+
+    /**
+     * Slot name/identifier
+     *
+     * @var string|null
+     */
+    protected ?string $name = null;
+
+    /**
      * Create a new SlotManager instance
      */
-    public function __construct() {}
+    public function __construct(?string $name = null)
+    {
+        $this->name = $name;
+    }
 
     /**
      * Create a new SlotManager instance
      *
+     * @param string|null $name Optional slot identifier
      * @return static
      */
-    public static function make(): static
+    public static function make(?string $name = null): static
     {
-        return new static();
+        return new static($name);
     }
 
     /**
@@ -77,7 +102,13 @@ class SlotManager
      */
     public function setSection(BaseSection $section): static
     {
-        $this->sections[] = $section->toArray();
+        $sectionArray = $section->toArray();
+        $this->sections[] = $sectionArray;
+
+        // Automatically track insertion order by section name
+        if (isset($sectionArray['name'])) {
+            $this->insertionOrder[] = $sectionArray['name'];
+        }
 
         return $this;
     }
@@ -90,7 +121,13 @@ class SlotManager
      */
     public function setComponent(Component $component): static
     {
-        $this->components[] = $component->toArray();
+        $componentArray = $component->toArray();
+        $this->components[] = $componentArray;
+
+        // Automatically track insertion order by component name
+        if (isset($componentArray['name'])) {
+            $this->insertionOrder[] = $componentArray['name'];
+        }
 
         return $this;
     }
@@ -154,6 +191,68 @@ class SlotManager
     }
 
     /**
+     * Get priority order
+     *
+     * @return string
+     */
+    public function getPriority(): string
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Get order of sections/components
+     *
+     * @return array
+     */
+    public function getOrder(): array
+    {
+        return $this->order;
+    }
+
+    /**
+     * Get automatic insertion order
+     *
+     * @return array
+     */
+    public function getInsertionOrder(): array
+    {
+        return $this->insertionOrder;
+    }
+
+    /**
+     * Get effective order (returns insertion order)
+     *
+     * @return array
+     */
+    public function getEffectiveOrder(): array
+    {
+        return $this->insertionOrder;
+    }
+
+    /**
+     * Get slot name
+     *
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set slot name
+     *
+     * @param string $name Slot identifier
+     * @return $this
+     */
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
      * Check if has sections
      *
      * @return bool
@@ -171,6 +270,36 @@ class SlotManager
     public function hasComponents(): bool
     {
         return !empty($this->components);
+    }
+
+    /**
+     * Check if has configuration
+     *
+     * @return bool
+     */
+    public function hasConfig(): bool
+    {
+        return !empty($this->config);
+    }
+
+    /**
+     * Check if has custom order
+     *
+     * @return bool
+     */
+    public function hasOrder(): bool
+    {
+        return !empty($this->order);
+    }
+
+    /**
+     * Check if priority is set to custom value
+     *
+     * @return bool
+     */
+    public function isCustomPriority(): bool
+    {
+        return $this->priority !== self::PRIORITY_SECTION;
     }
 
     /**
@@ -196,6 +325,18 @@ class SlotManager
     }
 
     /**
+
+     * Reset priority to default (sections)
+     *
+     * @return $this
+     */
+    public function resetPriority(): static
+    {
+        $this->priority = self::PRIORITY_SECTION;
+        return $this;
+    }
+
+    /**
      * Clear everything
      *
      * @return $this
@@ -205,6 +346,8 @@ class SlotManager
         $this->sections = [];
         $this->components = [];
         $this->config = [];
+        $this->insertionOrder = [];
+        $this->priority = self::PRIORITY_SECTION;
         return $this;
     }
 
@@ -215,11 +358,24 @@ class SlotManager
      */
     public function toArray(): array
     {
-        return [
+        $data = [
             'sections' => $this->sections,
             'components' => $this->components,
             'config' => $this->config,
             'priority' => $this->priority,
+            'order' => $this->insertionOrder,
         ];
+
+        if ($this->name !== null) {
+            $data['name'] = $this->name;
+        }
+
+        // Add metadata to enforce order preservation
+        if (!empty($this->insertionOrder)) {
+            $data['config']['orderEnforced'] = true;
+            $data['config']['preserveOrder'] = true;
+        }
+
+        return $data;
     }
 }

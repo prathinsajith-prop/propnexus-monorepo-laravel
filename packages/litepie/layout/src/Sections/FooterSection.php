@@ -2,7 +2,7 @@
 
 namespace Litepie\Layout\Sections;
 
-use Litepie\Layout\Sections\GridSection;
+use Litepie\Layout\SlotManager;
 
 /**
  * FooterSection
@@ -38,9 +38,6 @@ class FooterSection extends BaseSection
     protected array $leftSection = [];
     protected array $centerSection = [];
     protected array $rightSection = [];
-
-    // Section configuration (layout properties for each section)
-    protected array $sectionConfig = [];
 
     // Visual properties
     protected ?string $variant = null; // default, elevated, bordered, transparent
@@ -79,9 +76,9 @@ class FooterSection extends BaseSection
     /**
      * Set left section content
      * 
-     * @param GridSection $content Grid section instance
+     * @param SlotManager $content Slot manager instance
      */
-    public function setLeft(GridSection $content): self
+    public function setLeft(SlotManager $content): self
     {
         $this->leftSection = $content->toArray();
         return $this;
@@ -90,9 +87,9 @@ class FooterSection extends BaseSection
     /**
      * Set center section content
      * 
-     * @param GridSection $content Grid section instance
+     * @param SlotManager $content Slot manager instance
      */
-    public function setCenter(GridSection $content): self
+    public function setCenter(SlotManager $content): self
     {
         $this->centerSection = $content->toArray();
         return $this;
@@ -101,9 +98,9 @@ class FooterSection extends BaseSection
     /**
      * Set right section content
      * 
-     * @param GridSection $content Grid section instance
+     * @param SlotManager $content Slot manager instance
      */
-    public function setRight(GridSection $content): self
+    public function setRight(SlotManager $content): self
     {
         $this->rightSection = $content->toArray();
         return $this;
@@ -149,7 +146,6 @@ class FooterSection extends BaseSection
     public function config(string $section, array $config): self
     {
         $this->validateSection($section);
-        $this->sectionConfig[$section] = $config;
         return $this;
     }
 
@@ -216,14 +212,6 @@ class FooterSection extends BaseSection
         $sections = array_filter($this->getSections(), fn($section) => !empty($section));
         if (!empty($sections)) {
             $result['sections'] = $sections;
-
-            // Add section config only for sections that have content
-            if (!empty($this->sectionConfig)) {
-                $sectionConfig = array_intersect_key($this->sectionConfig, $sections);
-                if (!empty($sectionConfig)) {
-                    $result['sectionConfig'] = $sectionConfig;
-                }
-            }
         }
 
         return $result;

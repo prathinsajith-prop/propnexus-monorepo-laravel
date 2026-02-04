@@ -46,11 +46,16 @@ class ButtonComponent extends BaseComponent
 
     protected bool $isIconButton = false; // Flag to identify icon-only buttons
 
-
     // Dropdown properties
     protected bool $hasDropdown = false;
 
     protected ?array $dropdownConfig = null;
+
+    // Confirmation dialog properties
+    protected ?array $confirm = null;
+
+    // Form association (if button is part of a form)
+    protected ?array $form = null;
 
     public function __construct(string $name)
     {
@@ -456,6 +461,51 @@ class ButtonComponent extends BaseComponent
     }
 
     /**
+     * Set confirmation dialog configuration
+     * 
+     * @param array $config Confirmation dialog configuration
+     *   - title: string - Dialog title
+     *   - message: string - Dialog message/content
+     *   - confirmLabel: string - Confirm button label (default: 'Confirm')
+     *   - cancelLabel: string - Cancel button label (default: 'Cancel')
+     *   - confirmVariant: string - Confirm button variant (default: 'contained')
+     *   - confirmColor: string - Confirm button color (default: 'primary')
+     *   - icon: string - Dialog icon
+     *   - iconColor: string - Icon color
+     * @return self
+     */
+    public function confirm(array $config): self
+    {
+        $this->confirm = array_merge([
+            'title' => 'Confirm Action',
+            'message' => 'Are you sure you want to proceed?',
+            'confirmLabel' => 'Confirm',
+            'cancelLabel' => 'Cancel',
+            'confirmVariant' => 'contained',
+            'confirmColor' => 'primary',
+        ], $config);
+
+        return $this;
+    }
+
+    /**
+     * Associate button with a form configuration
+     * 
+     * @param array|null $form Form configuration
+     *   - id: string - Form ID
+     *   - placement: string - Placement of form modal/popover
+     *   - offset: array - Offset positioning
+     *   - closeOnClick: bool - Close on click outside
+     * @return self
+     */
+    public function form(?array $form): self
+    {
+        $this->form = $form;
+
+        return $this;
+    }
+
+    /**
      * Convert to array for JSON output
      */
     public function toArray(): array
@@ -484,6 +534,8 @@ class ButtonComponent extends BaseComponent
             'dataAttributes' => $this->dataAttributes,
             'hasDropdown' => $this->hasDropdown,
             'dropdownConfig' => $this->dropdownConfig,
+            'confirm' => $this->confirm,
+            'form' => $this->form,
         ]));
     }
 }
