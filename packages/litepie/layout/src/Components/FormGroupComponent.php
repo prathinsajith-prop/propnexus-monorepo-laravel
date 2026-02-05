@@ -260,6 +260,11 @@ class FormGroupComponent extends BaseComponent
         return $this->createField('textarea', $name);
     }
 
+    public function richtext(string $name)
+    {
+        return $this->createField('richtext', $name);
+    }
+
     public function select(string $name)
     {
         return $this->createField('select', $name);

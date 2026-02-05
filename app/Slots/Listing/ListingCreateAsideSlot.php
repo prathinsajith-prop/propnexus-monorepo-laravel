@@ -11,16 +11,21 @@ use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
+/**
+ * Listing Create Aside Slot
+ * 
+ * Builds the aside for creating a new property listing
+ */
 class ListingCreateAsideSlot
 {
     /**
      * Build create listing aside
      *
      * @param array $masterData Master data for form
-     * @param bool $fullscreen Whether to use fullscreen mode
-     * @return array Aside definition
+     * @param bool $fullscreen Whether to display fullscreen
+     * @return array
      */
-    public static function make(array $masterData, bool $fullscreen = false): array
+    public static function make(array $masterData = [], bool $fullscreen = false): array
     {
         $formComponent = ListingForm::make('create-listing-form', 'POST', '/api/listing', $masterData);
 
@@ -30,7 +35,38 @@ class ListingCreateAsideSlot
             ->gap('md');
         $mainGrid->add($formComponent);
 
-        // Create header center slot
+        // Build header
+        $headerSlot = self::buildHeader();
+
+        // Build footer
+        $footerSlot = self::buildFooter();
+
+        $aside = DetailSection::make('create-listing')
+            ->setHeader($headerSlot)
+            ->setMain(
+                SlotManager::make('create-main-slot')
+                    ->setSection($mainGrid)
+            )
+            ->setFooter($footerSlot)
+            ->toArray();
+
+        // Add fullscreen configuration if needed
+        if ($fullscreen && is_array($aside)) {
+            $aside['width'] = '100vw';
+            $aside['height'] = '100vh';
+        }
+
+        return $aside;
+    }
+
+    /**
+     * Build header slot
+     *
+     * @return SlotManager
+     */
+    private static function buildHeader(): SlotManager
+    {
+        // Create header center grid
         $centerSlot = SlotManager::make('create-header-center');
         $centerSlot->setComponent(
             TextComponent::make('title')
@@ -45,35 +81,13 @@ class ListingCreateAsideSlot
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        // Create header right slot
+        // Create header right grid
         $rightSlot = SlotManager::make('create-header-right');
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('cross')
-                ->isIconButton(true)
                 ->variant('text')
-                ->meta(['action' => 'close', 'tooltip' => 'Close'])
-        );
-
-        // Create footer right slot
-        $footerRightSlot = SlotManager::make('create-footer-right');
-        $footerRightSlot->setComponent(
-            ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
-                ->variant('outlined')
                 ->meta(['action' => 'close'])
-        );
-        $footerRightSlot->setComponent(
-            ButtonComponent::make('create-btn')
-                ->label('Create Listing')
-                ->icon('check')
-                ->variant('contained')
-                ->color('primary')
-                ->type('submit')
-                ->data('action', 'submit')
-                ->data('url', '/api/listing')
-                ->data('method', 'POST')
-                ->meta(['tooltip' => 'Create new listing'])
         );
 
         // Wrap header in SlotManager
@@ -86,6 +100,32 @@ class ListingCreateAsideSlot
                 ->padding('md')
         );
 
+        return $headerSlot;
+    }
+
+    /**
+     * Build footer slot
+     *
+     * @return SlotManager
+     */
+    private static function buildFooter(): SlotManager
+    {
+        // Create footer right grid
+        $footerRightSlot = SlotManager::make('create-footer-right');
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('cancel-btn')
+                ->label('Cancel')
+                ->variant('outlined')
+                ->meta(['action' => 'close'])
+        );
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('create-btn')
+                ->label('Create Listing')
+                ->icon('check')
+                ->variant('contained')
+                ->meta(['action' => 'submit', 'dataUrl' => '/api/listing', 'method' => 'POST', 'color' => 'primary'])
+        );
+
         // Wrap footer in SlotManager
         $footerSlot = SlotManager::make('footer-slot');
         $footerSlot->setSection(
@@ -95,13 +135,6 @@ class ListingCreateAsideSlot
                 ->padding('md')
         );
 
-        return DetailSection::make($fullscreen ? 'create-listing-full' : 'create-listing')
-            ->setHeader($headerSlot)
-            ->setMain(
-                SlotManager::make('create-main-slot')
-                    ->setSection($mainGrid)
-            )
-            ->setFooter($footerSlot)
-            ->toArray();
+        return $footerSlot;
     }
 }

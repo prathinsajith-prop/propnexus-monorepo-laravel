@@ -53,6 +53,14 @@ Route::prefix('api')->group(function () {
     Route::get('/listing/{listing}', [ListingController::class, 'show'])->name('api.listings.show');
     Route::put('/listing/{listing}', [ListingController::class, 'update'])->name('api.listings.update');
     Route::delete('/listing/{listing}', [ListingController::class, 'delete'])->name('api.listings.destroy');
+
+    // Listing file upload routes
+    Route::post('/listing-upload/image', [ListingController::class, 'uploadImage'])->name('api.listing-upload.image');
+    Route::post('/listing-upload/document', [ListingController::class, 'uploadDocument'])->name('api.listing-upload.document');
+    Route::post('/listing-upload/video', [ListingController::class, 'uploadVideo'])->name('api.listing-upload.video');
+    Route::post('/listing-upload/attachment', [ListingController::class, 'uploadAttachment'])->name('api.listing-upload.attachment');
+    Route::post('/listing-upload', [ListingController::class, 'upload'])->name('api.listing-upload.generic');
+    Route::delete('/listing-files/{path}', [ListingController::class, 'deleteFile'])->name('api.listing-files.delete')->where('path', '.*');
 });
 
 Route::prefix('layouts')->middleware('cache.headers:layout')->group(function () {

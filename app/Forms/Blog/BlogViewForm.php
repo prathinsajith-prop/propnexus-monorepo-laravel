@@ -88,10 +88,11 @@ class BlogViewForm
             ->rows(3)
             ->width(12);
 
-        $contentGroup->textarea('content')
+        $contentGroup->richtext('content')
             ->label('Post Content')
             ->readonly(true)
-            ->rows(12)
+            ->height(400)
+            ->editor('tinymce')
             ->width(12);
 
         // === PUBLICATION SECTION ===

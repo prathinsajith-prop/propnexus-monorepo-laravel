@@ -283,18 +283,21 @@ class ListingForm
         $mediaGroup->file('featured_image')
             ->label('Featured Image')
             ->accept('image/*')
+            ->uploadUrl('/api/listing-upload/image')
             ->width(6);
 
         $mediaGroup->file('images')
             ->label('Property Images')
             ->accept('image/*')
             ->multiple(true)
+            ->uploadUrl('/api/listing-upload/image')
             ->width(6);
 
         $mediaGroup->file('floor_plans')
             ->label('Floor Plans')
             ->accept('image/*,application/pdf')
             ->multiple(true)
+            ->uploadUrl('/api/listing-upload/document')
             ->width(6);
 
         $mediaGroup->text('video_url')

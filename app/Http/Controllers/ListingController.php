@@ -9,13 +9,16 @@ use App\Actions\Listing\CreateListingAction;
 use App\Actions\Listing\GetListingAction;
 use App\Actions\Listing\UpdateListingAction;
 use App\Actions\Listing\DeleteListingAction;
+use App\Actions\File\FileUploadAction;
 use App\Forms\Listing\ListingForm;
 use App\Models\Listing;
 use App\Models\User;
+use App\Support\Settings\ListingSettings;
 use App\Enums\PropertyType;
 use App\Enums\ListingType;
 use App\Enums\ListingStatus;
 use App\Enums\Availability;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * ListingController
@@ -32,6 +35,8 @@ use App\Enums\Availability;
  * - DELETE /api/listings/{id} - Delete listing
  * - GET  /api/listings/stats/{id} - Get statistics
  * - GET  /api/listings-master-data - Get master data for dropdowns
+ * - POST /api/upload/*       - File upload endpoints
+ * - DELETE /api/files/{path} - Delete uploaded files
  * 
  * @package App\Http\Controllers
  */
@@ -166,9 +171,12 @@ class ListingController extends Controller
         $result = $action->execute();
 
         if ($result->isSuccess()) {
+            $data = $result->getData()['data'] ?: [];
+            $data['_settings'] = ListingSettings::forView();
+
             return response()->json([
                 'success' => true,
-                'data' => $result->getData()['data'],
+                'data' => $data,
             ]);
         }
 
@@ -371,5 +379,155 @@ class ListingController extends Controller
                 ];
             }
         );
+    }
+
+    /**
+     * Upload an image file
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadImage(Request $request)
+    {
+        return $this->handleUpload($request, 'image');
+    }
+
+    /**
+     * Upload a document file (floor plans, brochures)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadDocument(Request $request)
+    {
+        return $this->handleUpload($request, 'document');
+    }
+
+    /**
+     * Upload a video file
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadVideo(Request $request)
+    {
+        return $this->handleUpload($request, 'video');
+    }
+
+    /**
+     * Upload an attachment file
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadAttachment(Request $request)
+    {
+        return $this->handleUpload($request, 'attachment');
+    }
+
+    /**
+     * Generic file upload
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function upload(Request $request)
+    {
+        $type = $request->input('type', 'attachment');
+        return $this->handleUpload($request, $type);
+    }
+
+    /**
+     * Handle file upload using FileUploadAction
+     *
+     * @param Request $request
+     * @param string $type File type (image, video, document, attachment)
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function handleUpload(Request $request, string $type)
+    {
+        $request->validate([
+            'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+        ]);
+
+        $result = FileUploadAction::make(null, [
+            'file' => $request->file('file'),
+            'type' => $type,
+            'disk' => $request->input('disk', 'public'),
+            'folder' => $request->input('folder', 'listings'),
+            'generate_thumbnail' => $request->input('generate_thumbnail', $type === 'image'),
+            'resize' => $request->input('resize', []),
+            'quality' => $request->input('quality', 85),
+        ])->run();
+
+        if (!$result->isSuccess()) {
+            return response()->json([
+                'success' => false,
+                'message' => $result->getMessage(),
+                'errors' => $result->getErrors(),
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $result->getMessage(),
+            'data' => $result->getData(),
+        ], 201);
+    }
+
+    /**
+     * Delete a file
+     *
+     * @param string $path File path to delete
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteFile($path, Request $request)
+    {
+        $disk = $request->input('disk', 'public');
+
+        try {
+            if (Storage::disk($disk)->exists($path)) {
+                Storage::disk($disk)->delete($path);
+
+                // Also delete thumbnail if it exists
+                $thumbnailPath = str_replace('/uploads/', '/uploads/thumbnails/', $path);
+                if (Storage::disk($disk)->exists($thumbnailPath)) {
+                    Storage::disk($disk)->delete($thumbnailPath);
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'File deleted successfully',
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'File not found',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete file: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get maximum file size for upload type (in KB)
+     *
+     * @param string $type File type
+     * @return int Maximum file size in KB
+     */
+    private function getMaxFileSize(string $type): int
+    {
+        return match ($type) {
+            'image' => 10240, // 10MB - property photos
+            'video' => 102400, // 100MB - property videos/virtual tours
+            'document' => 20480, // 20MB - floor plans, brochures
+            'attachment' => 51200, // 50MB - general attachments
+            default => 10240,
+        };
     }
 }

@@ -71,11 +71,12 @@ class BlogForm
             ->rows(3)
             ->width(12);
 
-        $contentGroup->textarea('content')
+        $contentGroup->richtext('content')
             ->label('Post Content')
             ->placeholder('Write your blog content here...')
             ->required(true)
-            ->rows(10)
+            ->height(400)
+            ->editor('tinymce')
             ->width(12);
 
         // === PUBLICATION SECTION ===
@@ -132,6 +133,7 @@ class BlogForm
             ->label('Featured Image')
             ->accept('image/*')
             ->maxSize(5120)
+            ->uploadUrl('/api/upload/image')
             ->width(12);
 
         $mediaGroup->text('video_url')
@@ -144,12 +146,14 @@ class BlogForm
             ->accept('image/*')
             ->multiple(true)
             ->maxSize(10240)
+            ->uploadUrl('/api/upload/image')
             ->width(12);
 
         $mediaGroup->file('attachments')
             ->label('Attachments')
             ->multiple(true)
             ->maxSize(20480)
+            ->uploadUrl('/api/upload/attachment')
             ->width(12);
 
         // === CATEGORIZATION SECTION ===

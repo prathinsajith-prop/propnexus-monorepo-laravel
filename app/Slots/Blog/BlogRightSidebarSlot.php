@@ -66,7 +66,7 @@ class BlogRightSidebarSlot
                     'showTimestamps' => true,
                     'compact' => false,
                 ])
-                ->gridColumnSpan(6)
+                ->gridColumnSpan(12)
         );
 
         $rightGrid->add(
@@ -124,7 +124,7 @@ class BlogRightSidebarSlot
                     'color' => 'default',
                 ],
             ])
-            ->gridColumnSpan(6)
+            ->gridColumnSpan(12)
             ->meta([
                 'dataUrl' => '/api/blogs/:id/chats',
                 'emptyMessage' => 'No messages yet',

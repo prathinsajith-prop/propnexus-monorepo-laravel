@@ -82,11 +82,8 @@ class BlogHeaderSlot
 
         $rightRow->add(
             ButtonComponent::make('feedback-btn')
-                ->label('Feedback')
-                ->icon('messagecircle')
-                ->variant('outlined')
-                ->size('sm')
-                ->color('primary')
+                ->icon('message')
+                ->variant('text')
                 ->form(BlogFeedbackForm::make('blog-feedback-form', 'POST', '/api/blogs/:id/feedback')->toArray())
                 ->meta(['tooltip' => 'Submit Feedback'])
         );
@@ -116,7 +113,7 @@ class BlogHeaderSlot
 
         $rightRow->add(
             ButtonComponent::make('more-btn')
-                ->icon('ellipsisvertical')
+                ->icon('morehorizontal')
                 ->variant('text')
                 ->dropdown([
                     'id' => 'header-more-options',

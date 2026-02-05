@@ -11,6 +11,7 @@ use App\Actions\Blog\UpdateBlogAction;
 use App\Actions\Blog\DeleteBlogAction;
 use App\Actions\File\FileUploadAction;
 use App\Models\Blog;
+use App\Support\Settings\BlogSettings;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -203,9 +204,12 @@ class BlogController extends Controller
             ], $result->getData()['code'] ?? 404);
         }
 
+        $data = $result->getData() ?: [];
+        $data['_settings'] = BlogSettings::forView();
+
         return response()->json([
             'success' => true,
-            'data' => $result->getData(),
+            'data' => $data,
         ]);
     }
 
