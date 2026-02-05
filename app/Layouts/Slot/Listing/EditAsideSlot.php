@@ -68,6 +68,12 @@ class EditAsideSlot
     {
         // Create header center grid
         $centerSlot = SlotManager::make('edit-header-center');
+        $centerSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'column',
+            'gap' => '1',
+            'justify' => 'center',
+        ]);
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Edit Listing')
@@ -83,6 +89,13 @@ class EditAsideSlot
 
         // Create header right grid
         $rightSlot = SlotManager::make('edit-header-right');
+        $rightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('cross')
@@ -112,6 +125,13 @@ class EditAsideSlot
     {
         // Create footer right grid
         $footerRightSlot = SlotManager::make('edit-footer-right');
+        $footerRightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')

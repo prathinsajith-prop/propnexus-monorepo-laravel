@@ -76,7 +76,7 @@ class ListListingsAction extends BaseAction
     {
         $startTime = microtime(true);
 
-        $query = Listing::query();
+        $query = Listing::query()->with(['agent', 'owner']);
 
         // Handle soft-deleted/archived listings
         if ($this->data['only_archived'] ?? false) {

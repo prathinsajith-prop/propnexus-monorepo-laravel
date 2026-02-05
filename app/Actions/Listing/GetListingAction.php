@@ -38,7 +38,9 @@ class GetListingAction extends BaseAction
                 $id = $decodedId ?: $id;
             }
 
-            $listing = Listing::where('id', $id)->first();
+            $listing = Listing::with(['agent', 'owner', 'lastEditedBy'])
+                ->where('id', $id)
+                ->first();
 
             if (!$listing) {
                 return ActionResult::failure('Listing not found');

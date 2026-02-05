@@ -6,6 +6,8 @@ class FormGroupComponent extends BaseComponent
 {
     protected array $fields = [];
 
+    protected ?string $key = null;
+
     protected ?string $title = null;
 
     protected ?string $description = null;
@@ -32,11 +34,17 @@ class FormGroupComponent extends BaseComponent
 
     public function __construct(string $name)
     {
+        if (empty($name)) {
+            throw new \InvalidArgumentException('Form group name cannot be empty. A unique identifier is required.');
+        }
         parent::__construct($name, 'formGroup');
     }
 
     public static function make(string $name): self
     {
+        if (empty($name)) {
+            throw new \InvalidArgumentException('Form group name cannot be empty. A unique identifier is required.');
+        }
         return new static($name);
     }
 
@@ -190,7 +198,39 @@ class FormGroupComponent extends BaseComponent
     }
 
     /**
+     * Set the unique key for this form group
+     * Format: form.{formName}.{groupName}
+     * 
+     * @param string $key The unique key identifier
+     * @return self
+     */
+    public function setKey(string $key): self
+    {
+        if (empty($key)) {
+            throw new \InvalidArgumentException('Form group key cannot be empty.');
+        }
+        $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * Get the key for this form group
+     * 
+     * @return string|null
+     */
+    public function getKey(): ?string
+    {
+        return $this->key;
+    }
+
+    /**
      * Create a field inside this group and return it for chaining
+     * Note: Fields in groups are stored as indexed array to preserve order
+     * 
+     * @param string $type Field type
+     * @param string $name Field name
+     * @return mixed Field instance for chaining
      */
     protected function createField(string $type, string $name)
     {
@@ -362,6 +402,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Get all fields in this group
+     * 
+     * @return array Indexed array of field objects
      */
     public function getFields(): array
     {
@@ -369,16 +411,51 @@ class FormGroupComponent extends BaseComponent
     }
 
     /**
-     * Get a specific field by name
+     * Get a specific field by its name
+     * 
+     * @param string $name Field name to search for
+     * @return mixed|null Field object if found, null otherwise
      */
     public function getField(string $name)
     {
-        return $this->fields[$name] ?? null;
+        foreach ($this->fields as $field) {
+            // Handle field objects with getName() method
+            if (is_object($field) && method_exists($field, 'getName') && $field->getName() === $name) {
+                return $field;
+            }
+
+            // Handle array-based fields
+            if (is_array($field) && ($field['name'] ?? null) === $name) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if a field with the given name exists in this group
+     * 
+     * @param string $name Field name to check
+     * @return bool True if field exists, false otherwise
+     */
+    public function hasField(string $name): bool
+    {
+        return $this->getField($name) !== null;
     }
 
     public function toArray(): array
     {
+        // Ensure key is always set with proper format
+        if (empty($this->key)) {
+            throw new \RuntimeException(
+                "Form group '{$this->name}' is missing required key property. "
+                    . "Key must follow pattern: form.{{formName}}.{{groupName}}"
+            );
+        }
+
         return array_merge($this->getCommonProperties(), $this->filterNullValues([
+            'key' => $this->key,
             'title' => $this->title,
             'description' => $this->description,
             'icon' => $this->icon,

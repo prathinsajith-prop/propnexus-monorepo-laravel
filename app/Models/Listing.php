@@ -249,17 +249,17 @@ class Listing extends Model
     {
         // Try to find by primary key (ID)
         if (is_numeric($value)) {
-            return $this->where('id', $value)->first();
+            return $this->with(['agent', 'owner'])->where('id', $value)->first();
         }
 
         // Try to decode hashid to get the actual ID
         $decoded = hashids_decode($value);
         if ($decoded) {
-            return $this->where('id', $decoded)->first();
+            return $this->with(['agent', 'owner'])->where('id', $decoded)->first();
         }
 
         // Try to find by listing_id
-        return $this->where('listing_id', $value)->first();
+        return $this->with(['agent', 'owner'])->where('listing_id', $value)->first();
     }
 
     // ==========================================

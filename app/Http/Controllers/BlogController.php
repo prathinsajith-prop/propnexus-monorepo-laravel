@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Layouts\BlogLayout;
 use App\Actions\Blog\ListBlogsAction;
 use App\Actions\Blog\CreateBlogAction;
-use App\Actions\Blog\GetBlogAction;
 use App\Actions\Blog\UpdateBlogAction;
 use App\Actions\Blog\DeleteBlogAction;
 use App\Actions\File\FileUploadAction;
@@ -183,7 +182,7 @@ class BlogController extends Controller
 
     /**
      * Get a single blog post by ID
-     * Uses GetBlogAction with route model binding
+     * Uses route model binding directly
      *
      * @param \App\Models\Blog $blog Blog model instance (auto-injected)
      * @param Request $request
@@ -191,20 +190,16 @@ class BlogController extends Controller
      */
     public function show(Blog $blog, Request $request)
     {
-        $result = GetBlogAction::make(null, [
-            'id' => $blog->id,
-            'increment_views' => $request->input('increment_views', false),
-        ])->run();
+        // Increment view count if requested
+        if ($request->input('increment_views', false)) {
+            $blog->increment('views_count');
+            $blog->refresh();
 
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], $result->getData()['code'] ?? 404);
+            // Clear stats cache when views are incremented
+            cache()->tags(['blogs', 'stats'])->forget('blogs:stats:all');
         }
 
-        $data = $result->getData() ?: [];
+        $data = $blog->toArray();
         $data['_settings'] = BlogSettings::forView();
 
         return response()->json([
@@ -234,10 +229,17 @@ class BlogController extends Controller
             ], $result->getData()['code'] ?? 400);
         }
 
+        // Clear relevant caches
+        cache()->tags(['blogs'])->forget('blogs:master-data');
+        cache()->tags(['blogs', 'stats'])->forget('blogs:stats:all');
+
+        // Reload the model to get fresh data
+        $blog->refresh();
+
         return response()->json([
             'success' => true,
             'message' => $result->getMessage(),
-            'data' => $result->getData(),
+            'data' => $blog->toArray(),
         ]);
     }
 
@@ -264,6 +266,10 @@ class BlogController extends Controller
             ], $result->getData()['code'] ?? 404);
         }
 
+        // Clear relevant caches
+        cache()->tags(['blogs'])->forget('blogs:master-data');
+        cache()->tags(['blogs', 'stats'])->forget('blogs:stats:all');
+
         return response()->json([
             'success' => true,
             'message' => $result->getMessage(),
@@ -278,7 +284,7 @@ class BlogController extends Controller
      */
     public function stats()
     {
-        $stats = cache()->remember(
+        $stats = cache()->tags(['blogs', 'stats'])->remember(
             'blogs:stats:all',
             config('performance.cache.stats_ttl', 300),
             function () {
@@ -303,28 +309,21 @@ class BlogController extends Controller
 
     /**
      * Increment view count for a blog post
-     * Uses route model binding
+     * Uses route model binding directly
      *
      * @param \App\Models\Blog $blog Blog model instance (auto-injected)
      * @return \Illuminate\Http\JsonResponse
      */
     public function incrementView(Blog $blog)
     {
-        $result = GetBlogAction::make(null, [
-            'id' => $blog->id,
-            'increment_views' => true,
-        ])->run();
+        $blog->increment('views_count');
 
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-            ], 404);
-        }
+        // Clear stats cache
+        cache()->tags(['blogs', 'stats'])->forget('blogs:stats:all');
 
         return response()->json([
             'success' => true,
-            'views' => $result->getData()['views_count'] ?? 0,
+            'views' => $blog->views_count,
         ]);
     }
 
@@ -357,7 +356,7 @@ class BlogController extends Controller
      */
     private function getMasterData(): array
     {
-        return cache()->remember(
+        return cache()->tags(['blogs'])->remember(
             'blogs:master-data',
             config('performance.cache.master_data_ttl', 1800),
             function () {

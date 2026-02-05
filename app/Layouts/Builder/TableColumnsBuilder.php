@@ -102,7 +102,7 @@ class TableColumnsBuilder
     public static function getListingTableColumns(): array
     {
         return [
-            ['key' => 'id', 'label' => 'ID', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'mls_number', 'label' => 'ID', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'title', 'label' => 'Title', 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
             ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
             ['key' => 'property_type', 'label' => 'Type', 'sortable' => true, 'filterable' => true, 'filter_key' => 'property_type', 'width' => '120px'],

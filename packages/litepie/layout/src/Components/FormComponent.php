@@ -26,11 +26,17 @@ class FormComponent extends BaseComponent
 
     public function __construct(string $name)
     {
+        if (empty($name)) {
+            throw new \InvalidArgumentException('Form name cannot be empty. A unique identifier is required.');
+        }
         parent::__construct($name, 'form');
     }
 
     public static function make(string $name): self
     {
+        if (empty($name)) {
+            throw new \InvalidArgumentException('Form name cannot be empty. A unique identifier is required.');
+        }
         return new static($name);
     }
 
@@ -136,13 +142,27 @@ class FormComponent extends BaseComponent
 
     /**
      * Create a form group (fieldset) to organize related fields
+     * Automatically sets the group key in format: form.{formName}.{groupName}
      * 
-     * @param string $name Group name/identifier
+     * @param string $name Group name/identifier (must be unique within the form)
      * @return FormGroupComponent
+     * @throws \InvalidArgumentException if group name is empty or already exists
      */
     public function group(string $name): FormGroupComponent
     {
+        if (empty($name)) {
+            throw new \InvalidArgumentException('Group name cannot be empty.');
+        }
+
+        if (isset($this->formFields[$name])) {
+            throw new \InvalidArgumentException(
+                "Form group '{$name}' already exists in form '{$this->name}'. Group names must be unique."
+            );
+        }
+
         $group = FormGroupComponent::make($name);
+        // Set the key in format: form.{formName}.{groupName}
+        $group->setKey("form.{$this->name}.{$name}");
         $this->formFields[$name] = $group;
         return $group;
     }
@@ -262,11 +282,18 @@ class FormComponent extends BaseComponent
      * Create and register a field
      * 
      * @param string $type Field type
-     * @param string $name Field name
+     * @param string $name Field name (must be unique)
      * @return mixed Field instance for chaining
+     * @throws \InvalidArgumentException if field name already exists
      */
     protected function createField(string $type, string $name)
     {
+        if (isset($this->formFields[$name])) {
+            throw new \InvalidArgumentException(
+                "Field '{$name}' already exists in form '{$this->name}'. Field names must be unique."
+            );
+        }
+
         $field = \Litepie\Form\Field::make($type, $name);
         $this->formFields[$name] = $field;
         return $field;

@@ -69,6 +69,12 @@ class ViewAsideSlot
     {
         // Create header center/left grid
         $centerSlot = SlotManager::make('view-header-center');
+        $centerSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'column',
+            'gap' => '1',
+            'justify' => 'center',
+        ]);
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Listing Details')
@@ -84,6 +90,13 @@ class ViewAsideSlot
 
         // Create header right grid
         $rightSlot = SlotManager::make('view-header-right');
+        $rightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $rightSlot->setComponent(
             BadgeComponent::make('status-badge')
                 ->content('Active')
@@ -149,6 +162,13 @@ class ViewAsideSlot
     {
         // Create footer right grid
         $footerRightSlot = SlotManager::make('view-footer-right');
+        $footerRightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('close-footer-btn')
                 ->label('Close')

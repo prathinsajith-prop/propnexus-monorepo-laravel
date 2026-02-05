@@ -379,7 +379,10 @@ class ListingForm
 
         $agentGroup->select('agent_id')
             ->label('Assigned Agent')
-            ->options($masterData['agents'] ?? [])
+            ->options($masterData['agents'] ?? [
+                '' => 'Select Agent',
+            ])
+            ->placeholder('Select an agent')
             ->required(true)
             ->width(6);
 

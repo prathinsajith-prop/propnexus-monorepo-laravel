@@ -52,6 +52,12 @@ class ModalSlot
 
         // Build header
         $centerSlot = SlotManager::make('create-modal-header-center');
+        $centerSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'column',
+            'gap' => '1',
+            'justify' => 'center',
+        ]);
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Create New Listing')
@@ -60,6 +66,13 @@ class ModalSlot
         );
 
         $rightSlot = SlotManager::make('create-modal-header-right');
+        $rightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('x')
@@ -78,6 +91,13 @@ class ModalSlot
 
         // Build footer
         $footerRightSlot = SlotManager::make('create-modal-footer-right');
+        $footerRightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
@@ -142,6 +162,12 @@ class ModalSlot
 
         // Build header
         $centerSlot = SlotManager::make('delete-modal-header-center');
+        $centerSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'column',
+            'gap' => '1',
+            'justify' => 'center',
+        ]);
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content($title)
@@ -150,6 +176,13 @@ class ModalSlot
         );
 
         $rightSlot = SlotManager::make('delete-modal-header-right');
+        $rightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('x')
@@ -179,6 +212,13 @@ class ModalSlot
 
         // Build footer
         $footerRightSlot = SlotManager::make('delete-modal-footer-right');
+        $footerRightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')

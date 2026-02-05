@@ -6,11 +6,9 @@ use Illuminate\Http\Request;
 use App\Layouts\ListingLayout;
 use App\Actions\Listing\ListListingsAction;
 use App\Actions\Listing\CreateListingAction;
-use App\Actions\Listing\GetListingAction;
 use App\Actions\Listing\UpdateListingAction;
 use App\Actions\Listing\DeleteListingAction;
 use App\Actions\File\FileUploadAction;
-use App\Forms\Listing\ListingForm;
 use App\Models\Listing;
 use App\Models\User;
 use App\Support\Settings\ListingSettings;
@@ -160,30 +158,24 @@ class ListingController extends Controller
 
     /**
      * Get a single listing
-     * Uses route model binding
+     * Uses route model binding with automatic relationship loading
      *
-     * @param \App\Models\Listing $listing Listing model instance (auto-injected)
+     * @param \App\Models\Listing $listing Listing model instance (auto-injected with relationships)
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(Listing $listing)
     {
-        $action = new GetListingAction(new Listing(), ['id' => $listing->id, 'increment_views' => true]);
-        $result = $action->execute();
+        // Increment view count
+        $listing->increment('views_count');
 
-        if ($result->isSuccess()) {
-            $data = $result->getData()['data'] ?: [];
-            $data['_settings'] = ListingSettings::forView();
-
-            return response()->json([
-                'success' => true,
-                'data' => $data,
-            ]);
-        }
+        // Add settings for the view
+        $data = $listing->toArray();
+        $data['_settings'] = ListingSettings::forView();
 
         return response()->json([
-            'success' => false,
-            'error' => $result->getMessage(),
-        ], 404);
+            'success' => true,
+            'data' => $data,
+        ]);
     }
 
     /**
@@ -196,23 +188,30 @@ class ListingController extends Controller
      */
     public function update(Listing $listing, Request $request)
     {
-        $data = array_merge($request->all(), ['id' => $listing->id]);
-        $action = new UpdateListingAction(new Listing(), $data);
-        $result = $action->execute();
+        try {
+            $updateData = $request->except(['id', '_method', '_token']);
+            $updateData['last_edited_at'] = now();
+            $updateData['last_edited_by'] = auth()->id();
 
-        if ($result->isSuccess()) {
+            $listing->update($updateData);
+
+            // Clear stats cache when listing is updated
+            cache()->tags(['listings'])->flush();
+
+            // Reload with relationships
+            $listing->load(['agent', 'owner', 'lastEditedBy']);
+
             return response()->json([
                 'success' => true,
-                'data' => $result->getData()['data'],
-                'message' => $result->getData()['message'] ?? 'Listing updated successfully',
+                'data' => $listing,
+                'message' => 'Listing updated successfully',
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to update listing: ' . $e->getMessage(),
+            ], 422);
         }
-
-        return response()->json([
-            'success' => false,
-            'error' => $result->getMessage(),
-            'errors' => $result->getData()['errors'] ?? [],
-        ], 422);
     }
 
     /**
@@ -220,73 +219,104 @@ class ListingController extends Controller
      * Uses route model binding
      *
      * @param \App\Models\Listing $listing Listing model instance (auto-injected)
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(Listing $listing)
+    public function delete(Listing $listing, Request $request)
     {
-        $action = new DeleteListingAction(new Listing(), ['id' => $listing->id]);
-        $result = $action->execute();
+        try {
+            $force = $request->boolean('force', false);
 
-        if ($result->isSuccess()) {
+            if ($force) {
+                $listing->forceDelete();
+                $message = 'Listing permanently deleted';
+            } else {
+                $listing->delete();
+                $message = 'Listing deleted successfully';
+            }
+
+            // Clear stats cache when listing is deleted
+            cache()->tags(['listings'])->flush();
+
             return response()->json([
                 'success' => true,
-                'message' => $result->getData()['message'] ?? 'Listing deleted successfully',
+                'message' => $message,
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to delete listing: ' . $e->getMessage(),
+            ], 400);
         }
-
-        return response()->json([
-            'success' => false,
-            'error' => $result->getMessage(),
-        ], 400);
     }
 
     /**
      * Get statistics for a specific stat card
-     * Cached for better performance
+     * Cached for better performance with proper cache tagging
      *
      * @param string $statId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getStats($statId)
     {
-        $stats = cache()->remember(
-            "listings:stats:{$statId}",
-            config('performance.cache.stats_ttl', 300),
-            function () use ($statId) {
-                return match ($statId) {
-                    'stat-total-listings' => [
-                        'value' => Listing::count(),
-                        'trend' => '+' . rand(5, 15) . '%',
-                        'trendDirection' => 'up',
-                    ],
-                    'stat-active' => [
-                        'value' => Listing::where('status', 'active')->count(),
-                        'trend' => '+' . rand(3, 10) . '%',
-                        'trendDirection' => 'up',
-                    ],
-                    'stat-sold' => [
-                        'value' => Listing::whereIn('status', ['sold', 'rented'])->count(),
-                        'trend' => '+' . rand(2, 8) . '%',
-                        'trendDirection' => 'up',
-                    ],
-                    'stat-total-views' => [
-                        'value' => Listing::sum('views_count'),
-                        'trend' => '+' . rand(10, 25) . '%',
-                        'trendDirection' => 'up',
-                    ],
-                    default => [
-                        'value' => 0,
-                        'trend' => '0%',
-                        'trendDirection' => 'neutral',
-                    ],
-                };
-            }
-        );
+        try {
+            $stats = cache()->tags(['listings', 'stats'])->remember(
+                "listings:stats:{$statId}",
+                config('performance.cache.stats_ttl', 300),
+                function () use ($statId) {
+                    return match ($statId) {
+                        'stat-total-listings' => [
+                            'value' => Listing::count(),
+                            'change' => $this->calculateTrend('total'),
+                            'trendDirection' => 'up',
+                        ],
+                        'stat-active' => [
+                            'value' => Listing::where('status', 'active')->count(),
+                            'change' => $this->calculateTrend('active'),
+                            'trendDirection' => 'up',
+                        ],
+                        'stat-sold' => [
+                            'value' => Listing::whereIn('status', ['sold', 'rented'])->count(),
+                            'change' => $this->calculateTrend('sold'),
+                            'trendDirection' => 'up',
+                        ],
+                        'stat-total-views' => [
+                            'value' => Listing::sum('views_count'),
+                            'change' => $this->calculateTrend('views'),
+                            'trendDirection' => 'up',
+                        ],
+                        default => [
+                            'value' => 0,
+                            'change' => 0,
+                            'trendDirection' => 'neutral',
+                        ],
+                    };
+                }
+            );
 
-        return response()->json([
-            'success' => true,
-            'data' => $stats,
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $stats,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to fetch statistics',
+            ], 500);
+        }
+    }
+
+    /**
+     * Calculate trend percentage (placeholder for real calculation)
+     * TODO: Implement actual trend calculation based on historical data
+     *
+     * @param string $type
+     * @return int
+     */
+    private function calculateTrend(string $type): int
+    {
+        // Placeholder - implement real trend calculation
+        return rand(0, 15);
     }
 
     /**
@@ -310,75 +340,92 @@ class ListingController extends Controller
      */
     private function getMasterData(): array
     {
-        return cache()->remember(
-            'listings:master-data',
-            config('performance.cache.master_data_ttl', 1800),
-            function () {
-                return [
-                    'property_types' => collect(PropertyType::cases())->map(fn($case) => [
-                        'value' => $case->value,
-                        'label' => $case->label(),
-                        'icon' => $case->icon(),
-                        'color' => $case->color(),
-                    ])->keyBy('value')->toArray(),
-                    'listing_types' => collect(ListingType::cases())->map(fn($case) => [
-                        'value' => $case->value,
-                        'label' => $case->label(),
-                        'icon' => $case->icon(),
-                        'color' => $case->color(),
-                    ])->keyBy('value')->toArray(),
-                    'statuses' => collect(ListingStatus::cases())->map(fn($case) => [
-                        'value' => $case->value,
-                        'label' => $case->label(),
-                        'icon' => $case->icon(),
-                        'color' => $case->color(),
-                    ])->keyBy('value')->toArray(),
-                    'availabilities' => collect(Availability::cases())->map(fn($case) => [
-                        'value' => $case->value,
-                        'label' => $case->label(),
-                        'icon' => $case->icon(),
-                        'color' => $case->color(),
-                    ])->keyBy('value')->toArray(),
+        try {
+            return cache()->tags(['listings', 'master-data'])->remember(
+                'listings:master-data',
+                config('performance.cache.master_data_ttl', 1800),
+                function () {
+                    return [
+                        'property_types' => collect(PropertyType::cases())->map(fn($case) => [
+                            'value' => $case->value,
+                            'label' => $case->label(),
+                            'icon' => $case->icon(),
+                            'color' => $case->color(),
+                        ])->keyBy('value')->toArray(),
+                        'listing_types' => collect(ListingType::cases())->map(fn($case) => [
+                            'value' => $case->value,
+                            'label' => $case->label(),
+                            'icon' => $case->icon(),
+                            'color' => $case->color(),
+                        ])->keyBy('value')->toArray(),
+                        'statuses' => collect(ListingStatus::cases())->map(fn($case) => [
+                            'value' => $case->value,
+                            'label' => $case->label(),
+                            'icon' => $case->icon(),
+                            'color' => $case->color(),
+                        ])->keyBy('value')->toArray(),
+                        'availabilities' => collect(Availability::cases())->map(fn($case) => [
+                            'value' => $case->value,
+                            'label' => $case->label(),
+                            'icon' => $case->icon(),
+                            'color' => $case->color(),
+                        ])->keyBy('value')->toArray(),
 
-                    'currencies' => [
-                        'AED' => 'AED',
-                        'USD' => 'USD',
-                        'EUR' => 'EUR',
-                        'GBP' => 'GBP',
-                    ],
-                    'furnishing_statuses' => [
-                        'unfurnished' => 'Unfurnished',
-                        'semi-furnished' => 'Semi-Furnished',
-                        'fully-furnished' => 'Fully-Furnished',
-                    ],
-                    'cities' => [
-                        'Dubai' => 'Dubai',
-                        'Abu Dhabi' => 'Abu Dhabi',
-                        'Sharjah' => 'Sharjah',
-                        'Ajman' => 'Ajman',
-                        'Ras Al Khaimah' => 'Ras Al Khaimah',
-                        'Fujairah' => 'Fujairah',
-                        'Umm Al Quwain' => 'Umm Al Quwain',
-                    ],
-                    'areas' => [
-                        'Dubai Marina' => 'Dubai Marina',
-                        'Downtown Dubai' => 'Downtown Dubai',
-                        'Palm Jumeirah' => 'Palm Jumeirah',
-                        'Business Bay' => 'Business Bay',
-                        'JBR' => 'JBR',
-                        'Arabian Ranches' => 'Arabian Ranches',
-                        'Dubai Hills' => 'Dubai Hills',
-                        'City Walk' => 'City Walk',
-                        'Al Barsha' => 'Al Barsha',
-                        'Jumeirah' => 'Jumeirah',
-                    ],
-                    'agents' => User::select('id', 'name')
-                        ->get()
-                        ->mapWithKeys(fn($user) => [$user->id => $user->name])
-                        ->toArray(),
-                ];
-            }
-        );
+                        'currencies' => [
+                            'AED' => 'AED',
+                            'USD' => 'USD',
+                            'EUR' => 'EUR',
+                            'GBP' => 'GBP',
+                        ],
+                        'furnishing_statuses' => [
+                            'unfurnished' => 'Unfurnished',
+                            'semi-furnished' => 'Semi-Furnished',
+                            'fully-furnished' => 'Fully-Furnished',
+                        ],
+                        'cities' => [
+                            'Dubai' => 'Dubai',
+                            'Abu Dhabi' => 'Abu Dhabi',
+                            'Sharjah' => 'Sharjah',
+                            'Ajman' => 'Ajman',
+                            'Ras Al Khaimah' => 'Ras Al Khaimah',
+                            'Fujairah' => 'Fujairah',
+                            'Umm Al Quwain' => 'Umm Al Quwain',
+                        ],
+                        'areas' => [
+                            'Dubai Marina' => 'Dubai Marina',
+                            'Downtown Dubai' => 'Downtown Dubai',
+                            'Palm Jumeirah' => 'Palm Jumeirah',
+                            'Business Bay' => 'Business Bay',
+                            'JBR' => 'JBR',
+                            'Arabian Ranches' => 'Arabian Ranches',
+                            'Dubai Hills' => 'Dubai Hills',
+                            'City Walk' => 'City Walk',
+                            'Al Barsha' => 'Al Barsha',
+                            'Jumeirah' => 'Jumeirah',
+                        ],
+                        'agents' => User::select('id', 'name')
+                            ->orderBy('name')
+                            ->get()
+                            ->mapWithKeys(fn($user) => [$user->id => $user->name])
+                            ->toArray(),
+                    ];
+                }
+            );
+        } catch (\Exception $e) {
+            \Log::error('Failed to fetch master data: ' . $e->getMessage());
+            // Return minimal fallback data
+            return [
+                'property_types' => [],
+                'listing_types' => [],
+                'statuses' => [],
+                'availabilities' => [],
+                'currencies' => ['AED' => 'AED', 'USD' => 'USD'],
+                'furnishing_statuses' => [],
+                'cities' => [],
+                'areas' => [],
+                'agents' => [],
+            ];
+        }
     }
 
     /**

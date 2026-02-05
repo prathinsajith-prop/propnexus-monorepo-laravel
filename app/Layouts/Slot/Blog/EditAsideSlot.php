@@ -112,6 +112,13 @@ class EditAsideSlot
     {
         // Create footer right grid
         $footerRightSlot = SlotManager::make('edit-footer-right');
+        $footerRightSlot->setConfig([
+            'layout' => 'flex',
+            'direction' => 'row',
+            'gap' => '2',
+            'justify' => 'end',
+            'items' => 'center',
+        ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
