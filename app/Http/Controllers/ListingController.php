@@ -28,13 +28,13 @@ use Illuminate\Support\Facades\Storage;
  * 
  * Endpoints:
  * - GET  /listings           - Listing management page (layout)
- * - GET  /api/listings       - List listings (with filters, pagination)
- * - POST /api/listings       - Create new listing
- * - GET  /api/listings/{id}  - Get single listing
- * - PUT  /api/listings/{id}  - Update listing
- * - DELETE /api/listings/{id} - Delete listing
- * - GET  /api/listings/stats/{id} - Get statistics
- * - GET  /api/listings-master-data - Get master data for dropdowns
+ * - GET  /api/listing       - List listings (with filters, pagination)
+ * - POST /api/listing       - Create new listing
+ * - GET  /api/listing/{id}  - Get single listing
+ * - PUT  /api/listing/{id}  - Update listing
+ * - DELETE /api/listing/{id} - Delete listing
+ * - GET  /api/listing/stats/{id} - Get statistics
+ * - GET  /api/listing-master-data - Get master data for dropdowns
  * - POST /api/upload/*       - File upload endpoints
  * - DELETE /api/files/{path} - Delete uploaded files
  * 

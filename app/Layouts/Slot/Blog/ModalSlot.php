@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Blog;
 
 use App\Forms\Blog\BlogForm;
 use Litepie\Layout\Components\ButtonComponent;
@@ -18,9 +18,9 @@ use Litepie\Layout\SlotManager;
  * Blog-specific modal configurations using DetailSection structure.
  * Follows the same clean architecture pattern as aside slots.
  * 
- * @package App\Slots\Blog
+ * @package App\Layouts\Slot\Blog
  */
-class BlogModalSlot
+class ModalSlot
 {
     /**
      * Build create blog modal

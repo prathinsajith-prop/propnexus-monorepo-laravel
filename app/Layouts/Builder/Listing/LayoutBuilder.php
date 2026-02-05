@@ -1,32 +1,47 @@
 <?php
 
-namespace App\Layout\Builders;
+namespace App\Layouts\Builder\Listing;
 
 use App\Forms\Listing\ListingForm;
-use App\Slots\Listing\ListingCreateAsideSlot;
-use App\Slots\Listing\ListingDetailSlot;
-use App\Slots\Listing\ListingEditAsideSlot;
-use App\Slots\Listing\ListingModalSlot;
-use App\Slots\Listing\ListingViewAsideSlot;
+use App\Layouts\Builder\TableColumnsBuilder;
+use App\Layouts\Slot\Listing\CreateAsideSlot;
+use App\Layouts\Slot\Listing\DetailSlot;
+use App\Layouts\Slot\Listing\EditAsideSlot;
+use App\Layouts\Slot\Listing\ModalSlot;
+use App\Layouts\Slot\Listing\ViewAsideSlot;
 use Litepie\Layout\Sections\GridSection;
 
 /**
- * ListingLayoutBuilder
+ * Listing LayoutBuilder
  * 
- * Centralized builder for all Listing layout sections and components.
- * Mirrors BlogLayoutBuilder architecture for consistency.
+ * **Purpose**: Orchestrates construction of all property listing layout sections.
  * 
- * Organized into logical groups:
- * - Section Builders (Header, Main, Search, Actions, Footer)
- * - Component Builders (Stats Cards, Filter Columns, Action Columns)
- * - Table Configuration (Columns, Views)
- * - Aside Builders (Create, Edit, View)
- * - Modal Builders (Create, Delete, Confirmation)
- * - Form Builders (Listing Forms with various configurations)
+ * **Architecture Role**:
+ * - Receives configuration from ListingLayout (entry point)
+ * - Delegates component rendering to Slot classes
+ * - Coordinates section assembly and data flow
  * 
- * @package App\Layout\Builders
+ * **Organization** (mirrors Blog structure for consistency):
+ * 1. **Section Builders**: Main page sections (Header, Main, Footer, Search, Actions)
+ * 2. **Component Builders**: Individual UI components (Stats, Filters, Buttons)
+ * 3. **Table Configuration**: Data table setup with columns from TableColumnsBuilder
+ * 4. **Aside Builders**: Drawer panels (Create, Edit, View)
+ * 5. **Modal Builders**: Dialog modals (Create, Delete, Confirmation)
+ * 6. **Form Builders**: Form components with various configurations
+ * 
+ * **Naming Convention**:
+ * - No "Listing" prefix in class name (namespace provides context)
+ * - Module-specific logic lives here
+ * - Shared logic goes in parent Builder or TableColumnsBuilder
+ * 
+ * @package App\Layouts\Builder\Listing
+ * @see \App\Layouts\ListingLayout Main layout entry point
+ * @see \App\Layouts\Slot\Listing\* Component slots
+ * @see \App\Layouts\Builder\TableColumnsBuilder Shared table configuration
+ * 
+ * @package App\Layouts\Listing\Builders
  */
-class ListingLayoutBuilder
+class LayoutBuilder
 {
     // ============================================================
     // SECTION BUILDERS - Main layout sections
@@ -102,7 +117,7 @@ class ListingLayoutBuilder
         // Table view
         $mainGrid->row('table-row')->gap('none')->table('listings-table')
             ->asTable()
-            ->dataUrl('/api/listings')
+            ->dataUrl('/api/listing')
             ->columns(TableColumnsBuilder::getListingTableColumns())
             ->selectable(true)
             ->pagination(true)
@@ -112,7 +127,7 @@ class ListingLayoutBuilder
             ->clickableRows(
                 type: 'aside',
                 component: 'view-listing',
-                dataUrl: '/api/listings/:id',
+                dataUrl: '/api/listing/:id',
                 config: [
                     'width' => '900px',
                     'height' => '100vh',
@@ -130,7 +145,7 @@ class ListingLayoutBuilder
         // List view
         $mainGrid->row('list-row')->gap('none')->table('listings-list')
             ->asList()
-            ->dataUrl('/api/listings')
+            ->dataUrl('/api/listing')
             ->columns(TableColumnsBuilder::getListingTableListColumns())
             ->selectable(true)
             ->pagination(true)
@@ -140,7 +155,7 @@ class ListingLayoutBuilder
             ->clickableRows(
                 type: 'aside',
                 component: 'view-listing',
-                dataUrl: '/api/listings/:id',
+                dataUrl: '/api/listing/:id',
                 config: [
                     'width' => '900px',
                     'height' => '100vh',
@@ -343,14 +358,14 @@ class ListingLayoutBuilder
                 ['value' => '4', 'label' => '4+'],
                 ['value' => '5', 'label' => '5+'],
             ])
-            ->addRangeFilter('price', 'Price Range', 'currency')
+            ->addPriceRangeFilter('price', 'Price Range', 0, 10000000)
             ->addDateRangeFilter('created_at', 'Listed Date')
             ->collapsible()
             ->collapsed(true)
             ->showActiveCount()
             ->rememberFilters(true, 'listings_filter')
             ->liveFilter(true, 300)
-            ->submitAction('/api/listings');
+            ->submitAction('/api/listing');
     }
 
     /**
@@ -416,7 +431,7 @@ class ListingLayoutBuilder
      */
     public static function buildCreateListingAside(array $masterData): array
     {
-        return ListingCreateAsideSlot::make($masterData);
+        return CreateAsideSlot::make($masterData);
     }
 
     /**
@@ -427,7 +442,7 @@ class ListingLayoutBuilder
      */
     public static function buildCreateListingAsideFullscreen(array $masterData): array
     {
-        return ListingCreateAsideSlot::make($masterData, true);
+        return CreateAsideSlot::make($masterData, true);
     }
 
     /**
@@ -438,7 +453,7 @@ class ListingLayoutBuilder
      */
     public static function buildEditListingAside(array $masterData): array
     {
-        return ListingEditAsideSlot::make($masterData);
+        return EditAsideSlot::make($masterData);
     }
 
     /**
@@ -449,7 +464,7 @@ class ListingLayoutBuilder
      */
     public static function buildViewListingAside(array $masterData): array
     {
-        return ListingViewAsideSlot::make($masterData);
+        return ViewAsideSlot::make($masterData);
     }
 
     /**
@@ -460,7 +475,7 @@ class ListingLayoutBuilder
      */
     public static function buildViewListingAsideFullscreen(array $masterData): array
     {
-        return ListingViewAsideSlot::make($masterData, true);
+        return ViewAsideSlot::make($masterData, true);
     }
 
     // ============================================================
@@ -475,7 +490,7 @@ class ListingLayoutBuilder
      */
     public static function buildCreateListingModal(array $masterData): array
     {
-        return ListingModalSlot::createListing([
+        return ModalSlot::createListing([
             'masterData' => $masterData,
         ]);
     }
@@ -488,7 +503,7 @@ class ListingLayoutBuilder
      */
     public static function buildDeleteListingModal(string $itemName = 'this listing'): array
     {
-        return ListingModalSlot::deleteListing([
+        return ModalSlot::deleteListing([
             'itemName' => $itemName,
         ]);
     }
@@ -511,7 +526,7 @@ class ListingLayoutBuilder
     public static function buildListingFormComponent(
         string $formId = 'listing-form',
         string $method = 'POST',
-        string $submitUrl = '/api/listings',
+        string $submitUrl = '/api/listing',
         array $masterData = [],
         ?string $dataUrl = null,
         array $config = []
@@ -556,7 +571,7 @@ class ListingLayoutBuilder
         return self::buildListingFormComponent(
             formId: $formId,
             method: 'POST',
-            submitUrl: '/api/listings',
+            submitUrl: '/api/listing',
             masterData: $masterData
         );
     }
@@ -569,12 +584,12 @@ class ListingLayoutBuilder
      * @param string $formId Optional form ID
      * @return GridSection
      */
-    public static function editListingForm(array $masterData = [], string $dataUrl = '/api/listings/:id', string $formId = 'edit-listing-form'): GridSection
+    public static function editListingForm(array $masterData = [], string $dataUrl = '/api/listing/:id', string $formId = 'edit-listing-form'): GridSection
     {
         return self::buildListingFormComponent(
             formId: $formId,
             method: 'PUT',
-            submitUrl: '/api/listings/:id',
+            submitUrl: '/api/listing/:id',
             masterData: $masterData,
             dataUrl: $dataUrl
         );

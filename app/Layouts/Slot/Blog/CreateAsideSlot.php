@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Blog;
 
 use App\Forms\Blog\BlogForm;
 use Litepie\Layout\Components\ButtonComponent;
@@ -12,11 +12,31 @@ use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
 /**
- * Blog Create Aside Slot
+ * CreateAsideSlot
  * 
- * Builds the aside for creating a new blog post
+ * **Purpose**: Builds the drawer panel (aside) for creating a new blog post.
+ * 
+ * **Component Structure**:
+ * - Header: Title, subtitle, close button
+ * - Main: Blog creation form (BlogForm)
+ * - Footer: Cancel and create action buttons
+ * 
+ * **Features**:
+ * - Supports fullscreen mode
+ * - Separated header/footer builders for clean code
+ * - Consistent button configuration
+ * - Flexible parameter handling with defaults
+ * 
+ * **Architecture Pattern**:
+ * This follows the standard aside slot pattern used across all modules:
+ * 1. make() - Main builder method
+ * 2. buildHeader() - Private method for header construction
+ * 3. buildFooter() - Private method for footer construction
+ * 
+ * @package App\Layouts\Slot\Blog
+ * @see \App\Layouts\Slot\Listing\CreateAsideSlot Listing equivalent
  */
-class BlogCreateAsideSlot
+class CreateAsideSlot
 {
     /**
      * Build create blog aside

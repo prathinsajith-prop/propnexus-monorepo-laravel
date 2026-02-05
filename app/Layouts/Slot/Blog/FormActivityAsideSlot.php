@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Blog;
 
-use App\Forms\Blog\BlogForm;
+use App\Forms\Blog\BlogViewForm;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\TextComponent;
@@ -13,62 +13,57 @@ use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
 /**
- * Blog View Aside Slot
- * 
- * Builds the aside for viewing a blog post
+ * BlogFormActivityAsideSlot
+ *
+ * Builds the Forms & Activity aside for viewing blog posts.
+ * This aside includes activity history, chat, notes, and other interactive features.
  */
-class BlogViewAsideSlot
+class FormActivityAsideSlot
 {
     /**
-     * Build view blog aside
+     * Build the Forms & Activity aside for viewing a blog post
      *
-     * @param array $masterData Master data for form
-     * @param bool $fullscreen Whether to display fullscreen
-     * @return array
+     * @param array $masterData The master data containing blog post information
+     * @param bool $fullscreen Whether to display in fullscreen mode
+     * @return array The aside configuration array
      */
-    public static function make(array $masterData = [], bool $fullscreen = false): array
+    public static function make(array $masterData, bool $fullscreen = false): array
     {
-        $formComponent = BlogForm::make('view-blog-form', 'PUT', '/api/blogs/:id', $masterData, '/api/blogs/:id');
+        // Use the dedicated BlogViewForm for read-only display
+        $formComponent = BlogViewForm::make('view-blog-form-fa', $masterData, '/api/blogs/:id');
 
         // Create main grid for form
-        $mainGrid = GridSection::make('view-main-grid', 1)
+        $mainGrid = GridSection::make('view-fa-main-grid', 1)
             ->rows(1)
             ->gap('md');
         $mainGrid->add($formComponent);
 
-        // Build header
-        $headerSlot = self::buildHeader();
-
-        // Build footer
-        $footerSlot = self::buildFooter();
-
-        $aside = DetailSection::make('view-blog')
-            ->setHeader($headerSlot)
+        // Build aside using DetailSection
+        return DetailSection::make($fullscreen ? 'view-blog-fa-full' : 'view-blog-fa')
+            ->setHeader(
+                SlotManager::make('view-fa-header-slot')
+                    ->setSection(self::buildHeader())
+            )
             ->setMain(
-                SlotManager::make('view-main-slot')
+                SlotManager::make('view-fa-main-slot')
                     ->setSection($mainGrid)
             )
-            ->setFooter($footerSlot)
+            ->setFooter(
+                SlotManager::make('view-fa-footer-slot')
+                    ->setSection(self::buildFooter())
+            )
             ->toArray();
-
-        // Add fullscreen configuration if needed
-        if ($fullscreen && is_array($aside)) {
-            $aside['width'] = '100vw';
-            $aside['height'] = '100vh';
-        }
-
-        return $aside;
     }
 
     /**
-     * Build header slot
+     * Build the header section with title and action buttons
      *
-     * @return SlotManager
+     * @return HeaderSection
      */
-    private static function buildHeader(): SlotManager
+    private static function buildHeader(): HeaderSection
     {
-        // Create header center/left grid
-        $centerSlot = SlotManager::make('view-header-center');
+        // Create header center slot with title and subtitle
+        $centerSlot = SlotManager::make('view-fa-header-center');
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Blog Post Details')
@@ -82,8 +77,8 @@ class BlogViewAsideSlot
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        // Create header right grid
-        $rightSlot = SlotManager::make('view-header-right');
+        // Create header right slot with action buttons
+        $rightSlot = SlotManager::make('view-fa-header-right', 4);
         $rightSlot->setComponent(
             BadgeComponent::make('status-badge')
                 ->content('Published')
@@ -127,28 +122,23 @@ class BlogViewAsideSlot
                 ->meta(['action' => 'close'])
         );
 
-        // Wrap header in SlotManager
-        $headerSlot = SlotManager::make('view-header-slot');
-        $headerSlot->setSection(
-            HeaderSection::make('view-aside-header')
-                ->setLeft($centerSlot)
-                ->setRight($rightSlot)
-                ->variant('elevated')
-                ->padding('md')
-        );
-
-        return $headerSlot;
+        return HeaderSection::make('view-fa-aside-header')
+            ->setLeft($centerSlot)
+            ->setRight($rightSlot)
+            ->variant('elevated')
+            ->padding('md');
     }
 
     /**
-     * Build footer slot
+     * Build the footer section with navigation and action buttons
      *
-     * @return SlotManager
+     * @return FooterSection
      */
-    private static function buildFooter(): SlotManager
+    private static function buildFooter(): FooterSection
     {
-        // Create footer right grid
-        $footerRightSlot = SlotManager::make('view-footer-right');
+        // Create footer right slot with action buttons
+        $footerRightSlot = SlotManager::make('view-fa-footer-right', 3);
+
         $footerRightSlot->setComponent(
             ButtonComponent::make('close-footer-btn')
                 ->label('Close')
@@ -163,22 +153,16 @@ class BlogViewAsideSlot
                 ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-full'])
         );
         $footerRightSlot->setComponent(
-            ButtonComponent::make('forms-activity-btn')
-                ->label('Forms & Activity')
-                ->icon('dashboard')
+            ButtonComponent::make('more-fullscreen-btn')
+                ->label('View More Fullscreen')
+                ->icon('expand')
                 ->variant('contained')
-                ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-forms-full', 'tooltip' => 'Open Forms & Activity Dashboard', 'color' => 'success'])
+                ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-fa-full'])
         );
 
-        // Wrap footer in SlotManager
-        $footerSlot = SlotManager::make('view-footer-slot');
-        $footerSlot->setSection(
-            FooterSection::make('view-aside-footer')
-                ->setRight($footerRightSlot)
-                ->variant('elevated')
-                ->padding('md')
-        );
-
-        return $footerSlot;
+        return FooterSection::make('view-fa-aside-footer')
+            ->setRight($footerRightSlot)
+            ->variant('elevated')
+            ->padding('md');
     }
 }

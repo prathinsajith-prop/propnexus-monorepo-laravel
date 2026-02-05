@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Blog;
 
 use App\Forms\Blog\BlogForm;
 use App\Forms\Blog\BlogViewForm;
@@ -11,12 +11,12 @@ use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\SlotManager;
 
 /**
- * BlogDetailSlot
+ * DetailSlot
  *
  * Builds detail sections for blog posts (create, edit, view).
  * These are used for modal/detail views separate from the main aside views.
  */
-class BlogDetailSlot
+class DetailSlot
 {
     /**
      * Build create blog detail section

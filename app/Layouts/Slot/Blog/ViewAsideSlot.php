@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Slots\Listing;
+namespace App\Layouts\Slot\Blog;
 
-use App\Forms\Listing\ListingViewForm;
+use App\Forms\Blog\BlogForm;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\TextComponent;
@@ -13,14 +13,14 @@ use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
 /**
- * Listing View Aside Slot
+ * View Aside Slot
  * 
- * Builds the aside for viewing a listing
+ * Builds the aside for viewing a blog post
  */
-class ListingViewAsideSlot
+class ViewAsideSlot
 {
     /**
-     * Build view listing aside
+     * Build view blog aside
      *
      * @param array $masterData Master data for form
      * @param bool $fullscreen Whether to display fullscreen
@@ -28,7 +28,7 @@ class ListingViewAsideSlot
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
-        $formComponent = ListingViewForm::make('view-listing-form', 'GET', '/api/listing/:id', $masterData, '/api/listing/:id');
+        $formComponent = BlogForm::make('view-blog-form', 'PUT', '/api/blogs/:id', $masterData, '/api/blogs/:id');
 
         // Create main grid for form
         $mainGrid = GridSection::make('view-main-grid', 1)
@@ -42,7 +42,7 @@ class ListingViewAsideSlot
         // Build footer
         $footerSlot = self::buildFooter();
 
-        $aside = DetailSection::make('view-listing')
+        $aside = DetailSection::make('view-blog')
             ->setHeader($headerSlot)
             ->setMain(
                 SlotManager::make('view-main-slot')
@@ -71,13 +71,13 @@ class ListingViewAsideSlot
         $centerSlot = SlotManager::make('view-header-center');
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Listing Details')
+                ->content('Blog Post Details')
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('View complete property listing information')
+                ->content('View complete blog post information')
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -86,7 +86,7 @@ class ListingViewAsideSlot
         $rightSlot = SlotManager::make('view-header-right');
         $rightSlot->setComponent(
             BadgeComponent::make('status-badge')
-                ->content('Active')
+                ->content('Published')
                 ->color('success')
                 ->variant('standard')
                 ->meta(['size' => 'sm'])
@@ -97,7 +97,7 @@ class ListingViewAsideSlot
                 ->icon('pen')
                 ->variant('outlined')
                 ->size('sm')
-                ->meta(['action' => 'edit', 'type' => 'aside', 'component' => 'edit-listing-full', 'tooltip' => 'Edit Listing'])
+                ->meta(['action' => 'edit', 'type' => 'aside', 'component' => 'edit-blog-full', 'tooltip' => 'Edit Blog Post'])
         );
         $rightSlot->setComponent(
             ButtonComponent::make('delete-btn')
@@ -106,17 +106,17 @@ class ListingViewAsideSlot
                 ->variant('outlined')
                 ->size('sm')
                 ->confirm([
-                    'title' => 'Delete Listing',
-                    'message' => 'Are you sure you want to delete this listing? This action cannot be undone.',
+                    'title' => 'Delete Blog Post',
+                    'message' => 'Are you sure you want to delete this blog post? This action cannot be undone.',
                     'confirmLabel' => 'Delete',
                     'cancelLabel' => 'Cancel',
                     'action' => 'delete',
-                    'dataUrl' => '/api/listing/:id',
+                    'dataUrl' => '/api/blogs/:id',
                     'method' => 'delete',
                 ])
                 ->meta([
                     'action' => 'delete',
-                    'tooltip' => 'Delete Listing',
+                    'tooltip' => 'Delete Blog Post',
                     'color' => 'error',
                 ])
         );
@@ -160,7 +160,14 @@ class ListingViewAsideSlot
                 ->label('View Fullscreen')
                 ->icon('expand')
                 ->variant('contained')
-                ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-listing-full'])
+                ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-full'])
+        );
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('forms-activity-btn')
+                ->label('Forms & Activity')
+                ->icon('dashboard')
+                ->variant('contained')
+                ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-forms-full', 'tooltip' => 'Open Forms & Activity Dashboard', 'color' => 'success'])
         );
 
         // Wrap footer in SlotManager

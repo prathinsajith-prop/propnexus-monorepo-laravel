@@ -2,24 +2,33 @@
 
 namespace App\Layouts;
 
-use App\Layout\Builders\BlogLayoutBuilder;
-use App\Slots\Blog\BlogEditAsideSlot;
-use App\Slots\Blog\BlogFormActivityAsideSlot;
-use Litepie\Layout\LayoutBuilder;
+use App\Layouts\Builder\Blog\LayoutBuilder;
+use App\Layouts\Slot\Blog\EditAsideSlot;
+use App\Layouts\Slot\Blog\FormActivityAsideSlot;
+use Litepie\Layout\LayoutBuilder as LitepieLayoutBuilder;
 
 /**
  * BlogLayout
  *
- * Comprehensive blog management layout following clean architecture principles.
- * Delegates all section building to BlogLayoutBuilder for better organization.
+ * Main entry point for the blog management interface.
  * 
- * Architecture:
- * - Minimal layout configuration (this class)
- * - Section builders extracted to BlogLayoutBuilder
- * - Component definitions routed to slot classes
- * - Clean separation of concerns
+ * **Structure**:
+ * - Entry Point: This class (wires components together)
+ * - Builder: App\Layouts\Builder\Blog\LayoutBuilder (construction logic)
+ * - Slots: App\Layouts\Slot\Blog\* (reusable components)
+ * 
+ * **Responsibilities**:
+ * - Define page configuration (title, meta, sections)
+ * - Register modal components (create, delete, confirmation)
+ * - Register aside panels (view, edit, create, form activity)
+ * - Delegate section building to LayoutBuilder
+ * 
+ * **Architecture**:
+ * Clean separation: Layout (config) → Builder (logic) → Slots (components)
  * 
  * @package App\Layouts
+ * @see \App\Layouts\Builder\Blog\LayoutBuilder
+ * @see \App\Layouts\Slot\Blog
  */
 class BlogLayout
 {
@@ -31,7 +40,7 @@ class BlogLayout
      */
     public static function make($masterData)
     {
-        return LayoutBuilder::create('blogs', 'page')
+        return LitepieLayoutBuilder::create('blogs', 'page')
             ->title('Blog Management')
             ->type('layouts')
             ->meta([
@@ -40,11 +49,11 @@ class BlogLayout
                 'version' => '1.0.0',
                 'refreshInterval' => null,
             ])
-            ->section('header', fn($section) => BlogLayoutBuilder::buildHeaderSection($section))
-            ->section('main', fn($section) => BlogLayoutBuilder::buildMainSection($section, $masterData))
-            ->section('search', fn($section) => BlogLayoutBuilder::buildSearchComponent($section, $masterData))
-            ->section('actions', fn($section) => BlogLayoutBuilder::buildActionsComponent($section, $masterData))
-            ->section('footer', fn($section) => BlogLayoutBuilder::buildFooterSection($section))
+            ->section('header', fn($section) => LayoutBuilder::buildHeaderSection($section))
+            ->section('main', fn($section) => LayoutBuilder::buildMainSection($section, $masterData))
+            ->section('search', fn($section) => LayoutBuilder::buildSearchComponent($section, $masterData))
+            ->section('actions', fn($section) => LayoutBuilder::buildActionsComponent($section, $masterData))
+            ->section('footer', fn($section) => LayoutBuilder::buildFooterSection($section))
             ->build();
     }
 
@@ -61,23 +70,23 @@ class BlogLayout
     {
         if ($type === 'modal') {
             return match ($componentName) {
-                'create-blog-modal' => BlogLayoutBuilder::buildCreateBlogModal($masterData),
-                'delete-blog-modal' => BlogLayoutBuilder::buildDeleteBlogModal(),
+                'create-blog-modal' => LayoutBuilder::buildCreateBlogModal($masterData),
+                'delete-blog-modal' => LayoutBuilder::buildDeleteBlogModal(),
                 default => null,
             };
         }
 
         if ($type === 'aside') {
             return match ($componentName) {
-                'view-blog' => BlogLayoutBuilder::buildViewBlogAside($masterData),
-                'view-blog-full' => BlogLayoutBuilder::buildViewBlogAsideFullscreen($masterData),
-                'view-blog-forms' => BlogLayoutBuilder::buildViewBlogFormActivityAside($masterData),
-                'view-blog-forms-full' => BlogLayoutBuilder::buildViewBlogFormActivityAside($masterData),
-                'view-blog-fa-full' => BlogFormActivityAsideSlot::make($masterData, true),
-                'create-blog' => BlogLayoutBuilder::buildCreateBlogAside($masterData),
-                'create-blog-full' => BlogLayoutBuilder::buildCreateBlogAsideFullscreen($masterData),
-                'edit-blog' => BlogLayoutBuilder::buildEditBlogAside($masterData),
-                'edit-blog-full' => BlogEditAsideSlot::make($masterData, true),
+                'view-blog' => LayoutBuilder::buildViewBlogAside($masterData),
+                'view-blog-full' => LayoutBuilder::buildViewBlogAsideFullscreen($masterData),
+                'view-blog-forms' => LayoutBuilder::buildViewBlogFormActivityAside($masterData),
+                'view-blog-forms-full' => LayoutBuilder::buildViewBlogFormActivityAside($masterData),
+                'view-blog-fa-full' => FormActivityAsideSlot::make($masterData, true),
+                'create-blog' => LayoutBuilder::buildCreateBlogAside($masterData),
+                'create-blog-full' => LayoutBuilder::buildCreateBlogAsideFullscreen($masterData),
+                'edit-blog' => LayoutBuilder::buildEditBlogAside($masterData),
+                'edit-blog-full' => EditAsideSlot::make($masterData, true),
                 default => null,
             };
         }

@@ -2,23 +2,33 @@
 
 namespace App\Layouts;
 
-use App\Layout\Builders\ListingLayoutBuilder;
-use App\Slots\Listing\ListingEditAsideSlot;
-use Litepie\Layout\LayoutBuilder;
+use App\Layouts\Builder\Listing\LayoutBuilder;
+use App\Layouts\Slot\Listing\EditAsideSlot;
+use Litepie\Layout\LayoutBuilder as LitepieLayoutBuilder;
 
 /**
  * ListingLayout
  *
- * Property listing management layout following clean architecture principles.
- * Delegates all section building to ListingLayoutBuilder for better organization.
+ * Main entry point for the property listing management interface.
  * 
- * Architecture:
- * - Minimal layout configuration (this class)
- * - Section builders extracted to ListingLayoutBuilder
- * - Component definitions routed to slot classes
- * - Clean separation of concerns
+ * **Structure**:
+ * - Entry Point: This class (wires components together)
+ * - Builder: App\Layouts\Builder\Listing\LayoutBuilder (construction logic)
+ * - Slots: App\Layouts\Slot\Listing\* (reusable components)
+ * 
+ * **Responsibilities**:
+ * - Define page configuration (title, meta, sections)
+ * - Register modal components (create, delete, confirmation)
+ * - Register aside panels (view, edit, create)
+ * - Delegate section building to LayoutBuilder
+ * 
+ * **Architecture**:
+ * Clean separation: Layout (config) → Builder (logic) → Slots (components)
+ * Mirrors Blog structure for consistency
  * 
  * @package App\Layouts
+ * @see \App\Layouts\Builder\Listing\LayoutBuilder
+ * @see \App\Layouts\Slot\Listing
  */
 class ListingLayout
 {
@@ -30,20 +40,20 @@ class ListingLayout
      */
     public static function make($masterData)
     {
-        return LayoutBuilder::create('listings', 'page')
+        return LitepieLayoutBuilder::create('listings', 'page')
             ->title('Listing Management')
             ->type('layouts')
             ->meta([
-                'masterDataUrl' => '/api/listings-master-data',
+                'masterDataUrl' => '/api/listing-master-data',
                 'description' => 'Property Listing Management System',
                 'version' => '1.0.0',
                 'refreshInterval' => null,
             ])
-            ->section('header', fn($section) => ListingLayoutBuilder::buildHeaderSection($section))
-            ->section('main', fn($section) => ListingLayoutBuilder::buildMainSection($section, $masterData))
-            ->section('search', fn($section) => ListingLayoutBuilder::buildSearchComponent($section, $masterData))
-            ->section('actions', fn($section) => ListingLayoutBuilder::buildActionsComponent($section, $masterData))
-            ->section('footer', fn($section) => ListingLayoutBuilder::buildFooterSection($section))
+            ->section('header', fn($section) => LayoutBuilder::buildHeaderSection($section))
+            ->section('main', fn($section) => LayoutBuilder::buildMainSection($section, $masterData))
+            ->section('search', fn($section) => LayoutBuilder::buildSearchComponent($section, $masterData))
+            ->section('actions', fn($section) => LayoutBuilder::buildActionsComponent($section, $masterData))
+            ->section('footer', fn($section) => LayoutBuilder::buildFooterSection($section))
             ->build();
     }
 
@@ -60,20 +70,20 @@ class ListingLayout
     {
         if ($type === 'modal') {
             return match ($componentName) {
-                'create-listing-modal' => ListingLayoutBuilder::buildCreateListingModal($masterData),
-                'delete-listing-modal' => ListingLayoutBuilder::buildDeleteListingModal(),
+                'create-listing-modal' => LayoutBuilder::buildCreateListingModal($masterData),
+                'delete-listing-modal' => LayoutBuilder::buildDeleteListingModal(),
                 default => null,
             };
         }
 
         if ($type === 'aside') {
             return match ($componentName) {
-                'view-listing' => ListingLayoutBuilder::buildViewListingAside($masterData),
-                'view-listing-full' => ListingLayoutBuilder::buildViewListingAsideFullscreen($masterData),
-                'create-listing' => ListingLayoutBuilder::buildCreateListingAside($masterData),
-                'create-listing-full' => ListingLayoutBuilder::buildCreateListingAsideFullscreen($masterData),
-                'edit-listing' => ListingLayoutBuilder::buildEditListingAside($masterData),
-                'edit-listing-full' => ListingEditAsideSlot::make($masterData, true),
+                'view-listing' => LayoutBuilder::buildViewListingAside($masterData),
+                'view-listing-full' => LayoutBuilder::buildViewListingAsideFullscreen($masterData),
+                'create-listing' => LayoutBuilder::buildCreateListingAside($masterData),
+                'create-listing-full' => LayoutBuilder::buildCreateListingAsideFullscreen($masterData),
+                'edit-listing' => LayoutBuilder::buildEditListingAside($masterData),
+                'edit-listing-full' => EditAsideSlot::make($masterData, true),
                 default => null,
             };
         }

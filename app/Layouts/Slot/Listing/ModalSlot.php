@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Listing;
+namespace App\Layouts\Slot\Listing;
 
 use App\Forms\Listing\ListingForm;
 use Litepie\Layout\Components\ButtonComponent;
@@ -18,9 +18,9 @@ use Litepie\Layout\SlotManager;
  * Uses DetailSection structure for consistency with aside slots.
  * Follows array parameter pattern for maximum flexibility.
  * 
- * @package App\Slots\Listing
+ * @package App\Layouts\Slot\Listing
  */
-class ListingModalSlot
+class ModalSlot
 {
     /**
      * Build create listing modal

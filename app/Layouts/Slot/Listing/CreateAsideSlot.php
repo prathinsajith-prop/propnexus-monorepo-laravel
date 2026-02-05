@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Listing;
 
-use App\Forms\Blog\BlogForm;
+use App\Forms\Listing\ListingForm;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Sections\DetailSection;
@@ -12,14 +12,14 @@ use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
 /**
- * Blog Edit Aside Slot
+ * Create Aside Slot
  * 
- * Builds the aside for editing an existing blog post
+ * Builds the aside for creating a new listing
  */
-class BlogEditAsideSlot
+class CreateAsideSlot
 {
     /**
-     * Build edit blog aside
+     * Build create listing aside
      *
      * @param array $masterData Master data for form
      * @param bool $fullscreen Whether to display fullscreen
@@ -27,10 +27,10 @@ class BlogEditAsideSlot
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
-        $formComponent = BlogForm::make('edit-blog-form', 'PUT', '/api/blogs/:id', $masterData, '/api/blogs/:id');
+        $formComponent = ListingForm::make('create-listing-form', 'POST', '/api/listing', $masterData);
 
         // Create main grid for form
-        $mainGrid = GridSection::make('edit-main-grid', 1)
+        $mainGrid = GridSection::make('create-main-grid', 1)
             ->rows(1)
             ->gap('md');
         $mainGrid->add($formComponent);
@@ -41,10 +41,10 @@ class BlogEditAsideSlot
         // Build footer
         $footerSlot = self::buildFooter();
 
-        $aside = DetailSection::make('edit-blog')
+        $aside = DetailSection::make('create-listing')
             ->setHeader($headerSlot)
             ->setMain(
-                SlotManager::make('edit-main-slot')
+                SlotManager::make('create-main-slot')
                     ->setSection($mainGrid)
             )
             ->setFooter($footerSlot)
@@ -67,22 +67,22 @@ class BlogEditAsideSlot
     private static function buildHeader(): SlotManager
     {
         // Create header center grid
-        $centerSlot = SlotManager::make('edit-header-center');
+        $centerSlot = SlotManager::make('create-header-center');
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Edit Blog Post')
+                ->content('Create New Listing')
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('Update blog post information')
+                ->content('Add a new property to your listings')
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
 
         // Create header right grid
-        $rightSlot = SlotManager::make('edit-header-right');
+        $rightSlot = SlotManager::make('create-header-right');
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('cross')
@@ -93,7 +93,7 @@ class BlogEditAsideSlot
         // Wrap header in SlotManager
         $headerSlot = SlotManager::make('header-slot');
         $headerSlot->setSection(
-            HeaderSection::make('edit-aside-header')
+            HeaderSection::make('create-aside-header')
                 ->setCenter($centerSlot)
                 ->setRight($rightSlot)
                 ->variant('elevated')
@@ -111,7 +111,7 @@ class BlogEditAsideSlot
     private static function buildFooter(): SlotManager
     {
         // Create footer right grid
-        $footerRightSlot = SlotManager::make('edit-footer-right');
+        $footerRightSlot = SlotManager::make('create-footer-right');
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
@@ -119,17 +119,17 @@ class BlogEditAsideSlot
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
-            ButtonComponent::make('update-btn')
-                ->label('Update Post')
+            ButtonComponent::make('create-btn')
+                ->label('Create Listing')
                 ->icon('check')
                 ->variant('contained')
-                ->meta(['action' => 'submit', 'dataUrl' => '/api/blogs/:id', 'method' => 'PUT', 'color' => 'success'])
+                ->meta(['action' => 'submit', 'dataUrl' => '/api/listing', 'method' => 'POST', 'color' => 'primary'])
         );
 
         // Wrap footer in SlotManager
         $footerSlot = SlotManager::make('footer-slot');
         $footerSlot->setSection(
-            FooterSection::make('edit-aside-footer')
+            FooterSection::make('create-aside-footer')
                 ->setRight($footerRightSlot)
                 ->variant('elevated')
                 ->padding('md')

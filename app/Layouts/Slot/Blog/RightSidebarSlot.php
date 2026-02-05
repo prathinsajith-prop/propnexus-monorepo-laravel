@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Blog;
 
 use Litepie\Layout\Components\ListComponent;
 use Litepie\Layout\Components\TimelineComponent;
 use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\SlotManager;
 
-class BlogRightSidebarSlot
+class RightSidebarSlot
 {
     /**
      * Build right sidebar grid with activity timeline and chat history

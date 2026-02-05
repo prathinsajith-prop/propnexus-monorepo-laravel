@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Shared;
+namespace App\Layouts\Slot\Shared;
 
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\TextComponent;
@@ -26,7 +26,7 @@ use Litepie\Layout\SlotManager;
  * 
  * DO NOT add module-specific modals here!
  * 
- * @package App\Slots\Shared
+ * @package App\Layouts\Slot\Shared
  */
 class ModalSlot
 {

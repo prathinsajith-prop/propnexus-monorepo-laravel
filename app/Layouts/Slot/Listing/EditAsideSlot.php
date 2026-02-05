@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Listing;
+namespace App\Layouts\Slot\Listing;
 
 use App\Forms\Listing\ListingForm;
 use Litepie\Layout\Components\ButtonComponent;
@@ -12,11 +12,11 @@ use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
 /**
- * Listing Edit Aside Slot
+ * Edit Aside Slot
  * 
  * Builds the aside for editing an existing listing
  */
-class ListingEditAsideSlot
+class EditAsideSlot
 {
     /**
      * Build edit listing aside

@@ -1,16 +1,37 @@
 <?php
 
-namespace App\Layout\Builders;
+namespace App\Layouts\Builder;
 
 use Litepie\Layout\Components\ButtonComponent;
 
 /**
  * TableColumnsBuilder
  * 
- * Centralized configuration for table columns across different layouts.
- * Provides column definitions for both table and list views.
+ * **Purpose**: Shared table column configurations for all modules.
  * 
- * @package App\Layout\Builders
+ * **Responsibilities**:
+ * - Define table column structures (Blog, Listing)
+ * - Configure action buttons (View, Edit, Delete)
+ * - Provide consistent column definitions across views
+ * - Centralize button builder logic to eliminate duplication
+ * 
+ * **Architecture**:
+ * - Shared across multiple modules (Blog, Listing)
+ * - Reusable button builder pattern
+ * - Consistent action configurations
+ * 
+ * **Organization**:
+ * 1. **Blog Columns**: getBlogTableColumns(), getBlogTableListColumns()
+ * 2. **Listing Columns**: getListingTableColumns(), getListingTableListColumns()
+ * 3. **Generic Builder**: buildTableActionButton() - eliminates code duplication
+ * 4. **Action Builders**: Module-specific button configurations
+ * 
+ * **Usage Example**:
+ * ```php
+ * ->columns(TableColumnsBuilder::getBlogTableColumns())
+ * ```
+ * 
+ * @package App\Layouts\Builder
  */
 class TableColumnsBuilder
 {

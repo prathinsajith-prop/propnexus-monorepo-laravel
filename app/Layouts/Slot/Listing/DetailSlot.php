@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Listing;
+namespace App\Layouts\Slot\Listing;
 
 use App\Forms\Listing\ListingForm;
 use App\Forms\Listing\ListingViewForm;
@@ -12,7 +12,7 @@ use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
-class ListingDetailSlot
+class DetailSlot
 {
     /**
      * Build create listing detail section

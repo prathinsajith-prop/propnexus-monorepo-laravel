@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Listing;
 
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Sections\FooterSection;
+use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\Sections\RowSection;
 use Litepie\Layout\SlotManager;
 
-class BlogFooterSlot
+class FooterSlot
 {
     /**
      * Build aside footer with grid sections for buttons
@@ -19,29 +20,25 @@ class BlogFooterSlot
         $footerSlot = SlotManager::make('footer-slot');
 
         // Create left grid for help button
-        $footerLeftGrid = SlotManager::make('footer-left-grid', 1);
+        $footerGrid = GridSection::make('footer-left-grid', 1)
+            ->rows(1)
+            ->gap('xs');
 
-        $footerLeftGrid->setSection(
-            RowSection::make('footer-left-row')
-                ->gap('xs')
-                ->align('left')
-                ->justify('start')
-                ->add(
-                    ButtonComponent::make('help-btn')
-                        ->label('Need Help?')
-                        ->variant('text')
-                        ->meta(['action' => 'help'])
-                )
-        )->setConfig([
-            'colSpan' => '6',
-        ]);
+        $footerGrid->add(
+            ButtonComponent::make('help-btn')
+                ->label('Need Help?')
+                ->variant('text')
+                ->meta(['action' => 'help'])
+        );
 
         // Create right grid for action buttons
-        $footerRightGrid = SlotManager::make('footer-right-grid', 1);
+        $footerRightGrid = GridSection::make('footer-right-grid', 2)
+            ->rows(1)
+            ->gap('xs');
 
         $footerRightRow = RowSection::make('footer-right-row')
             ->gap('xs')
-            ->align('right')
+            ->align('center')
             ->justify('end');
 
         $footerRightRow->add(
@@ -58,15 +55,20 @@ class BlogFooterSlot
                 ->meta(['action' => 'save'])
         );
 
-        $footerRightGrid->setSection($footerRightRow)->setConfig([
-            'colSpan' => '6',
-        ]);
+        $footerRightGrid->add($footerRightRow);
+
+        // Wrap grids in SlotManager
+        $footerLeftSlot = SlotManager::make('footer-left-slot');
+        $footerLeftSlot->setSection($footerGrid);
+
+        $footerRightSlot = SlotManager::make('footer-right-slot');
+        $footerRightSlot->setSection($footerRightGrid);
 
         // Create footer component with grid sections
         return $footerSlot->setSection(
             FooterSection::make('aside-footer')
-                ->setLeft($footerLeftGrid)
-                ->setRight($footerRightGrid)
+                ->setLeft($footerLeftSlot)
+                ->setRight($footerRightSlot)
                 ->variant('elevated')
                 ->padding('md')
         );

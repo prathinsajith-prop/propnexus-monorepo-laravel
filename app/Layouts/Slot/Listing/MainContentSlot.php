@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Listing;
+namespace App\Layouts\Slot\Listing;
 
 use Litepie\Layout\Components\TableComponent;
 use Litepie\Layout\Components\TextComponent;
@@ -12,7 +12,7 @@ use Litepie\Layout\SlotManager;
  * 
  * Builds the main content area for listing asides with table and supporting components
  */
-class ListingMainContentSlot
+class MainContentSlot
 {
     /**
      * Build main content slot with table and text
@@ -24,7 +24,7 @@ class ListingMainContentSlot
      */
     public static function make(
         array $columns = [],
-        string $dataUrl = '/api/listings',
+        string $dataUrl = '/api/listing',
         string $tableId = 'listing-table'
     ): SlotManager {
         // Create main content grid

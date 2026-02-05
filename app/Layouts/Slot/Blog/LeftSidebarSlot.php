@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Blog;
 
 use App\Forms\Blog\BlogChatForm;
 use App\Forms\Blog\BlogNotesForm;
 use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\SlotManager;
 
-class BlogLeftSidebarSlot
+class LeftSidebarSlot
 {
     /**
      * Build left sidebar grid with forms

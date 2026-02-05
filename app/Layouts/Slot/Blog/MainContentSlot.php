@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Blog;
 
 use App\Forms\Blog\BlogForm;
 use Litepie\Layout\Components\TextComponent;
@@ -12,7 +12,7 @@ use Litepie\Layout\SlotManager;
  * 
  * Builds the main content area for blog asides with form and supporting components
  */
-class BlogMainContentSlot
+class MainContentSlot
 {
     /**
      * Build main content slot with blog form and text

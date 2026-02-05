@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Blog;
+namespace App\Layouts\Slot\Blog;
 
 use App\Forms\Blog\BlogFeedbackForm;
 use Litepie\Layout\Components\ButtonComponent;
@@ -10,7 +10,7 @@ use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\Sections\RowSection;
 use Litepie\Layout\SlotManager;
 
-class BlogHeaderSlot
+class HeaderSlot
 {
     /**
      * Build aside header with grid layout in center section

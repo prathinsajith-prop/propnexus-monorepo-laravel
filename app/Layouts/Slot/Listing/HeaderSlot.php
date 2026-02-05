@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Slots\Listing;
+namespace App\Layouts\Slot\Listing;
 
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\TextComponent;
@@ -9,7 +9,7 @@ use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\Sections\RowSection;
 use Litepie\Layout\SlotManager;
 
-class ListingHeaderSlot
+class HeaderSlot
 {
     /**
      * Build aside header with grid layout in center section

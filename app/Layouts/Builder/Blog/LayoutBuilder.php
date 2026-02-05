@@ -1,40 +1,54 @@
 <?php
 
-namespace App\Layout\Builders;
+namespace App\Layouts\Builder\Blog;
 
 use App\Forms\Blog\BlogForm;
-use App\Slots\Blog\BlogCreateAsideSlot;
-use App\Slots\Blog\BlogDetailSlot;
-use App\Slots\Blog\BlogEditAsideSlot;
-use App\Slots\Blog\BlogFooterSlot;
-use App\Slots\Blog\BlogFormActivityAsideSlot;
-use App\Slots\Blog\BlogHeaderSlot;
-use App\Slots\Blog\BlogLeftSidebarSlot;
-use App\Slots\Blog\BlogMainContentSlot;
-use App\Slots\Blog\BlogRightSidebarSlot;
-use App\Slots\Blog\BlogViewAsideSlot;
-use App\Slots\Blog\BlogModalSlot;
+use App\Layouts\Builder\TableColumnsBuilder;
+use App\Layouts\Slot\Blog\CreateAsideSlot;
+use App\Layouts\Slot\Blog\DetailSlot;
+use App\Layouts\Slot\Blog\EditAsideSlot;
+use App\Layouts\Slot\Blog\FooterSlot;
+use App\Layouts\Slot\Blog\FormActivityAsideSlot;
+use App\Layouts\Slot\Blog\HeaderSlot;
+use App\Layouts\Slot\Blog\LeftSidebarSlot;
+use App\Layouts\Slot\Blog\MainContentSlot;
+use App\Layouts\Slot\Blog\RightSidebarSlot;
+use App\Layouts\Slot\Blog\ViewAsideSlot;
+use App\Layouts\Slot\Blog\ModalSlot;
 use Litepie\Layout\Sections\DetailSection;
 use Litepie\Layout\Sections\GridSection;
 
 /**
- * BlogLayoutBuilder
+ * Blog LayoutBuilder
  * 
- * Centralized builder for all Blog layout sections and components.
- * Follows Single Responsibility Principle by separating layout construction
- * logic from the main BlogLayout class.
+ * **Purpose**: Orchestrates construction of all blog layout sections and components.
  * 
- * Organized into logical groups:
- * - Section Builders (Header, Main, Search, Actions, Footer)
- * - Component Builders (Stats Cards, Filter Columns, Action Columns)
- * - Table Configuration (Columns, Views)
- * - Aside Builders (Create, Edit, View)
- * - Modal Builders (Create, Delete, Confirmation)
- * - Form Builders (Blog Forms with various configurations)
+ * **Architecture Role**:
+ * - Receives configuration from BlogLayout (entry point)
+ * - Delegates component rendering to Slot classes
+ * - Coordinates section assembly and data flow
  * 
- * @package App\Layout\Builders
+ * **Organization** (follows SRP - Single Responsibility Principle):
+ * 1. **Section Builders**: Main page sections (Header, Main, Footer, Search, Actions)
+ * 2. **Component Builders**: Individual UI components (Stats, Filters, Buttons)
+ * 3. **Table Configuration**: Data table setup with columns from TableColumnsBuilder
+ * 4. **Aside Builders**: Drawer panels (Create, Edit, View, Forms+Activity)
+ * 5. **Modal Builders**: Dialog modals (Create, Delete, Confirmation)
+ * 6. **Form Builders**: Form components with various configurations
+ * 
+ * **Naming Convention**:
+ * - No "Blog" prefix in class name (namespace provides context)
+ * - Module-specific logic lives here
+ * - Shared logic goes in parent Builder or TableColumnsBuilder
+ * 
+ * @package App\Layouts\Builder\Blog
+ * @see \App\Layouts\BlogLayout Main layout entry point
+ * @see \App\Layouts\Slot\Blog\* Component slots
+ * @see \App\Layouts\Builder\TableColumnsBuilder Shared table configuration
+ * 
+ * @package App\Layouts\Builder\Blog
  */
-class BlogLayoutBuilder
+class LayoutBuilder
 {
     // ============================================================
     // SECTION BUILDERS - Main layout sections
@@ -410,7 +424,7 @@ class BlogLayoutBuilder
      */
     public static function buildCreateBlogAside(array $masterData): array
     {
-        return BlogCreateAsideSlot::make($masterData);
+        return CreateAsideSlot::make($masterData);
     }
 
     /**
@@ -421,7 +435,7 @@ class BlogLayoutBuilder
      */
     public static function buildCreateBlogAsideFullscreen(array $masterData): array
     {
-        return BlogCreateAsideSlot::make($masterData, true);
+        return CreateAsideSlot::make($masterData, true);
     }
 
     /**
@@ -432,7 +446,7 @@ class BlogLayoutBuilder
      */
     public static function buildEditBlogAside(array $masterData): array
     {
-        return BlogEditAsideSlot::make($masterData);
+        return EditAsideSlot::make($masterData);
     }
 
     /**
@@ -443,7 +457,7 @@ class BlogLayoutBuilder
      */
     public static function buildViewBlogAside(array $masterData): array
     {
-        return BlogViewAsideSlot::make($masterData);
+        return ViewAsideSlot::make($masterData);
     }
 
     /**
@@ -454,7 +468,7 @@ class BlogLayoutBuilder
      */
     public static function buildViewBlogAsideFullscreen(array $masterData): array
     {
-        return BlogViewAsideSlot::make($masterData, true);
+        return ViewAsideSlot::make($masterData, true);
     }
 
     /**
@@ -466,11 +480,11 @@ class BlogLayoutBuilder
     public static function buildViewBlogFormActivityAside(array $masterData): array
     {
         return DetailSection::make('view-blog-form-activity-aside')
-            ->setHeader(BlogHeaderSlot::make())
-            ->setMain(BlogMainContentSlot::make($masterData, 'blog-form-activity', 'POST', '/api/blogs'))
-            ->setLeft(BlogLeftSidebarSlot::make())
-            ->setRight(BlogRightSidebarSlot::make())
-            ->setFooter(BlogFooterSlot::make())
+            ->setHeader(HeaderSlot::make())
+            ->setMain(MainContentSlot::make($masterData, 'blog-form-activity', 'POST', '/api/blogs'))
+            ->setLeft(LeftSidebarSlot::make())
+            ->setRight(RightSidebarSlot::make())
+            ->setFooter(FooterSlot::make())
             ->toArray();
     }
 
@@ -486,7 +500,7 @@ class BlogLayoutBuilder
      */
     public static function buildCreateBlogModal(array $masterData): array
     {
-        return BlogModalSlot::createBlog([
+        return ModalSlot::createBlog([
             'masterData' => $masterData,
         ]);
     }
@@ -499,7 +513,7 @@ class BlogLayoutBuilder
      */
     public static function buildDeleteBlogModal(string $itemName = ''): array
     {
-        return BlogModalSlot::deleteBlog([
+        return ModalSlot::deleteBlog([
             'itemName' => $itemName ?: null,
         ]);
     }
