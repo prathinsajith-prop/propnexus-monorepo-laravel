@@ -39,32 +39,39 @@ class ListingViewForm
             ->variant('bordered')
             ->columns(2);
 
-        $overviewGroup->display('title')
+        $overviewGroup->text('title')
             ->label('Title')
+            ->readonly(true)
             ->width(12);
 
-        $overviewGroup->display('property_type')
+        $overviewGroup->text('property_type')
             ->label('Property Type')
+            ->readonly(true)
             ->width(4);
 
-        $overviewGroup->display('listing_type')
+        $overviewGroup->text('listing_type')
             ->label('Listing Type')
+            ->readonly(true)
             ->width(4);
 
-        $overviewGroup->display('formatted_price')
+        $overviewGroup->text('formatted_price')
             ->label('Price')
+            ->readonly(true)
             ->width(4);
 
-        $overviewGroup->display('bedrooms')
+        $overviewGroup->text('bedrooms')
             ->label('Bedrooms')
+            ->readonly(true)
             ->width(4);
 
-        $overviewGroup->display('bathrooms')
+        $overviewGroup->text('bathrooms')
             ->label('Bathrooms')
+            ->readonly(true)
             ->width(4);
 
-        $overviewGroup->display('size_sqft')
+        $overviewGroup->text('size_sqft')
             ->label('Size (sqft)')
+            ->readonly(true)
             ->width(4);
 
         // Location
@@ -74,16 +81,19 @@ class ListingViewForm
             ->variant('bordered')
             ->columns(2);
 
-        $locationGroup->display('full_address')
+        $locationGroup->text('full_address')
             ->label('Address')
+            ->readonly(true)
             ->width(12);
 
-        $locationGroup->display('city')
+        $locationGroup->text('city')
             ->label('City')
+            ->readonly(true)
             ->width(6);
 
-        $locationGroup->display('area')
+        $locationGroup->text('area')
             ->label('Area')
+            ->readonly(true)
             ->width(6);
 
         // Description
@@ -93,8 +103,10 @@ class ListingViewForm
             ->variant('bordered')
             ->columns(1);
 
-        $descriptionGroup->display('description')
+        $descriptionGroup->textarea('description')
             ->label('Description')
+            ->readonly(true)
+            ->rows(6)
             ->width(12);
 
         // Agent Information
@@ -104,16 +116,19 @@ class ListingViewForm
             ->variant('bordered')
             ->columns(2);
 
-        $agentGroup->display('agent_name')
+        $agentGroup->text('agent_name')
             ->label('Agent Name')
+            ->readonly(true)
             ->width(6);
 
-        $agentGroup->display('agent_phone')
+        $agentGroup->text('agent_phone')
             ->label('Phone')
+            ->readonly(true)
             ->width(6);
 
-        $agentGroup->display('agent_email')
+        $agentGroup->text('agent_email')
             ->label('Email')
+            ->readonly(true)
             ->width(12);
 
         // Status & Metrics
@@ -123,28 +138,34 @@ class ListingViewForm
             ->variant('bordered')
             ->columns(3);
 
-        $statusGroup->display('status')
+        $statusGroup->text('status')
             ->label('Status')
+            ->readonly(true)
             ->width(4);
 
-        $statusGroup->display('availability')
+        $statusGroup->text('availability')
             ->label('Availability')
+            ->readonly(true)
             ->width(4);
 
-        $statusGroup->display('views_count')
+        $statusGroup->text('views_count')
             ->label('Views')
+            ->readonly(true)
             ->width(4);
 
-        $statusGroup->display('inquiries_count')
+        $statusGroup->text('inquiries_count')
             ->label('Inquiries')
+            ->readonly(true)
             ->width(4);
 
-        $statusGroup->display('favorites_count')
+        $statusGroup->text('favorites_count')
             ->label('Favorites')
+            ->readonly(true)
             ->width(4);
 
-        $statusGroup->display('published_at')
+        $statusGroup->text('published_at')
             ->label('Published')
+            ->readonly(true)
             ->width(4);
 
         return $form;
