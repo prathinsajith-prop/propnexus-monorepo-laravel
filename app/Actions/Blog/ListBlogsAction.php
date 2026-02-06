@@ -167,9 +167,9 @@ class ListBlogsAction extends BaseAction
         }
 
         if (!empty($this->data['filter_category'])) {
-            $query->where(function ($q) {
+            $query->where(function ($categoryQuery) {
                 $category = $this->data['filter_category'];
-                $q->where('category', $category)
+                $categoryQuery->where('category', $category)
                     ->orWhereJsonContains('categories', $category);
             });
         }

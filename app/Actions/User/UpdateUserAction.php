@@ -32,17 +32,17 @@ class UpdateUserAction extends BaseAction
             return ActionResult::failure('Users data not found', [], 404);
         }
 
-        $allData = json_decode(file_get_contents($jsonPath), true);
+        $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (!is_array($allData)) {
+        if (!is_array($allUsers)) {
             return ActionResult::failure('Invalid data format', [], 500);
         }
 
         $identifier = $this->data['identifier'];
         $userIndex = null;
 
-        foreach ($allData as $index => $item) {
-            if ($item['id'] == $identifier || $item['user_id'] == $identifier) {
+        foreach ($allUsers as $index => $user) {
+            if ($user['id'] == $identifier || $user['user_id'] == $identifier) {
                 $userIndex = $index;
                 break;
             }
@@ -57,12 +57,12 @@ class UpdateUserAction extends BaseAction
         unset($updateData['identifier']);
 
         // Merge existing user data with update data
-        $allData[$userIndex] = array_merge($allData[$userIndex], $updateData);
-        $allData[$userIndex]['updated_at'] = now()->format('Y-m-d');
+        $allUsers[$userIndex] = array_merge($allUsers[$userIndex], $updateData);
+        $allUsers[$userIndex]['updated_at'] = now()->format('Y-m-d');
 
-        file_put_contents($jsonPath, json_encode($allData, JSON_PRETTY_PRINT));
+        file_put_contents($jsonPath, json_encode($allUsers, JSON_PRETTY_PRINT));
 
-        return ActionResult::success($allData[$userIndex], 'User updated successfully');
+        return ActionResult::success($allUsers[$userIndex], 'User updated successfully');
     }
 
     public function getName(): string

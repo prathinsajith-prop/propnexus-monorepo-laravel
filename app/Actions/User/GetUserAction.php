@@ -29,17 +29,17 @@ class GetUserAction extends BaseAction
             return ActionResult::failure('Users data not found', [], 404);
         }
 
-        $allData = json_decode(file_get_contents($jsonPath), true);
+        $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (!is_array($allData)) {
+        if (!is_array($allUsers)) {
             return ActionResult::failure('Invalid data format', [], 500);
         }
 
         $identifier = $this->data['identifier'];
 
         // Find the user by ID or user_id
-        $user = collect($allData)->first(function ($item) use ($identifier) {
-            return $item['id'] == $identifier || $item['user_id'] == $identifier;
+        $user = collect($allUsers)->first(function ($user) use ($identifier) {
+            return $user['id'] == $identifier || $user['user_id'] == $identifier;
         });
 
         if (!$user) {

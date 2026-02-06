@@ -404,12 +404,91 @@ class LayoutBuilder
             ->data('action', 'open')
             ->meta(['tooltip' => 'Create new blog']);
 
-        $row->button('export-btn')
-            ->label('Export')
-            ->icon('downloadcloud')
+        // View Options - Dropdown
+        $row->button('view-btn')
+            ->label('')
+            ->icon('layout')
             ->size('md')
             ->variant('outline')
-            ->meta(['tooltip' => 'Export data']);
+            ->dropdown([
+                'id' => 'view-options',
+                'placement' => 'bottom-end',
+                'items' => [
+                    [
+                        'id' => 'view-table',
+                        'label' => 'Table View',
+                        'icon' => 'table',
+                        'action' => 'table-view',
+                        'type' => 'button',
+                    ],
+                    [
+                        'id' => 'view-list',
+                        'label' => 'List View',
+                        'icon' => 'list',
+                        'action' => 'list-view',
+                        'type' => 'button',
+                    ],
+                ],
+            ])
+            ->meta(['tooltip' => 'Switch View']);
+
+        // More Options - Dropdown
+        $row->button('more-btn')
+            ->label('')
+            ->icon('morehorizontal')
+            ->size('md')
+            ->variant('outline')
+            ->dropdown([
+                'id' => 'more-options',
+                'placement' => 'bottom-end',
+                'offset' => [0, 8],
+                'closeOnClick' => true,
+                'closeOnEscape' => true,
+                'items' => [
+                    [
+                        'id' => 'export-data',
+                        'label' => 'Export',
+                        'icon' => 'downloadcloud',
+                        'action' => 'export',
+                        'type' => 'button',
+                    ],
+                    [
+                        'id' => 'import-data',
+                        'label' => 'Import',
+                        'icon' => 'uploadcloud',
+                        'action' => 'import',
+                        'type' => 'button',
+                    ],
+                    [
+                        'type' => 'divider',
+                    ],
+                    [
+                        'id' => 'print',
+                        'label' => 'Print',
+                        'icon' => 'printer',
+                        'action' => 'print',
+                        'type' => 'button',
+                    ],
+                    [
+                        'id' => 'archive',
+                        'label' => 'Archive',
+                        'icon' => 'archive',
+                        'action' => 'archive',
+                        'type' => 'button',
+                    ],
+                    [
+                        'type' => 'divider',
+                    ],
+                    [
+                        'id' => 'settings',
+                        'label' => 'Settings',
+                        'icon' => 'settings',
+                        'action' => 'settings',
+                        'type' => 'button',
+                    ],
+                ],
+            ])
+            ->meta(['tooltip' => 'More options']);
     }
 
     // ============================================================

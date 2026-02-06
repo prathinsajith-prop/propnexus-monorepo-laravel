@@ -171,6 +171,9 @@ class TableColumnsBuilder
         $defaults = [
             'color' => 'primary',
             'config' => [],
+            'type' => null,
+            'component' => null,
+            'confirm' => null,
         ];
 
         $params = array_merge($defaults, $options);
@@ -181,11 +184,21 @@ class TableColumnsBuilder
             ->size('sm')
             ->color($params['color'])
             ->isIconButton(true)
-            ->data('type', $params['type'])
-            ->data('component', $params['component'])
             ->data('action', 'open')
             ->dataKey('id')
             ->meta(['tooltip' => $params['tooltip']]);
+
+        // Add type and component if provided
+        if (!empty($params['type']) && !empty($params['component'])) {
+            $button->data('type', $params['type'])
+                ->data('component', $params['component']);
+        }
+
+        // Add confirm if provided
+        if (!empty($params['confirm'])) {
+            $button->confirm($params['confirm'])
+                ->data('action', 'delete'); // Override action for delete
+        }
 
         // Add config if provided
         if (!empty($params['config'])) {
@@ -252,8 +265,15 @@ class TableColumnsBuilder
             'icon' => 'binempty',
             'color' => 'danger',
             'tooltip' => 'Delete',
-            'type' => 'modal',
-            'component' => 'delete-blog-modal',
+            'confirm' => [
+                'title' => 'Delete Blog Post',
+                'message' => 'Are you sure you want to delete this blog post? This action cannot be undone.',
+                'confirmLabel' => 'Delete',
+                'cancelLabel' => 'Cancel',
+                'action' => 'delete',
+                'dataUrl' => '/api/blogs/:id',
+                'method' => 'delete',
+            ],
         ]);
     }
 
@@ -314,8 +334,15 @@ class TableColumnsBuilder
             'icon' => 'binempty',
             'color' => 'danger',
             'tooltip' => 'Delete',
-            'type' => 'modal',
-            'component' => 'delete-listing-modal',
+            'confirm' => [
+                'title' => 'Delete Listing',
+                'message' => 'Are you sure you want to delete this listing? This action cannot be undone.',
+                'confirmLabel' => 'Delete',
+                'cancelLabel' => 'Cancel',
+                'action' => 'delete',
+                'dataUrl' => '/api/listing/:id',
+                'method' => 'delete',
+            ],
         ]);
     }
 }

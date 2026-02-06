@@ -43,9 +43,9 @@ class ListUsersAction extends BaseAction
             return ActionResult::failure('Users data not found', [], 404);
         }
 
-        $allData = json_decode(file_get_contents($jsonPath), true);
+        $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (!is_array($allData)) {
+        if (!is_array($allUsers)) {
             return ActionResult::failure('Invalid data format', [], 500);
         }
 
@@ -76,17 +76,17 @@ class ListUsersAction extends BaseAction
 
         // Apply search filter
         if (!empty($search)) {
-            $allData = $this->applySearch($allData, $search);
+            $allUsers = $this->applySearch($allUsers, $search);
         }
 
         // Apply column-specific filters
-        $allData = $this->applyFilters($allData, $filters);
+        $allUsers = $this->applyFilters($allUsers, $filters);
 
         // Apply sorting
-        $allData = $this->applySorting($allData, $sortBy, $sortDirection);
+        $allUsers = $this->applySorting($allUsers, $sortBy, $sortDirection);
 
         // Apply pagination
-        $paginatedResult = $this->applyPagination($allData, $page, $perPage);
+        $paginatedResult = $this->applyPagination($allUsers, $page, $perPage);
 
         return ActionResult::success([
             'data' => $paginatedResult['data'],
@@ -99,12 +99,12 @@ class ListUsersAction extends BaseAction
         ]);
     }
 
-    protected function applySearch(array $data, string $search): array
+    protected function applySearch(array $users, string $search): array
     {
         $searchLower = strtolower($search);
 
-        return array_filter($data, function ($item) use ($searchLower) {
-            foreach ($item as $value) {
+        return array_filter($users, function ($user) use ($searchLower) {
+            foreach ($user as $value) {
                 if (stripos(strtolower((string) $value), $searchLower) !== false) {
                     return true;
                 }
@@ -113,28 +113,28 @@ class ListUsersAction extends BaseAction
         });
     }
 
-    protected function applyFilters(array $data, array $filters): array
+    protected function applyFilters(array $users, array $filters): array
     {
         foreach ($filters as $column => $filterValue) {
             if (!empty($filterValue)) {
-                $data = array_filter($data, function ($item) use ($column, $filterValue) {
-                    if (!isset($item[$column])) {
+                $users = array_filter($users, function ($user) use ($column, $filterValue) {
+                    if (!isset($user[$column])) {
                         return false;
                     }
-                    $itemValue = strtolower((string) $item[$column]);
+                    $userValue = strtolower((string) $user[$column]);
                     $filterLower = strtolower((string) $filterValue);
-                    return stripos($itemValue, $filterLower) !== false;
+                    return stripos($userValue, $filterLower) !== false;
                 });
             }
         }
 
-        return $data;
+        return $users;
     }
 
-    protected function applySorting(array $data, string $sortBy, string $sortDirection): array
+    protected function applySorting(array $users, string $sortBy, string $sortDirection): array
     {
-        if (!empty($sortBy) && isset($data[0][$sortBy])) {
-            usort($data, function ($a, $b) use ($sortBy, $sortDirection) {
+        if (!empty($sortBy) && isset($users[0][$sortBy])) {
+            usort($users, function ($a, $b) use ($sortBy, $sortDirection) {
                 $aVal = $a[$sortBy] ?? '';
                 $bVal = $b[$sortBy] ?? '';
 
@@ -146,17 +146,17 @@ class ListUsersAction extends BaseAction
             });
         }
 
-        return $data;
+        return $users;
     }
 
-    protected function applyPagination(array $data, int $page, int $perPage): array
+    protected function applyPagination(array $users, int $page, int $perPage): array
     {
-        $total = count($data);
+        $total = count($users);
         $offset = ($page - 1) * $perPage;
-        $paginatedData = array_slice($data, $offset, $perPage);
+        $paginatedUsers = array_slice($users, $offset, $perPage);
 
         return [
-            'data' => array_values($paginatedData),
+            'data' => array_values($paginatedUsers),
             'meta' => [
                 'current_page' => $page,
                 'per_page' => $perPage,

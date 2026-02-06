@@ -55,38 +55,29 @@ class ListingForm
             ->title('Property Details')
             ->icon('home')
             ->variant('bordered')
-            ->columns(2);
+            ->columns(12);
 
         $propertyGroup->text('title')
             ->label('Property Title')
             ->placeholder('e.g., Luxury 3BR Apartment in Dubai Marina')
             ->required(true)
-            ->width(8);
-
-        $propertyGroup->text('mls_number')
-            ->label('MLS Number')
-            ->placeholder('MLS-12345')
-            ->width(4);
+            ->width(12);
 
         $propertyGroup->select('property_type')
             ->label('Property Type')
-            ->options($masterData['property_types'] ?? [
-                'residential' => 'Residential',
-                'commercial' => 'Commercial',
-                'land' => 'Land',
-                'industrial' => 'Industrial',
-            ])
+            ->options($masterData['property_types'] ?? [])
             ->required(true)
             ->width(4);
 
         $propertyGroup->select('listing_type')
             ->label('Listing Type')
-            ->options($masterData['listing_types'] ?? [
-                'sale' => 'For Sale',
-                'rent' => 'For Rent',
-                'lease' => 'For Lease',
-            ])
+            ->options($masterData['listing_types'] ?? [])
             ->required(true)
+            ->width(4);
+
+        $propertyGroup->text('mls_number')
+            ->label('MLS Number')
+            ->placeholder('MLS-12345')
             ->width(4);
 
         $propertyGroup->number('price')
@@ -97,11 +88,7 @@ class ListingForm
 
         $propertyGroup->select('currency')
             ->label('Currency')
-            ->options($masterData['currencies'] ?? [
-                'AED' => 'AED',
-                'USD' => 'USD',
-                'EUR' => 'EUR',
-            ])
+            ->options($masterData['currencies'] ?? [])
             ->width(4);
 
         $propertyGroup->checkbox('is_negotiable')
@@ -126,29 +113,23 @@ class ListingForm
             ->title('Location')
             ->icon('location')
             ->variant('bordered')
-            ->columns(3);
-
-        $locationGroup->text('address')
-            ->label('Address')
-            ->placeholder('Street address')
-            ->required(true)
-            ->width(9);
-
-        $locationGroup->text('unit_number')
-            ->label('Unit #')
-            ->placeholder('Unit')
-            ->width(3);
+            ->columns(12);
 
         $locationGroup->text('building_name')
             ->label('Building Name')
-            ->placeholder('Building')
-            ->width(6);
+            ->placeholder('Building name')
+            ->width(8);
 
-        $locationGroup->text('city')
-            ->label('City')
-            ->placeholder('Dubai')
+        $locationGroup->text('unit_number')
+            ->label('Unit Number')
+            ->placeholder('Unit #')
+            ->width(4);
+
+        $locationGroup->text('address')
+            ->label('Street Address')
+            ->placeholder('Street address')
             ->required(true)
-            ->width(6);
+            ->width(12);
 
         $locationGroup->text('area')
             ->label('Area')
@@ -160,6 +141,12 @@ class ListingForm
             ->label('Sub Area')
             ->placeholder('Marina Gate')
             ->width(6);
+
+        $locationGroup->text('city')
+            ->label('City')
+            ->placeholder('Dubai')
+            ->required(true)
+            ->width(4);
 
         $locationGroup->text('state')
             ->label('State/Emirate')
@@ -181,7 +168,7 @@ class ListingForm
             ->title('Property Specifications')
             ->icon('grid')
             ->variant('bordered')
-            ->columns(4);
+            ->columns(12);
 
         $specsGroup->number('bedrooms')
             ->label('Bedrooms')
@@ -195,23 +182,8 @@ class ListingForm
             ->required(true)
             ->width(3);
 
-        $specsGroup->number('size_sqft')
-            ->label('Size (sqft)')
-            ->placeholder('0')
-            ->width(3);
-
-        $specsGroup->number('plot_size_sqft')
-            ->label('Plot Size (sqft)')
-            ->placeholder('0')
-            ->width(3);
-
-        $specsGroup->number('floor_number')
-            ->label('Floor Number')
-            ->placeholder('0')
-            ->width(3);
-
-        $specsGroup->number('total_floors')
-            ->label('Total Floors')
+        $specsGroup->number('parking_spaces')
+            ->label('Parking')
             ->placeholder('0')
             ->width(3);
 
@@ -220,56 +192,67 @@ class ListingForm
             ->placeholder('2024')
             ->width(3);
 
-        $specsGroup->number('parking_spaces')
-            ->label('Parking Spaces')
+        $specsGroup->number('size_sqft')
+            ->label('Built-up Area (sqft)')
             ->placeholder('0')
-            ->width(3);
+            ->width(6);
+
+        $specsGroup->number('plot_size_sqft')
+            ->label('Plot Area (sqft)')
+            ->placeholder('0')
+            ->width(6);
+
+        $specsGroup->number('floor_number')
+            ->label('Floor')
+            ->placeholder('0')
+            ->width(6);
+
+        $specsGroup->number('total_floors')
+            ->label('Total Floors')
+            ->placeholder('0')
+            ->width(6);
 
         // === FEATURES & AMENITIES SECTION ===
         $featuresGroup = $form->group('features-info')
             ->title('Features & Amenities')
             ->icon('star')
             ->variant('bordered')
-            ->columns(3);
+            ->columns(12);
 
         $featuresGroup->select('furnishing_status')
             ->label('Furnishing Status')
-            ->options($masterData['furnishing_statuses'] ?? [
-                'unfurnished' => 'Unfurnished',
-                'semi-furnished' => 'Semi-Furnished',
-                'fully-furnished' => 'Fully-Furnished',
-            ])
-            ->width(4);
+            ->options($masterData['furnishing_statuses'] ?? [])
+            ->width(12);
 
         $featuresGroup->checkbox('has_parking')
-            ->label('Parking Available')
-            ->width(4);
+            ->label('Parking')
+            ->width(3);
 
         $featuresGroup->checkbox('has_balcony')
-            ->label('Has Balcony')
-            ->width(4);
+            ->label('Balcony')
+            ->width(3);
 
         $featuresGroup->checkbox('has_garden')
-            ->label('Has Garden')
-            ->width(4);
+            ->label('Garden')
+            ->width(3);
 
         $featuresGroup->checkbox('has_pool')
-            ->label('Swimming Pool')
-            ->width(4);
+            ->label('Pool')
+            ->width(3);
 
         $featuresGroup->checkbox('pet_friendly')
             ->label('Pet Friendly')
-            ->width(4);
+            ->width(6);
 
         $featuresGroup->textarea('features')
-            ->label('Additional Features (comma separated)')
-            ->placeholder('Central AC, Built-in wardrobes, Maid\'s room')
+            ->label('Additional Features')
+            ->placeholder('Central AC, Built-in wardrobes, Maid\'s room, etc.')
             ->rows(3)
             ->width(12);
 
         $featuresGroup->textarea('amenities')
-            ->label('Amenities (comma separated)')
-            ->placeholder('Gym, Sauna, Children\'s play area')
+            ->label('Building Amenities')
+            ->placeholder('Gym, Sauna, Children\'s play area, Concierge, etc.')
             ->rows(3)
             ->width(12);
 
@@ -315,32 +298,19 @@ class ListingForm
             ->title('Status & Availability')
             ->icon('checkmark')
             ->variant('bordered')
-            ->columns(3);
+            ->columns(12);
 
         $statusGroup->select('status')
-            ->label('Status')
-            ->options($masterData['statuses'] ?? [
-                'draft' => 'Draft',
-                'active' => 'Active',
-                'pending' => 'Pending',
-                'sold' => 'Sold',
-                'rented' => 'Rented',
-                'expired' => 'Expired',
-                'archived' => 'Archived',
-            ])
+            ->label('Listing Status')
+            ->options($masterData['statuses'] ?? [])
             ->required(true)
-            ->width(4);
+            ->width(6);
 
         $statusGroup->select('availability')
             ->label('Availability')
-            ->options($masterData['availabilities'] ?? [
-                'available' => 'Available',
-                'reserved' => 'Reserved',
-                'sold' => 'Sold',
-                'rented' => 'Rented',
-            ])
+            ->options($masterData['availabilities'] ?? [])
             ->required(true)
-            ->width(4);
+            ->width(6);
 
         $statusGroup->date('published_at')
             ->label('Publish Date')
@@ -348,27 +318,27 @@ class ListingForm
 
         $statusGroup->date('available_from')
             ->label('Available From')
-            ->width(6);
+            ->width(4);
 
         $statusGroup->date('available_until')
             ->label('Available Until')
-            ->width(6);
+            ->width(4);
 
         $statusGroup->date('expires_at')
             ->label('Listing Expires')
-            ->width(6);
+            ->width(12);
 
         $statusGroup->checkbox('is_featured')
-            ->label('Featured Listing')
-            ->width(3);
+            ->label('Featured')
+            ->width(4);
 
         $statusGroup->checkbox('is_hot_deal')
             ->label('Hot Deal')
-            ->width(3);
+            ->width(4);
 
         $statusGroup->checkbox('is_verified')
             ->label('Verified')
-            ->width(3);
+            ->width(4);
 
         // === AGENT INFORMATION SECTION ===
         $agentGroup = $form->group('agent-info')
@@ -379,9 +349,7 @@ class ListingForm
 
         $agentGroup->select('agent_id')
             ->label('Assigned Agent')
-            ->options($masterData['agents'] ?? [
-                '' => 'Select Agent',
-            ])
+            ->options($masterData['agents'] ?? [])
             ->placeholder('Select an agent')
             ->required(true)
             ->width(6);
@@ -424,17 +392,17 @@ class ListingForm
             ->width(4);
 
         $financialGroup->select('service_charge_period')
-            ->label('Service Charge Period')
+            ->label('Period')
             ->options([
-                'yearly' => 'Yearly',
-                'monthly' => 'Monthly',
+                ['value' => 'yearly', 'label' => 'Yearly'],
+                ['value' => 'monthly', 'label' => 'Monthly'],
             ])
             ->width(4);
 
         $financialGroup->number('security_deposit')
             ->label('Security Deposit')
             ->placeholder('0.00')
-            ->width(4);
+            ->width(8);
 
         $financialGroup->textarea('payment_terms')
             ->label('Payment Terms')

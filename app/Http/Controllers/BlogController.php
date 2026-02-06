@@ -199,12 +199,12 @@ class BlogController extends Controller
             cache()->forget('blogs:stats:all');
         }
 
-        $data = $blog->toArray();
-        $data['_settings'] = BlogSettings::forView();
+        $blogData = $blog->toArray();
+        $blogData['_settings'] = BlogSettings::forView();
 
         return response()->json([
             'success' => true,
-            'data' => $data,
+            'data' => $blogData,
         ]);
     }
 
@@ -218,8 +218,8 @@ class BlogController extends Controller
      */
     public function update(Blog $blog, Request $request)
     {
-        $data = array_merge($request->all(), ['id' => $blog->id]);
-        $result = UpdateBlogAction::make(null, $data)->run();
+        $updateData = array_merge($request->all(), ['id' => $blog->id]);
+        $result = UpdateBlogAction::make(null, $updateData)->run();
 
         if (!$result->isSuccess()) {
             return response()->json([

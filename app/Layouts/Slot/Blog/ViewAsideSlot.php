@@ -185,7 +185,22 @@ class ViewAsideSlot
                 ->label('View Fullscreen')
                 ->icon('expand')
                 ->variant('contained')
-                ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-full'])
+                ->data('component', 'view-blog-full')
+                ->data('type', 'aside')
+                ->data('action', 'view')
+                ->data('config', [
+                    'width' => '100vw',
+                    'height' => '100vh',
+                    'anchor' => 'right',
+                    'backdrop' => true,
+                ])
+                ->dataParams(['id' => ':id'])
+                ->dataUrl('/api/blogs/:id')
+                ->meta([
+                    'action' => 'view',
+                    'type' => 'aside',
+                    'component' => 'view-blog-full',
+                ])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('forms-activity-btn')
