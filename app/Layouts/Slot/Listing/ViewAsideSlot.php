@@ -74,7 +74,10 @@ class ViewAsideSlot
             'direction' => 'column',
             'gap' => '1',
             'justify' => 'center',
+            'items' => 'start',
+            'gridColumnSpan' => 6,
         ]);
+
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Listing Details')
@@ -96,7 +99,9 @@ class ViewAsideSlot
             'gap' => '2',
             'justify' => 'end',
             'items' => 'center',
+            'gridColumnSpan' => 6,
         ]);
+
         $rightSlot->setComponent(
             BadgeComponent::make('status-badge')
                 ->content('Active')
@@ -168,6 +173,7 @@ class ViewAsideSlot
             'gap' => '2',
             'justify' => 'end',
             'items' => 'center',
+            'gridColumnSpan' => 12,
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('close-footer-btn')

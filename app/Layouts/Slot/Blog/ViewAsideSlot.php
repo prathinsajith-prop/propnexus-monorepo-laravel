@@ -68,7 +68,16 @@ class ViewAsideSlot
     private static function buildHeader(): SlotManager
     {
         // Create header center/left grid
-        $centerSlot = SlotManager::make('view-header-center');
+        $centerSlot = SlotManager::make('view-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
+                'gridColumnSpan' => 6,
+            ]);
+
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Blog Post Details')
@@ -90,6 +99,7 @@ class ViewAsideSlot
             'gap' => '2',
             'justify' => 'end',
             'items' => 'center',
+            'gridColumnSpan' => 6,
         ]);
         $rightSlot->setComponent(
             BadgeComponent::make('status-badge')
@@ -162,6 +172,7 @@ class ViewAsideSlot
             'gap' => '2',
             'justify' => 'end',
             'items' => 'center',
+            'gridColumnSpan' => 12,
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('close-footer-btn')

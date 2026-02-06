@@ -161,12 +161,19 @@ class ListingController extends Controller
      * Uses route model binding with automatic relationship loading
      *
      * @param \App\Models\Listing $listing Listing model instance (auto-injected with relationships)
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Listing $listing)
+    public function show(Listing $listing, Request $request)
     {
-        // Increment view count
-        $listing->increment('views_count');
+        // Increment view count if requested
+        if ($request->input('increment_views', false)) {
+            $listing->increment('views_count');
+            $listing->refresh();
+
+            // Clear stats cache when views are incremented
+            cache()->forget('listings:stats:all');
+        }
 
         // Add settings for the view
         $data = $listing->toArray();
@@ -196,7 +203,7 @@ class ListingController extends Controller
             $listing->update($updateData);
 
             // Clear stats cache when listing is updated
-            cache()->tags(['listings'])->flush();
+            cache()->flush();
 
             // Reload with relationships
             $listing->load(['agent', 'owner', 'lastEditedBy']);
@@ -209,7 +216,8 @@ class ListingController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => 'Failed to update listing: ' . $e->getMessage(),
+                'message' => 'Failed to update listing',
+                'error' => $e->getMessage(),
             ], 422);
         }
     }
@@ -236,7 +244,7 @@ class ListingController extends Controller
             }
 
             // Clear stats cache when listing is deleted
-            cache()->tags(['listings'])->flush();
+            cache()->flush();
 
             return response()->json([
                 'success' => true,
@@ -245,7 +253,8 @@ class ListingController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => 'Failed to delete listing: ' . $e->getMessage(),
+                'message' => 'Failed to delete listing',
+                'error' => $e->getMessage(),
             ], 400);
         }
     }
@@ -260,7 +269,7 @@ class ListingController extends Controller
     public function getStats($statId)
     {
         try {
-            $stats = cache()->tags(['listings', 'stats'])->remember(
+            $stats = cache()->remember(
                 "listings:stats:{$statId}",
                 config('performance.cache.stats_ttl', 300),
                 function () use ($statId) {
@@ -301,7 +310,8 @@ class ListingController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => 'Failed to fetch statistics',
+                'message' => 'Failed to fetch statistics',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -341,7 +351,7 @@ class ListingController extends Controller
     private function getMasterData(): array
     {
         try {
-            return cache()->tags(['listings', 'master-data'])->remember(
+            return cache()->remember(
                 'listings:master-data',
                 config('performance.cache.master_data_ttl', 1800),
                 function () {

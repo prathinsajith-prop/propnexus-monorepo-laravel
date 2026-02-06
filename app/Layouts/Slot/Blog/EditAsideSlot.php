@@ -118,13 +118,16 @@ class EditAsideSlot
             'gap' => '2',
             'justify' => 'end',
             'items' => 'center',
+            'gridColumnSpan' => 12,
         ]);
+
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
+
         $footerRightSlot->setComponent(
             ButtonComponent::make('update-btn')
                 ->label('Update Post')

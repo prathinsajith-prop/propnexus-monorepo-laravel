@@ -67,13 +67,16 @@ class CreateAsideSlot
     private static function buildHeader(): SlotManager
     {
         // Create header center grid
-        $centerSlot = SlotManager::make('create-header-center');
-        $centerSlot->setConfig([
-            'layout' => 'flex',
-            'direction' => 'column',
-            'gap' => '1',
-            'justify' => 'center',
-        ]);
+        $centerSlot = SlotManager::make('create-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'center',
+                'items' => 'start',
+                'gridColumnSpan' => 6,
+            ]);
+
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Create New Listing')
@@ -88,14 +91,16 @@ class CreateAsideSlot
         );
 
         // Create header right grid
-        $rightSlot = SlotManager::make('create-header-right');
-        $rightSlot->setConfig([
-            'layout' => 'flex',
-            'direction' => 'row',
-            'gap' => '2',
-            'justify' => 'end',
-            'items' => 'center',
-        ]);
+        $rightSlot = SlotManager::make('create-header-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 6,
+            ]);
+
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('cross')
@@ -131,6 +136,7 @@ class CreateAsideSlot
             'gap' => '2',
             'justify' => 'end',
             'items' => 'center',
+            'gridColumnSpan' => 12,
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')

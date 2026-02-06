@@ -87,7 +87,16 @@ class CreateAsideSlot
     private static function buildHeader(): SlotManager
     {
         // Create header center grid
-        $centerSlot = SlotManager::make('create-header-center');
+        $centerSlot = SlotManager::make('create-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
+                'gridColumnSpan' => 6,
+            ]);
+
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Create New Blog Post')
@@ -102,7 +111,16 @@ class CreateAsideSlot
         );
 
         // Create header right grid
-        $rightSlot = SlotManager::make('create-header-right');
+        $rightSlot = SlotManager::make('create-header-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 6,
+            ]);
+
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('cross')
@@ -138,7 +156,9 @@ class CreateAsideSlot
             'gap' => '2',
             'justify' => 'end',
             'items' => 'center',
+            'gridColumnSpan' => 12,
         ]);
+
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
                 ->label('Cancel')

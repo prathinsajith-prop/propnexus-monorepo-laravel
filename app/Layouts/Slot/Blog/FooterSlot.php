@@ -10,7 +10,7 @@ use Litepie\Layout\SlotManager;
 class FooterSlot
 {
     /**
-     * Build aside footer with grid sections for buttons
+     * Build aside footer with sections for buttons
      *
      * @return SlotManager
      */
@@ -18,10 +18,9 @@ class FooterSlot
     {
         $footerSlot = SlotManager::make('footer-slot');
 
-        // Create left grid for help button
-        $footerLeftGrid = SlotManager::make('footer-left-grid', 1);
-
-        $footerLeftGrid->setSection(
+        // Create left section for help button
+        $leftSlot = SlotManager::make('footer-left');
+        $leftSlot->setSection(
             RowSection::make('footer-left-row')
                 ->gap('xs')
                 ->align('left')
@@ -33,42 +32,41 @@ class FooterSlot
                         ->meta(['action' => 'help'])
                 )
         )->setConfig([
-            'colSpan' => '6',
+            'gridColumnSpan' => '9',
         ]);
 
-        // Create right grid for action buttons
-        $footerRightGrid = SlotManager::make('footer-right-grid', 1);
-
-        $footerRightRow = RowSection::make('footer-right-row')
-            ->gap('xs')
-            ->align('right')
-            ->justify('end');
-
-        $footerRightRow->add(
-            ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
-                ->variant('outlined')
-                ->meta(['action' => 'close'])
-        );
-
-        $footerRightRow->add(
-            ButtonComponent::make('save-btn')
-                ->label('Save Changes')
-                ->variant('contained')
-                ->meta(['action' => 'save'])
-        );
-
-        $footerRightGrid->setSection($footerRightRow)->setConfig([
-            'colSpan' => '6',
+        // Create right section for action buttons
+        $rightSlot = SlotManager::make('footer-right');
+        $rightSlot->setSection(
+            RowSection::make('footer-right-row')
+                ->gap('xs')
+                ->align('right')
+                ->justify('end')
+                ->add(
+                    ButtonComponent::make('cancel-btn')
+                        ->label('Cancel')
+                        ->variant('outlined')
+                        ->meta(['action' => 'close'])
+                )
+                ->add(
+                    ButtonComponent::make('save-btn')
+                        ->label('Save Changes')
+                        ->variant('contained')
+                        ->meta(['action' => 'save'])
+                )
+        )->setConfig([
+            'gridColumnSpan' => '3',
         ]);
 
-        // Create footer component with grid sections
-        return $footerSlot->setSection(
-            FooterSection::make('aside-footer')
-                ->setLeft($footerLeftGrid)
-                ->setRight($footerRightGrid)
+        // Create footer section with left and right slots
+        $footerSlot->setSection(
+            FooterSection::make('blog-footer')
+                ->setLeft($leftSlot)
+                ->setRight($rightSlot)
                 ->variant('elevated')
                 ->padding('md')
         );
+
+        return $footerSlot;
     }
 }

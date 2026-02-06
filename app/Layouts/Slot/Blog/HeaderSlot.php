@@ -22,7 +22,7 @@ class HeaderSlot
         $headerSlot = SlotManager::make('header-slot');
 
         // Create grid section for center with 3 columns
-        $leftGrid = SlotManager::make();
+        $leftSlot = SlotManager::make('header-left');
 
         // Column 2: Title and Subtitle (create a nested grid for vertical stacking)
         $titleGrid = GridSection::make('title-section', 1)
@@ -43,20 +43,23 @@ class HeaderSlot
                 ->meta(['color' => 'text-gray-600'])
         );
 
-        $leftGrid->setSection($titleGrid)->setConfig([
-            'colSpan' => '10',
+        $leftSlot->setSection($titleGrid)->setConfig([
+            'gridColumnSpan' => '8',
+            'layout' => 'flex',
+            'items' => 'center',
+            'justify' => 'start',
         ]);
 
-        // Create right grid for action buttons
-        $rightGrid = SlotManager::make();
+        // Create right slot for action buttons
+        $rightSlot = SlotManager::make('header-right');
 
-        // Create right section for action buttons
-        $rightRow = RowSection::make('header-right-row')
+        // Create action buttons row
+        $actionsRow = RowSection::make('header-actions-row')
             ->gap('xs')
             ->align('center')
             ->justify('end');
 
-        $rightRow->add(
+        $actionsRow->add(
             ButtonComponent::make('edit-btn')
                 ->icon('pen')
                 ->variant('text')
@@ -64,7 +67,7 @@ class HeaderSlot
                 ->meta(['action' => 'edit', 'tooltip' => 'Edit'])
         );
 
-        $rightGrid->setComponent(
+        $rightSlot->setComponent(
             ButtonComponent::make('share-btn')
                 ->icon('share')
                 ->variant('text')
@@ -72,7 +75,7 @@ class HeaderSlot
                 ->meta(['action' => 'share', 'tooltip' => 'Share'])
         );
 
-        $rightGrid->setComponent(
+        $rightSlot->setComponent(
             ButtonComponent::make('print-btn')
                 ->icon('printer')
                 ->variant('text')
@@ -80,7 +83,7 @@ class HeaderSlot
                 ->meta(['action' => 'print', 'tooltip' => 'Print'])
         );
 
-        $rightRow->add(
+        $actionsRow->add(
             ButtonComponent::make('feedback-btn')
                 ->icon('message')
                 ->variant('text')
@@ -88,7 +91,7 @@ class HeaderSlot
                 ->meta(['tooltip' => 'Submit Feedback'])
         );
 
-        $rightRow->add(
+        $actionsRow->add(
             ButtonComponent::make('delete-btn')
                 ->icon('binempty')
                 ->isIconButton(true)
@@ -111,7 +114,7 @@ class HeaderSlot
                 ])
         );
 
-        $rightRow->add(
+        $actionsRow->add(
             ButtonComponent::make('more-btn')
                 ->icon('morehorizontal')
                 ->variant('text')
@@ -125,7 +128,7 @@ class HeaderSlot
                 ->meta(['tooltip' => 'More options'])
         );
 
-        $rightRow->add(
+        $actionsRow->add(
             ButtonComponent::make('close-btn')
                 ->icon('cross')
                 ->isIconButton(true)
@@ -133,17 +136,20 @@ class HeaderSlot
                 ->meta(['action' => 'close', 'tooltip' => 'Close'])
         );
 
-        $rightGrid->setSection($rightRow)
+        $rightSlot->setSection($actionsRow)
             ->setPriority(SlotManager::PRIORITY_COMPONENT)
             ->setConfig([
-                'colSpan' => '2',
+                'gridColumnSpan' => '4',
+                'layout' => 'flex',
+                'items' => 'center',
+                'justify' => 'end',
             ]);
 
-        // Create header component with row in right section
+        // Create header section with left and right slots
         return $headerSlot->setSection(
-            HeaderSection::make('aside-header')
-                ->setLeft($leftGrid)
-                ->setRight($rightGrid)
+            HeaderSection::make('blog-header')
+                ->setLeft($leftSlot)
+                ->setRight($rightSlot)
                 ->variant('elevated')
                 ->padding('md')
         );

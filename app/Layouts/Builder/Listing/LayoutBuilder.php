@@ -284,11 +284,11 @@ class LayoutBuilder
     public static function buildStatsCard($grid, string $id, string $title, string $value, string $color, string $icon, string $trend, string $trendDir, string $displayType)
     {
         $colorMap = [
-            'primary' => ['icon' => '#3b82f6', 'bg' => '#eff6ff'],
-            'success' => ['icon' => '#10b981', 'bg' => '#f0fdf4'],
-            'info' => ['icon' => '#8b5cf6', 'bg' => '#f5f3ff'],
-            'warning' => ['icon' => '#f59e0b', 'bg' => '#fffbeb'],
-            'error' => ['icon' => '#ef4444', 'bg' => '#fef2f2'],
+            'primary' => ['color' => '#3b82f6', 'bg' => '#f0f9ff'],
+            'success' => ['color' => '#10b981', 'bg' => '#f7fef9'],
+            'info' => ['color' => '#8b5cf6', 'bg' => '#faf8ff'],
+            'warning' => ['color' => '#f59e0b', 'bg' => '#fffef7'],
+            'error' => ['color' => '#ef4444', 'bg' => '#fef9f9'],
         ];
 
         $colors = $colorMap[$color] ?? $colorMap['primary'];
@@ -296,11 +296,12 @@ class LayoutBuilder
         return $grid->card($id)
             ->title($title)
             ->variant('outlined')
-            ->gridColumnSpan(1)
+            ->color($color)
+            ->gridColumnSpan(3)
             ->meta([
                 'collapsible' => false,
                 'icon' => $icon,
-                'iconColor' => $colors['icon'],
+                'iconColor' => $colors['color'],
                 'iconBg' => $colors['bg'],
                 'value' => $value,
                 'dataUrl' => "/api/listing/stats/{$id}",

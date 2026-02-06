@@ -51,7 +51,16 @@ class ModalSlot
         $mainGrid->add($formComponent);
 
         // Build header
-        $centerSlot = SlotManager::make('create-modal-header-center');
+        $centerSlot = SlotManager::make('create-modal-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
+                'gridColumnSpan' => 6,
+            ]);
+
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Create New Blog Post')
@@ -59,7 +68,16 @@ class ModalSlot
                 ->meta(['fontWeight' => 'bold'])
         );
 
-        $rightSlot = SlotManager::make('create-modal-header-right');
+        $rightSlot = SlotManager::make('create-modal-header-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 6,
+            ]);
+
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('x')

@@ -196,7 +196,7 @@ class BlogController extends Controller
             $blog->refresh();
 
             // Clear stats cache when views are incremented
-            cache()->tags(['blogs', 'stats'])->forget('blogs:stats:all');
+            cache()->forget('blogs:stats:all');
         }
 
         $data = $blog->toArray();
@@ -230,8 +230,8 @@ class BlogController extends Controller
         }
 
         // Clear relevant caches
-        cache()->tags(['blogs'])->forget('blogs:master-data');
-        cache()->tags(['blogs', 'stats'])->forget('blogs:stats:all');
+        cache()->forget('blogs:master-data');
+        cache()->forget('blogs:stats:all');
 
         // Reload the model to get fresh data
         $blog->refresh();
@@ -267,8 +267,8 @@ class BlogController extends Controller
         }
 
         // Clear relevant caches
-        cache()->tags(['blogs'])->forget('blogs:master-data');
-        cache()->tags(['blogs', 'stats'])->forget('blogs:stats:all');
+        cache()->forget('blogs:master-data');
+        cache()->forget('blogs:stats:all');
 
         return response()->json([
             'success' => true,
@@ -284,19 +284,19 @@ class BlogController extends Controller
      */
     public function stats()
     {
-        $stats = cache()->tags(['blogs', 'stats'])->remember(
+        $stats = cache()->remember(
             'blogs:stats:all',
             config('performance.cache.stats_ttl', 300),
             function () {
                 return [
-                    'total' => \App\Models\Blog::count(),
-                    'published' => \App\Models\Blog::where('status', 'published')->count(),
-                    'drafts' => \App\Models\Blog::where('status', 'draft')->count(),
-                    'in_review' => \App\Models\Blog::where('status', 'review')->count(),
-                    'archived' => \App\Models\Blog::where('status', 'archived')->count(),
-                    'total_views' => \App\Models\Blog::sum('views_count'),
-                    'total_likes' => \App\Models\Blog::sum('likes_count'),
-                    'total_comments' => \App\Models\Blog::sum('comments_count'),
+                    'total' => Blog::count(),
+                    'published' => Blog::where('status', 'published')->count(),
+                    'drafts' => Blog::where('status', 'draft')->count(),
+                    'in_review' => Blog::where('status', 'review')->count(),
+                    'archived' => Blog::where('status', 'archived')->count(),
+                    'total_views' => Blog::sum('views_count'),
+                    'total_likes' => Blog::sum('likes_count'),
+                    'total_comments' => Blog::sum('comments_count'),
                 ];
             }
         );
@@ -319,7 +319,7 @@ class BlogController extends Controller
         $blog->increment('views_count');
 
         // Clear stats cache
-        cache()->tags(['blogs', 'stats'])->forget('blogs:stats:all');
+        cache()->forget('blogs:stats:all');
 
         return response()->json([
             'success' => true,
@@ -344,11 +344,6 @@ class BlogController extends Controller
     }
 
     /**
-     * Get master data for dropdowns and filters
-     *
-     * @return array
-     */
-    /**
      * Get master data for dropdowns and forms
      * Cached for better performance as this data changes infrequently
      *
@@ -356,7 +351,7 @@ class BlogController extends Controller
      */
     private function getMasterData(): array
     {
-        return cache()->tags(['blogs'])->remember(
+        return cache()->remember(
             'blogs:master-data',
             config('performance.cache.master_data_ttl', 1800),
             function () {

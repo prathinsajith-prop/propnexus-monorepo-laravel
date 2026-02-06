@@ -131,6 +131,7 @@ class EditAsideSlot
             'gap' => '2',
             'justify' => 'end',
             'items' => 'center',
+            'gridColumnSpan' => 12,
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
