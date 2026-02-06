@@ -80,7 +80,7 @@ class ModalSlot
 
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
@@ -175,7 +175,7 @@ class ModalSlot
         $rightSlot = SlotManager::make('delete-modal-header-right');
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
@@ -279,7 +279,7 @@ class ModalSlot
         $rightSlot = SlotManager::make('publish-modal-header-right');
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );

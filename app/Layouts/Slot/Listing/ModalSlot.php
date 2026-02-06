@@ -80,7 +80,7 @@ class ModalSlot
 
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
@@ -192,7 +192,7 @@ class ModalSlot
         ]);
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
-                ->icon('x')
+                ->icon('cross')
                 ->variant('text')
                 ->meta(['action' => 'close'])
         );
