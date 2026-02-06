@@ -295,21 +295,20 @@ class LayoutBuilder
 
         return $grid->card($id)
             ->title($title)
+            ->content($value)
             ->variant('outlined')
             ->color($color)
             ->gridColumnSpan(3)
+            ->dataUrl("/api/listing/stats/{$id}")
             ->meta([
-                'collapsible' => false,
                 'icon' => $icon,
+                'iconPosition' => 'top',
                 'iconColor' => $colors['color'],
-                'iconBg' => $colors['bg'],
-                'value' => $value,
-                'dataUrl' => "/api/listing/stats/{$id}",
-                'displayType' => $displayType,
+                'iconSize' => 'md',
+                'iconBgColor' => $colors['bg'],
                 'trend' => $trend,
                 'trendDirection' => $trendDir,
-                'description' => $title,
-                'styling' => 'hover:shadow-lg transition-shadow cursor-pointer',
+                'displayType' => $displayType,
             ]);
     }
 

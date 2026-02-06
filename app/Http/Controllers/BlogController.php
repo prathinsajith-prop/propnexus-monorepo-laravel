@@ -277,34 +277,94 @@ class BlogController extends Controller
     }
 
     /**
-     * Get statistics for blog posts
-     * Cached for better performance
+     * Get statistics for a specific stat card
+     * Cached for better performance with proper cache tagging
      *
+     * @param string $statId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function stats()
+    public function getStats($statId)
     {
-        $stats = cache()->remember(
-            'blogs:stats:all',
-            config('performance.cache.stats_ttl', 300),
-            function () {
-                return [
-                    'total' => Blog::count(),
-                    'published' => Blog::where('status', 'published')->count(),
-                    'drafts' => Blog::where('status', 'draft')->count(),
-                    'in_review' => Blog::where('status', 'review')->count(),
-                    'archived' => Blog::where('status', 'archived')->count(),
-                    'total_views' => Blog::sum('views_count'),
-                    'total_likes' => Blog::sum('likes_count'),
-                    'total_comments' => Blog::sum('comments_count'),
-                ];
-            }
-        );
+        try {
+            $stats = cache()->remember(
+                "blogs:stats:{$statId}",
+                config('performance.cache.stats_ttl', 300),
+                function () use ($statId) {
+                    return match ($statId) {
+                        'stat-total-posts' => [
+                            'value' => Blog::count(),
+                            'trend' => $this->calculateTrend(Blog::query()),
+                            'trendDirection' => 'up',
+                        ],
+                        'stat-published' => [
+                            'value' => Blog::published()->count(),
+                            'trend' => $this->calculateTrend(Blog::published()),
+                            'trendDirection' => 'up',
+                        ],
+                        'stat-drafts' => [
+                            'value' => Blog::where('status', 'draft')->count(),
+                            'trend' => $this->calculateTrend(Blog::where('status', 'draft')),
+                            'trendDirection' => 'neutral',
+                        ],
+                        'stat-total-views' => [
+                            'value' => Blog::sum('views_count'),
+                            'trend' => $this->calculateTrend(Blog::query(), 'views_count'),
+                            'trendDirection' => 'up',
+                        ],
+                        default => [
+                            'value' => 0,
+                            'trend' => 0,
+                            'trendDirection' => 'neutral',
+                        ],
+                    };
+                }
+            );
 
-        return response()->json([
-            'success' => true,
-            'data' => $stats,
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $stats,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch statistics',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Calculate trend percentage comparing current month vs. last month
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|null $sumColumn If provided, calculates trend for sum instead of count
+     * @return string Formatted trend percentage (e.g., "+10%")
+     */
+    private function calculateTrend($query, $sumColumn = null): string
+    {
+        $currentMonthStart = now()->startOfMonth();
+        $lastMonthStart = now()->subMonth()->startOfMonth();
+        $lastMonthEnd = now()->subMonth()->endOfMonth();
+
+        $currentQuery = clone $query;
+        $lastQuery = clone $query;
+
+        if ($sumColumn) {
+            $currentValue = $currentQuery->where('created_at', '>=', $currentMonthStart)->sum($sumColumn);
+            $lastValue = $lastQuery->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->sum($sumColumn);
+        } else {
+            $currentValue = $currentQuery->where('created_at', '>=', $currentMonthStart)->count();
+            $lastValue = $lastQuery->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();
+        }
+
+        if ($lastValue == 0) {
+            return $currentValue > 0 ? '+100%' : '+0%';
+        }
+
+        $change = (($currentValue - $lastValue) / $lastValue) * 100;
+        $prefix = $change >= 0 ? '+' : '';
+
+        return $prefix . round($change, 1) . '%';
     }
 
     /**

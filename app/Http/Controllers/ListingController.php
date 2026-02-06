@@ -276,27 +276,27 @@ class ListingController extends Controller
                     return match ($statId) {
                         'stat-total-listings' => [
                             'value' => Listing::count(),
-                            'change' => $this->calculateTrend('total'),
+                            'trend' => $this->calculateTrend(Listing::query()),
                             'trendDirection' => 'up',
                         ],
                         'stat-active' => [
-                            'value' => Listing::where('status', 'active')->count(),
-                            'change' => $this->calculateTrend('active'),
+                            'value' => Listing::active()->count(),
+                            'trend' => $this->calculateTrend(Listing::active()),
                             'trendDirection' => 'up',
                         ],
                         'stat-sold' => [
                             'value' => Listing::whereIn('status', ['sold', 'rented'])->count(),
-                            'change' => $this->calculateTrend('sold'),
+                            'trend' => $this->calculateTrend(Listing::whereIn('status', ['sold', 'rented'])),
                             'trendDirection' => 'up',
                         ],
                         'stat-total-views' => [
                             'value' => Listing::sum('views_count'),
-                            'change' => $this->calculateTrend('views'),
+                            'trend' => $this->calculateTrend(Listing::query(), 'views_count'),
                             'trendDirection' => 'up',
                         ],
                         default => [
                             'value' => 0,
-                            'change' => 0,
+                            'trend' => 0,
                             'trendDirection' => 'neutral',
                         ],
                     };
@@ -317,16 +317,37 @@ class ListingController extends Controller
     }
 
     /**
-     * Calculate trend percentage (placeholder for real calculation)
-     * TODO: Implement actual trend calculation based on historical data
+     * Calculate trend percentage comparing current month vs. last month
      *
-     * @param string $type
-     * @return int
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|null $sumColumn If provided, calculates trend for sum instead of count
+     * @return string Formatted trend percentage (e.g., "+10%")
      */
-    private function calculateTrend(string $type): int
+    private function calculateTrend($query, $sumColumn = null): string
     {
-        // Placeholder - implement real trend calculation
-        return rand(0, 15);
+        $currentMonthStart = now()->startOfMonth();
+        $lastMonthStart = now()->subMonth()->startOfMonth();
+        $lastMonthEnd = now()->subMonth()->endOfMonth();
+
+        $currentQuery = clone $query;
+        $lastQuery = clone $query;
+
+        if ($sumColumn) {
+            $currentValue = $currentQuery->where('created_at', '>=', $currentMonthStart)->sum($sumColumn);
+            $lastValue = $lastQuery->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->sum($sumColumn);
+        } else {
+            $currentValue = $currentQuery->where('created_at', '>=', $currentMonthStart)->count();
+            $lastValue = $lastQuery->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();
+        }
+
+        if ($lastValue == 0) {
+            return $currentValue > 0 ? '+100%' : '+0%';
+        }
+
+        $change = (($currentValue - $lastValue) / $lastValue) * 100;
+        $prefix = $change >= 0 ? '+' : '';
+
+        return $prefix . round($change, 1) . '%';
     }
 
     /**

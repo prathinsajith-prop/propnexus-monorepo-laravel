@@ -29,7 +29,7 @@ Route::prefix('api')->group(function () {
     Route::get('/blogs', [BlogController::class, 'list'])->name('api.blogs.index');
     Route::get('/blogs-list', [BlogController::class, 'lists'])->name('api.blogs.lists');
     Route::post('/blogs', [BlogController::class, 'store'])->name('api.blogs.store');
-    Route::get('/blogs/stats', [BlogController::class, 'stats'])->middleware('cache.headers:api')->name('api.blogs.stats');
+    Route::get('/blogs/stats/{id}', [BlogController::class, 'getStats'])->middleware('cache.headers:api')->name('api.blogs.stats');
     Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('api.blogs.show');
     Route::put('/blogs/{blog}', [BlogController::class, 'update'])->name('api.blogs.update');
     Route::delete('/blogs/{blog}', [BlogController::class, 'destroy'])->name('api.blogs.destroy');
