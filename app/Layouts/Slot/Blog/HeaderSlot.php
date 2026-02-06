@@ -64,6 +64,18 @@ class HeaderSlot
                 ->icon('pen')
                 ->variant('text')
                 ->isIconButton(true)
+                ->size('md')
+                ->data('type', 'aside')
+                ->data('component', 'edit-blog')
+                ->data('action', 'edit')
+                ->data('config', [
+                    'width' => '800px',
+                    'height' => '100vh',
+                    'anchor' => 'right',
+                    'backdrop' => true,
+                ])
+                ->dataUrl('/api/blogs/:id')
+                ->dataParams(['id' => ':id'])
                 ->meta(['action' => 'edit', 'tooltip' => 'Edit'])
         );
 
@@ -106,8 +118,9 @@ class HeaderSlot
                     'iconColor' => 'danger',
                 ])
                 ->data('action', 'delete')
-                ->data('url', '/api/blogs/:id')
                 ->data('method', 'DELETE')
+                ->dataUrl('/api/blogs/:id')
+                ->dataParams(['id' => ':id'])
                 ->meta([
                     'tooltip' => 'Delete Blog Post',
                     'color' => 'danger',
@@ -116,7 +129,7 @@ class HeaderSlot
 
         $actionsRow->add(
             ButtonComponent::make('more-btn')
-                ->icon('morehorizontal')
+                ->icon('ellipsisVertical')
                 ->variant('text')
                 ->dropdown([
                     'id' => 'header-more-options',

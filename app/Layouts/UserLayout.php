@@ -318,7 +318,7 @@ class UserLayout
         // More Options - Button with Dropdown Menu
         $row->button('more-btn')
             ->label('')
-            ->icon('morehorizontal')
+            ->icon('ellipsisVertical')
             ->size('md')
             ->variant('outline')
             // ->isIconButton(true)
