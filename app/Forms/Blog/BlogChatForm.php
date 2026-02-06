@@ -32,24 +32,24 @@ class BlogChatForm
             ->gap('sm');
 
         $form->textarea('message')
-            ->label('Message')
-            ->placeholder('Type your message here...')
+            ->label(__('layout.message'))
+            ->placeholder(__('layout.type_message_placeholder'))
             ->attribute('rows', 3)
             ->required(true)
             ->validation('required|string|max:500')
-            ->help('Maximum 500 characters')
+            ->help(__('layout.max_500_chars'))
             ->col(12);
 
         $form->checkbox('internal_only')
-            ->label('Internal Only')
+            ->label(__('layout.internal_only'))
             ->value(false)
-            ->help('Only team members can see this message')
+            ->help(__('layout.internal_only_help'))
             ->col(12);
 
         // Add form action buttons
         $form->actions([
-            ['label' => 'Clear', 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'reset', 'type' => 'reset'],
-            ['label' => 'Send Message', 'color' => 'primary', 'icon' => 'send', 'type' => 'submit'],
+            ['label' => __('layout.clear'), 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'reset', 'type' => 'reset'],
+            ['label' => __('layout.send_message'), 'color' => 'primary', 'icon' => 'send', 'type' => 'submit'],
         ]);
 
         return $form;

@@ -56,7 +56,7 @@ class LayoutBuilder
     public static function buildHeaderSection($section): void
     {
         $section->meta([
-            'description' => 'Page header with breadcrumb navigation and statistics',
+            'description' => __('layout.listing_header_description'),
             'styling' => 'container mx-auto px-4 py-6',
             'background' => 'transparent',
         ]);
@@ -73,10 +73,10 @@ class LayoutBuilder
             ->gridColumnSpan(5);
 
         $headerInfoGrid->pageHeader('page-header')
-            ->title('Property Listings')
+            ->title(__('layout.listings'))
             ->breadcrumbs([
-                ['label' => 'Dashboard', 'link' => '/', 'icon' => 'home'],
-                ['label' => 'Listings', 'active' => true, 'icon' => 'building'],
+                ['label' => __('layout.dashboard'), 'link' => '/', 'icon' => 'home'],
+                ['label' => __('layout.listings'), 'active' => true, 'icon' => 'building'],
             ])
             ->align('left')
             ->spacing('md')
@@ -92,10 +92,10 @@ class LayoutBuilder
             ->responsive(true)
             ->gridColumnSpan(7);
 
-        self::buildStatsCard($statsGrid, 'stat-total-listings', 'Total Listings', '0', 'primary', 'home', '+0%', 'neutral', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-active', 'Active', '0', 'success', 'checkmark', '+0%', 'neutral', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-sold', 'Sold/Rented', '0', 'info', 'cash', '+0%', 'neutral', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-total-views', 'Total Views', '0', 'warning', 'eyeopen', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-total-listings', __('layout.total_listings'), '0', 'primary', 'home', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-active', __('layout.active_listings'), '0', 'success', 'checkmark', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-sold', __('layout.sold_rented'), '0', 'info', 'cash', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-total-views', __('layout.total_views'), '0', 'warning', 'eyeopen', '+0%', 'neutral', 'trend-1');
     }
 
     /**
@@ -108,7 +108,7 @@ class LayoutBuilder
     public static function buildMainSection($section, array $masterData): void
     {
         $section->meta([
-            'description' => 'Main content area with filters and listing table',
+            'description' => __('layout.listing_main_description'),
             'styling' => 'container mx-auto px-4 py-6',
         ]);
 
@@ -181,7 +181,7 @@ class LayoutBuilder
     public static function buildSearchComponent($section, array $masterData): void
     {
         $section->meta([
-            'description' => 'Search and filter controls',
+            'description' => __('layout.listing_search_description'),
             'styling' => 'container mx-auto px-4 py-2',
         ]);
 
@@ -199,7 +199,7 @@ class LayoutBuilder
     public static function buildActionsComponent($section, array $masterData): void
     {
         $section->meta([
-            'description' => 'Action buttons and controls',
+            'description' => __('layout.listing_actions_description'),
             'styling' => 'container mx-auto px-4 py-2',
         ]);
 
@@ -216,7 +216,7 @@ class LayoutBuilder
     public static function buildFooterSection($section): void
     {
         $section->meta([
-            'description' => 'Page footer with copyright and links',
+            'description' => __('layout.listing_footer_description'),
             'styling' => 'container mx-auto px-4 py-6 border-t border-gray-200',
         ]);
 
@@ -231,7 +231,7 @@ class LayoutBuilder
             ->align('center')
             ->justify('start')
             ->text('copyright-text')
-            ->content('© 2026 Listing Management System. All rights reserved.')
+            ->content(__('layout.listing_system_copyright'))
             ->size('sm')
             ->color('text-secondary');
 
@@ -242,25 +242,25 @@ class LayoutBuilder
             ->justify('end');
 
         $linksRow->button('help-link')
-            ->label('Help')
+            ->label(__('layout.help'))
             ->icon('help')
             ->size('sm')
             ->variant('text')
-            ->meta(['tooltip' => 'Get help and documentation']);
+            ->meta(['tooltip' => __('layout.get_help')]);
 
         $linksRow->button('about-link')
-            ->label('About')
+            ->label(__('layout.about'))
             ->icon('infocircle')
             ->size('sm')
             ->variant('text')
-            ->meta(['tooltip' => 'About this application']);
+            ->meta(['tooltip' => __('layout.about_app')]);
 
         $linksRow->button('version-link')
-            ->label('v1.0.0')
+            ->label(__('layout.v1_0_0'))
             ->icon('tag')
             ->size('sm')
             ->variant('text')
-            ->meta(['tooltip' => 'Application version']);
+            ->meta(['tooltip' => __('layout.version')]);
     }
 
     // ============================================================
@@ -322,44 +322,44 @@ class LayoutBuilder
     public static function buildFilterColumn($row, array $masterData): void
     {
         $row->filter('listings-filter')
-            ->addQuickFilter('search', 'Search', 'text')
-            ->addQuickFilter('property_type', 'Property Type', 'select', array_merge(
-                [['value' => '', 'label' => 'All Types']],
+            ->addQuickFilter('search', __('layout.search'), 'text')
+            ->addQuickFilter('property_type', __('layout.property_type'), 'select', array_merge(
+                [['value' => '', 'label' => __('layout.all_types')]],
                 [
-                    ['value' => 'residential', 'label' => 'Residential'],
-                    ['value' => 'commercial', 'label' => 'Commercial'],
-                    ['value' => 'land', 'label' => 'Land'],
-                    ['value' => 'industrial', 'label' => 'Industrial'],
+                    ['value' => 'residential', 'label' => __('layout.residential')],
+                    ['value' => 'commercial', 'label' => __('layout.commercial')],
+                    ['value' => 'land', 'label' => __('layout.land')],
+                    ['value' => 'industrial', 'label' => __('layout.industrial')],
                 ]
             ))
-            ->addQuickFilter('listing_type', 'Listing Type', 'select', array_merge(
-                [['value' => '', 'label' => 'All']],
+            ->addQuickFilter('listing_type', __('layout.listing_type'), 'select', array_merge(
+                [['value' => '', 'label' => __('layout.all')]],
                 [
-                    ['value' => 'sale', 'label' => 'For Sale'],
-                    ['value' => 'rent', 'label' => 'For Rent'],
-                    ['value' => 'lease', 'label' => 'For Lease'],
+                    ['value' => 'sale', 'label' => __('layout.for_sale')],
+                    ['value' => 'rent', 'label' => __('layout.for_rent')],
+                    ['value' => 'lease', 'label' => __('layout.for_lease')],
                 ]
             ))
-            ->addQuickFilter('status', 'Status', 'select', array_merge(
-                [['value' => '', 'label' => 'All Statuses']],
+            ->addQuickFilter('status', __('layout.status'), 'select', array_merge(
+                [['value' => '', 'label' => __('layout.all_statuses')]],
                 [
-                    ['value' => 'draft', 'label' => 'Draft'],
-                    ['value' => 'active', 'label' => 'Active'],
-                    ['value' => 'pending', 'label' => 'Pending'],
-                    ['value' => 'sold', 'label' => 'Sold'],
-                    ['value' => 'rented', 'label' => 'Rented'],
+                    ['value' => 'draft', 'label' => __('layout.draft')],
+                    ['value' => 'active', 'label' => __('layout.active')],
+                    ['value' => 'pending', 'label' => __('layout.pending')],
+                    ['value' => 'sold', 'label' => __('layout.sold')],
+                    ['value' => 'rented', 'label' => __('layout.rented')],
                 ]
             ))
-            ->addSelectFilter('bedrooms', 'Bedrooms', [
-                ['value' => '', 'label' => 'Any'],
+            ->addSelectFilter('bedrooms', __('layout.bedrooms'), [
+                ['value' => '', 'label' => __('layout.any')],
                 ['value' => '1', 'label' => '1+'],
                 ['value' => '2', 'label' => '2+'],
                 ['value' => '3', 'label' => '3+'],
                 ['value' => '4', 'label' => '4+'],
                 ['value' => '5', 'label' => '5+'],
             ])
-            ->addPriceRangeFilter('price', 'Price Range', 0, 10000000)
-            ->addDateRangeFilter('created_at', 'Listed Date')
+            ->addPriceRangeFilter('price', __('layout.price_range'), 0, 10000000)
+            ->addDateRangeFilter('created_at', __('layout.listed_date'))
             ->collapsible()
             ->collapsed(true)
             ->showActiveCount()
@@ -377,14 +377,14 @@ class LayoutBuilder
     public static function buildActionColumn($row): void
     {
         $row->button('refresh-btn')
-            ->label('Refresh')
+            ->label(__('layout.refresh'))
             ->icon('refresh')
             ->size('md')
             ->variant('outline')
-            ->meta(['tooltip' => 'Refresh data']);
+            ->meta(['tooltip' => __('layout.refresh_data')]);
 
         $row->button('create-btn')
-            ->label('Create')
+            ->label(__('layout.create'))
             ->icon('plus')
             ->size('md')
             ->color('primary')
@@ -398,10 +398,10 @@ class LayoutBuilder
                 'anchor' => 'right',
                 'backdrop' => true,
             ])
-            ->meta(['tooltip' => 'Create new listing']);
+            ->meta(['tooltip' => __('layout.create_new_listing')]);
 
         $row->button('create-btn-modal')
-            ->label('Create Modal View')
+            ->label(__('layout.create_modal_view'))
             ->icon('plus')
             ->size('md')
             ->color('primary')
@@ -409,7 +409,7 @@ class LayoutBuilder
             ->data('type', 'modal')
             ->data('component', 'create-listing-modal')
             ->data('action', 'open')
-            ->meta(['tooltip' => 'Create new listing']);
+            ->meta(['tooltip' => __('layout.create_new_listing')]);
 
         // View Options - Dropdown
         $row->button('view-btn')
@@ -424,21 +424,21 @@ class LayoutBuilder
                 'items' => [
                     [
                         'id' => 'view-table',
-                        'label' => 'Table View',
+                        'label' => __('layout.table_view'),
                         'icon' => 'cols',
                         'action' => 'table-view',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'view-list',
-                        'label' => 'List View',
+                        'label' => __('layout.list_view'),
                         'icon' => 'list',
                         'action' => 'list-view',
                         'type' => 'button',
                     ],
                 ],
             ])
-            ->meta(['tooltip' => 'Switch View']);
+            ->meta(['tooltip' => __('layout.switch_view')]);
 
         // More Options - Dropdown
         $row->button('more-btn')
@@ -455,14 +455,14 @@ class LayoutBuilder
                 'items' => [
                     [
                         'id' => 'export-data',
-                        'label' => 'Export',
+                        'label' => __('layout.export'),
                         'icon' => 'downloadcloud',
                         'action' => 'export',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'import-data',
-                        'label' => 'Import',
+                        'label' => __('layout.import'),
                         'icon' => 'uploadcloud',
                         'action' => 'import',
                         'type' => 'button',
@@ -472,14 +472,14 @@ class LayoutBuilder
                     ],
                     [
                         'id' => 'print',
-                        'label' => 'Print',
+                        'label' => __('layout.print'),
                         'icon' => 'printer',
                         'action' => 'print',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'archive',
-                        'label' => 'Archive',
+                        'label' => __('layout.archive'),
                         'icon' => 'archive',
                         'action' => 'archive',
                         'type' => 'button',
@@ -489,14 +489,14 @@ class LayoutBuilder
                     ],
                     [
                         'id' => 'settings',
-                        'label' => 'Settings',
+                        'label' => __('layout.settings'),
                         'icon' => 'settings',
                         'action' => 'settings',
                         'type' => 'button',
                     ],
                 ],
             ])
-            ->meta(['tooltip' => 'More options']);
+            ->meta(['tooltip' => __('layout.more_options')]);
     }
 
     // ============================================================
@@ -581,10 +581,10 @@ class LayoutBuilder
      * @param string $itemName Item name to display
      * @return array Modal definition
      */
-    public static function buildDeleteListingModal(string $itemName = 'this listing'): array
+    public static function buildDeleteListingModal(string $itemName = ''): array
     {
         return ModalSlot::deleteListing([
-            'itemName' => $itemName,
+            'itemName' => $itemName ?: __('layout.this_listing'),
         ]);
     }
 

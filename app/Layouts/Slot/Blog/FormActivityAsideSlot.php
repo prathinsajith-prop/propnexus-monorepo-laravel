@@ -66,13 +66,13 @@ class FormActivityAsideSlot
         $centerSlot = SlotManager::make('view-fa-header-center');
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Blog Post Details')
+                ->content(__('layout.blog_post_details'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('View complete blog post information')
+                ->content(__('layout.view_complete_blog_info'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -81,37 +81,37 @@ class FormActivityAsideSlot
         $rightSlot = SlotManager::make('view-fa-header-right', 4);
         $rightSlot->setComponent(
             BadgeComponent::make('status-badge')
-                ->content('Published')
+                ->content(__('layout.published'))
                 ->color('success')
                 ->variant('standard')
                 ->meta(['size' => 'sm'])
         );
         $rightSlot->setComponent(
             ButtonComponent::make('edit-btn')
-                ->label('Edit')
+                ->label(__('layout.edit'))
                 ->icon('pen')
                 ->variant('outlined')
                 ->size('sm')
-                ->meta(['action' => 'edit', 'type' => 'aside', 'component' => 'edit-blog-full', 'tooltip' => 'Edit Blog Post'])
+                ->meta(['action' => 'edit', 'type' => 'aside', 'component' => 'edit-blog-full', 'tooltip' => __('layout.tooltip_edit_blog_post')])
         );
         $rightSlot->setComponent(
             ButtonComponent::make('delete-btn')
-                ->label('Delete')
+                ->label(__('layout.delete'))
                 ->icon('binempty')
                 ->variant('outlined')
                 ->size('sm')
                 ->confirm([
-                    'title' => 'Delete Blog Post',
-                    'message' => 'Are you sure you want to delete this blog post? This action cannot be undone.',
-                    'confirmLabel' => 'Delete',
-                    'cancelLabel' => 'Cancel',
+                    'title' => __('layout.delete_blog_post'),
+                    'message' => __('layout.delete_blog_post_confirmation'),
+                    'confirmLabel' => __('layout.delete'),
+                    'cancelLabel' => __('layout.cancel'),
                     'action' => 'delete',
                     'dataUrl' => '/api/blogs/:id',
                     'method' => 'delete',
                 ])
                 ->meta([
                     'action' => 'delete',
-                    'tooltip' => 'Delete Blog Post',
+                    'tooltip' => __('layout.tooltip_delete_blog_post'),
                     'color' => 'error',
                 ])
         );
@@ -141,13 +141,13 @@ class FormActivityAsideSlot
 
         $footerRightSlot->setComponent(
             ButtonComponent::make('close-footer-btn')
-                ->label('Close')
+                ->label(__('layout.close'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('fullscreen-btn')
-                ->label('View Fullscreen')
+                ->label(__('layout.view_fullscreen'))
                 ->icon('expand')
                 ->variant('contained')
                 ->data('component', 'view-blog-full')
@@ -165,7 +165,7 @@ class FormActivityAsideSlot
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('more-fullscreen-btn')
-                ->label('View More Fullscreen')
+                ->label(__('layout.view_more_fullscreen'))
                 ->icon('expand')
                 ->variant('contained')
                 ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-fa-full'])

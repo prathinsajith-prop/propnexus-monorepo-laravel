@@ -26,7 +26,7 @@ class FooterSlot
 
         $footerGrid->add(
             ButtonComponent::make('help-btn')
-                ->label('Need Help?')
+                ->label(__('layout.need_help'))
                 ->variant('text')
                 ->meta(['action' => 'help'])
         );
@@ -43,14 +43,14 @@ class FooterSlot
 
         $footerRightRow->add(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
 
         $footerRightRow->add(
             ButtonComponent::make('save-btn')
-                ->label('Save Changes')
+                ->label(__('layout.save_changes'))
                 ->variant('contained')
                 ->meta(['action' => 'save'])
         );

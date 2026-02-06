@@ -30,38 +30,38 @@ class BlogFeedbackForm
             ->method($method)
             ->columns(1)
             ->gap('md')
-            ->title('Blog Feedback')
+            ->title(__('layout.blog_feedback'))
             ->meta([
                 'isEditable' => true,
                 'dataKey' => 'data',
             ]);
 
         $form->textarea('feedback_message')
-            ->label('Feedback Message')
-            ->placeholder('Share your thoughts, suggestions, or report any issues...')
+            ->label(__('layout.feedback_message'))
+            ->placeholder(__('layout.share_feedback_placeholder'))
             ->attribute('rows', 6)
             ->required(true)
             ->validation('required|string|max:2000')
-            ->help('Please provide detailed feedback (max 2000 characters)')
+            ->help(__('layout.feedback_help'))
             ->col(12);
 
         $form->checkbox('agree_terms')
-            ->label('I agree to the terms and conditions')
+            ->label(__('layout.agree_terms'))
             ->required(true)
             ->validation('required|accepted')
-            ->help('You must agree to the terms to submit feedback')
+            ->help(__('layout.agree_terms_help'))
             ->col(12);
 
         $form->checkbox('subscribe_updates')
-            ->label('Subscribe to updates about this feedback')
+            ->label(__('layout.subscribe_updates'))
             ->value(false)
-            ->help('Get notified when there are responses to your feedback')
+            ->help(__('layout.subscribe_updates_help'))
             ->col(12);
 
         // Add form action buttons
         $form->actions([
-            ['label' => 'Cancel', 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'close', 'type' => 'button'],
-            ['label' => 'Submit Feedback', 'color' => 'primary', 'icon' => 'send', 'type' => 'submit'],
+            ['label' => __('layout.cancel'), 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'close', 'type' => 'button'],
+            ['label' => __('layout.submit_feedback'), 'color' => 'primary', 'icon' => 'send', 'type' => 'submit'],
         ]);
 
         return $form;

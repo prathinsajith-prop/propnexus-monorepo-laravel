@@ -67,29 +67,29 @@ class BlogViewForm
 
         // === CONTENT SECTION ===
         $contentGroup = $form->group('content-info')
-            ->title('Blog Content')
+            ->title(__('layout.blog_content'))
             ->icon('documentfull')
             ->variant('bordered')
             ->columns(1);
 
         $contentGroup->text('title')
-            ->label('Post Title')
+            ->label(__('layout.post_title'))
             ->readonly(true)
             ->width(12);
 
         $contentGroup->text('slug')
-            ->label('URL Slug')
+            ->label(__('layout.url_slug'))
             ->readonly(true)
             ->width(12);
 
         $contentGroup->textarea('excerpt')
-            ->label('Excerpt')
+            ->label(__('layout.excerpt'))
             ->readonly(true)
             ->rows(3)
             ->width(12);
 
         $contentGroup->richtext('content')
-            ->label('Post Content')
+            ->label(__('layout.post_content'))
             ->readonly(true)
             ->height(400)
             ->editor('tinymce')
@@ -97,212 +97,212 @@ class BlogViewForm
 
         // === PUBLICATION SECTION ===
         $publicationGroup = $form->group('publication-info')
-            ->title('Publication Settings')
+            ->title(__('layout.publication_settings'))
             ->icon('calendar')
             ->variant('bordered')
             ->columns(1);
 
         $publicationGroup->text('status')
-            ->label('Status')
+            ->label(__('layout.status'))
             ->readonly(true)
             ->width(12);
 
         $publicationGroup->text('visibility')
-            ->label('Visibility')
+            ->label(__('layout.visibility'))
             ->readonly(true)
             ->width(12);
 
         $publicationGroup->text('published_at')
-            ->label('Published Date')
+            ->label(__('layout.published_date'))
             ->readonly(true)
             ->width(12);
 
         $publicationGroup->text('scheduled_at')
-            ->label('Scheduled For')
+            ->label(__('layout.scheduled_for'))
             ->readonly(true)
             ->width(12);
 
         $publicationGroup->text('expired_at')
-            ->label('Expiry Date')
+            ->label(__('layout.expiry_date'))
             ->readonly(true)
             ->width(12);
 
         // === MEDIA SECTION ===
         $mediaGroup = $form->group('media-info')
-            ->title('Media & Attachments')
+            ->title(__('layout.media_attachments'))
             ->icon('image')
             ->variant('bordered')
             ->columns(1);
 
         $mediaGroup->text('featured_image')
-            ->label('Featured Image')
+            ->label(__('layout.featured_image'))
             ->readonly(true)
             ->width(12);
 
         $mediaGroup->text('video_url')
-            ->label('Video URL')
+            ->label(__('layout.video_url'))
             ->readonly(true)
             ->width(12);
 
         $mediaGroup->text('gallery')
-            ->label('Gallery Images')
+            ->label(__('layout.images'))
             ->readonly(true)
             ->width(12);
 
         $mediaGroup->text('attachments')
-            ->label('Attachments')
+            ->label(__('layout.attachments'))
             ->readonly(true)
             ->width(12);
 
         // === CATEGORIZATION SECTION ===
         $categoryGroup = $form->group('category-info')
-            ->title('Categories & Tags')
+            ->title(__('layout.categories_tags'))
             ->icon('tag')
             ->variant('bordered')
             ->columns(2);
 
         $categoryGroup->text('category')
-            ->label('Primary Category')
+            ->label(__('layout.primary_category'))
             ->readonly(true)
             ->width(6);
 
         $categoryGroup->text('language')
-            ->label('Language')
+            ->label(__('layout.language'))
             ->readonly(true)
             ->width(6);
 
         $categoryGroup->text('categories')
-            ->label('Additional Categories')
+            ->label(__('layout.additional_categories'))
             ->readonly(true)
             ->width(12);
 
         $categoryGroup->text('tags')
-            ->label('Tags')
+            ->label(__('layout.tags'))
             ->readonly(true)
             ->width(12);
 
         // === SEO SECTION ===
         $seoGroup = $form->group('seo-info')
-            ->title('SEO & Metadata')
+            ->title(__('layout.seo_metadata'))
             ->icon('search')
             ->variant('bordered')
             ->columns(1);
 
         $seoGroup->text('seo_meta.title')
-            ->label('SEO Title')
+            ->label(__('layout.seo_title'))
             ->readonly(true)
             ->width(12);
 
         $seoGroup->textarea('seo_meta.description')
-            ->label('Meta Description')
+            ->label(__('layout.meta_description'))
             ->readonly(true)
             ->rows(2)
             ->width(12);
 
         $seoGroup->text('seo_meta.keywords')
-            ->label('Keywords')
+            ->label(__('layout.keywords'))
             ->readonly(true)
             ->width(12);
 
         $seoGroup->text('seo_meta.canonical_url')
-            ->label('Canonical URL')
+            ->label(__('layout.canonical_url'))
             ->readonly(true)
             ->width(12);
 
         $seoGroup->textarea('schema_markup.content')
-            ->label('Schema Markup (JSON-LD)')
+            ->label(__('layout.schema_markup'))
             ->readonly(true)
             ->rows(4)
             ->width(12);
 
         // === SETTINGS SECTION ===
         $settingsGroup = $form->group('settings-info')
-            ->title('Post Settings')
+            ->title(__('layout.post_settings'))
             ->icon('settings')
             ->variant('bordered')
             ->columns(1);
 
         $settingsGroup->text('is_featured')
-            ->label('Featured Post')
+            ->label(__('layout.featured_post'))
             ->readonly(true)
             ->width(12);
 
         $settingsGroup->text('is_sticky')
-            ->label('Sticky Post')
+            ->label(__('layout.sticky_post'))
             ->readonly(true)
             ->width(12);
 
         $settingsGroup->text('allow_comments')
-            ->label('Allow Comments')
+            ->label(__('layout.allow_comments'))
             ->readonly(true)
             ->width(12);
 
         $settingsGroup->text('author_id')
-            ->label('Author ID')
+            ->label(__('layout.author_id'))
             ->readonly(true)
             ->width(12);
 
         $settingsGroup->text('co_authors')
-            ->label('Co-Authors')
+            ->label(__('layout.co_authors'))
             ->readonly(true)
             ->width(12);
 
         // === ANALYTICS SECTION ===
         $analyticsGroup = $form->group('analytics-info')
-            ->title('Analytics & Metrics')
+            ->title(__('layout.analytics_metrics'))
             ->icon('chartbar')
             ->variant('bordered')
             ->columns(2);
 
         $analyticsGroup->text('views_count')
-            ->label('Views')
+            ->label(__('layout.views'))
             ->readonly(true)
             ->width(6);
 
         $analyticsGroup->text('likes_count')
-            ->label('Likes')
+            ->label(__('layout.likes'))
             ->readonly(true)
             ->width(6);
 
         $analyticsGroup->text('shares_count')
-            ->label('Shares')
+            ->label(__('layout.shares'))
             ->readonly(true)
             ->width(6);
 
         $analyticsGroup->text('comments_count')
-            ->label('Comments')
+            ->label(__('layout.comments'))
             ->readonly(true)
             ->width(6);
 
         $analyticsGroup->text('reading_time')
-            ->label('Reading Time (mins)')
+            ->label(__('layout.reading_time_mins'))
             ->readonly(true)
             ->width(12);
 
         // === AUDIT SECTION ===
         $auditGroup = $form->group('audit-info')
-            ->title('System & Audit Trail')
+            ->title(__('layout.system_audit_trail'))
             ->icon('clock')
             ->variant('bordered')
             ->columns(2);
 
         $auditGroup->text('created_at')
-            ->label('Created At')
+            ->label(__('layout.created_at'))
             ->readonly(true)
             ->width(6);
 
         $auditGroup->text('updated_at')
-            ->label('Last Updated')
+            ->label(__('layout.last_updated'))
             ->readonly(true)
             ->width(6);
 
         $auditGroup->text('last_edited_at')
-            ->label('Last Edited')
+            ->label(__('layout.last_edited'))
             ->readonly(true)
             ->width(6);
 
         $auditGroup->text('last_edited_by')
-            ->label('Last Edited By')
+            ->label(__('layout.last_edited_by'))
             ->readonly(true)
             ->width(6);
 

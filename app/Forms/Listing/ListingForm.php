@@ -50,386 +50,387 @@ class ListingForm
             ]);
         }
 
+        /** @var \Litepie\Layout\Components\FormComponent $form */
         // === PROPERTY DETAILS SECTION ===
         $propertyGroup = $form->group('property-info')
-            ->title('Property Details')
+            ->title(__('layout.property_details'))
             ->icon('home')
             ->variant('bordered')
             ->columns(12);
 
         $propertyGroup->text('title')
-            ->label('Property Title')
-            ->placeholder('e.g., Luxury 3BR Apartment in Dubai Marina')
+            ->label(__('layout.property_title'))
+            ->placeholder(__('layout.property_title_placeholder'))
             ->required(true)
             ->width(12);
 
         $propertyGroup->select('property_type')
-            ->label('Property Type')
+            ->label(__('layout.property_type'))
             ->options($masterData['property_types'] ?? [])
             ->required(true)
             ->width(4);
 
         $propertyGroup->select('listing_type')
-            ->label('Listing Type')
+            ->label(__('layout.listing_type'))
             ->options($masterData['listing_types'] ?? [])
             ->required(true)
             ->width(4);
 
         $propertyGroup->text('mls_number')
-            ->label('MLS Number')
-            ->placeholder('MLS-12345')
+            ->label(__('layout.mls_number'))
+            ->placeholder(__('layout.mls_placeholder'))
             ->width(4);
 
         $propertyGroup->number('price')
-            ->label('Price')
+            ->label(__('layout.price'))
             ->placeholder('0.00')
             ->required(true)
             ->width(4);
 
         $propertyGroup->select('currency')
-            ->label('Currency')
+            ->label(__('layout.currency'))
             ->options($masterData['currencies'] ?? [])
             ->width(4);
 
         $propertyGroup->checkbox('is_negotiable')
-            ->label('Price Negotiable')
+            ->label(__('layout.price_negotiable'))
             ->width(4);
 
         $propertyGroup->textarea('short_description')
-            ->label('Short Description')
-            ->placeholder('Brief property summary...')
+            ->label(__('layout.short_description'))
+            ->placeholder(__('layout.short_description_placeholder'))
             ->rows(2)
             ->width(12);
 
         $propertyGroup->textarea('description')
-            ->label('Full Description')
-            ->placeholder('Detailed property description...')
+            ->label(__('layout.full_description'))
+            ->placeholder(__('layout.full_description_placeholder'))
             ->required(true)
             ->rows(6)
             ->width(12);
 
         // === LOCATION SECTION ===
         $locationGroup = $form->group('location-info')
-            ->title('Location')
+            ->title(__('layout.location'))
             ->icon('location')
             ->variant('bordered')
             ->columns(12);
 
         $locationGroup->text('building_name')
-            ->label('Building Name')
-            ->placeholder('Building name')
+            ->label(__('layout.building_name'))
+            ->placeholder(__('layout.building_name_placeholder'))
             ->width(8);
 
         $locationGroup->text('unit_number')
-            ->label('Unit Number')
-            ->placeholder('Unit #')
+            ->label(__('layout.unit_number'))
+            ->placeholder(__('layout.unit_number_placeholder'))
             ->width(4);
 
         $locationGroup->text('address')
-            ->label('Street Address')
-            ->placeholder('Street address')
+            ->label(__('layout.street_address'))
+            ->placeholder(__('layout.street_address_placeholder'))
             ->required(true)
             ->width(12);
 
         $locationGroup->text('area')
-            ->label('Area')
-            ->placeholder('Dubai Marina')
+            ->label(__('layout.area'))
+            ->placeholder(__('layout.area_placeholder'))
             ->required(true)
             ->width(6);
 
         $locationGroup->text('sub_area')
-            ->label('Sub Area')
-            ->placeholder('Marina Gate')
+            ->label(__('layout.sub_area'))
+            ->placeholder(__('layout.sub_area_placeholder'))
             ->width(6);
 
         $locationGroup->text('city')
-            ->label('City')
-            ->placeholder('Dubai')
+            ->label(__('layout.city'))
+            ->placeholder(__('layout.city_placeholder'))
             ->required(true)
             ->width(4);
 
         $locationGroup->text('state')
-            ->label('State/Emirate')
-            ->placeholder('Dubai')
+            ->label(__('layout.state_emirate'))
+            ->placeholder(__('layout.state_placeholder'))
             ->width(4);
 
         $locationGroup->text('country')
-            ->label('Country')
-            ->placeholder('UAE')
+            ->label(__('layout.country'))
+            ->placeholder(__('layout.country_placeholder'))
             ->width(4);
 
         $locationGroup->text('postal_code')
-            ->label('Postal Code')
+            ->label(__('layout.postal_code'))
             ->placeholder('00000')
             ->width(4);
 
         // === SPECIFICATIONS SECTION ===
         $specsGroup = $form->group('specifications-info')
-            ->title('Property Specifications')
+            ->title(__('layout.property_specifications'))
             ->icon('grid')
             ->variant('bordered')
             ->columns(12);
 
         $specsGroup->number('bedrooms')
-            ->label('Bedrooms')
+            ->label(__('layout.bedrooms'))
             ->placeholder('0')
             ->required(true)
             ->width(3);
 
         $specsGroup->number('bathrooms')
-            ->label('Bathrooms')
+            ->label(__('layout.bathrooms'))
             ->placeholder('0')
             ->required(true)
             ->width(3);
 
         $specsGroup->number('parking_spaces')
-            ->label('Parking')
+            ->label(__('layout.parking'))
             ->placeholder('0')
             ->width(3);
 
         $specsGroup->number('year_built')
-            ->label('Year Built')
+            ->label(__('layout.year_built'))
             ->placeholder('2024')
             ->width(3);
 
         $specsGroup->number('size_sqft')
-            ->label('Built-up Area (sqft)')
+            ->label(__('layout.built_up_area_sqft'))
             ->placeholder('0')
             ->width(6);
 
         $specsGroup->number('plot_size_sqft')
-            ->label('Plot Area (sqft)')
+            ->label(__('layout.plot_area_sqft'))
             ->placeholder('0')
             ->width(6);
 
         $specsGroup->number('floor_number')
-            ->label('Floor')
+            ->label(__('layout.floor'))
             ->placeholder('0')
             ->width(6);
 
         $specsGroup->number('total_floors')
-            ->label('Total Floors')
+            ->label(__('layout.total_floors'))
             ->placeholder('0')
             ->width(6);
 
         // === FEATURES & AMENITIES SECTION ===
         $featuresGroup = $form->group('features-info')
-            ->title('Features & Amenities')
+            ->title(__('layout.features_amenities'))
             ->icon('star')
             ->variant('bordered')
             ->columns(12);
 
         $featuresGroup->select('furnishing_status')
-            ->label('Furnishing Status')
+            ->label(__('layout.furnishing_status'))
             ->options($masterData['furnishing_statuses'] ?? [])
             ->width(12);
 
         $featuresGroup->checkbox('has_parking')
-            ->label('Parking')
+            ->label(__('layout.parking'))
             ->width(3);
 
         $featuresGroup->checkbox('has_balcony')
-            ->label('Balcony')
+            ->label(__('layout.balcony'))
             ->width(3);
 
         $featuresGroup->checkbox('has_garden')
-            ->label('Garden')
+            ->label(__('layout.garden'))
             ->width(3);
 
         $featuresGroup->checkbox('has_pool')
-            ->label('Pool')
+            ->label(__('layout.pool'))
             ->width(3);
 
         $featuresGroup->checkbox('pet_friendly')
-            ->label('Pet Friendly')
+            ->label(__('layout.pet_friendly'))
             ->width(6);
 
         $featuresGroup->textarea('features')
-            ->label('Additional Features')
-            ->placeholder('Central AC, Built-in wardrobes, Maid\'s room, etc.')
+            ->label(__('layout.additional_features'))
+            ->placeholder(__('layout.additional_features_placeholder'))
             ->rows(3)
             ->width(12);
 
         $featuresGroup->textarea('amenities')
-            ->label('Building Amenities')
-            ->placeholder('Gym, Sauna, Children\'s play area, Concierge, etc.')
+            ->label(__('layout.building_amenities'))
+            ->placeholder(__('layout.building_amenities_placeholder'))
             ->rows(3)
             ->width(12);
 
         // === MEDIA SECTION ===
         $mediaGroup = $form->group('media-info')
-            ->title('Media & Photos')
+            ->title(__('layout.media_photos'))
             ->icon('image')
             ->variant('bordered')
             ->columns(2);
 
         $mediaGroup->file('featured_image')
-            ->label('Featured Image')
+            ->label(__('layout.featured_image'))
             ->accept('image/*')
             ->uploadUrl('/api/listing-upload/image')
             ->width(6);
 
         $mediaGroup->file('images')
-            ->label('Property Images')
+            ->label(__('layout.property_images'))
             ->accept('image/*')
             ->multiple(true)
             ->uploadUrl('/api/listing-upload/image')
             ->width(6);
 
         $mediaGroup->file('floor_plans')
-            ->label('Floor Plans')
+            ->label(__('layout.floor_plans'))
             ->accept('image/*,application/pdf')
             ->multiple(true)
             ->uploadUrl('/api/listing-upload/document')
             ->width(6);
 
         $mediaGroup->text('video_url')
-            ->label('Video URL')
+            ->label(__('layout.video_url'))
             ->placeholder('https://youtube.com/...')
             ->width(6);
 
         $mediaGroup->text('virtual_tour_url')
-            ->label('Virtual Tour URL')
+            ->label(__('layout.virtual_tour_url'))
             ->placeholder('https://...')
             ->width(12);
 
         // === STATUS & AVAILABILITY SECTION ===
         $statusGroup = $form->group('status-info')
-            ->title('Status & Availability')
+            ->title(__('layout.status_availability'))
             ->icon('checkmark')
             ->variant('bordered')
             ->columns(12);
 
         $statusGroup->select('status')
-            ->label('Listing Status')
+            ->label(__('layout.listing_status'))
             ->options($masterData['statuses'] ?? [])
             ->required(true)
             ->width(6);
 
         $statusGroup->select('availability')
-            ->label('Availability')
+            ->label(__('layout.availability'))
             ->options($masterData['availabilities'] ?? [])
             ->required(true)
             ->width(6);
 
         $statusGroup->date('published_at')
-            ->label('Publish Date')
+            ->label(__('layout.publish_date'))
             ->width(4);
 
         $statusGroup->date('available_from')
-            ->label('Available From')
+            ->label(__('layout.available_from'))
             ->width(4);
 
         $statusGroup->date('available_until')
-            ->label('Available Until')
+            ->label(__('layout.available_until'))
             ->width(4);
 
         $statusGroup->date('expires_at')
-            ->label('Listing Expires')
+            ->label(__('layout.listing_expires'))
             ->width(12);
 
         $statusGroup->checkbox('is_featured')
-            ->label('Featured')
+            ->label(__('layout.featured'))
             ->width(4);
 
         $statusGroup->checkbox('is_hot_deal')
-            ->label('Hot Deal')
+            ->label(__('layout.hot_deal'))
             ->width(4);
 
         $statusGroup->checkbox('is_verified')
-            ->label('Verified')
+            ->label(__('layout.verified'))
             ->width(4);
 
         // === AGENT INFORMATION SECTION ===
         $agentGroup = $form->group('agent-info')
-            ->title('Agent Information')
+            ->title(__('layout.agent_information'))
             ->icon('person')
             ->variant('bordered')
             ->columns(2);
 
         $agentGroup->select('agent_id')
-            ->label('Assigned Agent')
+            ->label(__('layout.assigned_agent'))
             ->options($masterData['agents'] ?? [])
-            ->placeholder('Select an agent')
+            ->placeholder(__('layout.select_an_agent'))
             ->required(true)
             ->width(6);
 
         $agentGroup->text('agent_name')
-            ->label('Agent Name')
-            ->placeholder('Agent name')
+            ->label(__('layout.agent_name'))
+            ->placeholder(__('layout.agent_name_placeholder'))
             ->width(6);
 
         $agentGroup->text('agent_phone')
-            ->label('Agent Phone')
+            ->label(__('layout.agent_phone'))
             ->placeholder('+971 XX XXX XXXX')
             ->width(6);
 
         $agentGroup->text('agent_email')
-            ->label('Agent Email')
+            ->label(__('layout.agent_email'))
             ->placeholder('agent@email.com')
             ->width(6);
 
         // === FINANCIAL DETAILS SECTION ===
         $financialGroup = $form->group('financial-info')
-            ->title('Financial Details')
+            ->title(__('layout.financial_details'))
             ->icon('cash')
             ->variant('bordered')
             ->columns(3);
 
         $financialGroup->number('original_price')
-            ->label('Original Price')
+            ->label(__('layout.original_price'))
             ->placeholder('0.00')
             ->width(4);
 
         $financialGroup->number('discount_percentage')
-            ->label('Discount %')
+            ->label(__('layout.discount_percentage'))
             ->placeholder('0')
             ->width(4);
 
         $financialGroup->number('service_charge')
-            ->label('Service Charge')
+            ->label(__('layout.service_charge'))
             ->placeholder('0.00')
             ->width(4);
 
         $financialGroup->select('service_charge_period')
-            ->label('Period')
+            ->label(__('layout.period'))
             ->options([
-                ['value' => 'yearly', 'label' => 'Yearly'],
-                ['value' => 'monthly', 'label' => 'Monthly'],
+                ['value' => 'yearly', 'label' => __('layout.yearly')],
+                ['value' => 'monthly', 'label' => __('layout.monthly')],
             ])
             ->width(4);
 
         $financialGroup->number('security_deposit')
-            ->label('Security Deposit')
+            ->label(__('layout.security_deposit'))
             ->placeholder('0.00')
             ->width(8);
 
         $financialGroup->textarea('payment_terms')
-            ->label('Payment Terms')
-            ->placeholder('Payment terms and conditions...')
+            ->label(__('layout.payment_terms'))
+            ->placeholder(__('layout.payment_terms_placeholder'))
             ->rows(3)
             ->width(12);
 
         // === ADDITIONAL INFO SECTION ===
         $additionalGroup = $form->group('additional-info')
-            ->title('Additional Information')
+            ->title(__('layout.additional_information'))
             ->icon('information')
             ->variant('bordered')
             ->columns(2);
 
         $additionalGroup->text('reference_number')
-            ->label('Reference Number')
+            ->label(__('layout.reference_number'))
             ->placeholder('REF-12345')
             ->width(6);
 
         $additionalGroup->number('priority_score')
-            ->label('Priority Score')
+            ->label(__('layout.priority_score'))
             ->placeholder('50')
             ->width(6);
 
         $additionalGroup->textarea('internal_notes')
-            ->label('Internal Notes')
-            ->placeholder('Private notes (not visible to public)...')
+            ->label(__('layout.internal_notes'))
+            ->placeholder(__('layout.internal_notes_placeholder'))
             ->rows(4)
             ->width(12);
 

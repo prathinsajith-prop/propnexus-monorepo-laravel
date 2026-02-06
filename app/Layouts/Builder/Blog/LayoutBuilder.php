@@ -63,7 +63,7 @@ class LayoutBuilder
     public static function buildHeaderSection($section): void
     {
         $section->meta([
-            'description' => 'Page header with breadcrumb navigation and statistics',
+            'description' => __('layout.blog_header_description'),
             'styling' => 'container mx-auto px-4 py-6',
             'background' => 'transparent',
         ]);
@@ -81,10 +81,10 @@ class LayoutBuilder
             ->gridColumnSpan(5);
 
         $headerInfoGrid->pageHeader('page-header')
-            ->title('Blog Management')
+            ->title(__('layout.blog_management'))
             ->breadcrumbs([
-                ['label' => 'Dashboard', 'link' => '/', 'icon' => 'home'],
-                ['label' => 'Blogs', 'active' => true, 'icon' => 'documentfull'],
+                ['label' => __('layout.dashboard'), 'link' => '/', 'icon' => 'home'],
+                ['label' => __('layout.blogs'), 'active' => true, 'icon' => 'documentfull'],
             ])
             ->align('left')
             ->spacing('md')
@@ -100,10 +100,10 @@ class LayoutBuilder
             ->responsive(true)
             ->gridColumnSpan(7);
 
-        self::buildStatsCard($statsGrid, 'stat-total-posts', 'Total Posts', '12', 'primary', 'list', '+12%', 'up', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-published', 'Published', '8', 'success', 'listcheck', '+8%', 'up', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-drafts', 'Drafts', '0', 'warning', 'pen', '+0%', 'neutral', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-total-views', 'Total Views', '15', 'info', 'eyeopen', '+15%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-total-posts', __('layout.total_posts'), '12', 'primary', 'list', '+12%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-published', __('layout.published'), '8', 'success', 'listcheck', '+8%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-drafts', __('layout.drafts'), '0', 'warning', 'pen', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-total-views', __('layout.total_views'), '15', 'info', 'eyeopen', '+15%', 'up', 'trend-1');
     }
 
     /**
@@ -116,7 +116,7 @@ class LayoutBuilder
     public static function buildMainSection($section, array $masterData): void
     {
         $section->meta([
-            'description' => 'Main content area with filters and data table',
+            'description' => __('layout.blog_main_description'),
             'styling' => 'container mx-auto px-4 py-6',
         ]);
 
@@ -191,7 +191,7 @@ class LayoutBuilder
     public static function buildSearchComponent($section, array $masterData): void
     {
         $section->meta([
-            'description' => 'Search and filter controls',
+            'description' => __('layout.blog_search_description'),
             'styling' => 'container mx-auto px-4 py-2',
         ]);
 
@@ -209,7 +209,7 @@ class LayoutBuilder
     public static function buildActionsComponent($section, array $masterData): void
     {
         $section->meta([
-            'description' => 'Action buttons and controls',
+            'description' => __('layout.blog_actions_description'),
             'styling' => 'container mx-auto px-4 py-2',
         ]);
 
@@ -226,7 +226,7 @@ class LayoutBuilder
     public static function buildFooterSection($section): void
     {
         $section->meta([
-            'description' => 'Page footer with copyright and links',
+            'description' => __('layout.blog_footer_description'),
             'styling' => 'container mx-auto px-4 py-6 border-t border-gray-200',
         ]);
 
@@ -241,7 +241,7 @@ class LayoutBuilder
             ->align('center')
             ->justify('start')
             ->text('copyright-text')
-            ->content('© 2026 Blog Management System. All rights reserved.')
+            ->content(__('layout.blog_system_copyright'))
             ->size('sm')
             ->color('text-secondary');
 
@@ -252,25 +252,25 @@ class LayoutBuilder
             ->justify('end');
 
         $linksRow->button('help-link')
-            ->label('Help')
+            ->label(__('layout.help'))
             ->icon('help')
             ->size('sm')
             ->variant('text')
-            ->meta(['tooltip' => 'Get help and documentation']);
+            ->meta(['tooltip' => __('layout.get_help_doc')]);
 
         $linksRow->button('about-link')
-            ->label('About')
+            ->label(__('layout.about'))
             ->icon('infocircle')
             ->size('sm')
             ->variant('text')
-            ->meta(['tooltip' => 'About this application']);
+            ->meta(['tooltip' => __('layout.about_this_app')]);
 
         $linksRow->button('version-link')
-            ->label('v1.0.0')
+            ->label(__('layout.v1_0_0'))
             ->icon('tag')
             ->size('sm')
             ->variant('text')
-            ->meta(['tooltip' => 'Application version']);
+            ->meta(['tooltip' => __('layout.app_version')]);
     }
 
     // ============================================================
@@ -332,28 +332,28 @@ class LayoutBuilder
     public static function buildFilterColumn($row, array $masterData): void
     {
         $row->filter('blogs-filter')
-            ->addQuickFilter('search', 'Search', 'text')
-            ->addQuickFilter('status', 'Status', 'select', array_merge(
-                [['value' => '', 'label' => 'All Statuses']],
+            ->addQuickFilter('search', __('layout.search'), 'text')
+            ->addQuickFilter('status', __('layout.status'), 'select', array_merge(
+                [['value' => '', 'label' => __('layout.all_statuses')]],
                 [
-                    ['value' => 'draft', 'label' => 'Draft'],
-                    ['value' => 'review', 'label' => 'In Review'],
-                    ['value' => 'published', 'label' => 'Published'],
-                    ['value' => 'archived', 'label' => 'Archived'],
+                    ['value' => 'draft', 'label' => __('layout.draft')],
+                    ['value' => 'review', 'label' => __('layout.in_review')],
+                    ['value' => 'published', 'label' => __('layout.published')],
+                    ['value' => 'archived', 'label' => __('layout.archived')],
                 ]
             ))
-            ->addQuickFilter('category', 'Category', 'select', array_merge(
-                [['value' => '', 'label' => 'All Categories']],
+            ->addQuickFilter('category', __('layout.category'), 'select', array_merge(
+                [['value' => '', 'label' => __('layout.all_categories')]],
                 $masterData['categories'] ?? []
             ))
-            ->addSelectFilter('status', 'Status', [
-                ['value' => 'draft', 'label' => 'Draft'],
-                ['value' => 'review', 'label' => 'In Review'],
-                ['value' => 'published', 'label' => 'Published'],
-                ['value' => 'archived', 'label' => 'Archived'],
+            ->addSelectFilter('status', __('layout.status'), [
+                ['value' => 'draft', 'label' => __('layout.draft')],
+                ['value' => 'review', 'label' => __('layout.in_review')],
+                ['value' => 'published', 'label' => __('layout.published')],
+                ['value' => 'archived', 'label' => __('layout.archived')],
             ])
-            ->addMultiSelectFilter('category', 'Category', $masterData['categories'] ?? [])
-            ->addDateRangeFilter('published_at', 'Published Date')
+            ->addMultiSelectFilter('category', __('layout.category'), $masterData['categories'] ?? [])
+            ->addDateRangeFilter('published_at', __('layout.published_date'))
             ->collapsible()
             ->collapsed(true)
             ->showActiveCount()
@@ -371,14 +371,14 @@ class LayoutBuilder
     public static function buildActionColumn($row): void
     {
         $row->button('refresh-btn')
-            ->label('Refresh')
+            ->label(__('layout.refresh'))
             ->icon('refresh')
             ->size('md')
             ->variant('outline')
-            ->meta(['tooltip' => 'Refresh data']);
+            ->meta(['tooltip' => __('layout.refresh_data')]);
 
         $row->button('create-btn')
-            ->label('Create')
+            ->label(__('layout.create'))
             ->icon('plus')
             ->size('md')
             ->color('primary')
@@ -392,10 +392,10 @@ class LayoutBuilder
                 'anchor' => 'right',
                 'backdrop' => true,
             ])
-            ->meta(['tooltip' => 'Create new blog']);
+            ->meta(['tooltip' => __('layout.create_new_blog')]);
 
         $row->button('create-btn-modal')
-            ->label('Create Modal View')
+            ->label(__('layout.create_modal_view'))
             ->icon('plus')
             ->size('md')
             ->color('primary')
@@ -403,7 +403,7 @@ class LayoutBuilder
             ->data('type', 'modal')
             ->data('component', 'create-blog-modal')
             ->data('action', 'open')
-            ->meta(['tooltip' => 'Create new blog']);
+            ->meta(['tooltip' => __('layout.create_new_blog')]);
 
         // View Options - Dropdown
         $row->button('view-btn')
@@ -418,21 +418,21 @@ class LayoutBuilder
                 'items' => [
                     [
                         'id' => 'view-table',
-                        'label' => 'Table View',
+                        'label' => __('layout.table_view'),
                         'icon' => 'cols',
                         'action' => 'table-view',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'view-list',
-                        'label' => 'List View',
+                        'label' => __('layout.list_view'),
                         'icon' => 'list',
                         'action' => 'list-view',
                         'type' => 'button',
                     ],
                 ],
             ])
-            ->meta(['tooltip' => 'Switch View']);
+            ->meta(['tooltip' => __('layout.switch_view')]);
 
         // More Options - Dropdown
         $row->button('more-btn')
@@ -449,14 +449,14 @@ class LayoutBuilder
                 'items' => [
                     [
                         'id' => 'export-data',
-                        'label' => 'Export',
+                        'label' => __('layout.export'),
                         'icon' => 'downloadcloud',
                         'action' => 'export',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'import-data',
-                        'label' => 'Import',
+                        'label' => __('layout.import'),
                         'icon' => 'uploadcloud',
                         'action' => 'import',
                         'type' => 'button',
@@ -466,14 +466,14 @@ class LayoutBuilder
                     ],
                     [
                         'id' => 'print',
-                        'label' => 'Print',
+                        'label' => __('layout.print'),
                         'icon' => 'printer',
                         'action' => 'print',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'archive',
-                        'label' => 'Archive',
+                        'label' => __('layout.archive'),
                         'icon' => 'archive',
                         'action' => 'archive',
                         'type' => 'button',
@@ -483,14 +483,14 @@ class LayoutBuilder
                     ],
                     [
                         'id' => 'settings',
-                        'label' => 'Settings',
+                        'label' => __('layout.settings'),
                         'icon' => 'settings',
                         'action' => 'settings',
                         'type' => 'button',
                     ],
                 ],
             ])
-            ->meta(['tooltip' => 'More options']);
+            ->meta(['tooltip' => __('layout.more_options')]);
     }
 
     // ============================================================

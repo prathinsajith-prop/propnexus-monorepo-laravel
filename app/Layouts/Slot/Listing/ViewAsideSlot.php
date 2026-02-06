@@ -80,13 +80,13 @@ class ViewAsideSlot
 
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Listing Details')
+                ->content(__('layout.listing_details'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('View complete property listing information')
+                ->content(__('layout.view_complete_property_info'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -104,7 +104,7 @@ class ViewAsideSlot
 
         $rightSlot->setComponent(
             BadgeComponent::make('status-badge')
-                ->content('Active')
+                ->content(__('layout.active'))
                 ->color('success')
                 ->variant('standard')
                 ->meta(['size' => 'sm'])
@@ -130,7 +130,7 @@ class ViewAsideSlot
                     'action' => 'edit',
                     'type' => 'aside',
                     'component' => 'edit-listing-full',
-                    'tooltip' => 'Edit Listing'
+                    'tooltip' => __('layout.tooltip_edit_listing')
                 ])
         );
         $rightSlot->setComponent(
@@ -140,17 +140,17 @@ class ViewAsideSlot
                 ->size('sm')
                 ->isIconButton(true)
                 ->confirm([
-                    'title' => 'Delete Listing',
-                    'message' => 'Are you sure you want to delete this listing? This action cannot be undone.',
-                    'confirmLabel' => 'Delete',
-                    'cancelLabel' => 'Cancel',
+                    'title' => __('layout.delete_listing'),
+                    'message' => __('layout.delete_listing_confirmation'),
+                    'confirmLabel' => __('layout.delete'),
+                    'cancelLabel' => __('layout.cancel'),
                     'action' => 'delete',
                     'dataUrl' => '/api/listing/:id',
                     'method' => 'delete',
                 ])
                 ->meta([
                     'action' => 'delete',
-                    'tooltip' => 'Delete Listing',
+                    'tooltip' => __('layout.tooltip_delete_listing'),
                     'color' => 'error',
                 ])
         );
@@ -169,14 +169,14 @@ class ViewAsideSlot
                     'items' => [
                         [
                             'id' => 'share',
-                            'label' => 'Share',
+                            'label' => __('layout.share'),
                             'icon' => 'share',
                             'action' => 'share',
                             'type' => 'button',
                         ],
                         [
                             'id' => 'print',
-                            'label' => 'Print',
+                            'label' => __('layout.print'),
                             'icon' => 'printer',
                             'action' => 'print',
                             'type' => 'button',
@@ -186,14 +186,14 @@ class ViewAsideSlot
                         ],
                         [
                             'id' => 'duplicate',
-                            'label' => 'Duplicate',
+                            'label' => __('layout.duplicate'),
                             'icon' => 'copy',
                             'action' => 'duplicate',
                             'type' => 'button',
                         ],
                         [
                             'id' => 'archive',
-                            'label' => 'Archive',
+                            'label' => __('layout.archive'),
                             'icon' => 'archive',
                             'action' => 'archive',
                             'type' => 'button',
@@ -203,14 +203,14 @@ class ViewAsideSlot
                         ],
                         [
                             'id' => 'export',
-                            'label' => 'Export',
+                            'label' => __('layout.export'),
                             'icon' => 'downloadcloud',
                             'action' => 'export',
                             'type' => 'button',
                         ],
                     ],
                 ])
-                ->meta(['tooltip' => 'More options'])
+                ->meta(['tooltip' => __('layout.tooltip_more_options')])
         );
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
@@ -252,13 +252,13 @@ class ViewAsideSlot
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('close-footer-btn')
-                ->label('Close')
+                ->label(__('layout.close'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('fullscreen-btn')
-                ->label('View Fullscreen')
+                ->label(__('layout.view_fullscreen'))
                 ->icon('expand')
                 ->variant('contained')
                 ->data('component', 'view-listing-full')
@@ -282,10 +282,10 @@ class ViewAsideSlot
 
         $footerRightSlot->setComponent(
             ButtonComponent::make('print-details-btn')
-                ->label('Print Details')
+                ->label(__('layout.print_details'))
                 ->icon('printer')
                 ->variant('contained')
-                ->meta(['action' => 'print', 'tooltip' => 'Print Listing Details', 'color' => 'success'])
+                ->meta(['action' => 'print', 'tooltip' => __('layout.print_details'), 'color' => 'success'])
         );
 
         // Wrap footer in SlotManager

@@ -37,32 +37,32 @@ class BlogNotesForm
             ]);
 
         $form->textarea('note_content')
-            ->label('Note Content')
-            ->placeholder('Add your note here...')
+            ->label(__('layout.note_content'))
+            ->placeholder(__('layout.add_note_placeholder'))
             ->attribute('rows', 4)
             ->required(true)
             ->validation('required|string|max:1000')
-            ->help('Maximum 1000 characters')
+            ->help(__('layout.max_1000_chars'))
             ->col(12);
 
         $form->select('note_type')
-            ->label('Note Type')
+            ->label(__('layout.note_type'))
             ->options([
-                ['value' => 'general', 'label' => 'General'],
-                ['value' => 'important', 'label' => 'Important'],
-                ['value' => 'todo', 'label' => 'To-Do'],
-                ['value' => 'feedback', 'label' => 'Feedback'],
+                ['value' => 'general', 'label' => __('layout.general')],
+                ['value' => 'important', 'label' => __('layout.important')],
+                ['value' => 'todo', 'label' => __('layout.todo')],
+                ['value' => 'feedback', 'label' => __('layout.feedback')],
             ])
-            ->placeholder('Select note type')
+            ->placeholder(__('layout.select_note_type'))
             ->value('general')
             ->col(6);
 
         $form->select('note_priority')
-            ->label('Priority')
+            ->label(__('layout.priority'))
             ->options([
-                ['value' => 'low', 'label' => 'Low'],
-                ['value' => 'medium', 'label' => 'Medium'],
-                ['value' => 'high', 'label' => 'High'],
+                ['value' => 'low', 'label' => __('layout.low')],
+                ['value' => 'medium', 'label' => __('layout.medium')],
+                ['value' => 'high', 'label' => __('layout.high')],
             ])
             ->value('medium')
             ->col(6);

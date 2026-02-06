@@ -56,8 +56,8 @@ use Litepie\Hashids\Traits\Hashids;
  * @property string $mls_number MLS/Reference number
  * @property string $title Property title
  * @property string $slug SEO-friendly URL slug
- * @property string $property_type residential|commercial|land|industrial
- * @property string $listing_type sale|rent|lease
+ * @property \App\Enums\PropertyType $property_type residential|commercial|land|industrial
+ * @property \App\Enums\ListingType $listing_type sale|rent|lease
  * @property float $price Property price
  * @property string $address Full address
  * @property string $city City
@@ -66,8 +66,8 @@ use Litepie\Hashids\Traits\Hashids;
  * @property int $bathrooms Number of bathrooms
  * @property float $size_sqft Property size in sqft
  * @property string $description Property description
- * @property string $status draft|active|pending|sold|rented|expired|archived
- * @property string $availability available|reserved|sold|rented
+ * @property \App\Enums\ListingStatus $status draft|active|pending|sold|rented|expired|archived
+ * @property \App\Enums\Availability $availability available|reserved|sold|rented
  * @property int $agent_id Agent responsible for listing
  * @property bool $is_featured Featured listing flag
  * @property bool $is_hot_deal Hot deal flag
@@ -226,6 +226,42 @@ class Listing extends Model
         'available_until' => 'date',
         'last_edited_at' => 'datetime',
     ];
+
+    /**
+     * Create a new Eloquent model instance and initialize trait properties
+     *
+     * @param  array  $attributes
+     * @return void
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // Initialize trait properties
+        $this->initializeTraitProperties();
+    }
+
+    /**
+     * Configure traits that require property definitions
+     * (Defined dynamically to avoid trait conflicts)
+     */
+    protected function initializeTraitProperties()
+    {
+        // Sluggable configuration
+        if (!property_exists($this, 'slugs') || empty($this->slugs)) {
+            $this->slugs = ['slug' => 'title'];
+        }
+
+        // Translatable configuration
+        if (!property_exists($this, 'translatable') || empty($this->translatable)) {
+            $this->translatable = ['title', 'description', 'short_description', 'seo_meta'];
+        }
+
+        // Searchable configuration
+        if (!property_exists($this, 'searchable') || empty($this->searchable)) {
+            $this->searchable = ['title', 'description', 'city', 'state', 'building_name', 'reference_number'];
+        }
+    }
 
     /**
      * The accessors to append to the model's array form.
@@ -612,6 +648,15 @@ class Listing extends Model
     protected static function boot()
     {
         parent::boot();
+
+        // Initialize model instance for property access
+        static::retrieved(function ($listing) {
+            $listing->initializeTraitProperties();
+        });
+
+        static::creating(function ($listing) {
+            $listing->initializeTraitProperties();
+        });
 
         static::creating(function ($listing) {
             if (empty($listing->listing_id)) {

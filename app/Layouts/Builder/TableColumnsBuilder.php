@@ -47,14 +47,14 @@ class TableColumnsBuilder
     public static function getBlogTableColumns(): array
     {
         return [
-            ['key' => 'blog_id', 'label' => 'Blog ID', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
-            ['key' => 'title', 'label' => 'Title', 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
-            ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
-            ['key' => 'category', 'label' => 'Category', 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
-            ['key' => 'author', 'label' => 'Author', 'sortable' => true, 'width' => '120px'],
-            ['key' => 'views_count', 'label' => 'Views', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
-            ['key' => 'published_at', 'label' => 'Published', 'sortable' => true, 'width' => '120px'],
-            ['key' => 'actions', 'label' => 'Actions', 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getBlogTableActions()],
+            ['key' => 'blog_id', 'label' => __('layout.blog_id'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'title', 'label' => __('layout.title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
+            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
+            ['key' => 'category', 'label' => __('layout.category'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
+            ['key' => 'author', 'label' => __('layout.author'), 'sortable' => true, 'width' => '120px'],
+            ['key' => 'views_count', 'label' => __('layout.views'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'published_at', 'label' => __('layout.published'), 'sortable' => true, 'width' => '120px'],
+            ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getBlogTableActions()],
         ];
     }
 
@@ -66,13 +66,13 @@ class TableColumnsBuilder
     public static function getBlogTableListColumns(): array
     {
         return [
-            ['key' => 'title', 'label' => 'Title', 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
-            ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
-            ['key' => 'category', 'label' => 'Category', 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
-            ['key' => 'author', 'label' => 'Author', 'sortable' => true, 'width' => '120px'],
-            ['key' => 'views_count', 'label' => 'Views', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
-            ['key' => 'published_at', 'label' => 'Published', 'sortable' => true, 'width' => '120px'],
-            ['key' => 'actions', 'label' => 'Actions', 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getBlogTableActions()],
+            ['key' => 'title', 'label' => __('layout.title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
+            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
+            ['key' => 'category', 'label' => __('layout.category'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
+            ['key' => 'author', 'label' => __('layout.author'), 'sortable' => true, 'width' => '120px'],
+            ['key' => 'views_count', 'label' => __('layout.views'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'published_at', 'label' => __('layout.published'), 'sortable' => true, 'width' => '120px'],
+            ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getBlogTableActions()],
         ];
     }
 
@@ -102,15 +102,15 @@ class TableColumnsBuilder
     public static function getListingTableColumns(): array
     {
         return [
-            ['key' => 'mls_number', 'label' => 'MLS Number', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
-            ['key' => 'title', 'label' => 'Title', 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
-            ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
-            ['key' => 'property_type', 'label' => 'Type', 'sortable' => true, 'filterable' => true, 'filter_key' => 'property_type', 'width' => '120px'],
-            ['key' => 'price', 'label' => 'Price', 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
-            ['key' => 'location', 'label' => 'Location', 'sortable' => true, 'width' => '180px'],
-            ['key' => 'bedrooms', 'label' => 'Beds', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
-            ['key' => 'bathrooms', 'label' => 'Baths', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
-            ['key' => 'actions', 'label' => 'Actions', 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getListingTableActions()],
+            ['key' => 'mls_number', 'label' => __('layout.mls_number'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'title', 'label' => __('layout.title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
+            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
+            ['key' => 'property_type', 'label' => __('layout.type'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'property_type', 'width' => '120px'],
+            ['key' => 'price', 'label' => __('layout.price'), 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
+            ['key' => 'location', 'label' => __('layout.location'), 'sortable' => true, 'width' => '180px'],
+            ['key' => 'bedrooms', 'label' => __('layout.beds'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'bathrooms', 'label' => __('layout.baths'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getListingTableActions()],
         ];
     }
 
@@ -122,12 +122,12 @@ class TableColumnsBuilder
     public static function getListingTableListColumns(): array
     {
         return [
-            ['key' => 'title', 'label' => 'Title', 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
-            ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
-            ['key' => 'property_type', 'label' => 'Type', 'sortable' => true, 'width' => '120px'],
-            ['key' => 'price', 'label' => 'Price', 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
-            ['key' => 'location', 'label' => 'Location', 'sortable' => true, 'width' => '180px'],
-            ['key' => 'actions', 'label' => 'Actions', 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getListingTableActions()],
+            ['key' => 'title', 'label' => __('layout.title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
+            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
+            ['key' => 'property_type', 'label' => __('layout.type'), 'sortable' => true, 'width' => '120px'],
+            ['key' => 'price', 'label' => __('layout.price'), 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
+            ['key' => 'location', 'label' => __('layout.location'), 'sortable' => true, 'width' => '180px'],
+            ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getListingTableActions()],
         ];
     }
 
@@ -178,6 +178,7 @@ class TableColumnsBuilder
 
         $params = array_merge($defaults, $options);
 
+        /** @var \Litepie\Layout\Components\ButtonComponent $button */
         $button = ButtonComponent::make($params['id'])
             ->icon($params['icon'])
             ->variant('outlined')
@@ -223,7 +224,7 @@ class TableColumnsBuilder
             'id' => 'view',
             'icon' => 'eyeopen',
             'color' => 'primary',
-            'tooltip' => 'View Details',
+            'tooltip' => __('layout.view_details'),
             'type' => 'aside',
             'component' => 'view-blog',
             'config' => ['width' => '900px'],
@@ -241,7 +242,7 @@ class TableColumnsBuilder
             'id' => 'edit',
             'icon' => 'pen',
             'color' => 'primary',
-            'tooltip' => 'Edit',
+            'tooltip' => __('layout.edit'),
             'type' => 'aside',
             'component' => 'edit-blog',
             'config' => [
@@ -264,12 +265,12 @@ class TableColumnsBuilder
             'id' => 'delete',
             'icon' => 'binempty',
             'color' => 'danger',
-            'tooltip' => 'Delete',
+            'tooltip' => __('layout.delete'),
             'confirm' => [
-                'title' => 'Delete Blog Post',
-                'message' => 'Are you sure you want to delete this blog post? This action cannot be undone.',
-                'confirmLabel' => 'Delete',
-                'cancelLabel' => 'Cancel',
+                'title' => __('layout.delete_blog_post'),
+                'message' => __('layout.delete_blog_post_confirmation'),
+                'confirmLabel' => __('layout.delete'),
+                'cancelLabel' => __('layout.cancel'),
                 'action' => 'delete',
                 'dataUrl' => '/api/blogs/:id',
                 'method' => 'delete',
@@ -292,7 +293,7 @@ class TableColumnsBuilder
             'id' => 'view',
             'icon' => 'eyeopen',
             'color' => 'primary',
-            'tooltip' => 'View Details',
+            'tooltip' => __('layout.view_details'),
             'type' => 'aside',
             'component' => 'view-listing',
             'config' => ['width' => '900px'],
@@ -310,7 +311,7 @@ class TableColumnsBuilder
             'id' => 'edit',
             'icon' => 'pen',
             'color' => 'primary',
-            'tooltip' => 'Edit',
+            'tooltip' => __('layout.edit'),
             'type' => 'aside',
             'component' => 'edit-listing',
             'config' => [
@@ -333,12 +334,12 @@ class TableColumnsBuilder
             'id' => 'delete',
             'icon' => 'binempty',
             'color' => 'danger',
-            'tooltip' => 'Delete',
+            'tooltip' => __('layout.delete'),
             'confirm' => [
-                'title' => 'Delete Listing',
-                'message' => 'Are you sure you want to delete this listing? This action cannot be undone.',
-                'confirmLabel' => 'Delete',
-                'cancelLabel' => 'Cancel',
+                'title' => __('layout.delete_listing'),
+                'message' => __('layout.delete_listing_confirmation'),
+                'confirmLabel' => __('layout.delete'),
+                'cancelLabel' => __('layout.cancel'),
                 'action' => 'delete',
                 'dataUrl' => '/api/listing/:id',
                 'method' => 'delete',

@@ -32,14 +32,14 @@ class HeaderSlot
 
         $titleGrid->add(
             TextComponent::make('title')
-                ->content('Property Listing')
+                ->content(__('layout.property_listing'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
 
         $titleGrid->add(
             TextComponent::make('subtitle')
-                ->content('Manage Your Listings')
+                ->content(__('layout.manage_your_listings'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -61,7 +61,7 @@ class HeaderSlot
                 ->icon('pen')
                 ->variant('text')
                 ->isIconButton(true)
-                ->meta(['action' => 'edit', 'tooltip' => 'Edit'])
+                ->meta(['action' => 'edit', 'tooltip' => __('layout.edit')])
         );
 
         $rightRow->add(
@@ -69,7 +69,7 @@ class HeaderSlot
                 ->icon('share')
                 ->variant('text')
                 ->isIconButton(true)
-                ->meta(['action' => 'share', 'tooltip' => 'Share'])
+                ->meta(['action' => 'share', 'tooltip' => __('layout.share')])
         );
 
         $rightRow->add(
@@ -77,7 +77,7 @@ class HeaderSlot
                 ->icon('printer')
                 ->variant('text')
                 ->isIconButton(true)
-                ->meta(['action' => 'print', 'tooltip' => 'Print'])
+                ->meta(['action' => 'print', 'tooltip' => __('layout.print')])
         );
 
         $rightRow->add(
@@ -86,10 +86,10 @@ class HeaderSlot
                 ->isIconButton(true)
                 ->variant('text')
                 ->confirm([
-                    'title' => 'Delete Listing',
-                    'message' => 'Are you sure you want to delete this listing? This action cannot be undone.',
-                    'confirmLabel' => 'Delete',
-                    'cancelLabel' => 'Cancel',
+                    'title' => __('layout.delete_listing'),
+                    'message' => __('layout.delete_listing_confirmation'),
+                    'confirmLabel' => __('layout.delete'),
+                    'cancelLabel' => __('layout.cancel'),
                     'confirmColor' => 'danger',
                     'icon' => 'binempty',
                     'iconColor' => 'danger',
@@ -98,7 +98,7 @@ class HeaderSlot
                 ->data('url', '/api/listing/:id')
                 ->data('method', 'DELETE')
                 ->meta([
-                    'tooltip' => 'Delete Listing',
+                    'tooltip' => __('layout.delete_listing'),
                     'color' => 'danger',
                 ])
         );
@@ -108,7 +108,7 @@ class HeaderSlot
                 ->icon('cross')
                 ->isIconButton(true)
                 ->variant('text')
-                ->meta(['action' => 'close', 'tooltip' => 'Close'])
+                ->meta(['action' => 'close', 'tooltip' => __('layout.close')])
         );
 
         $rightGrid->add($rightRow);

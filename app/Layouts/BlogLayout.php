@@ -41,11 +41,11 @@ class BlogLayout
     public static function make($masterData)
     {
         return LitepieLayoutBuilder::create('blogs', 'page')
-            ->title('Blog Management')
+            ->title(__('layout.blog_management'))
             ->type('layouts')
             ->meta([
                 'masterDataUrl' => '/api/blogs-master-data',
-                'description' => 'Blog Management System',
+                'description' => __('layout.blog_management_description'),
                 'version' => '1.0.0',
                 'refreshInterval' => null,
             ])

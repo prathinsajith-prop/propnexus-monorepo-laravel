@@ -107,7 +107,7 @@ class MainContentSlot
     private static function buildTextComponent(): TextComponent
     {
         return TextComponent::make('info-text')
-            ->content('Select a blog from the table to view details, activity, and chat history.')
+            ->content(__('layout.blog_main_content_info'))
             ->variant('body1')
             ->meta(['color' => 'text-gray-700', 'styling' => 'mb-4']);
     }

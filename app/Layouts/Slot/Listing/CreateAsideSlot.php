@@ -79,13 +79,13 @@ class CreateAsideSlot
 
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Create New Listing')
+                ->content(__('layout.create_new_listing'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('Add a new property to your listings')
+                ->content(__('layout.add_new_property_description'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -140,13 +140,13 @@ class CreateAsideSlot
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('create-btn')
-                ->label('Create Listing')
+                ->label(__('layout.create_listing'))
                 ->icon('check')
                 ->variant('contained')
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/listing', 'method' => 'POST', 'color' => 'primary'])

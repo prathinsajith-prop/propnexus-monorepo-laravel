@@ -35,40 +35,40 @@ class BlogFollowUpsForm
             ->gap('md');
 
         $form->text('followup_title')
-            ->label('Follow-up Title')
-            ->placeholder('e.g., Review content, Update images')
+            ->label(__('layout.followup_title'))
+            ->placeholder(__('layout.followup_placeholder'))
             ->required(true)
             ->validation('required|string|max:200')
             ->col(12);
 
         $form->datetime('followup_date')
-            ->label('Follow-up Date & Time')
+            ->label(__('layout.followup_date_time'))
             ->required(true)
             ->validation('required|date|after:now')
-            ->help('Schedule when to follow up')
+            ->help(__('layout.schedule_followup_help'))
             ->col(6);
 
         $form->select('followup_type')
-            ->label('Type')
+            ->label(__('layout.type'))
             ->options([
-                ['value' => 'review', 'label' => 'Review'],
-                ['value' => 'update', 'label' => 'Update'],
-                ['value' => 'publish', 'label' => 'Publish'],
-                ['value' => 'other', 'label' => 'Other'],
+                ['value' => 'review', 'label' => __('layout.review')],
+                ['value' => 'update', 'label' => __('layout.update')],
+                ['value' => 'publish', 'label' => __('layout.publish')],
+                ['value' => 'other', 'label' => __('layout.other')],
             ])
             ->value('review')
             ->col(6);
 
         $form->textarea('followup_description')
-            ->label('Description')
-            ->placeholder('Add details about this follow-up...')
+            ->label(__('layout.description'))
+            ->placeholder(__('layout.followup_description_placeholder'))
             ->attribute('rows', 3)
             ->col(12);
 
         $form->checkbox('send_reminder')
-            ->label('Send Email Reminder')
+            ->label(__('layout.send_email_reminder'))
             ->value(true)
-            ->help('Receive email notification before follow-up')
+            ->help(__('layout.reminder_help'))
             ->col(12);
 
         // Add form action buttons

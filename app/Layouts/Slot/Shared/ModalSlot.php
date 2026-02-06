@@ -49,9 +49,9 @@ class ModalSlot
     public static function confirmation(array $options = []): array
     {
         $defaults = [
-            'title' => 'Confirm Action',
-            'message' => 'Are you sure you want to proceed?',
-            'confirmLabel' => 'Confirm',
+            'title' => __('layout.confirm_action'),
+            'message' => __('layout.sure_to_proceed'),
+            'confirmLabel' => __('layout.confirm'),
             'confirmAction' => 'confirm',
             'confirmColor' => 'primary',
             'confirmIcon' => null,
@@ -103,7 +103,7 @@ class ModalSlot
                 ->justify('end')
                 ->add(
                     ButtonComponent::make('cancel-btn')
-                        ->label('Cancel')
+                        ->label(__('layout.cancel'))
                         ->variant('outlined')
                         ->meta(['action' => 'close'])
                 )
@@ -156,10 +156,10 @@ class ModalSlot
     public static function alert(array $options = []): array
     {
         $defaults = [
-            'title' => 'Notice',
+            'title' => __('layout.notice'),
             'message' => '',
             'variant' => 'info',
-            'buttonLabel' => 'OK',
+            'buttonLabel' => __('layout.ok'),
         ];
 
         $config = array_merge($defaults, $options);

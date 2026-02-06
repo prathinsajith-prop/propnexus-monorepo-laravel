@@ -34,11 +34,11 @@ class UserLayout
     public static function make($masterData)
     {
         return LayoutBuilder::create('users', 'page')
-            ->title('User Management')
+            ->title(__('layout.user_management'))
             ->type('layouts')
             ->meta([
                 'masterDataUrl' => '/api/users-master-data',
-                'description' => 'User Management System',
+                'description' => __('layout.user_management_system'),
                 'version' => '1.0.0',
                 'refreshInterval' => null,
             ])
@@ -60,7 +60,7 @@ class UserLayout
     private static function buildHeaderSection($section)
     {
         $section->meta([
-            'description' => 'Page header with breadcrumb navigation and statistics',
+            'description' => __('layout.page_header_description'),
             'styling' => 'container mx-auto px-4 py-6',
             'background' => 'transparent',
         ]);
@@ -78,10 +78,10 @@ class UserLayout
             ->gridColumnSpan(5);
 
         $headerInfoGrid->pageHeader('page-header')
-            ->title('User Management')
+            ->title(__('layout.user_management'))
             ->breadcrumbs([
-                ['label' => 'Dashboard', 'link' => '/', 'icon' => 'home'],
-                ['label' => 'Users', 'active' => true, 'icon' => 'users'],
+                ['label' => __('layout.dashboard'), 'link' => '/', 'icon' => 'home'],
+                ['label' => __('layout.users'), 'active' => true, 'icon' => 'users'],
             ])
             ->align('left')
             ->spacing('md')
@@ -96,10 +96,10 @@ class UserLayout
             ->responsive(true)
             ->gridColumnSpan(7);
 
-        self::buildStatsCard($statsGrid, 'stat-total-users', 'Total Users', '1,284', 'primary', 'users', '+12.5%', 'up', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-active', 'Active Users', '1,156', 'success', 'usercheck', '+3.2%', 'up', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-new-users', 'New Hires', '42', 'info', 'userplus', '+15.8%', 'up', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-pending', 'Pending Review', '15', 'warning', 'userwarning', '-5.4%', 'down', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-total-users', __('layout.total_users'), '1,284', 'primary', 'users', '+12.5%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-active', __('layout.active_users'), '1,156', 'success', 'usercheck', '+3.2%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-new-users', __('layout.new_hires'), '42', 'info', 'userplus', '+15.8%', 'up', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-pending', __('layout.pending_review'), '15', 'warning', 'userwarning', '-5.4%', 'down', 'trend-1');
     }
     /**
      * Build a statistics card with icon, value, and trend indicator
@@ -148,7 +148,7 @@ class UserLayout
     private static function buildMainSection($section, $masterData)
     {
         $section->meta([
-            'description' => 'Main content area with filters and data table',
+            'description' => __('layout.main_content_description'),
             'styling' => 'container mx-auto px-4 py-6',
         ]);
 
@@ -185,77 +185,77 @@ class UserLayout
     {
         $row->filter('users-filter')
             // Quick access filters at the top
-            ->addQuickFilter('joining_date', 'Joining Date', 'daterange')
-            ->addQuickFilter('status', 'User Status', 'select', array_merge(
-                [['value' => '', 'label' => 'All Statuses']],
+            ->addQuickFilter('joining_date', __('layout.joining_date'), 'daterange')
+            ->addQuickFilter('status', __('layout.user_status'), 'select', array_merge(
+                [['value' => '', 'label' => __('layout.all_statuses')]],
                 $masterData['statuses']
             ))
-            ->addQuickFilter('department', 'Department', 'select', array_merge(
-                [['value' => '', 'label' => 'All Departments']],
+            ->addQuickFilter('department', __('layout.department'), 'select', array_merge(
+                [['value' => '', 'label' => __('layout.all_departments')]],
                 $masterData['departments']
             ))
-            ->addQuickFilter('employee_type', 'Employment Type', 'select', array_merge(
-                [['value' => '', 'label' => 'All Types']],
+            ->addQuickFilter('employee_type', __('layout.employment_type'), 'select', array_merge(
+                [['value' => '', 'label' => __('layout.all_types')]],
                 $masterData['employee_types']
             ))
 
             // Quick Presets for common filter combinations
-            ->addPreset('active_users', 'Active Users', [
+            ->addPreset('active_users', __('layout.active_users'), [
                 'status' => 'Active',
             ])
-            ->addPreset('new_hires', 'New Hires (This Month)', [
+            ->addPreset('new_hires', __('layout.new_hires_this_month'), [
                 'joining_date' => ['start' => 'first day of this month', 'end' => 'today'],
             ])
-            ->addPreset('engineering', 'Engineering Team', [
+            ->addPreset('engineering', __('layout.engineering_team'), [
                 'department' => 'Engineering',
             ])
 
             // Status with all comparison operators
-            ->addSelectFilter('status', 'Status', $masterData['statuses'])
+            ->addSelectFilter('status', __('layout.status'), $masterData['statuses'])
             ->addOperators('status', [
-                ['value' => 'equal', 'label' => 'Equal To'],
-                ['value' => 'not_equal', 'label' => 'Not Equal To'],
-                ['value' => 'in', 'label' => 'In'],
-                ['value' => 'not_in', 'label' => 'Not In'],
+                ['value' => 'equal', 'label' => __('layout.equal_to')],
+                ['value' => 'not_equal', 'label' => __('layout.not_equal_to')],
+                ['value' => 'in', 'label' => __('layout.in')],
+                ['value' => 'not_in', 'label' => __('layout.not_in')],
             ])
             ->setDefaultOperator('status', 'equal')
 
             // Department filter
-            ->addMultiSelectFilter('department', 'Department', $masterData['departments'])
+            ->addMultiSelectFilter('department', __('layout.department'), $masterData['departments'])
             ->addOperators('department', [
-                ['value' => 'in', 'label' => 'In (Any Of)'],
-                ['value' => 'not_in', 'label' => 'Not In (None Of)'],
+                ['value' => 'in', 'label' => __('layout.in_any_of')],
+                ['value' => 'not_in', 'label' => __('layout.not_in_none_of')],
             ])
             ->setDefaultOperator('department', 'in')
 
             // Designation filter
-            ->addMultiSelectFilter('designation', 'Designation', $masterData['designations'])
+            ->addMultiSelectFilter('designation', __('layout.designation'), $masterData['designations'])
             ->addOperators('designation', [
-                ['value' => 'in', 'label' => 'In (Any Of)'],
-                ['value' => 'not_in', 'label' => 'Not In (None Of)'],
-                ['value' => 'like', 'label' => 'Like'],
-                ['value' => 'not_like', 'label' => 'Not Like'],
+                ['value' => 'in', 'label' => __('layout.in_any_of')],
+                ['value' => 'not_in', 'label' => __('layout.not_in_none_of')],
+                ['value' => 'like', 'label' => __('layout.like')],
+                ['value' => 'not_like', 'label' => __('layout.not_like')],
             ])
             ->setDefaultOperator('designation', 'in')
 
             // Date range with comprehensive date operators
-            ->addDateRangeFilter('joining_date', 'Joining Date')
+            ->addDateRangeFilter('joining_date', __('layout.joining_date'))
             ->addOperators('joining_date', [
-                ['value' => 'equal', 'label' => 'Equal To (On Date)'],
-                ['value' => 'not_equal', 'label' => 'Not Equal To'],
-                ['value' => 'before', 'label' => 'Before'],
-                ['value' => 'after', 'label' => 'After'],
-                ['value' => 'on_or_before', 'label' => 'On or Before'],
-                ['value' => 'on_or_after', 'label' => 'On or After'],
-                ['value' => 'between', 'label' => 'Between (Date Range)'],
-                ['value' => 'not_between', 'label' => 'Not Between'],
+                ['value' => 'equal', 'label' => __('layout.on_date')],
+                ['value' => 'not_equal', 'label' => __('layout.not_equal_to')],
+                ['value' => 'before', 'label' => __('layout.before')],
+                ['value' => 'after', 'label' => __('layout.after')],
+                ['value' => 'on_or_before', 'label' => __('layout.on_or_before')],
+                ['value' => 'on_or_after', 'label' => __('layout.on_or_after')],
+                ['value' => 'between', 'label' => __('layout.between')],
+                ['value' => 'not_between', 'label' => __('layout.not_between')],
             ])
             ->setDefaultOperator('joining_date', 'between')
             ->addQuickOptions('joining_date', [
-                ['label' => 'This Month', 'value' => ['start' => 'first day of this month', 'end' => 'today'], 'operator' => 'between'],
-                ['label' => 'Last 30 Days', 'value' => ['start' => '-30 days', 'end' => 'today'], 'operator' => 'between'],
-                ['label' => 'This Year', 'value' => ['start' => 'first day of january this year', 'end' => 'today'], 'operator' => 'between'],
-                ['label' => 'Last Year', 'value' => ['start' => 'first day of january last year', 'end' => 'last day of december last year'], 'operator' => 'between'],
+                ['label' => __('layout.this_month'), 'value' => ['start' => 'first day of this month', 'end' => 'today'], 'operator' => 'between'],
+                ['label' => __('layout.last_30_days'), 'value' => ['start' => '-30 days', 'end' => 'today'], 'operator' => 'between'],
+                ['label' => __('layout.this_year'), 'value' => ['start' => 'first day of january this year', 'end' => 'today'], 'operator' => 'between'],
+                ['label' => __('layout.last_year'), 'value' => ['start' => 'first day of january last year', 'end' => 'last day of december last year'], 'operator' => 'between'],
             ])
 
             // Filter configuration
@@ -271,22 +271,22 @@ class UserLayout
     {
         // Filter control buttons
         $row->button('filter-toggle-btn')
-            ->label('Filter')
+            ->label(__('layout.filter'))
             ->icon('filter')
             ->size('md')
             ->variant('outline')
-            ->meta(['tooltip' => 'Toggle filter panel', 'action' => 'toggle-filter']);
+            ->meta(['tooltip' => __('layout.toggle_filter_panel'), 'action' => 'toggle-filter']);
 
         $row->button('refresh-btn')
-            ->label('Refresh')
+            ->label(__('layout.refresh'))
             ->icon('refresh')
             ->size('md')
             ->variant('outline')
-            ->meta(['tooltip' => 'Refresh data']);
+            ->meta(['tooltip' => __('layout.refresh_data')]);
 
         // Main action buttons
         $row->button('create-btn')
-            ->label('Create')
+            ->label(__('layout.create'))
             ->icon('plus')
             ->size('md')
             ->color('primary')
@@ -294,11 +294,11 @@ class UserLayout
             ->data('type', 'modal')
             ->data('component', 'create-user-modal')
             ->data('action', 'open')
-            ->meta(['tooltip' => 'Create new user']);
+            ->meta(['tooltip' => __('layout.create_new_user')]);
 
         // Create User Fullscreen Drawer
         $row->button('create-fullscreen-btn')
-            ->label('Create Fullscreen')
+            ->label(__('layout.create_fullscreen'))
             ->icon('plus')
             ->size('md')
             ->color('primary')
@@ -306,14 +306,14 @@ class UserLayout
             ->data('component', 'create-user-drawer-fullscreen')
             ->data('action', 'open')
             ->variant('lt-contained')
-            ->meta(['tooltip' => 'Create new user in fullscreen']);
+            ->meta(['tooltip' => __('layout.create_new_user_fullscreen')]);
 
         $row->button('export-btn')
-            ->label('Export')
+            ->label(__('layout.export'))
             ->icon('downloadcloud')
             ->size('md')
             ->variant('outline')
-            ->meta(['tooltip' => 'Export data']);
+            ->meta(['tooltip' => __('layout.export_data')]);
 
         // More Options - Button with Dropdown Menu
         $row->button('more-btn')
@@ -331,14 +331,14 @@ class UserLayout
                 'items' => [
                     [
                         'id' => 'import-data',
-                        'label' => 'Import Data',
+                        'label' => __('layout.import_data'),
                         'icon' => 'uploadcloud',
                         'action' => 'import',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'bulk-actions',
-                        'label' => 'Bulk Actions',
+                        'label' => __('layout.bulk_actions'),
                         'icon' => 'listcheck',
                         'action' => 'bulk-actions',
                         'type' => 'button',
@@ -348,14 +348,14 @@ class UserLayout
                     ],
                     [
                         'id' => 'print',
-                        'label' => 'Print',
+                        'label' => __('layout.print'),
                         'icon' => 'printer',
                         'action' => 'print',
                         'type' => 'button',
                     ],
                     [
                         'id' => 'archive',
-                        'label' => 'Archive',
+                        'label' => __('layout.archive'),
                         'icon' => 'archive',
                         'action' => 'archive',
                         'type' => 'button',
@@ -365,29 +365,29 @@ class UserLayout
                     ],
                     [
                         'id' => 'settings',
-                        'label' => 'Settings',
+                        'label' => __('layout.settings'),
                         'icon' => 'settings',
                         'action' => 'settings',
                         'type' => 'button',
                     ],
                 ],
             ])
-            ->meta(['tooltip' => 'More options']);
+            ->meta(['tooltip' => __('layout.more_options')]);
     }
 
     private static function getUserTableColumns()
     {
         return [
-            ['key' => 'id', 'label' => 'ID', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
-            ['key' => 'user_id', 'label' => 'User ID', 'type' => 'badge', 'sortable' => true, 'width' => '120px'],
-            ['key' => 'name', 'label' => 'Name', 'sortable' => true, 'filterable' => true, 'filter_key' => 'name'],
-            ['key' => 'email', 'label' => 'Email', 'sortable' => true, 'filterable' => true, 'filter_key' => 'email'],
-            ['key' => 'phone', 'label' => 'Phone', 'sortable' => true, 'width' => '140px'],
-            ['key' => 'department', 'label' => 'Department', 'sortable' => true, 'filterable' => true, 'filter_key' => 'department'],
-            ['key' => 'designation', 'label' => 'Designation', 'sortable' => true, 'filterable' => true, 'filter_key' => 'designation'],
-            ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
-            ['key' => 'joining_date', 'label' => 'Joining Date', 'sortable' => true, 'filterable' => true, 'filter_key' => 'joining_date', 'width' => '120px'],
-            ['key' => 'actions', 'label' => 'Actions', 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => [
+            ['key' => 'id', 'label' => __('layout.id'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'user_id', 'label' => __('layout.user_id'), 'type' => 'badge', 'sortable' => true, 'width' => '120px'],
+            ['key' => 'name', 'label' => __('layout.name'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'name'],
+            ['key' => 'email', 'label' => __('layout.email'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'email'],
+            ['key' => 'phone', 'label' => __('layout.phone'), 'sortable' => true, 'width' => '140px'],
+            ['key' => 'department', 'label' => __('layout.department'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'department'],
+            ['key' => 'designation', 'label' => __('layout.designation'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'designation'],
+            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
+            ['key' => 'joining_date', 'label' => __('layout.joining_date'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'joining_date', 'width' => '120px'],
+            ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => [
                 [
                     'type' => 'button',
                     'name' => 'view',
@@ -395,7 +395,7 @@ class UserLayout
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'primary',
-                    'tooltip' => 'View Details',
+                    'tooltip' => __('layout.view_details'),
                     'dataAttributes' => ['type' => 'drawer', 'component' => 'view-user-drawer', 'action' => 'open'],
                     'dataKey' => 'id',
                 ],
@@ -406,7 +406,7 @@ class UserLayout
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'success',
-                    'tooltip' => 'Edit User',
+                    'tooltip' => __('layout.edit_user'),
                     'dataAttributes' => ['type' => 'modal', 'component' => 'edit-user-modal', 'action' => 'open'],
                     'dataKey' => 'id',
                 ],
@@ -417,14 +417,14 @@ class UserLayout
                     'variant' => 'outlined',
                     'size' => 'sm',
                     'color' => 'error',
-                    'tooltip' => 'Delete User',
+                    'tooltip' => __('layout.delete_user'),
                     'action' => 'delete',
                     'dataKey' => 'id',
                     'confirm' => [
-                        'title' => 'Delete User',
-                        'message' => 'Are you sure you want to delete this user? This action cannot be undone.',
-                        'confirmText' => 'Delete',
-                        'cancelText' => 'Cancel',
+                        'title' => __('layout.delete_user'),
+                        'message' => __('layout.delete_user_confirmation'),
+                        'confirmText' => __('layout.delete'),
+                        'cancelText' => __('layout.cancel'),
                         'dataUrl' => '/api/users/:id',
                         'method' => 'delete',
                     ],
@@ -466,11 +466,11 @@ class UserLayout
 
         return ModalComponent::make('create-user-modal')
             ->children([
-                ['type' => 'header', 'title' => 'Create New User', 'icon' => 'userplus'],
+                ['type' => 'header', 'title' => __('layout.create_new_user'), 'icon' => 'userplus'],
                 ['type' => 'content', 'component' => $formComponent],
                 ['type' => 'footer', 'buttons' => [
-                    ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Create User', 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/users', 'method' => 'POST'],
+                    ['label' => __('layout.cancel'), 'variant' => 'outlined', 'action' => 'close'],
+                    ['label' => __('layout.create_user'), 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/users', 'method' => 'POST'],
                 ]],
             ])
             ->ariaLabelledby('create-user-modal-title')
@@ -483,11 +483,11 @@ class UserLayout
 
         return ModalComponent::make('edit-user-modal')
             ->children([
-                ['type' => 'header', 'title' => 'Edit User', 'icon' => 'pen'],
+                ['type' => 'header', 'title' => __('layout.edit_user'), 'icon' => 'pen'],
                 ['type' => 'content', 'component' => $formComponent],
                 ['type' => 'footer', 'buttons' => [
-                    ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Update User', 'type' => 'submit', 'color' => 'success', 'icon' => 'check', 'dataUrl' => '/api/users/:id', 'method' => 'PUT'],
+                    ['label' => __('layout.cancel'), 'variant' => 'outlined', 'action' => 'close'],
+                    ['label' => __('layout.save_changes'), 'type' => 'submit', 'color' => 'success', 'icon' => 'check', 'dataUrl' => '/api/users/:id', 'method' => 'PUT'],
                 ]],
             ])
             ->ariaLabelledby('edit-user-modal-title')
@@ -509,13 +509,13 @@ class UserLayout
             ->backdrop(true)
             ->closeOnBackdrop(true)
             ->header([
-                'title' => 'User Details',
-                'subtitle' => 'View complete employee information',
+                'title' => __('layout.user_details'),
+                'subtitle' => __('layout.view_complete_employee_information'),
                 'icon' => 'user',
                 'actions' => [
                     [
                         'type' => 'chip',
-                        'label' => 'Active',
+                        'label' => __('layout.active'),
                         'color' => 'success',
                         'size' => 'sm',
                         'icon' => 'check',
@@ -523,29 +523,29 @@ class UserLayout
                     [
                         'type' => 'drawer',
                         'actionType' => 'drawer',
-                        'label' => 'Edit',
+                        'label' => __('layout.edit'),
                         'icon' => 'pen',
                         'variant' => 'outlined',
                         'size' => 'sm',
                         'color' => 'primary',
                         'action' => 'edit',
-                        'tooltip' => 'Edit User',
+                        'tooltip' => __('layout.edit_user'),
                         'component' => 'edit-user-drawer-fullscreen',
                     ],
                     [
                         'type' => 'button',
-                        'label' => 'Delete',
+                        'label' => __('layout.delete'),
                         'icon' => 'binempty',
                         'variant' => 'outlined',
                         'size' => 'sm',
                         'color' => 'error',
                         'action' => 'delete',
-                        'tooltip' => 'Delete User',
+                        'tooltip' => __('layout.delete_user'),
                         'confirm' => [
-                            'title' => 'Delete User',
-                            'message' => 'Are you sure you want to delete this user? This action cannot be undone.',
-                            'confirmText' => 'Delete',
-                            'cancelText' => 'Cancel',
+                            'title' => __('layout.delete_user'),
+                            'message' => __('layout.delete_user_confirmation'),
+                            'confirmText' => __('layout.delete'),
+                            'cancelText' => __('layout.cancel'),
                             'action' => 'delete',
                             'dataUrl' => '/api/users/:id',
                             'method' => 'delete',
@@ -559,7 +559,7 @@ class UserLayout
                         'size' => 'sm',
                         'color' => 'info',
                         'action' => 'openInNewTab',
-                        'tooltip' => 'Open Profile in New Tab',
+                        'tooltip' => __('layout.open_profile_in_new_tab'),
                         'isIconButton' => true,
                     ],
                     [
@@ -570,7 +570,7 @@ class UserLayout
                         'size' => 'sm',
                         'color' => 'success',
                         'action' => 'download',
-                        'tooltip' => 'Download User Profile',
+                        'tooltip' => __('layout.download_user_profile'),
                         'isIconButton' => true,
                     ],
                 ],
@@ -581,8 +581,8 @@ class UserLayout
             ->footer([
                 'type' => 'button-group',
                 'buttons' => [
-                    ['label' => 'Close', 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'close'],
-                    ['label' => 'View Fullscreen', 'color' => 'primary', 'icon' => 'expand', 'type' => 'drawer', 'component' => 'view-user-drawer-fullscreen', 'action' => 'view'],
+                    ['label' => __('layout.close'), 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'close'],
+                    ['label' => __('layout.view_fullscreen'), 'color' => 'primary', 'icon' => 'expand', 'type' => 'drawer', 'component' => 'view-user-drawer-fullscreen', 'action' => 'view'],
                 ],
             ])
             ->toArray();
@@ -618,8 +618,8 @@ class UserLayout
             ->width('100vw')
             ->height('100vh')
             ->header([
-                'title' => 'New User (Full Screen)',
-                'subtitle' => 'Complete onboarding walkthrough',
+                'title' => __('layout.new_user_full_screen'),
+                'subtitle' => __('layout.complete_onboarding_walkthrough'),
                 'icon' => 'userplus',
             ])
             ->content([
@@ -628,8 +628,8 @@ class UserLayout
             ->footer([
                 'type' => 'button-group',
                 'buttons' => [
-                    ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Create User', 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/users', 'method' => 'POST'],
+                    ['label' => __('layout.cancel'), 'variant' => 'outlined', 'action' => 'close'],
+                    ['label' => __('layout.create_user'), 'type' => 'submit', 'color' => 'primary', 'icon' => 'check', 'dataUrl' => '/api/users', 'method' => 'POST'],
                 ],
             ])
             ->toArray();
@@ -647,8 +647,8 @@ class UserLayout
             ->width('100vw')
             ->height('100vh')
             ->header([
-                'title' => 'Edit User (Full Screen)',
-                'subtitle' => 'Update detailed employee record',
+                'title' => __('layout.edit_user_full_screen'),
+                'subtitle' => __('layout.update_detailed_employee_record'),
                 'icon' => 'pen',
             ])
             ->content([
@@ -657,8 +657,8 @@ class UserLayout
             ->footer([
                 'type' => 'button-group',
                 'buttons' => [
-                    ['label' => 'Cancel', 'variant' => 'outlined', 'action' => 'close'],
-                    ['label' => 'Update User', 'type' => 'submit', 'color' => 'success', 'icon' => 'check', 'dataUrl' => '/api/users/:id', 'method' => 'PUT'],
+                    ['label' => __('layout.cancel'), 'variant' => 'outlined', 'action' => 'close'],
+                    ['label' => __('layout.save_changes'), 'type' => 'submit', 'color' => 'success', 'icon' => 'check', 'dataUrl' => '/api/users/:id', 'method' => 'PUT'],
                 ],
             ])
             ->toArray();

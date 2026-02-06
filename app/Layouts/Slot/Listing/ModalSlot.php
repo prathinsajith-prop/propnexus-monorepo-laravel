@@ -63,7 +63,7 @@ class ModalSlot
 
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Create New Listing')
+                ->content(__('layout.create_new_listing'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
@@ -107,13 +107,13 @@ class ModalSlot
 
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('create-btn')
-                ->label('Create Listing')
+                ->label(__('layout.create_listing'))
                 ->icon('check')
                 ->variant('contained')
                 ->meta([
@@ -162,10 +162,10 @@ class ModalSlot
 
         $config = array_merge($defaults, $options);
 
-        $title = "Delete Listing";
+        $title = __('layout.delete_listing');
         $message = $config['itemName']
-            ? "Are you sure you want to delete '{$config['itemName']}'? This action cannot be undone."
-            : "Are you sure you want to delete this listing? This action cannot be undone.";
+            ? __('layout.delete_item_confirmation', ['item' => $config['itemName']])
+            : __('layout.delete_listing_confirmation');
 
         // Build header
         $centerSlot = SlotManager::make('delete-modal-header-center');
@@ -228,13 +228,13 @@ class ModalSlot
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('delete-btn')
-                ->label('Delete')
+                ->label(__('layout.delete'))
                 ->icon('binempty')
                 ->variant('contained')
                 ->meta([

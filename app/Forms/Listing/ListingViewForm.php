@@ -34,137 +34,137 @@ class ListingViewForm
 
         // Property Overview
         $overviewGroup = $form->group('overview')
-            ->title('Property Overview')
+            ->title(__('layout.property_overview'))
             ->icon('home')
             ->variant('bordered')
             ->columns(2);
 
         $overviewGroup->text('title')
-            ->label('Title')
+            ->label(__('layout.property_title'))
             ->readonly(true)
             ->width(12);
 
         $overviewGroup->text('property_type')
-            ->label('Property Type')
+            ->label(__('layout.property_type'))
             ->readonly(true)
             ->width(4);
 
         $overviewGroup->text('listing_type')
-            ->label('Listing Type')
+            ->label(__('layout.listing_type'))
             ->readonly(true)
             ->width(4);
 
         $overviewGroup->text('formatted_price')
-            ->label('Price')
+            ->label(__('layout.price'))
             ->readonly(true)
             ->width(4);
 
         $overviewGroup->text('bedrooms')
-            ->label('Bedrooms')
+            ->label(__('layout.bedrooms'))
             ->readonly(true)
             ->width(4);
 
         $overviewGroup->text('bathrooms')
-            ->label('Bathrooms')
+            ->label(__('layout.bathrooms'))
             ->readonly(true)
             ->width(4);
 
         $overviewGroup->text('size_sqft')
-            ->label('Size (sqft)')
+            ->label(__('layout.size_sqft'))
             ->readonly(true)
             ->width(4);
 
         // Location
         $locationGroup = $form->group('location')
-            ->title('Location')
+            ->title(__('layout.location'))
             ->icon('location')
             ->variant('bordered')
             ->columns(2);
 
         $locationGroup->text('full_address')
-            ->label('Address')
+            ->label(__('layout.address'))
             ->readonly(true)
             ->width(12);
 
         $locationGroup->text('city')
-            ->label('City')
+            ->label(__('layout.city'))
             ->readonly(true)
             ->width(6);
 
         $locationGroup->text('area')
-            ->label('Area')
+            ->label(__('layout.area'))
             ->readonly(true)
             ->width(6);
 
         // Description
         $descriptionGroup = $form->group('description')
-            ->title('Description')
+            ->title(__('layout.description'))
             ->icon('document')
             ->variant('bordered')
             ->columns(1);
 
         $descriptionGroup->textarea('description')
-            ->label('Description')
+            ->label(__('layout.description'))
             ->readonly(true)
             ->rows(6)
             ->width(12);
 
         // Agent Information
         $agentGroup = $form->group('agent')
-            ->title('Agent Information')
+            ->title(__('layout.agent_information'))
             ->icon('person')
             ->variant('bordered')
             ->columns(2);
 
         $agentGroup->text('agent_name')
-            ->label('Agent Name')
+            ->label(__('layout.agent_name'))
             ->readonly(true)
             ->width(6);
 
         $agentGroup->text('agent_phone')
-            ->label('Phone')
+            ->label(__('layout.phone'))
             ->readonly(true)
             ->width(6);
 
         $agentGroup->text('agent_email')
-            ->label('Email')
+            ->label(__('layout.email'))
             ->readonly(true)
             ->width(12);
 
         // Status & Metrics
         $statusGroup = $form->group('status')
-            ->title('Status & Performance')
+            ->title(__('layout.status_performance'))
             ->icon('analytics')
             ->variant('bordered')
             ->columns(3);
 
         $statusGroup->text('status')
-            ->label('Status')
+            ->label(__('layout.status'))
             ->readonly(true)
             ->width(4);
 
         $statusGroup->text('availability')
-            ->label('Availability')
+            ->label(__('layout.availability'))
             ->readonly(true)
             ->width(4);
 
         $statusGroup->text('views_count')
-            ->label('Views')
+            ->label(__('layout.views'))
             ->readonly(true)
             ->width(4);
 
         $statusGroup->text('inquiries_count')
-            ->label('Inquiries')
+            ->label(__('layout.inquiries'))
             ->readonly(true)
             ->width(4);
 
         $statusGroup->text('favorites_count')
-            ->label('Favorites')
+            ->label(__('layout.favorites'))
             ->readonly(true)
             ->width(4);
 
         $statusGroup->text('published_at')
-            ->label('Published')
+            ->label(__('layout.published_date'))
             ->readonly(true)
             ->width(4);
 

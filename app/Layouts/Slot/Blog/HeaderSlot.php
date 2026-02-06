@@ -31,14 +31,14 @@ class HeaderSlot
 
         $titleGrid->add(
             TextComponent::make('title')
-                ->content('Blog Management')
+                ->content(__('layout.blog_management'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
 
         $titleGrid->add(
             TextComponent::make('subtitle')
-                ->content('Forms & Activity Dashboard')
+                ->content(__('layout.forms_activity_dashboard'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -76,7 +76,7 @@ class HeaderSlot
                 ])
                 ->dataUrl('/api/blogs/:id')
                 ->dataParams(['id' => ':id'])
-                ->meta(['action' => 'edit', 'tooltip' => 'Edit'])
+                ->meta(['action' => 'edit', 'tooltip' => __('layout.edit')])
         );
 
         $rightSlot->setComponent(
@@ -84,7 +84,7 @@ class HeaderSlot
                 ->icon('share')
                 ->variant('text')
                 ->isIconButton(true)
-                ->meta(['action' => 'share', 'tooltip' => 'Share'])
+                ->meta(['action' => 'share', 'tooltip' => __('layout.share')])
         );
 
         $rightSlot->setComponent(
@@ -92,7 +92,7 @@ class HeaderSlot
                 ->icon('printer')
                 ->variant('text')
                 ->isIconButton(true)
-                ->meta(['action' => 'print', 'tooltip' => 'Print'])
+                ->meta(['action' => 'print', 'tooltip' => __('layout.print')])
         );
 
         $actionsRow->add(
@@ -100,7 +100,7 @@ class HeaderSlot
                 ->icon('message')
                 ->variant('text')
                 ->form(BlogFeedbackForm::make('blog-feedback-form', 'POST', '/api/blogs/:id/feedback')->toArray())
-                ->meta(['tooltip' => 'Submit Feedback'])
+                ->meta(['tooltip' => __('layout.submit_feedback')])
         );
 
         $actionsRow->add(
@@ -109,10 +109,10 @@ class HeaderSlot
                 ->isIconButton(true)
                 ->variant('text')
                 ->confirm([
-                    'title' => 'Delete Blog Post',
-                    'message' => 'Are you sure you want to delete this blog post? This action cannot be undone.',
-                    'confirmLabel' => 'Delete',
-                    'cancelLabel' => 'Cancel',
+                    'title' => __('layout.delete_blog_post'),
+                    'message' => __('layout.delete_blog_post_confirmation'),
+                    'confirmLabel' => __('layout.delete'),
+                    'cancelLabel' => __('layout.cancel'),
                     'confirmColor' => 'danger',
                     'icon' => 'binempty',
                     'iconColor' => 'danger',
@@ -122,7 +122,7 @@ class HeaderSlot
                 ->dataUrl('/api/blogs/:id')
                 ->dataParams(['id' => ':id'])
                 ->meta([
-                    'tooltip' => 'Delete Blog Post',
+                    'tooltip' => __('layout.delete_blog_post'),
                     'color' => 'danger',
                 ])
         );
@@ -138,7 +138,7 @@ class HeaderSlot
                     'closeOnClick' => true,
                     'items' => self::getHeaderMoreOptionsDropdownItems(),
                 ])
-                ->meta(['tooltip' => 'More options'])
+                ->meta(['tooltip' => __('layout.more_options')])
         );
 
         $actionsRow->add(
@@ -146,7 +146,7 @@ class HeaderSlot
                 ->icon('cross')
                 ->isIconButton(true)
                 ->variant('text')
-                ->meta(['action' => 'close', 'tooltip' => 'Close'])
+                ->meta(['action' => 'close', 'tooltip' => __('layout.close')])
         );
 
         $rightSlot->setSection($actionsRow)
@@ -176,14 +176,14 @@ class HeaderSlot
     private static function getHeaderMoreOptionsDropdownItems(): array
     {
         return [
-            self::buildDropdownButton('settings', 'Settings', 'settings', 'open-settings'),
-            self::buildDropdownButton('notifications', 'Notifications', 'bell', 'open-notifications'),
-            self::buildDropdownButton('help', 'Help & Support', 'help', 'open-help'),
+            self::buildDropdownButton('settings', __('layout.settings'), 'settings', 'open-settings'),
+            self::buildDropdownButton('notifications', __('layout.notifications'), 'bell', 'open-notifications'),
+            self::buildDropdownButton('help', __('layout.help_support'), 'help', 'open-help'),
             ['type' => 'divider'],
-            self::buildDropdownButton('export', 'Export Data', 'downloadcloud', 'export-data'),
-            self::buildDropdownButton('import', 'Import Data', 'uploadcloud', 'import-data'),
+            self::buildDropdownButton('export', __('layout.export_data'), 'downloadcloud', 'export-data'),
+            self::buildDropdownButton('import', __('layout.import_data'), 'uploadcloud', 'import-data'),
             ['type' => 'divider'],
-            self::buildDropdownButton('fullscreen', 'Toggle Fullscreen', 'expand', 'toggle-fullscreen'),
+            self::buildDropdownButton('fullscreen', __('layout.toggle_fullscreen'), 'expand', 'toggle-fullscreen'),
         ];
     }
 

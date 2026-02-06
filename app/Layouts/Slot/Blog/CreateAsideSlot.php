@@ -99,13 +99,13 @@ class CreateAsideSlot
 
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Create New Blog Post')
+                ->content(__('layout.create_new_blog_post'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('Add a new blog post to your collection')
+                ->content(__('layout.add_new_blog_post_description'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -161,13 +161,13 @@ class CreateAsideSlot
 
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('create-btn')
-                ->label('Create Post')
+                ->label(__('layout.create_post'))
                 ->icon('check')
                 ->variant('contained')
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/blogs', 'method' => 'POST', 'color' => 'primary'])

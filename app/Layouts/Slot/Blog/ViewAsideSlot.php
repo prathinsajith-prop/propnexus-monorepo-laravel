@@ -80,13 +80,13 @@ class ViewAsideSlot
 
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Blog Post Details')
+                ->content(__('layout.blog_post_details'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('View complete blog post information')
+                ->content(__('layout.view_complete_blog_info'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -103,7 +103,7 @@ class ViewAsideSlot
         ]);
         $rightSlot->setComponent(
             BadgeComponent::make('status-badge')
-                ->content('Published')
+                ->content(__('layout.published'))
                 ->color('success')
                 ->variant('standard')
                 ->meta(['size' => 'sm'])
@@ -129,7 +129,7 @@ class ViewAsideSlot
                     'action' => 'edit',
                     'type' => 'aside',
                     'component' => 'edit-blog-full',
-                    'tooltip' => 'Edit Blog Post'
+                    'tooltip' => __('layout.tooltip_edit_blog_post')
                 ])
         );
         $rightSlot->setComponent(
@@ -139,17 +139,17 @@ class ViewAsideSlot
                 ->size('sm')
                 ->isIconButton(true)
                 ->confirm([
-                    'title' => 'Delete Blog Post',
-                    'message' => 'Are you sure you want to delete this blog post? This action cannot be undone.',
-                    'confirmLabel' => 'Delete',
-                    'cancelLabel' => 'Cancel',
+                    'title' => __('layout.delete_blog_post'),
+                    'message' => __('layout.delete_blog_post_confirmation'),
+                    'confirmLabel' => __('layout.delete'),
+                    'cancelLabel' => __('layout.cancel'),
                     'action' => 'delete',
                     'dataUrl' => '/api/blogs/:id',
                     'method' => 'delete',
                 ])
                 ->meta([
                     'action' => 'delete',
-                    'tooltip' => 'Delete Blog Post',
+                    'tooltip' => __('layout.tooltip_delete_blog_post'),
                     'color' => 'error',
                 ])
         );
@@ -168,14 +168,14 @@ class ViewAsideSlot
                     'items' => [
                         [
                             'id' => 'share',
-                            'label' => 'Share',
+                            'label' => __('layout.share'),
                             'icon' => 'share',
                             'action' => 'share',
                             'type' => 'button',
                         ],
                         [
                             'id' => 'print',
-                            'label' => 'Print',
+                            'label' => __('layout.print'),
                             'icon' => 'printer',
                             'action' => 'print',
                             'type' => 'button',
@@ -185,14 +185,14 @@ class ViewAsideSlot
                         ],
                         [
                             'id' => 'duplicate',
-                            'label' => 'Duplicate',
+                            'label' => __('layout.duplicate'),
                             'icon' => 'copy',
                             'action' => 'duplicate',
                             'type' => 'button',
                         ],
                         [
                             'id' => 'archive',
-                            'label' => 'Archive',
+                            'label' => __('layout.archive'),
                             'icon' => 'archive',
                             'action' => 'archive',
                             'type' => 'button',
@@ -202,14 +202,14 @@ class ViewAsideSlot
                         ],
                         [
                             'id' => 'export',
-                            'label' => 'Export',
+                            'label' => __('layout.export'),
                             'icon' => 'downloadcloud',
                             'action' => 'export',
                             'type' => 'button',
                         ],
                     ],
                 ])
-                ->meta(['tooltip' => 'More options'])
+                ->meta(['tooltip' => __('layout.tooltip_more_options')])
         );
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
@@ -251,13 +251,13 @@ class ViewAsideSlot
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('close-footer-btn')
-                ->label('Close')
+                ->label(__('layout.close'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('fullscreen-btn')
-                ->label('View Fullscreen')
+                ->label(__('layout.view_fullscreen'))
                 ->icon('expand')
                 ->variant('contained')
                 ->data('component', 'view-blog-full')
@@ -279,10 +279,10 @@ class ViewAsideSlot
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('forms-activity-btn')
-                ->label('Forms & Activity')
+                ->label(__('layout.forms_activity'))
                 ->icon('dashboard')
                 ->variant('contained')
-                ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-forms-full', 'tooltip' => 'Open Forms & Activity Dashboard', 'color' => 'success'])
+                ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-forms-full', 'tooltip' => __('layout.tooltip_open_forms_dashboard'), 'color' => 'success'])
         );
 
         // Wrap footer in SlotManager

@@ -41,11 +41,11 @@ class ListingLayout
     public static function make($masterData)
     {
         return LitepieLayoutBuilder::create('listings', 'page')
-            ->title('Listing Management')
+            ->title(__('layout.listings'))
             ->type('layouts')
             ->meta([
                 'masterDataUrl' => '/api/listing-master-data',
-                'description' => 'Property Listing Management System',
+                'description' => __('layout.listing_management_system'),
                 'version' => '1.0.0',
                 'refreshInterval' => null,
             ])

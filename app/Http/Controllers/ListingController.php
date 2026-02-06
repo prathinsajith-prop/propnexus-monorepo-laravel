@@ -17,6 +17,7 @@ use App\Enums\ListingType;
 use App\Enums\ListingStatus;
 use App\Enums\Availability;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 /**
  * ListingController
@@ -126,7 +127,7 @@ class ListingController extends Controller
 
         return response()->json([
             'success' => false,
-            'error' => $result->message,
+            'error' => $result->getMessage(),
         ], 400);
     }
 
@@ -472,7 +473,7 @@ class ListingController extends Controller
                 }
             );
         } catch (\Exception $e) {
-            \Log::error('Failed to fetch master data: ' . $e->getMessage());
+            Log::error('Failed to fetch master data: ' . $e->getMessage());
             // Return minimal fallback data
             return [
                 'property_types' => [],

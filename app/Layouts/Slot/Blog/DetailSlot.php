@@ -29,9 +29,9 @@ class DetailSlot
         $headerGrid = GridSection::make('create-header');
         $headerGrid->add(
             TextComponent::make('title')
-                ->content('Create New Blog Post')
+                ->content(__('layout.create_new_blog_post'))
                 ->variant('h4')
-                ->meta(['subtitle' => 'Add a new blog post to your collection'])
+                ->meta(['subtitle' => __('layout.add_new_blog_post_description')])
         );
         $headerGrid->add(
             ButtonComponent::make('close-btn')
@@ -48,13 +48,13 @@ class DetailSlot
         $footerGrid = GridSection::make('create-footer');
         $footerGrid->add(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerGrid->add(
             ButtonComponent::make('create-btn')
-                ->label('Create Post')
+                ->label(__('layout.create_post'))
                 ->variant('contained')
                 ->color('primary')
                 ->icon('check')
@@ -83,9 +83,9 @@ class DetailSlot
         $headerGrid = GridSection::make('edit-header');
         $headerGrid->add(
             TextComponent::make('title')
-                ->content('Edit Blog Post')
+                ->content(__('layout.edit_blog_post'))
                 ->variant('h4')
-                ->meta(['subtitle' => 'Update your blog post'])
+                ->meta(['subtitle' => __('layout.update_blog_details')])
         );
         $headerGrid->add(
             ButtonComponent::make('close-btn')
@@ -102,13 +102,13 @@ class DetailSlot
         $footerGrid = GridSection::make('edit-footer');
         $footerGrid->add(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerGrid->add(
             ButtonComponent::make('update-btn')
-                ->label('Update Post')
+                ->label(__('layout.update_post'))
                 ->variant('contained')
                 ->color('success')
                 ->icon('check')
@@ -137,9 +137,9 @@ class DetailSlot
         $headerGrid = GridSection::make('view-header');
         $headerGrid->add(
             TextComponent::make('title')
-                ->content('Blog Post Details')
+                ->content(__('layout.blog_post_details'))
                 ->variant('h4')
-                ->meta(['subtitle' => 'View and manage blog post'])
+                ->meta(['subtitle' => __('layout.view_details')])
         );
         $headerGrid->add(
             ButtonComponent::make('close-btn')
@@ -156,7 +156,7 @@ class DetailSlot
         $footerGrid = GridSection::make('view-footer');
         $footerGrid->add(
             ButtonComponent::make('edit-btn')
-                ->label('Edit Post')
+                ->label(__('layout.edit_blog_post'))
                 ->variant('contained')
                 ->color('primary')
                 ->icon('pen')
@@ -167,7 +167,7 @@ class DetailSlot
         );
         $footerGrid->add(
             ButtonComponent::make('close-btn')
-                ->label('Close')
+                ->label(__('layout.close'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );

@@ -79,13 +79,13 @@ class EditAsideSlot
 
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Edit Listing')
+                ->content(__('layout.edit_listing'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('Update property listing details')
+                ->content(__('layout.update_listing_details'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -139,13 +139,13 @@ class EditAsideSlot
         ]);
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('update-btn')
-                ->label('Save Changes')
+                ->label(__('layout.save_changes'))
                 ->icon('check')
                 ->variant('contained')
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/listing/:id', 'method' => 'PUT', 'color' => 'success'])

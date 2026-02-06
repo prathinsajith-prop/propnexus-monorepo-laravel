@@ -62,7 +62,7 @@ class RightSidebarSlot
                 ])
                 ->meta([
                     'dataUrl' => '/api/blogs/:id/activity',
-                    'emptyMessage' => 'No activity yet',
+                    'emptyMessage' => __('layout.no_activity_yet'),
                     'showTimestamps' => true,
                     'compact' => false,
                 ])
@@ -127,7 +127,7 @@ class RightSidebarSlot
             ->gridColumnSpan(12)
             ->meta([
                 'dataUrl' => '/api/blogs/:id/chats',
-                'emptyMessage' => 'No messages yet',
+                'emptyMessage' => __('layout.no_messages_yet'),
                 'showTimestamps' => true,
                 'showAvatars' => true,
             ]);

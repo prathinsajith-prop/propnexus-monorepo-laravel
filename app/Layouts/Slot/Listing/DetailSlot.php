@@ -35,7 +35,7 @@ class DetailSlot
         $centerSlot = SlotManager::make('create-detail-header-center');
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Create New Listing')
+                ->content(__('layout.create_new_listing'))
                 ->variant('h3')
                 ->meta(['fontWeight' => 'bold'])
         );
@@ -51,13 +51,13 @@ class DetailSlot
         $footerRightSlot = SlotManager::make('create-detail-footer-right');
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('create-btn')
-                ->label('Create Listing')
+                ->label(__('layout.create_listing'))
                 ->icon('check')
                 ->variant('contained')
                 ->color('primary')
@@ -105,7 +105,7 @@ class DetailSlot
         $centerSlot = SlotManager::make('edit-detail-header-center');
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Edit Listing')
+                ->content(__('layout.edit_listing'))
                 ->variant('h3')
                 ->meta(['fontWeight' => 'bold'])
         );
@@ -121,13 +121,13 @@ class DetailSlot
         $footerRightSlot = SlotManager::make('edit-detail-footer-right');
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
         $footerRightSlot->setComponent(
             ButtonComponent::make('save-btn')
-                ->label('Save Changes')
+                ->label(__('layout.save_changes'))
                 ->icon('check')
                 ->variant('contained')
                 ->color('primary')
@@ -175,7 +175,7 @@ class DetailSlot
         $centerSlot = SlotManager::make('view-detail-header-center');
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('View Listing')
+                ->content(__('layout.view_listing'))
                 ->variant('h3')
                 ->meta(['fontWeight' => 'bold'])
         );
@@ -191,7 +191,7 @@ class DetailSlot
         $footerRightSlot = SlotManager::make('view-detail-footer-right');
         $footerRightSlot->setComponent(
             ButtonComponent::make('close-btn')
-                ->label('Close')
+                ->label(__('layout.close'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );

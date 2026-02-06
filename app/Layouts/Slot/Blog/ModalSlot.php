@@ -63,7 +63,7 @@ class ModalSlot
 
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Create New Blog Post')
+                ->content(__('layout.create_new_blog_post'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
@@ -102,13 +102,13 @@ class ModalSlot
                 ->justify('end')
                 ->add(
                     ButtonComponent::make('cancel-btn')
-                        ->label('Cancel')
+                        ->label(__('layout.cancel'))
                         ->variant('outlined')
                         ->meta(['action' => 'close'])
                 )
                 ->add(
                     ButtonComponent::make('create-btn')
-                        ->label('Create Post')
+                        ->label(__('layout.create_post'))
                         ->icon('check')
                         ->variant('contained')
                         ->meta([
@@ -158,10 +158,10 @@ class ModalSlot
 
         $config = array_merge($defaults, $options);
 
-        $title = "Delete Blog Post";
+        $title = __('layout.delete_blog_post');
         $message = $config['itemName']
-            ? "Are you sure you want to delete '{$config['itemName']}'? This action cannot be undone."
-            : "Are you sure you want to delete this blog post? This action cannot be undone.";
+            ? __('layout.delete_item_confirmation', ['item' => $config['itemName']])
+            : __('layout.delete_blog_post_confirmation');
 
         // Build header
         $centerSlot = SlotManager::make('delete-modal-header-center');
@@ -208,13 +208,13 @@ class ModalSlot
                 ->justify('end')
                 ->add(
                     ButtonComponent::make('cancel-btn')
-                        ->label('Cancel')
+                        ->label(__('layout.cancel'))
                         ->variant('outlined')
                         ->meta(['action' => 'close'])
                 )
                 ->add(
                     ButtonComponent::make('delete-btn')
-                        ->label('Delete')
+                        ->label(__('layout.delete'))
                         ->icon('binempty')
                         ->variant('contained')
                         ->meta([
@@ -257,15 +257,17 @@ class ModalSlot
     public static function publishBlog(array $options = []): array
     {
         $defaults = [
-            'itemName' => 'this post',
+            'itemName' => __('layout.this_post'),
             'apiUrl' => '/api/blogs/:id/publish',
             'method' => 'POST',
         ];
 
         $config = array_merge($defaults, $options);
 
-        $title = "Publish Blog Post";
-        $message = "Are you sure you want to publish '{$config['itemName']}'? It will be visible to all readers.";
+        $title = __('layout.publish_blog_post');
+        $message = $config['itemName']
+            ? __('layout.publish_item_confirmation', ['item' => $config['itemName']])
+            : __('layout.publish_blog_post_confirmation');
 
         // Build header
         $centerSlot = SlotManager::make('publish-modal-header-center');
@@ -312,13 +314,13 @@ class ModalSlot
                 ->justify('end')
                 ->add(
                     ButtonComponent::make('cancel-btn')
-                        ->label('Cancel')
+                        ->label(__('layout.cancel'))
                         ->variant('outlined')
                         ->meta(['action' => 'close'])
                 )
                 ->add(
                     ButtonComponent::make('publish-btn')
-                        ->label('Publish')
+                        ->label(__('layout.publish'))
                         ->icon('checkmark')
                         ->variant('contained')
                         ->meta([

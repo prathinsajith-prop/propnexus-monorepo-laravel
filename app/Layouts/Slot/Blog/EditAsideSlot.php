@@ -80,13 +80,13 @@ class EditAsideSlot
 
         $centerSlot->setComponent(
             TextComponent::make('title')
-                ->content('Edit Blog Post')
+                ->content(__('layout.edit_blog_post'))
                 ->variant('h4')
                 ->meta(['fontWeight' => 'bold'])
         );
         $centerSlot->setComponent(
             TextComponent::make('subtitle')
-                ->content('Update blog post information')
+                ->content(__('layout.update_blog_details'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
@@ -139,14 +139,14 @@ class EditAsideSlot
 
         $footerRightSlot->setComponent(
             ButtonComponent::make('cancel-btn')
-                ->label('Cancel')
+                ->label(__('layout.cancel'))
                 ->variant('outlined')
                 ->meta(['action' => 'close'])
         );
 
         $footerRightSlot->setComponent(
             ButtonComponent::make('update-btn')
-                ->label('Update Post')
+                ->label(__('layout.update_post'))
                 ->icon('check')
                 ->variant('contained')
                 ->meta(['action' => 'submit', 'dataUrl' => '/api/blogs/:id', 'method' => 'PUT', 'color' => 'success'])
