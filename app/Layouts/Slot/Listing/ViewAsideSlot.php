@@ -186,6 +186,18 @@ class ViewAsideSlot
                 ->label('View Fullscreen')
                 ->icon('expand')
                 ->variant('contained')
+                ->data('component', 'view-listing-full')
+                ->data('type', 'aside')
+                ->data('action', 'view')
+                ->data('config', [
+                    'width' => '100vw',
+                    'height' => '100vh',
+                    'anchor' => 'right',
+                    'backdrop' => true,
+                    'componentType' => 'aside',
+                ])
+                ->dataParams(['id' => ':id'])
+                ->dataUrl('/api/listing/:id')
                 ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-listing-full'])
         );
 

@@ -150,6 +150,17 @@ class FormActivityAsideSlot
                 ->label('View Fullscreen')
                 ->icon('expand')
                 ->variant('contained')
+                ->data('component', 'view-blog-full')
+                ->data('type', 'aside')
+                ->data('action', 'view')
+                ->data('config', [
+                    'width' => '800px',
+                    'height' => '100vh',
+                    'anchor' => 'right',
+                    'backdrop' => true,
+                ])
+                ->dataParams(['id' => ':id'])
+                ->dataUrl('/api/blogs/:id')
                 ->meta(['action' => 'view', 'type' => 'aside', 'component' => 'view-blog-full'])
         );
         $footerRightSlot->setComponent(
