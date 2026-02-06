@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Layouts\UserLayout;
-use App\Actions\User\ListUsersAction;
 use App\Actions\User\CreateUserAction;
-use App\Actions\User\GetUserAction;
-use App\Actions\User\UpdateUserAction;
 use App\Actions\User\DeleteUserAction;
+use App\Actions\User\GetUserAction;
+use App\Actions\User\ListUsersAction;
+use App\Actions\User\UpdateUserAction;
+use App\Layouts\UserLayout;
+use Illuminate\Http\Request;
 
 /**
  * GeneralController

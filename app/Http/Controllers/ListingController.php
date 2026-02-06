@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Layouts\ListingLayout;
-use App\Actions\Listing\ListListingsAction;
-use App\Actions\Listing\CreateListingAction;
-use App\Actions\Listing\UpdateListingAction;
-use App\Actions\Listing\DeleteListingAction;
 use App\Actions\File\FileUploadAction;
+use App\Actions\Listing\CreateListingAction;
+use App\Actions\Listing\ListListingsAction;
+use App\Enums\Availability;
+use App\Enums\ListingStatus;
+use App\Enums\ListingType;
+use App\Enums\PropertyType;
+use App\Http\Controllers\Controller;
+use App\Layouts\ListingLayout;
 use App\Models\Listing;
 use App\Models\User;
 use App\Support\Settings\ListingSettings;
-use App\Enums\PropertyType;
-use App\Enums\ListingType;
-use App\Enums\ListingStatus;
-use App\Enums\Availability;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 
 /**

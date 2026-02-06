@@ -2,9 +2,8 @@
 
 namespace App\Actions\User;
 
-use Illuminate\Http\Request;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * ListUsersAction

@@ -4,9 +4,8 @@ namespace App\Actions\File;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
-use Intervention\Image\Facades\Image;
+use Litepie\Actions\BaseAction;
 
 /**
  * FileUploadAction

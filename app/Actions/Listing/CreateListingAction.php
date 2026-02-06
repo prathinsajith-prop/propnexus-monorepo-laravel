@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions\Listing;
 
-use App\Enums\Availability;
-use App\Enums\ListingStatus;
-use App\Enums\ListingType;
-use App\Enums\PropertyType;
 use App\Models\Listing;
-use Illuminate\Validation\Rules\Enum;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * CreateListingAction
