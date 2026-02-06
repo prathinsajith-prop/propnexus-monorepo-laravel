@@ -12,22 +12,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-// Litepie Database Traits - ALL 14 FEATURES
-use Litepie\Database\Traits\Aggregatable;
-use Litepie\Database\Traits\Archivable;
-use Litepie\Database\Traits\Batchable;
-use Litepie\Database\Traits\Cacheable;
-use Litepie\Database\Traits\Exportable;
-use Litepie\Database\Traits\Importable;
-use Litepie\Database\Traits\Measurable;
-use Litepie\Database\Traits\Metable;
-use Litepie\Database\Traits\Paginatable;
 use Litepie\Database\Traits\Searchable;
-use Litepie\Database\Traits\Sluggable;
-use Litepie\Database\Traits\Sortable;
-use Litepie\Database\Traits\Translatable;
-use Litepie\Database\Traits\Versionable;
-// Litepie Hashids Trait
 use Litepie\Hashids\Traits\Hashids;
 
 /**

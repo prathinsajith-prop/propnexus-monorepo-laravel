@@ -5,7 +5,6 @@ namespace App\Layouts\Builder\Listing;
 use App\Forms\Listing\ListingForm;
 use App\Layouts\Builder\TableColumnsBuilder;
 use App\Layouts\Slot\Listing\CreateAsideSlot;
-use App\Layouts\Slot\Listing\DetailSlot;
 use App\Layouts\Slot\Listing\EditAsideSlot;
 use App\Layouts\Slot\Listing\ModalSlot;
 use App\Layouts\Slot\Listing\ViewAsideSlot;

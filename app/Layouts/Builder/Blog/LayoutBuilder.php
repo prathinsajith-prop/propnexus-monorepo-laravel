@@ -8,7 +8,6 @@ use App\Layouts\Slot\Blog\CreateAsideSlot;
 use App\Layouts\Slot\Blog\DetailSlot;
 use App\Layouts\Slot\Blog\EditAsideSlot;
 use App\Layouts\Slot\Blog\FooterSlot;
-use App\Layouts\Slot\Blog\FormActivityAsideSlot;
 use App\Layouts\Slot\Blog\HeaderSlot;
 use App\Layouts\Slot\Blog\LeftSidebarSlot;
 use App\Layouts\Slot\Blog\MainContentSlot;
