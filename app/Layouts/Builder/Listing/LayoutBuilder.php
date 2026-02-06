@@ -444,7 +444,7 @@ class LayoutBuilder
         // More Options - Dropdown
         $row->button('more-btn')
             ->label('')
-            ->icon('morehorizontal')
+            ->icon('ellipsisVertical')
             ->size('md')
             ->variant('outline')
             ->dropdown([
