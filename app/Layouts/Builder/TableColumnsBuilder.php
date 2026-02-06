@@ -47,7 +47,7 @@ class TableColumnsBuilder
     public static function getBlogTableColumns(): array
     {
         return [
-            ['key' => 'id', 'label' => 'ID', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'blog_id', 'label' => 'Blog ID', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'title', 'label' => 'Title', 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
             ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
             ['key' => 'category', 'label' => 'Category', 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
@@ -102,7 +102,7 @@ class TableColumnsBuilder
     public static function getListingTableColumns(): array
     {
         return [
-            ['key' => 'mls_number', 'label' => 'ID', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'mls_number', 'label' => 'MLS Number', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'title', 'label' => 'Title', 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
             ['key' => 'status', 'label' => 'Status', 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
             ['key' => 'property_type', 'label' => 'Type', 'sortable' => true, 'filterable' => true, 'filter_key' => 'property_type', 'width' => '120px'],
