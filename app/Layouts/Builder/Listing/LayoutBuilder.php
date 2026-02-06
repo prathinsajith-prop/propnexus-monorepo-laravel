@@ -415,17 +415,18 @@ class LayoutBuilder
         // View Options - Dropdown
         $row->button('view-btn')
             ->label('')
-            ->icon('layout')
+            ->icon('cols')
             ->size('md')
             ->variant('outline')
             ->dropdown([
                 'id' => 'view-options',
                 'placement' => 'bottom-end',
+                'iconOnly' => true,
                 'items' => [
                     [
                         'id' => 'view-table',
                         'label' => 'Table View',
-                        'icon' => 'table',
+                        'icon' => 'cols',
                         'action' => 'table-view',
                         'type' => 'button',
                     ],
