@@ -12,6 +12,7 @@ use App\Actions\File\FileUploadAction;
 use App\Models\Blog;
 use App\Support\Settings\BlogSettings;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Number;
 
 /**
  * BlogController
@@ -292,22 +293,22 @@ class BlogController extends Controller
                 function () use ($statId) {
                     return match ($statId) {
                         'stat-total-posts' => [
-                            'value' => Blog::count(),
+                            'value' => Number::abbreviate(Blog::count()),
                             'trend' => $this->calculateTrend(Blog::query()),
                             'trendDirection' => 'up',
                         ],
                         'stat-published' => [
-                            'value' => Blog::published()->count(),
+                            'value' => Number::abbreviate(Blog::published()->count()),
                             'trend' => $this->calculateTrend(Blog::published()),
                             'trendDirection' => 'up',
                         ],
                         'stat-drafts' => [
-                            'value' => Blog::where('status', 'draft')->count(),
+                            'value' => Number::abbreviate(Blog::where('status', 'draft')->count()),
                             'trend' => $this->calculateTrend(Blog::where('status', 'draft')),
                             'trendDirection' => 'neutral',
                         ],
                         'stat-total-views' => [
-                            'value' => Blog::sum('views_count'),
+                            'value' => Number::abbreviate(Blog::sum('views_count')),
                             'trend' => $this->calculateTrend(Blog::query(), 'views_count'),
                             'trendDirection' => 'up',
                         ],

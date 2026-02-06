@@ -52,7 +52,7 @@ class TableColumnsBuilder
             ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
             ['key' => 'category', 'label' => __('layout.category'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
             ['key' => 'author', 'label' => __('layout.author'), 'sortable' => true, 'width' => '120px'],
-            ['key' => 'views_count', 'label' => __('layout.views'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'views_count', 'label' => __('layout.views'), 'type' => 'abbreviated', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'published_at', 'label' => __('layout.published'), 'sortable' => true, 'width' => '120px'],
             ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getBlogTableActions()],
         ];
@@ -70,7 +70,7 @@ class TableColumnsBuilder
             ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
             ['key' => 'category', 'label' => __('layout.category'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
             ['key' => 'author', 'label' => __('layout.author'), 'sortable' => true, 'width' => '120px'],
-            ['key' => 'views_count', 'label' => __('layout.views'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'views_count', 'label' => __('layout.views'), 'type' => 'abbreviated', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'published_at', 'label' => __('layout.published'), 'sortable' => true, 'width' => '120px'],
             ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getBlogTableActions()],
         ];
@@ -110,6 +110,7 @@ class TableColumnsBuilder
             ['key' => 'location', 'label' => __('layout.location'), 'sortable' => true, 'width' => '180px'],
             ['key' => 'bedrooms', 'label' => __('layout.beds'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'bathrooms', 'label' => __('layout.baths'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
+            ['key' => 'views_count', 'label' => __('layout.views'), 'type' => 'abbreviated', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getListingTableActions()],
         ];
     }
@@ -126,6 +127,7 @@ class TableColumnsBuilder
             ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
             ['key' => 'property_type', 'label' => __('layout.type'), 'sortable' => true, 'width' => '120px'],
             ['key' => 'price', 'label' => __('layout.price'), 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
+            ['key' => 'views_count', 'label' => __('layout.views'), 'type' => 'abbreviated', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'location', 'label' => __('layout.location'), 'sortable' => true, 'width' => '180px'],
             ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getListingTableActions()],
         ];

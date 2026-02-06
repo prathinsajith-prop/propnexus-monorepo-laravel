@@ -130,7 +130,7 @@ class BlogForm
 
         $mediaGroup->text('video_url')
             ->label(__('layout.video_url'))
-            ->placeholder('https://youtube.com/watch?v=...')
+            ->placeholder(__('layout.video_url_placeholder'))
             ->width(12);
 
         $mediaGroup->file('gallery')
@@ -202,12 +202,12 @@ class BlogForm
 
         $seoGroup->text('seo_meta.canonical_url')
             ->label(__('layout.canonical_url'))
-            ->placeholder('https://example.com/blog/post-slug')
+            ->placeholder(__('layout.canonical_url_placeholder'))
             ->width(12);
 
         $seoGroup->textarea('schema_markup.content')
             ->label(__('layout.schema_markup'))
-            ->placeholder('{"@context": "https://schema.org", ...}')
+            ->placeholder(__('layout.schema_markup_placeholder'))
             ->rows(4)
             ->width(12);
 
@@ -276,7 +276,7 @@ class BlogForm
 
         $customGroup->textarea('custom_fields.meta')
             ->label(__('layout.additional_metadata'))
-            ->placeholder('{"key": "value", ...}')
+            ->placeholder(__('layout.custom_fields_placeholder'))
             ->rows(4)
             ->width(12);
 

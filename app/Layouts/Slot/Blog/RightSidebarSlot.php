@@ -30,32 +30,32 @@ class RightSidebarSlot
                 ->dateFormat('relative')
                 ->addEvent([
                     'key' => 'activity-1',
-                    'title' => 'Blog post published',
-                    'description' => 'Post was published and is now live',
+                    'title' => __('layout.blog_post_published'),
+                    'description' => __('layout.post_published_live'),
                     'date' => '2 hours ago',
                     'icon' => 'checksquare',
                     'color' => 'success',
                 ])
                 ->addEvent([
                     'key' => 'activity-2',
-                    'title' => 'Content updated',
-                    'description' => 'Main content section was revised',
+                    'title' => __('layout.content_updated'),
+                    'description' => __('layout.main_content_revised'),
                     'date' => '4 hours ago',
                     'icon' => 'pen',
                     'color' => 'info',
                 ])
                 ->addEvent([
                     'key' => 'activity-3',
-                    'title' => 'Featured image changed',
-                    'description' => 'New featured image uploaded',
+                    'title' => __('layout.featured_image_changed'),
+                    'description' => __('layout.new_image_uploaded'),
                     'date' => '1 day ago',
                     'icon' => 'image',
                     'color' => 'warning',
                 ])
                 ->addEvent([
                     'key' => 'activity-4',
-                    'title' => 'Draft created',
-                    'description' => 'Initial draft of the blog post',
+                    'title' => __('layout.draft_created'),
+                    'description' => __('layout.initial_draft_description'),
                     'date' => '3 days ago',
                     'icon' => 'filetext',
                     'color' => 'default',
@@ -94,7 +94,7 @@ class RightSidebarSlot
                 [
                     'id' => 'chat-1',
                     'primary' => 'John Doe',
-                    'secondary' => 'Can we review this before publishing?',
+                    'secondary' => __('layout.chat_review_request'),
                     'timestamp' => '2 hours ago',
                     'avatar' => 'JD',
                     'color' => 'primary',
@@ -102,7 +102,7 @@ class RightSidebarSlot
                 [
                     'id' => 'chat-2',
                     'primary' => 'Jane Smith',
-                    'secondary' => 'I made some edits to the introduction.',
+                    'secondary' => __('layout.chat_edits_intro'),
                     'timestamp' => '4 hours ago',
                     'avatar' => 'JS',
                     'color' => 'success',
@@ -110,7 +110,7 @@ class RightSidebarSlot
                 [
                     'id' => 'chat-3',
                     'primary' => 'John Doe',
-                    'secondary' => 'Looks great! Just need to update the images.',
+                    'secondary' => __('layout.chat_looks_great'),
                     'timestamp' => '1 day ago',
                     'avatar' => 'JD',
                     'color' => 'primary',
@@ -118,7 +118,7 @@ class RightSidebarSlot
                 [
                     'id' => 'chat-4',
                     'primary' => 'System',
-                    'secondary' => 'Draft auto-saved successfully.',
+                    'secondary' => __('layout.chat_autosave_success'),
                     'timestamp' => '2 days ago',
                     'avatar' => 'SYS',
                     'color' => 'default',

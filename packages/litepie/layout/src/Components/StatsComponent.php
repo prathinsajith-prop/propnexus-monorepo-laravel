@@ -51,7 +51,7 @@ class StatsComponent extends BaseComponent
             'label' => $label,
             'icon' => $options['icon'] ?? null,
             'color' => $options['color'] ?? null,
-            'format' => $options['format'] ?? 'number', // number, currency, percentage
+            'format' => $options['format'] ?? 'number', // number, currency, percentage, abbreviated
             'prefix' => $options['prefix'] ?? null,
             'suffix' => $options['suffix'] ?? null,
             'show_trend' => $options['show_trend'] ?? $this->showTrend,

@@ -18,6 +18,7 @@ use App\Enums\ListingStatus;
 use App\Enums\Availability;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Number;
 
 /**
  * ListingController
@@ -276,22 +277,22 @@ class ListingController extends Controller
                 function () use ($statId) {
                     return match ($statId) {
                         'stat-total-listings' => [
-                            'value' => Listing::count(),
+                            'value' => Number::abbreviate(Listing::count()),
                             'trend' => $this->calculateTrend(Listing::query()),
                             'trendDirection' => 'up',
                         ],
                         'stat-active' => [
-                            'value' => Listing::active()->count(),
+                            'value' => Number::abbreviate(Listing::active()->count()),
                             'trend' => $this->calculateTrend(Listing::active()),
                             'trendDirection' => 'up',
                         ],
                         'stat-sold' => [
-                            'value' => Listing::whereIn('status', ['sold', 'rented'])->count(),
+                            'value' => Number::abbreviate(Listing::whereIn('status', ['sold', 'rented'])->count()),
                             'trend' => $this->calculateTrend(Listing::whereIn('status', ['sold', 'rented'])),
                             'trendDirection' => 'up',
                         ],
                         'stat-total-views' => [
-                            'value' => Listing::sum('views_count'),
+                            'value' => Number::abbreviate(Listing::sum('views_count')),
                             'trend' => $this->calculateTrend(Listing::query(), 'views_count'),
                             'trendDirection' => 'up',
                         ],

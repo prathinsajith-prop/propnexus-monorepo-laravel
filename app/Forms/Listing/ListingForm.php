@@ -286,12 +286,12 @@ class ListingForm
 
         $mediaGroup->text('video_url')
             ->label(__('layout.video_url'))
-            ->placeholder('https://youtube.com/...')
+            ->placeholder(__('layout.video_url_placeholder'))
             ->width(6);
 
         $mediaGroup->text('virtual_tour_url')
             ->label(__('layout.virtual_tour_url'))
-            ->placeholder('https://...')
+            ->placeholder(__('layout.virtual_tour_placeholder'))
             ->width(12);
 
         // === STATUS & AVAILABILITY SECTION ===
@@ -362,12 +362,12 @@ class ListingForm
 
         $agentGroup->text('agent_phone')
             ->label(__('layout.agent_phone'))
-            ->placeholder('+971 XX XXX XXXX')
+            ->placeholder(__('layout.phone_placeholder'))
             ->width(6);
 
         $agentGroup->text('agent_email')
             ->label(__('layout.agent_email'))
-            ->placeholder('agent@email.com')
+            ->placeholder(__('layout.email_placeholder'))
             ->width(6);
 
         // === FINANCIAL DETAILS SECTION ===
