@@ -67,13 +67,16 @@ class EditAsideSlot
     private static function buildHeader(): SlotManager
     {
         // Create header center grid
-        $centerSlot = SlotManager::make('edit-header-center');
-        $centerSlot->setConfig([
-            'layout' => 'flex',
-            'direction' => 'column',
-            'gap' => '1',
-            'justify' => 'center',
-        ]);
+        $centerSlot = SlotManager::make('edit-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'center',
+                'items' => 'start',
+                'gridColumnSpan' => 8,
+            ]);
+
         $centerSlot->setComponent(
             TextComponent::make('title')
                 ->content('Edit Listing')
@@ -88,14 +91,15 @@ class EditAsideSlot
         );
 
         // Create header right grid
-        $rightSlot = SlotManager::make('edit-header-right');
-        $rightSlot->setConfig([
-            'layout' => 'flex',
-            'direction' => 'row',
-            'gap' => '2',
-            'justify' => 'end',
-            'items' => 'center',
-        ]);
+        $rightSlot = SlotManager::make('edit-header-right')
+            ->setConfig([
+                'gridColumnSpan' => 4,
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'items' => 'center',
+                'justify' => 'end',
+            ]);
         $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('cross')

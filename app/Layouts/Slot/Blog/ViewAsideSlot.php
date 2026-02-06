@@ -110,18 +110,34 @@ class ViewAsideSlot
         );
         $rightSlot->setComponent(
             ButtonComponent::make('edit-btn')
-                ->label('Edit')
                 ->icon('pen')
                 ->variant('outlined')
                 ->size('sm')
-                ->meta(['action' => 'edit', 'type' => 'aside', 'component' => 'edit-blog-full', 'tooltip' => 'Edit Blog Post'])
+                ->isIconButton(true)
+                ->data('component', 'edit-blog-full')
+                ->data('type', 'aside')
+                ->data('action', 'edit')
+                ->data('config', [
+                    'width' => '800px',
+                    'height' => '100vh',
+                    'anchor' => 'right',
+                    'backdrop' => true,
+                ])
+                ->dataParams(['id' => ':id'])
+                ->dataUrl('/api/blogs/:id')
+                ->meta([
+                    'action' => 'edit',
+                    'type' => 'aside',
+                    'component' => 'edit-blog-full',
+                    'tooltip' => 'Edit Blog Post'
+                ])
         );
         $rightSlot->setComponent(
             ButtonComponent::make('delete-btn')
-                ->label('Delete')
                 ->icon('binempty')
                 ->variant('outlined')
                 ->size('sm')
+                ->isIconButton(true)
                 ->confirm([
                     'title' => 'Delete Blog Post',
                     'message' => 'Are you sure you want to delete this blog post? This action cannot be undone.',
@@ -138,9 +154,68 @@ class ViewAsideSlot
                 ])
         );
         $rightSlot->setComponent(
+            ButtonComponent::make('more-btn')
+                ->icon('ellipsisVertical')
+                ->variant('outlined')
+                ->size('sm')
+                ->isIconButton(true)
+                ->dropdown([
+                    'id' => 'more-options',
+                    'placement' => 'bottom-end',
+                    'offset' => [0, 8],
+                    'closeOnClick' => true,
+                    'closeOnEscape' => true,
+                    'items' => [
+                        [
+                            'id' => 'share',
+                            'label' => 'Share',
+                            'icon' => 'share',
+                            'action' => 'share',
+                            'type' => 'button',
+                        ],
+                        [
+                            'id' => 'print',
+                            'label' => 'Print',
+                            'icon' => 'printer',
+                            'action' => 'print',
+                            'type' => 'button',
+                        ],
+                        [
+                            'type' => 'divider',
+                        ],
+                        [
+                            'id' => 'duplicate',
+                            'label' => 'Duplicate',
+                            'icon' => 'copy',
+                            'action' => 'duplicate',
+                            'type' => 'button',
+                        ],
+                        [
+                            'id' => 'archive',
+                            'label' => 'Archive',
+                            'icon' => 'archive',
+                            'action' => 'archive',
+                            'type' => 'button',
+                        ],
+                        [
+                            'type' => 'divider',
+                        ],
+                        [
+                            'id' => 'export',
+                            'label' => 'Export',
+                            'icon' => 'downloadcloud',
+                            'action' => 'export',
+                            'type' => 'button',
+                        ],
+                    ],
+                ])
+                ->meta(['tooltip' => 'More options'])
+        );
+        $rightSlot->setComponent(
             ButtonComponent::make('close-btn')
                 ->icon('cross')
                 ->variant('text')
+                ->isIconButton(true)
                 ->meta(['action' => 'close'])
         );
 
