@@ -309,7 +309,7 @@ class LayoutBuilder
             ->variant('outlined')
             ->color($color)
             ->gridColumnSpan(3)
-            ->dataUrl("/api/listing/stats/{$id}")
+            ->dataUrl("/api/blogs/stats/{$id}")
             ->meta([
                 'icon' => $icon,
                 'iconPosition' => 'top',
