@@ -88,21 +88,12 @@ class BlogForm
 
         $publicationGroup->select('status')
             ->label('Status')
-            ->options($masterData['statuses'] ?? [
-                'draft' => 'Draft',
-                'review' => 'In Review',
-                'published' => 'Published',
-                'archived' => 'Archived',
-            ])
+            ->options($masterData['statuses'] ?? [])
             ->width(4);
 
         $publicationGroup->select('visibility')
             ->label('Visibility')
-            ->options($masterData['visibilities'] ?? [
-                'public' => 'Public',
-                'private' => 'Private',
-                'password' => 'Password Protected',
-            ])
+            ->options($masterData['visibilities'] ?? [])
             ->width(4);
 
         $publicationGroup->text('password')
@@ -165,23 +156,12 @@ class BlogForm
 
         $categoryGroup->select('category')
             ->label('Primary Category')
-            ->options($masterData['categories'] ?? [
-                'Technology' => 'Technology',
-                'Business' => 'Business',
-                'Lifestyle' => 'Lifestyle',
-                'Education' => 'Education',
-                'Health' => 'Health',
-            ])
+            ->options($masterData['categories'] ?? [])
             ->width(6);
 
         $categoryGroup->select('language')
             ->label('Language')
-            ->options($masterData['languages'] ?? [
-                'en' => 'English',
-                'es' => 'Spanish',
-                'fr' => 'French',
-                'de' => 'German',
-            ])
+            ->options($masterData['languages'] ?? [])
             ->width(6);
 
         $categoryGroup->multiselect('categories')

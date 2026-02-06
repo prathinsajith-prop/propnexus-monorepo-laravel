@@ -413,8 +413,8 @@ class Blog extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
-            ->where(function ($q) {
-                $q->whereNull('published_at')
+            ->where(function ($publishedQuery) {
+                $publishedQuery->whereNull('published_at')
                     ->orWhere('published_at', '<=', now());
             });
     }

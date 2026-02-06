@@ -29,17 +29,17 @@ class DeleteUserAction extends BaseAction
             return ActionResult::failure('Users data not found', [], 404);
         }
 
-        $allData = json_decode(file_get_contents($jsonPath), true);
+        $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (!is_array($allData)) {
+        if (!is_array($allUsers)) {
             return ActionResult::failure('Invalid data format', [], 500);
         }
 
         $identifier = $this->data['identifier'];
         $userIndex = null;
 
-        foreach ($allData as $index => $item) {
-            if ($item['id'] == $identifier || $item['user_id'] == $identifier) {
+        foreach ($allUsers as $index => $user) {
+            if ($user['id'] == $identifier || $user['user_id'] == $identifier) {
                 $userIndex = $index;
                 break;
             }
@@ -49,10 +49,10 @@ class DeleteUserAction extends BaseAction
             return ActionResult::failure('User not found', [], 404);
         }
 
-        $deletedUser = $allData[$userIndex];
-        array_splice($allData, $userIndex, 1);
+        $deletedUser = $allUsers[$userIndex];
+        array_splice($allUsers, $userIndex, 1);
 
-        file_put_contents($jsonPath, json_encode($allData, JSON_PRETTY_PRINT));
+        file_put_contents($jsonPath, json_encode($allUsers, JSON_PRETTY_PRINT));
 
         return ActionResult::success($deletedUser, 'User deleted successfully');
     }

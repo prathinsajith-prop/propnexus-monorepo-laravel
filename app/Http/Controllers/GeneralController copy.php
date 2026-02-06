@@ -564,9 +564,9 @@ class GeneralController extends Controller
             ], 404);
         }
 
-        $allData = json_decode(file_get_contents($jsonPath), true);
+        $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (! is_array($allData)) {
+        if (! is_array($allUsers)) {
             return response()->json([
                 'error' => 'Invalid data format',
             ], 500);
@@ -602,9 +602,9 @@ class GeneralController extends Controller
 
         // Apply search filter (searches across all fields)
         if (! empty($search)) {
-            $allData = array_filter($allData, function ($item) use ($search) {
+            $allUsers = array_filter($allUsers, function ($user) use ($search) {
                 $searchLower = strtolower($search);
-                foreach ($item as $value) {
+                foreach ($user as $value) {
                     if (stripos(strtolower((string) $value), $searchLower) !== false) {
                         return true;
                     }
@@ -617,21 +617,21 @@ class GeneralController extends Controller
         // Apply column-specific filters
         foreach ($filters as $column => $filterValue) {
             if (! empty($filterValue)) {
-                $allData = array_filter($allData, function ($item) use ($column, $filterValue) {
-                    if (! isset($item[$column])) {
+                $allUsers = array_filter($allUsers, function ($user) use ($column, $filterValue) {
+                    if (! isset($user[$column])) {
                         return false;
                     }
-                    $itemValue = strtolower((string) $item[$column]);
+                    $userValue = strtolower((string) $user[$column]);
                     $filterLower = strtolower((string) $filterValue);
 
-                    return stripos($itemValue, $filterLower) !== false;
+                    return stripos($userValue, $filterLower) !== false;
                 });
             }
         }
 
         // Sorting
-        if (! empty($sortBy) && isset($allData[0][$sortBy])) {
-            usort($allData, function ($a, $b) use ($sortBy, $sortDirection) {
+        if (! empty($sortBy) && isset($allUsers[0][$sortBy])) {
+            usort($allUsers, function ($a, $b) use ($sortBy, $sortDirection) {
                 $aVal = $a[$sortBy] ?? '';
                 $bVal = $b[$sortBy] ?? '';
 
@@ -644,12 +644,12 @@ class GeneralController extends Controller
         }
 
         // Pagination
-        $total = count($allData);
+        $total = count($allUsers);
         $offset = ($page - 1) * $perPage;
-        $paginatedData = array_slice($allData, $offset, $perPage);
+        $paginatedUsers = array_slice($allUsers, $offset, $perPage);
 
         return response()->json([
-            'data' => array_values($paginatedData),
+            'data' => array_values($paginatedUsers),
             'meta' => [
                 'current_page' => $page,
                 'per_page' => $perPage,
@@ -689,13 +689,13 @@ class GeneralController extends Controller
         $jsonPath = storage_path('app/users.json');
 
         // Load existing data
-        $allData = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
-        if (! is_array($allData)) {
-            $allData = [];
+        $allUsers = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
+        if (! is_array($allUsers)) {
+            $allUsers = [];
         }
 
         // Generate new ID
-        $maxId = collect($allData)->max('id') ?? 100;
+        $maxId = collect($allUsers)->max('id') ?? 100;
         $newId = $maxId + 1;
 
         // Capture ALL request data to support dynamic fields (like skills, notifications, etc.)
@@ -708,10 +708,10 @@ class GeneralController extends Controller
         $userData['updated_at'] = now()->format('Y-m-d');
 
         // Add to array
-        $allData[] = $userData;
+        $allUsers[] = $userData;
 
         // Save to file
-        file_put_contents($jsonPath, json_encode($allData, JSON_PRETTY_PRINT));
+        file_put_contents($jsonPath, json_encode($allUsers, JSON_PRETTY_PRINT));
 
         return response()->json([
             'success' => true,
@@ -736,17 +736,17 @@ class GeneralController extends Controller
             ], 404);
         }
 
-        $allData = json_decode(file_get_contents($jsonPath), true);
+        $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (! is_array($allData)) {
+        if (! is_array($allUsers)) {
             return response()->json([
                 'error' => 'Invalid data format',
             ], 500);
         }
 
         // Find the user by ID or user_id
-        $user = collect($allData)->first(function ($item) use ($identifier) {
-            return $item['id'] == $identifier || $item['user_id'] == $identifier;
+        $user = collect($allUsers)->first(function ($user) use ($identifier) {
+            return $user['id'] == $identifier || $user['user_id'] == $identifier;
         });
 
         if (! $user) {

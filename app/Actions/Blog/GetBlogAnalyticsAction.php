@@ -112,9 +112,9 @@ class GetBlogAnalyticsAction extends BaseAction
             ->groupBy('day_of_week')
             ->orderBy('day_of_week')
             ->get()
-            ->mapWithKeys(function ($item) {
+            ->mapWithKeys(function ($dayData) {
                 $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                return [$days[$item->day_of_week - 1] => $item->count];
+                return [$days[$dayData->day_of_week - 1] => $dayData->count];
             });
 
         return ActionResult::success([

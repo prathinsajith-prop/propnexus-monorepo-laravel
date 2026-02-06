@@ -30,6 +30,12 @@ class ListingSettings
                 'form.listing-form.agent-info' => ['show' => true, 'edit' => true],
                 'form.listing-form.financial-info' => ['show' => true, 'edit' => true],
                 'form.listing-form.additional-info' => ['show' => true, 'edit' => true],
+                // Groups for view listing form
+                'form.view-listing-form.overview'  => ['show' => true, 'edit' => true],
+                'form.view-listing-form.location'  => ['show' => true, 'edit' => true],
+                'form.view-listing-form.description' => ['show' => true, 'edit' => true],
+                'form.view-listing-form.agent' => ['show' => true, 'edit' => true],
+                'form.view-listing-form.status' => ['show' => true, 'edit' => true]
             ],
         ];
     }
@@ -59,9 +65,9 @@ class ListingSettings
         $overrides = [];
 
         if (!$isAdmin) {
-            $overrides['groups']['form.listing-form.financial-info'] = [
-                'show' => false,
-                'edit' => false
+            $overrides['groups'] = [
+                'form.listing-form.financial-info' => ['show' => false, 'edit' => false],
+                'form.view-listing-form.agent' => ['show' => false, 'edit' => false],
             ];
         }
 

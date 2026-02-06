@@ -176,12 +176,12 @@ class ListingController extends Controller
         }
 
         // Add settings for the view
-        $data = $listing->toArray();
-        $data['_settings'] = ListingSettings::forView();
+        $listingData = $listing->toArray();
+        $listingData['_settings'] = ListingSettings::forView();
 
         return response()->json([
             'success' => true,
-            'data' => $data,
+            'data' => $listingData,
         ]);
     }
 
@@ -355,68 +355,97 @@ class ListingController extends Controller
                 'listings:master-data',
                 config('performance.cache.master_data_ttl', 1800),
                 function () {
+                    // Get full enum data with icons and colors
+                    $propertyTypesFull = collect(PropertyType::cases())->map(fn($case) => [
+                        'value' => $case->value,
+                        'label' => $case->label(),
+                        'icon' => $case->icon(),
+                        'color' => $case->color(),
+                    ])->keyBy('value')->toArray();
+
+                    $listingTypesFull = collect(ListingType::cases())->map(fn($case) => [
+                        'value' => $case->value,
+                        'label' => $case->label(),
+                        'icon' => $case->icon(),
+                        'color' => $case->color(),
+                    ])->keyBy('value')->toArray();
+
+                    $statusesFull = collect(ListingStatus::cases())->map(fn($case) => [
+                        'value' => $case->value,
+                        'label' => $case->label(),
+                        'icon' => $case->icon(),
+                        'color' => $case->color(),
+                    ])->keyBy('value')->toArray();
+
+                    $availabilitiesFull = collect(Availability::cases())->map(fn($case) => [
+                        'value' => $case->value,
+                        'label' => $case->label(),
+                        'icon' => $case->icon(),
+                        'color' => $case->color(),
+                    ])->keyBy('value')->toArray();
+
                     return [
-                        'property_types' => collect(PropertyType::cases())->map(fn($case) => [
-                            'value' => $case->value,
-                            'label' => $case->label(),
-                            'icon' => $case->icon(),
-                            'color' => $case->color(),
-                        ])->keyBy('value')->toArray(),
-                        'listing_types' => collect(ListingType::cases())->map(fn($case) => [
-                            'value' => $case->value,
-                            'label' => $case->label(),
-                            'icon' => $case->icon(),
-                            'color' => $case->color(),
-                        ])->keyBy('value')->toArray(),
-                        'statuses' => collect(ListingStatus::cases())->map(fn($case) => [
-                            'value' => $case->value,
-                            'label' => $case->label(),
-                            'icon' => $case->icon(),
-                            'color' => $case->color(),
-                        ])->keyBy('value')->toArray(),
-                        'availabilities' => collect(Availability::cases())->map(fn($case) => [
-                            'value' => $case->value,
-                            'label' => $case->label(),
-                            'icon' => $case->icon(),
-                            'color' => $case->color(),
-                        ])->keyBy('value')->toArray(),
+                        // Form-friendly format (array with value/label for select options)
+                        'property_types' => collect($propertyTypesFull)
+                            ->map(fn($item) => ['value' => $item['value'], 'label' => $item['label']])
+                            ->values()
+                            ->toArray(),
+                        'listing_types' => collect($listingTypesFull)
+                            ->map(fn($item) => ['value' => $item['value'], 'label' => $item['label']])
+                            ->values()
+                            ->toArray(),
+                        'statuses' => collect($statusesFull)
+                            ->map(fn($item) => ['value' => $item['value'], 'label' => $item['label']])
+                            ->values()
+                            ->toArray(),
+                        'availabilities' => collect($availabilitiesFull)
+                            ->map(fn($item) => ['value' => $item['value'], 'label' => $item['label']])
+                            ->values()
+                            ->toArray(),
+
+                        // Full enum data (for advanced components that need icons/colors)
+                        'property_types_full' => $propertyTypesFull,
+                        'listing_types_full' => $listingTypesFull,
+                        'statuses_full' => $statusesFull,
+                        'availabilities_full' => $availabilitiesFull,
 
                         'currencies' => [
-                            'AED' => 'AED',
-                            'USD' => 'USD',
-                            'EUR' => 'EUR',
-                            'GBP' => 'GBP',
+                            ['value' => 'AED', 'label' => 'AED'],
+                            ['value' => 'USD', 'label' => 'USD'],
+                            ['value' => 'EUR', 'label' => 'EUR'],
+                            ['value' => 'GBP', 'label' => 'GBP'],
                         ],
                         'furnishing_statuses' => [
-                            'unfurnished' => 'Unfurnished',
-                            'semi-furnished' => 'Semi-Furnished',
-                            'fully-furnished' => 'Fully-Furnished',
+                            ['value' => 'unfurnished', 'label' => 'Unfurnished'],
+                            ['value' => 'semi-furnished', 'label' => 'Semi-Furnished'],
+                            ['value' => 'fully-furnished', 'label' => 'Fully-Furnished'],
                         ],
                         'cities' => [
-                            'Dubai' => 'Dubai',
-                            'Abu Dhabi' => 'Abu Dhabi',
-                            'Sharjah' => 'Sharjah',
-                            'Ajman' => 'Ajman',
-                            'Ras Al Khaimah' => 'Ras Al Khaimah',
-                            'Fujairah' => 'Fujairah',
-                            'Umm Al Quwain' => 'Umm Al Quwain',
+                            ['value' => 'Dubai', 'label' => 'Dubai'],
+                            ['value' => 'Abu Dhabi', 'label' => 'Abu Dhabi'],
+                            ['value' => 'Sharjah', 'label' => 'Sharjah'],
+                            ['value' => 'Ajman', 'label' => 'Ajman'],
+                            ['value' => 'Ras Al Khaimah', 'label' => 'Ras Al Khaimah'],
+                            ['value' => 'Fujairah', 'label' => 'Fujairah'],
+                            ['value' => 'Umm Al Quwain', 'label' => 'Umm Al Quwain'],
                         ],
                         'areas' => [
-                            'Dubai Marina' => 'Dubai Marina',
-                            'Downtown Dubai' => 'Downtown Dubai',
-                            'Palm Jumeirah' => 'Palm Jumeirah',
-                            'Business Bay' => 'Business Bay',
-                            'JBR' => 'JBR',
-                            'Arabian Ranches' => 'Arabian Ranches',
-                            'Dubai Hills' => 'Dubai Hills',
-                            'City Walk' => 'City Walk',
-                            'Al Barsha' => 'Al Barsha',
-                            'Jumeirah' => 'Jumeirah',
+                            ['value' => 'Dubai Marina', 'label' => 'Dubai Marina'],
+                            ['value' => 'Downtown Dubai', 'label' => 'Downtown Dubai'],
+                            ['value' => 'Palm Jumeirah', 'label' => 'Palm Jumeirah'],
+                            ['value' => 'Business Bay', 'label' => 'Business Bay'],
+                            ['value' => 'JBR', 'label' => 'JBR'],
+                            ['value' => 'Arabian Ranches', 'label' => 'Arabian Ranches'],
+                            ['value' => 'Dubai Hills', 'label' => 'Dubai Hills'],
+                            ['value' => 'City Walk', 'label' => 'City Walk'],
+                            ['value' => 'Al Barsha', 'label' => 'Al Barsha'],
+                            ['value' => 'Jumeirah', 'label' => 'Jumeirah'],
                         ],
                         'agents' => User::select('id', 'name')
                             ->orderBy('name')
                             ->get()
-                            ->mapWithKeys(fn($user) => [$user->id => $user->name])
+                            ->map(fn($user) => ['value' => $user->id, 'label' => $user->name])
+                            ->values()
                             ->toArray(),
                     ];
                 }
