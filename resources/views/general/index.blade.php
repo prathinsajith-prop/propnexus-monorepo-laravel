@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Antigravity - Build the new way</title>
-    <link rel="icon" type="image/png" href="assets/image/antigravity-logo.png">
+    <title>Lavalite UI Builder - Fluent Interface Design for Laravel</title>
+    <link rel="icon" type="image/png" href="assets/image/lavalite-logo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -353,7 +353,7 @@
             /* Blue for functions */
         }
 
-        /* Floating particles (Subtle Antigravity effect) */
+        /* Floating particles (Subtle floating effect) */
         .particle {
             position: absolute;
             background: radial-gradient(circle, var(--accent-blue) 0%, transparent 70%);
