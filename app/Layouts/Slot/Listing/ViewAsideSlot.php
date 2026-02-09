@@ -2,9 +2,11 @@
 
 namespace App\Layouts\Slot\Listing;
 
+use App\Forms\Listing\ListingOverviewForm;
 use App\Forms\Listing\ListingViewForm;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
+use Litepie\Layout\Components\CardComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Sections\DetailSection;
 use Litepie\Layout\Sections\FooterSection;
@@ -30,10 +32,30 @@ class ViewAsideSlot
     {
         $formComponent = ListingViewForm::make('view-listing-form', 'GET', '/api/listing/:id', $masterData, '/api/listing/:id');
 
+        // Create overview form using the dedicated form class
+        $overviewForm = ListingOverviewForm::make('property-overview-form', '/api/listing/:id');
+
+        // Create card with form and image
+        $cardComponent = CardComponent::make('listing-overview-card')
+            ->title(__('layout.property_overview'))
+            ->subheader(__('layout.property_overview_subtitle'))
+            ->image('featured_image') // Will display featured image from API data
+            ->addForm($overviewForm) // Add the form with fields
+            ->meta([
+                'variant' => 'outlined',
+                'displayType' => 'property-showcase',
+                'galleryField' => 'images',
+                'imageHeight' => '300px',
+                'showGallery' => true,
+                'maxGalleryItems' => 4,
+                'dataUrl' => '/api/listing/:id',
+            ]);
+
         // Create main grid for form
         $mainGrid = GridSection::make('view-main-grid', 1)
             ->rows(1)
             ->gap('md');
+        $mainGrid->add($cardComponent);
         $mainGrid->add($formComponent);
 
         // Build header
