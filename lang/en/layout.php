@@ -457,6 +457,7 @@ return [
     'send_email_reminder' => 'Send Email Reminder',
     'reminder_help' => 'Receive email notification before follow-up',
     'property_overview' => 'Property Overview',
+    'property_overview_subtitle' => 'View complete property listing information',
     'formatted_price' => 'Price',
     'size_sqft' => 'Size (sqft)',
     'full_address' => 'Address',

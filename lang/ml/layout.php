@@ -456,6 +456,7 @@ return [
     'send_email_reminder' => 'ഇമെയിൽ ഓർമ്മപ്പെടുത്തൽ അയക്കുക',
     'reminder_help' => 'ഫോളോ-അപ്പിന് മുമ്പ് ഇമെയിൽ അറിയിപ്പ് സ്വീകരിക്കുക',
     'property_overview' => 'പ്രോപ്പർട്ടി അവലോകനം',
+    'property_overview_subtitle' => 'ലിസ്റ്റിംഗിന്റെ പൂർണ്ണവിവരങ്ങൾ കാണുക',
     'formatted_price' => 'വില',
     'size_sqft' => 'വലുപ്പം (sqft)',
     'full_address' => 'വിലാസം',
