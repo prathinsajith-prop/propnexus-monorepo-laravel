@@ -267,6 +267,7 @@ class ListingForm
         $mediaGroup->file('featured_image')
             ->label(__('layout.featured_image'))
             ->accept('image/*')
+            ->maxSize(5120)
             ->uploadUrl('/api/listing-upload/image')
             ->width(6);
 
@@ -274,6 +275,7 @@ class ListingForm
             ->label(__('layout.property_images'))
             ->accept('image/*')
             ->multiple(true)
+            ->maxSize(10240)
             ->uploadUrl('/api/listing-upload/image')
             ->width(6);
 
@@ -281,6 +283,7 @@ class ListingForm
             ->label(__('layout.floor_plans'))
             ->accept('image/*,application/pdf')
             ->multiple(true)
+            ->maxSize(20480)
             ->uploadUrl('/api/listing-upload/document')
             ->width(6);
 

@@ -82,12 +82,14 @@ class UserForm
             $mediaGroup->file('profile_image')
                 ->label(__('layout.profile_image'))
                 ->accept('image/*')
-                ->maxSize(2048);
+                ->maxSize(2048)
+                ->uploadUrl('/api/user-upload/image');
 
             $mediaGroup->file('resume')
                 ->label(__('layout.expertise_resume'))
                 ->accept('.pdf')
-                ->maxSize(5120);
+                ->maxSize(5120)
+                ->uploadUrl('/api/user-upload/document');
 
             // --- Account & Security ---
             $securityGroup = $form->group('security-info')
