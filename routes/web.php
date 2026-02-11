@@ -3,6 +3,7 @@
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\ImageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [GeneralController::class, 'index']);
@@ -61,6 +62,11 @@ Route::prefix('api')->group(function () {
     Route::post('/listing-upload/attachment', [ListingController::class, 'uploadAttachment'])->name('api.listing-upload.attachment');
     Route::post('/listing-upload', [ListingController::class, 'upload'])->name('api.listing-upload.generic');
     Route::delete('/listing-files/{path}', [ListingController::class, 'deleteFile'])->name('api.listing-files.delete')->where('path', '.*');
+
+    // Common Image API - Serve images from storage or public with CORS support
+    Route::match(['get', 'options'], '/images/{path}', [ImageController::class, 'show'])->name('images.show')->where('path', '.*');
+    Route::match(['get', 'options'], '/images/thumbnail/{path}', [ImageController::class, 'thumbnail'])->name('images.thumbnail')->where('path', '.*');
+    Route::match(['post', 'options'], '/images/generate-url', [ImageController::class, 'generateUrl'])->name('images.generate-url');
 });
 
 Route::prefix('layouts')->middleware('cache.headers:layout')->group(function () {

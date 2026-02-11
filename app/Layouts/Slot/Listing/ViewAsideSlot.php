@@ -4,9 +4,11 @@ namespace App\Layouts\Slot\Listing;
 
 use App\Forms\Listing\ListingOverviewForm;
 use App\Forms\Listing\ListingViewForm;
+use App\Support\ImageHelper;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\CardComponent;
+use Litepie\Layout\Components\MediaComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Sections\DetailSection;
 use Litepie\Layout\Sections\FooterSection;
@@ -33,29 +35,46 @@ class ViewAsideSlot
         $formComponent = ListingViewForm::make('view-listing-form', 'GET', '/api/listing/:id', $masterData, '/api/listing/:id');
 
         // Create overview form using the dedicated form class
-        $overviewForm = ListingOverviewForm::make('property-overview-form', '/api/listing/:id');
+        // $overviewForm = ListingOverviewForm::make('property-overview-form', '/api/listing/:id')->gridColumnSpan(4);
 
-        // Create card with form and image
-        $cardComponent = CardComponent::make('listing-overview-card')
-            ->title(__('layout.property_overview'))
-            ->subheader(__('layout.property_overview_subtitle'))
-            ->image('featured_image') // Will display featured image from API data
-            ->addForm($overviewForm) // Add the form with fields
-            ->meta([
-                'variant' => 'outlined',
-                'displayType' => 'property-showcase',
-                'galleryField' => 'images',
-                'imageHeight' => '300px',
-                'showGallery' => true,
-                'maxGalleryItems' => 4,
-                'dataUrl' => '/api/listing/:id',
-            ]);
+        $overview = CardComponent::make('property-overview-card')
+            ->addComponent(
+                MediaComponent::make('property-image')
+                    ->gallery()  // Set type to gallery
+                    ->grid()     // Layout: grid, masonry, or carousel
+                    ->columns(1) // 1 images per row
+                    ->lightbox(true)
+                    ->captions(true)
+                    ->aspectRatio('1:1')
+                    ->width('300')
+                    ->height('150')
+                    ->addItem(
+                        ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 800, 'h' => 600]),
+                        [
+                            'alt' => 'Living Room',
+                            'caption' => 'Spacious living area'
+                        ]
+                    )
+                    ->gridColumnSpan(4)
+            )
+            ->addComponent(
+                TextComponent::make('property-title')
+                    ->content('
+                    This is a beautiful 3-bedroom, 2-bathroom family home located in the heart of the city.
+                    Featuring a spacious living area, modern kitchen, and a large backyard perfect for entertaining guests.
+                    ')
+                    ->variant('h5')
+                    ->title(__('layout.property_title'))
+                    ->meta(['fontWeight' => 'bold'])
+                    ->gridColumnSpan(8)
+            );
 
         // Create main grid for form
-        $mainGrid = GridSection::make('view-main-grid', 1)
+        $mainGrid = GridSection::make('view-main-grid')
             ->rows(1)
             ->gap('md');
-        $mainGrid->add($cardComponent);
+
+        $mainGrid->add($overview);
         $mainGrid->add($formComponent);
 
         // Build header

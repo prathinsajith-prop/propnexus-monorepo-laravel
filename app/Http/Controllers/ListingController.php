@@ -107,54 +107,62 @@ class ListingController extends Controller
 
     /**
      * List all listings with filters and pagination
+     * Uses ListListingsAction with structured filter format
+     *
+     * Query parameters:
+     * - filter: Structured filter string (e.g., status:EQ(active);property_type:IN(apartment,villa))
+     * - q or search: Search term across searchable fields
+     * - sort_by or sort: Field to sort by (default: created_at)
+     * - sort_dir or direction: Sort direction asc/desc (default: desc)
+     * - per_page or limit: Items per page (default: 10)
+     * - page: Page number (default: 1)
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function list(Request $request)
     {
-        $action = new ListListingsAction(new Listing(), $request->all());
-        $result = $action->execute();
+        $result = ListListingsAction::make(null, $request->all())->run();
 
-        if ($result->isSuccess()) {
+        if (!$result->isSuccess()) {
             return response()->json([
-                'success' => true,
-                'data' => $result->getData()['data'],
-                'pagination' => $result->getData()['pagination'],
-                'meta' => $result->getData()['meta'],
-            ]);
+                'success' => false,
+                'message' => $result->getMessage(),
+                'errors' => $result->getErrors(),
+            ], $result->getData()['code'] ?? 400);
         }
 
         return response()->json([
-            'success' => false,
-            'error' => $result->getMessage(),
-        ], 400);
+            'success' => true,
+            'data' => $result->getData()['data'] ?? [],
+            'meta' => $result->getData()['meta'] ?? [],
+        ]);
     }
 
     /**
      * Create a new listing
+     * Uses CreateListingAction
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request)
     {
-        $action = new CreateListingAction(new Listing(), $request->all());
-        $result = $action->execute();
+        $result = CreateListingAction::make(null, $request->all())->run();
 
-        if ($result->isSuccess()) {
+        if (!$result->isSuccess()) {
             return response()->json([
-                'success' => true,
-                'data' => $result->getData()['data'],
-                'message' => $result->getData()['message'] ?? 'Listing created successfully',
-            ], 201);
+                'success' => false,
+                'message' => $result->getMessage(),
+                'errors' => $result->getErrors(),
+            ], 400);
         }
 
         return response()->json([
-            'success' => false,
-            'error' => $result->getMessage(),
-            'errors' => $result->getData()['errors'] ?? [],
-        ], 422);
+            'success' => true,
+            'message' => $result->getMessage(),
+            'data' => $result->getData(),
+        ], 201);
     }
 
     /**

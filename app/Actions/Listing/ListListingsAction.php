@@ -106,29 +106,39 @@ class ListListingsAction extends BaseAction
             return $this->handleExport($query);
         }
 
-        // Apply pagination
+        // Determine pagination type and parameters
         $paginationType = $this->data['pagination_type'] ?? 'standard';
         $perPage = $this->data['per_page'] ?? $this->data['limit'] ?? 20;
+        $useCache = $this->data['use_cache'] ?? false;
+        $cacheTtl = $this->data['cache_ttl'] ?? 300; // 5 minutes default
 
         // Use standard pagination only since cached/fast pagination require additional traits
         $listings = $query->paginate($perPage);
 
-        $executionTime = (microtime(true) - $startTime) * 1000;
+        $executionTime = microtime(true) - $startTime;
 
         return ActionResult::success([
             'data' => $listings->items(),
-            'pagination' => [
-                'current_page' => $listings->currentPage(),
-                'per_page' => $listings->perPage(),
+            'meta' => [
                 'total' => $listings->total(),
+                'per_page' => $listings->perPage(),
+                'current_page' => $listings->currentPage(),
                 'last_page' => $listings->lastPage(),
                 'from' => $listings->firstItem(),
                 'to' => $listings->lastItem(),
-            ],
-            'meta' => [
-                'execution_time_ms' => round($executionTime, 2),
-                'pagination_type' => $paginationType,
-                'search_type' => $searchType,
+                'path' => $listings->path(),
+                'links' => [
+                    'first' => $listings->url(1),
+                    'last' => $listings->url($listings->lastPage()),
+                    'prev' => $listings->previousPageUrl(),
+                    'next' => $listings->nextPageUrl(),
+                ],
+                'performance' => [
+                    'execution_time' => round($executionTime, 4),
+                    'search_type' => $searchType,
+                    'pagination_type' => $paginationType,
+                    'cached' => $useCache,
+                ],
             ],
         ]);
     }
