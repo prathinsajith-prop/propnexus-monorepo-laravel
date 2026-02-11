@@ -6,7 +6,8 @@ namespace Litepie\Layout\Components;
  * BadgeComponent
  *
  * Badge component that generates a small badge to the top-right of its children.
- * Supports numerical badges, dot badges, colors, visibility control, and positioning.
+ * Supports numerical badges, dot badges, colors, visibility control, positioning,
+ * border control, and status-based color/icon mapping for dynamic styling.
  */
 class BadgeComponent extends BaseComponent
 {
@@ -19,10 +20,8 @@ class BadgeComponent extends BaseComponent
 
     protected string $variant = 'standard'; // standard, dot
 
-    // Positioning
-    protected string $vertical = 'top'; // top, bottom
-
-    protected string $horizontal = 'right'; // left, right
+    // Positioning (optional - only set when needed)
+    protected ?array $anchorOrigin = null;
 
     // Overlap
     protected string $overlap = 'rectangular'; // rectangular, circular
@@ -34,6 +33,12 @@ class BadgeComponent extends BaseComponent
 
     // Maximum value
     protected ?int $max = null;
+
+    // Border control
+    protected bool $bordered = false;
+
+    // Badge configurations (colors and icons for different statuses)
+    protected ?array $badgeConfig = null;
 
     public function __construct(string $name)
     {
@@ -144,8 +149,10 @@ class BadgeComponent extends BaseComponent
      */
     public function anchorOrigin(string $vertical, string $horizontal): self
     {
-        $this->vertical = $vertical;
-        $this->horizontal = $horizontal;
+        $this->anchorOrigin = [
+            'vertical' => $vertical,
+            'horizontal' => $horizontal,
+        ];
 
         return $this;
     }
@@ -245,6 +252,45 @@ class BadgeComponent extends BaseComponent
     }
 
     // ========================================================================
+    // Border Control
+    // ========================================================================
+
+    /**
+     * Enable or disable badge border
+     */
+    public function bordered(bool $bordered = true): self
+    {
+        $this->bordered = $bordered;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Status Colors Configuration
+    // ========================================================================
+
+    /**
+     * Set status colors and icons mapping
+     * 
+     * Example:
+     * [
+     *     'draft' => ['color' => 'default', 'icon' => 'edit'],
+     *     'active' => ['color' => 'success', 'icon' => 'check'],
+     *     'pending' => ['color' => 'warning', 'icon' => 'clock'],
+     *     'sold' => ['color' => 'info', 'icon' => 'cash'],
+     * ]
+     *
+     * @param array $badgeConfig Array mapping status values to color and icon config
+     * @return self
+     */
+    public function badgeConfig(array $badgeConfig): self
+    {
+        $this->badgeConfig = $badgeConfig;
+
+        return $this;
+    }
+
+    // ========================================================================
     // Serialization
     // ========================================================================
 
@@ -255,14 +301,13 @@ class BadgeComponent extends BaseComponent
             'children' => $this->children,
             'color' => $this->color !== 'default' ? $this->color : null,
             'variant' => $this->variant !== 'standard' ? $this->variant : null,
-            'anchorOrigin' => [
-                'vertical' => $this->vertical,
-                'horizontal' => $this->horizontal,
-            ],
+            'anchorOrigin' => $this->anchorOrigin,
             'overlap' => $this->overlap !== 'rectangular' ? $this->overlap : null,
             'invisible' => $this->invisible ? true : null,
             'showZero' => $this->showZero ? true : null,
             'max' => $this->max,
+            'bordered' => $this->bordered,
+            'badgeConfig' => $this->badgeConfig,
         ]));
     }
 }

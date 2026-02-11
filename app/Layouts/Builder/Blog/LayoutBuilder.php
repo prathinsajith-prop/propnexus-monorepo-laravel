@@ -384,7 +384,7 @@ class LayoutBuilder
             ->variant('lt-contained')
             ->data('type', 'aside')
             ->data('component', 'create-blog')
-            ->data('action', 'open')
+            ->data('action', 'create')
             ->data('config', [
                 'width' => '800px',
                 'height' => '100vh',
@@ -401,7 +401,7 @@ class LayoutBuilder
             ->variant('lt-contained')
             ->data('type', 'modal')
             ->data('component', 'create-blog-modal')
-            ->data('action', 'open')
+            ->data('action', 'create')
             ->meta(['tooltip' => __('layout.create_new_blog')]);
 
         // View Options - Dropdown

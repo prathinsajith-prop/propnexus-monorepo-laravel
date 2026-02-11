@@ -72,7 +72,7 @@ class CreateAsideSlot
                 'layout' => 'flex',
                 'direction' => 'column',
                 'gap' => '1',
-                'justify' => 'center',
+                'justify' => 'start',
                 'items' => 'start',
                 'gridColumnSpan' => 6,
             ]);

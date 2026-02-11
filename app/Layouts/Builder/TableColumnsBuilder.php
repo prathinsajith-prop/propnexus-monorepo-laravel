@@ -2,6 +2,9 @@
 
 namespace App\Layouts\Builder;
 
+use App\Enums\BlogStatus;
+use App\Enums\ListingStatus;
+use App\Enums\PropertyType;
 use Litepie\Layout\Components\ButtonComponent;
 
 /**
@@ -49,7 +52,16 @@ class TableColumnsBuilder
         return [
             ['key' => 'blog_id', 'label' => __('layout.blog_id'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'title', 'label' => __('layout.title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
-            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
+            [
+                'key' => 'status',
+                'label' => __('layout.status'),
+                'type' => 'badge',
+                'sortable' => true,
+                'filterable' => true,
+                'filter_key' => 'status',
+                'width' => '100px',
+                'badgeConfig' => BlogStatus::badgeConfig(),
+            ],
             ['key' => 'category', 'label' => __('layout.category'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
             ['key' => 'author', 'label' => __('layout.author'), 'sortable' => true, 'width' => '120px'],
             ['key' => 'views_count', 'label' => __('layout.views'), 'type' => 'abbreviated', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
@@ -67,7 +79,16 @@ class TableColumnsBuilder
     {
         return [
             ['key' => 'title', 'label' => __('layout.title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
-            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '100px'],
+            [
+                'key' => 'status',
+                'label' => __('layout.status'),
+                'type' => 'badge',
+                'sortable' => true,
+                'filterable' => true,
+                'filter_key' => 'status',
+                'width' => '100px',
+                'badgeConfig' => BlogStatus::badgeConfig(),
+            ],
             ['key' => 'category', 'label' => __('layout.category'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'category'],
             ['key' => 'author', 'label' => __('layout.author'), 'sortable' => true, 'width' => '120px'],
             ['key' => 'views_count', 'label' => __('layout.views'), 'type' => 'abbreviated', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
@@ -104,8 +125,28 @@ class TableColumnsBuilder
         return [
             ['key' => 'mls_number', 'label' => __('layout.mls_number'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'title', 'label' => __('layout.title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
-            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
-            ['key' => 'property_type', 'label' => __('layout.type'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'property_type', 'width' => '120px'],
+            [
+                'key' => 'status',
+                'label' => __('layout.status'),
+                'type' => 'badge',
+                'sortable' => true,
+                'filterable' => true,
+                'filter_key' => 'status',
+                'width' => '120px',
+                'badgeConfig' => ListingStatus::badgeConfig(),
+                'bordered' => true,
+            ],
+            [
+                'key' => 'property_type',
+                'label' => __('layout.type'),
+                'type' => 'badge',
+                'sortable' => true,
+                'filterable' => true,
+                'filter_key' => 'property_type',
+                'width' => '120px',
+                'badgeConfig' => PropertyType::badgeConfig(),
+                'bordered' => false,
+            ],
             ['key' => 'price', 'label' => __('layout.price'), 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
             ['key' => 'location', 'label' => __('layout.location'), 'sortable' => true, 'width' => '180px'],
             ['key' => 'bedrooms', 'label' => __('layout.beds'), 'sortable' => true, 'width' => '80px', 'align' => 'center'],
@@ -124,8 +165,26 @@ class TableColumnsBuilder
     {
         return [
             ['key' => 'title', 'label' => __('layout.title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
-            ['key' => 'status', 'label' => __('layout.status'), 'type' => 'badge', 'sortable' => true, 'filterable' => true, 'filter_key' => 'status', 'width' => '120px'],
-            ['key' => 'property_type', 'label' => __('layout.type'), 'sortable' => true, 'width' => '120px'],
+            [
+                'key' => 'status',
+                'label' => __('layout.status'),
+                'type' => 'badge',
+                'sortable' => true,
+                'filterable' => true,
+                'filter_key' => 'status',
+                'width' => '120px',
+                'badgeConfig' => ListingStatus::badgeConfig(),
+                'bordered' => true,
+            ],
+            [
+                'key' => 'property_type',
+                'label' => __('layout.type'),
+                'type' => 'badge',
+                'sortable' => true,
+                'width' => '120px',
+                'badgeConfig' => PropertyType::badgeConfig(),
+                'bordered' => false,
+            ],
             ['key' => 'price', 'label' => __('layout.price'), 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
             ['key' => 'views_count', 'label' => __('layout.views'), 'type' => 'abbreviated', 'sortable' => true, 'width' => '80px', 'align' => 'center'],
             ['key' => 'location', 'label' => __('layout.location'), 'sortable' => true, 'width' => '180px'],
@@ -176,6 +235,7 @@ class TableColumnsBuilder
             'type' => null,
             'component' => null,
             'confirm' => null,
+            'variant' => 'standard',
         ];
 
         $params = array_merge($defaults, $options);
@@ -183,7 +243,7 @@ class TableColumnsBuilder
         /** @var \Litepie\Layout\Components\ButtonComponent $button */
         $button = ButtonComponent::make($params['id'])
             ->icon($params['icon'])
-            ->variant('outlined')
+            ->variant($params['variant'])
             ->size('sm')
             ->color($params['color'])
             ->isIconButton(true)
@@ -299,6 +359,7 @@ class TableColumnsBuilder
             'type' => 'aside',
             'component' => 'view-listing',
             'config' => ['width' => '900px'],
+            'variant' => 'standard',
         ]);
     }
 
@@ -316,6 +377,7 @@ class TableColumnsBuilder
             'tooltip' => __('layout.edit'),
             'type' => 'aside',
             'component' => 'edit-listing',
+            'variant' => 'standard',
             'config' => [
                 'width' => '800px',
                 'height' => '100vh',
@@ -337,6 +399,7 @@ class TableColumnsBuilder
             'icon' => 'binempty',
             'color' => 'danger',
             'tooltip' => __('layout.delete'),
+            'variant' => 'standard',
             'confirm' => [
                 'title' => __('layout.delete_listing'),
                 'message' => __('layout.delete_listing_confirmation'),

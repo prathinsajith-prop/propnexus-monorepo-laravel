@@ -17,6 +17,8 @@ use Litepie\Actions\ActionResult;
  * 
  * Enhanced listing with Litepie Database package features:
  * - Advanced search (full-text, fuzzy, weighted)
+ * - Structured filters (e.g., status:EQ(active);property_type:IN(residential,commercial))
+ * - Legacy filters for backward compatibility
  * - Smart caching with tags and invalidation
  * - Optimized pagination
  * - Performance measurement
@@ -93,7 +95,13 @@ class ListListingsAction extends BaseAction
             $query = $this->applySearch($query, $searchQuery, $searchType);
         }
 
-        // Apply filters
+        // Apply structured filter format (e.g., "status:EQ(active);property_type:IN(residential,commercial)")
+        // Uses Searchable trait's filterQueryString method
+        if (!empty($this->data['filter'])) {
+            $query->filterQueryString($this->data['filter']);
+        }
+
+        // Apply legacy filters for backward compatibility
         $query = $this->applyFilters($query);
 
         // Apply sorting

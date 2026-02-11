@@ -349,6 +349,23 @@ class LayoutBuilder
                     ['value' => 'rented', 'label' => __('layout.rented')],
                 ]
             ))
+            ->addSelectFilter('status', __('layout.status'), [
+                ['value' => 'draft', 'label' => __('layout.draft')],
+                ['value' => 'active', 'label' => __('layout.active')],
+                ['value' => 'pending', 'label' => __('layout.pending')],
+                ['value' => 'sold', 'label' => __('layout.sold')],
+                ['value' => 'rented', 'label' => __('layout.rented')],
+                ['value' => 'completed', 'label' => __('layout.completed')],
+                ['value' => 'cancelled', 'label' => __('layout.cancelled')],
+            ])
+            ->addMultiSelectFilter('property_type', __('layout.property_type'), $masterData['property_types'] ?? [])
+            ->addMultiSelectFilter('listing_type', __('layout.listing_type'), $masterData['listing_types'] ?? [])
+            ->addSelectFilter('availability', __('layout.availability'), array_merge(
+                [['value' => '', 'label' => __('layout.all')]],
+                $masterData['availabilities'] ?? []
+            ))
+            ->addMultiSelectFilter('city', __('layout.city'), $masterData['cities'] ?? [])
+            ->addMultiSelectFilter('area', __('layout.area'), $masterData['areas'] ?? [])
             ->addSelectFilter('bedrooms', __('layout.bedrooms'), [
                 ['value' => '', 'label' => __('layout.any')],
                 ['value' => '1', 'label' => '1+'],
@@ -357,8 +374,25 @@ class LayoutBuilder
                 ['value' => '4', 'label' => '4+'],
                 ['value' => '5', 'label' => '5+'],
             ])
+            ->addSelectFilter('bathrooms', __('layout.bathrooms'), [
+                ['value' => '', 'label' => __('layout.any')],
+                ['value' => '1', 'label' => '1+'],
+                ['value' => '2', 'label' => '2+'],
+                ['value' => '3', 'label' => '3+'],
+                ['value' => '4', 'label' => '4+'],
+                ['value' => '5', 'label' => '5+'],
+            ])
+            ->addSelectFilter('furnishing_status', __('layout.furnishing_status'), array_merge(
+                [['value' => '', 'label' => __('layout.any')]],
+                $masterData['furnishing_statuses'] ?? []
+            ))
             ->addPriceRangeFilter('price', __('layout.price_range'), 0, 10000000)
+            ->addSelectFilter('agent_id', __('layout.agent'), array_merge(
+                [['value' => '', 'label' => __('layout.all_agents')]],
+                $masterData['agents'] ?? []
+            ))
             ->addDateRangeFilter('created_at', __('layout.listed_date'))
+            ->addDateRangeFilter('published_at', __('layout.published_date'))
             ->collapsible()
             ->collapsed(true)
             ->showActiveCount()
@@ -390,7 +424,7 @@ class LayoutBuilder
             ->variant('lt-contained')
             ->data('type', 'aside')
             ->data('component', 'create-listing')
-            ->data('action', 'open')
+            ->data('action', 'create')
             ->data('config', [
                 'width' => '800px',
                 'height' => '100vh',
@@ -407,7 +441,7 @@ class LayoutBuilder
             ->variant('lt-contained')
             ->data('type', 'modal')
             ->data('component', 'create-listing-modal')
-            ->data('action', 'open')
+            ->data('action', 'create')
             ->meta(['tooltip' => __('layout.create_new_listing')]);
 
         // View Options - Dropdown

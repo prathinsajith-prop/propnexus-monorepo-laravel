@@ -4,40 +4,44 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum Availability: string
+enum BlogStatus: string
 {
-    case AVAILABLE = 'available';
-    case RESERVED = 'reserved';
-    case SOLD = 'sold';
-    case RENTED = 'rented';
+    case DRAFT = 'draft';
+    case REVIEW = 'review';
+    case PUBLISHED = 'published';
+    case ARCHIVED = 'archived';
+    case TRASH = 'trash';
 
     public function label(): string
     {
         return match ($this) {
-            self::AVAILABLE => 'Available',
-            self::RESERVED => 'Reserved',
-            self::SOLD => 'Sold',
-            self::RENTED => 'Rented',
+            self::DRAFT => 'Draft',
+            self::REVIEW => 'In Review',
+            self::PUBLISHED => 'Published',
+            self::ARCHIVED => 'Archived',
+            self::TRASH => 'Trash',
         };
     }
 
     public function icon(): string
     {
         return match ($this) {
-            self::AVAILABLE => '✅',
-            self::RESERVED => '⏳',
-            self::SOLD => '🤝',
-            self::RENTED => '🔑',
+            self::DRAFT => '✏️',
+            self::REVIEW => '⏰',
+            self::PUBLISHED => '✅',
+            self::ARCHIVED => '📦',
+            self::TRASH => '🗑️',
         };
     }
 
     public function color(): string
     {
         return match ($this) {
-            self::AVAILABLE => 'green',
-            self::RESERVED => 'yellow',
-            self::SOLD => 'blue',
-            self::RENTED => 'purple',
+            self::DRAFT => 'gray',
+            self::REVIEW => 'yellow',
+            self::PUBLISHED => 'green',
+            self::ARCHIVED => 'slate',
+            self::TRASH => 'red',
         };
     }
 
@@ -47,10 +51,11 @@ enum Availability: string
     public function badgeColor(): string
     {
         return match ($this) {
-            self::AVAILABLE => '#10B981',  // Green
-            self::RESERVED => '#F59E0B',   // Amber
-            self::SOLD => '#3B82F6',       // Blue
-            self::RENTED => '#8B5CF6',     // Purple
+            self::DRAFT => '#6B7280',      // Gray
+            self::REVIEW => '#F59E0B',     // Amber
+            self::PUBLISHED => '#10B981',  // Green
+            self::ARCHIVED => '#64748B',   // Slate
+            self::TRASH => '#EF4444',      // Red
         };
     }
 
@@ -60,16 +65,22 @@ enum Availability: string
     public function iconName(): string
     {
         return match ($this) {
-            self::AVAILABLE => 'check-circle',
-            self::RESERVED => 'clock',
-            self::SOLD => 'handshake',
-            self::RENTED => 'key',
+            self::DRAFT => 'edit',
+            self::REVIEW => 'clock',
+            self::PUBLISHED => 'check',
+            self::ARCHIVED => 'archive',
+            self::TRASH => 'trash',
         };
     }
 
-    public function isAvailable(): bool
+    public function isPublished(): bool
     {
-        return $this === self::AVAILABLE;
+        return $this === self::PUBLISHED;
+    }
+
+    public function isArchived(): bool
+    {
+        return in_array($this, [self::ARCHIVED, self::TRASH]);
     }
 
     public static function values(): array
@@ -79,14 +90,14 @@ enum Availability: string
 
     /**
      * Get badge configuration for badge component
-     * Returns array mapping availability values to hex color codes and Lucide icon names
+     * Returns array mapping status values to hex color codes and Lucide icon names
      * 
      * Format: [
-     *   'available' => [
-     *     'value' => 'available',
-     *     'label' => 'Available',
-     *     'color' => '#10B981',      // Hex color code
-     *     'icon' => 'check-circle',  // Lucide icon name
+     *   'draft' => [
+     *     'value' => 'draft',
+     *     'label' => 'Draft',
+     *     'color' => '#6B7280',  // Hex color code
+     *     'icon' => 'edit',      // Lucide icon name
      *   ]
      * ]
      * 
@@ -107,7 +118,7 @@ enum Availability: string
     }
 
     /**
-     * Get availability configuration for a specific value
+     * Get status configuration for a specific value
      * 
      * @param string $value
      * @return array|null

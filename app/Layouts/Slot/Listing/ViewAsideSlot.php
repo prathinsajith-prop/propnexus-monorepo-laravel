@@ -2,6 +2,7 @@
 
 namespace App\Layouts\Slot\Listing;
 
+use App\Enums\ListingStatus;
 use App\Forms\Listing\ListingOverviewForm;
 use App\Forms\Listing\ListingViewForm;
 use App\Support\ImageHelper;
@@ -114,7 +115,7 @@ class ViewAsideSlot
             'layout' => 'flex',
             'direction' => 'column',
             'gap' => '1',
-            'justify' => 'center',
+            'justify' => 'start',
             'items' => 'start',
             'gridColumnSpan' => 6,
         ]);
@@ -148,8 +149,10 @@ class ViewAsideSlot
                 ->content(__('layout.active'))
                 ->color('success')
                 ->variant('standard')
+                ->badgeConfig(ListingStatus::badgeConfig())
                 ->meta(['size' => 'sm'])
         );
+
         $rightSlot->setComponent(
             ButtonComponent::make('edit-btn')
                 ->icon('pen')

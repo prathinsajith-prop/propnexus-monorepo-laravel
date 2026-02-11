@@ -293,7 +293,7 @@ class UserLayout
             ->variant('lt-contained')
             ->data('type', 'modal')
             ->data('component', 'create-user-modal')
-            ->data('action', 'open')
+            ->data('action', 'create')
             ->meta(['tooltip' => __('layout.create_new_user')]);
 
         // Create User Fullscreen Drawer
@@ -304,7 +304,7 @@ class UserLayout
             ->color('primary')
             ->data('type', 'drawer')
             ->data('component', 'create-user-drawer-fullscreen')
-            ->data('action', 'open')
+            ->data('action', 'create')
             ->variant('lt-contained')
             ->meta(['tooltip' => __('layout.create_new_user_fullscreen')]);
 
@@ -396,7 +396,7 @@ class UserLayout
                     'size' => 'sm',
                     'color' => 'primary',
                     'tooltip' => __('layout.view_details'),
-                    'dataAttributes' => ['type' => 'drawer', 'component' => 'view-user-drawer', 'action' => 'open'],
+                    'dataAttributes' => ['type' => 'drawer', 'component' => 'view-user-drawer', 'action' => 'view'],
                     'dataKey' => 'id',
                 ],
                 [
@@ -407,7 +407,7 @@ class UserLayout
                     'size' => 'sm',
                     'color' => 'success',
                     'tooltip' => __('layout.edit_user'),
-                    'dataAttributes' => ['type' => 'modal', 'component' => 'edit-user-modal', 'action' => 'open'],
+                    'dataAttributes' => ['type' => 'modal', 'component' => 'edit-user-modal', 'action' => 'view'],
                     'dataKey' => 'id',
                 ],
                 [
