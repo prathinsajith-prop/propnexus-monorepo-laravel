@@ -6,6 +6,7 @@ use App\Forms\Listing\ListingForm;
 use App\Layouts\Builder\TableColumnsBuilder;
 use App\Layouts\Slot\Listing\CreateAsideSlot;
 use App\Layouts\Slot\Listing\EditAsideSlot;
+use App\Layouts\Slot\Listing\FullscreenViewAsideSlot;
 use App\Layouts\Slot\Listing\ModalSlot;
 use App\Layouts\Slot\Listing\ViewAsideSlot;
 use Litepie\Layout\Sections\GridSection;
@@ -583,12 +584,16 @@ class LayoutBuilder
     /**
      * Build view listing fullscreen aside
      * 
+     * Optimized fullscreen layout with two-column design:
+     * - Left: Large image gallery with carousel/lightbox
+     * - Right: Property details form  
+     * 
      * @param array $masterData Master data for forms
      * @return array Aside definition
      */
     public static function buildViewListingAsideFullscreen(array $masterData): array
     {
-        return ViewAsideSlot::make($masterData, true);
+        return FullscreenViewAsideSlot::make($masterData);
     }
 
     // ============================================================

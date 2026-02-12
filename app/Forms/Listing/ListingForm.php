@@ -262,14 +262,14 @@ class ListingForm
             ->title(__('layout.media_photos'))
             ->icon('image')
             ->variant('bordered')
-            ->columns(2);
+            ->columns(12);
 
         $mediaGroup->file('featured_image')
             ->label(__('layout.featured_image'))
             ->accept('image/*')
             ->maxSize(5120)
             ->uploadUrl('/api/listing-upload/image')
-            ->width(6);
+            ->width(12);
 
         $mediaGroup->file('images')
             ->label(__('layout.property_images'))
@@ -277,7 +277,7 @@ class ListingForm
             ->multiple(true)
             ->maxSize(10240)
             ->uploadUrl('/api/listing-upload/image')
-            ->width(6);
+            ->width(12);
 
         $mediaGroup->file('floor_plans')
             ->label(__('layout.floor_plans'))
@@ -285,12 +285,12 @@ class ListingForm
             ->multiple(true)
             ->maxSize(20480)
             ->uploadUrl('/api/listing-upload/document')
-            ->width(6);
+            ->width(12);
 
         $mediaGroup->text('video_url')
             ->label(__('layout.video_url'))
             ->placeholder(__('layout.video_url_placeholder'))
-            ->width(6);
+            ->width(12);
 
         $mediaGroup->text('virtual_tour_url')
             ->label(__('layout.virtual_tour_url'))
@@ -349,7 +349,7 @@ class ListingForm
             ->title(__('layout.agent_information'))
             ->icon('person')
             ->variant('bordered')
-            ->columns(2);
+            ->columns(12);
 
         $agentGroup->select('agent_id')
             ->label(__('layout.assigned_agent'))
