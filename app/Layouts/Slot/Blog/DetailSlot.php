@@ -55,14 +55,13 @@ class DetailSlot
         $footerGrid->add(
             ButtonComponent::make('create-btn')
                 ->label(__('layout.create_post'))
-                ->variant('contained')
+                ->type('submit')
                 ->color('primary')
+                ->variant('contained')
                 ->icon('check')
-                ->meta([
-                    'action' => 'submit',
-                    'dataUrl' => '/api/blogs',
-                    'method' => 'POST',
-                ])
+                ->data('method', 'POST')
+                ->dataUrl('/api/blogs')
+                ->meta(['action' => 'submit'])
         );
 
         return DetailSection::make('create-blog-detail')

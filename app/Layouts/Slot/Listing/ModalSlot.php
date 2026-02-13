@@ -116,12 +116,11 @@ class ModalSlot
                 ->label(__('layout.create_listing'))
                 ->icon('check')
                 ->variant('contained')
-                ->meta([
-                    'action' => 'submit',
-                    'dataUrl' => $config['apiUrl'],
-                    'method' => $config['method'],
-                    'color' => 'primary'
-                ])
+                ->type('submit')
+                ->color('primary')
+                ->data('method', $config['method'])
+                ->dataUrl($config['apiUrl'])
+                ->meta(['action' => 'submit'])
         );
 
         $footerSlot = SlotManager::make('footer-slot');

@@ -147,9 +147,13 @@ class CreateAsideSlot
         $footerRightSlot->setComponent(
             ButtonComponent::make('create-btn')
                 ->label(__('layout.create_listing'))
+                ->type('submit')
+                ->color('primary')
                 ->icon('check')
                 ->variant('contained')
-                ->meta(['action' => 'submit', 'dataUrl' => '/api/listing', 'method' => 'POST', 'color' => 'primary'])
+                ->data('method', 'POST')
+                ->dataUrl('/api/listing')
+                ->meta(['action' => 'submit'])
         );
 
         // Wrap footer in SlotManager

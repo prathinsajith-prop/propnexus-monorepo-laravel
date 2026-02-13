@@ -109,14 +109,13 @@ class ModalSlot
                 ->add(
                     ButtonComponent::make('create-btn')
                         ->label(__('layout.create_post'))
+                        ->type('submit')
+                        ->color('primary')
                         ->icon('check')
                         ->variant('contained')
-                        ->meta([
-                            'action' => 'submit',
-                            'dataUrl' => $config['apiUrl'],
-                            'method' => $config['method'],
-                            'color' => 'primary'
-                        ])
+                        ->data('method', $config['method'])
+                        ->dataUrl($config['apiUrl'])
+                        ->meta(['action' => 'submit'])
                 )
         );
 
