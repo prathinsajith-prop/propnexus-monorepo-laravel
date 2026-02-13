@@ -549,9 +549,17 @@ class BlogController extends Controller
      */
     private function handleUpload(Request $request, string $type)
     {
-        $request->validate([
-            'file' => 'required|file|max:' . $this->getMaxFileSize($type),
-        ]);
+        try {
+            $request->validate([
+                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        }
 
         $result = FileUploadAction::make(null, [
             'file' => $request->file('file'),
@@ -566,6 +574,7 @@ class BlogController extends Controller
         if (!$result->isSuccess()) {
             return response()->json([
                 'success' => false,
+                'status' => 'error',
                 'message' => $result->getMessage(),
                 'errors' => $result->getErrors(),
             ], 400);
@@ -573,6 +582,7 @@ class BlogController extends Controller
 
         return response()->json([
             'success' => true,
+            'status' => 'uploaded',
             'message' => $result->getMessage(),
             'data' => $result->getData(),
         ], 201);

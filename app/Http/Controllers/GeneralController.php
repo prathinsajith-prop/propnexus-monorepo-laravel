@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\File\FileUploadAction;
 use App\Actions\User\CreateUserAction;
 use App\Actions\User\DeleteUserAction;
 use App\Actions\User\GetUserAction;
@@ -9,6 +10,7 @@ use App\Actions\User\ListUsersAction;
 use App\Actions\User\UpdateUserAction;
 use App\Layouts\UserLayout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * GeneralController
@@ -339,5 +341,139 @@ class GeneralController extends Controller
             'success' => false,
             'error' => $result->getMessage(),
         ], $result->getCode() ?: 404);
+    }
+
+    /**
+     * Upload a user profile image
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadImage(Request $request)
+    {
+        return $this->handleUpload($request, 'image');
+    }
+
+    /**
+     * Upload a user document
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadDocument(Request $request)
+    {
+        return $this->handleUpload($request, 'document');
+    }
+
+    /**
+     * Generic user file upload
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function upload(Request $request)
+    {
+        $type = $request->input('type', 'document');
+        return $this->handleUpload($request, $type);
+    }
+
+    /**
+     * Handle file upload using FileUploadAction
+     *
+     * @param Request $request
+     * @param string $type File type (image, document)
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function handleUpload(Request $request, string $type)
+    {
+        try {
+            $request->validate([
+                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+
+        $result = FileUploadAction::make(null, [
+            'file' => $request->file('file'),
+            'type' => $type,
+            'disk' => $request->input('disk', 'public'),
+            'folder' => $request->input('folder', 'users'),
+            'generate_thumbnail' => $request->input('generate_thumbnail', $type === 'image'),
+            'resize' => $request->input('resize', []),
+            'quality' => $request->input('quality', 85),
+        ])->run();
+
+        if (!$result->isSuccess()) {
+            return response()->json([
+                'success' => false,
+                'message' => $result->getMessage(),
+                'errors' => $result->getErrors(),
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $result->getMessage(),
+            'data' => $result->getData(),
+        ], 201);
+    }
+
+    /**
+     * Delete a user file
+     *
+     * @param string $path File path to delete
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteFile($path, Request $request)
+    {
+        $disk = $request->input('disk', 'public');
+
+        try {
+            if (Storage::disk($disk)->exists($path)) {
+                Storage::disk($disk)->delete($path);
+
+                // Also delete thumbnail if it exists
+                $thumbnailPath = str_replace('/uploads/', '/uploads/thumbnails/', $path);
+                if (Storage::disk($disk)->exists($thumbnailPath)) {
+                    Storage::disk($disk)->delete($thumbnailPath);
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'File deleted successfully',
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'File not found',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete file: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get maximum file size for upload type (in KB)
+     *
+     * @param string $type File type
+     * @return int Maximum file size in KB
+     */
+    private function getMaxFileSize(string $type): int
+    {
+        return match ($type) {
+            'image' => 5120, // 5MB - user profile photos
+            'document' => 10240, // 10MB - user documents
+            default => 5120,
+        };
     }
 }

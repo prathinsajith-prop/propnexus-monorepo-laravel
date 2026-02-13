@@ -125,7 +125,7 @@ class BlogForm
             ->label(__('layout.featured_image'))
             ->accept('image/*')
             ->maxSize(5120)
-            ->uploadUrl('/api/upload/image')
+            ->uploadUrl('/api/blog-upload/image')
             ->width(12);
 
         $mediaGroup->text('video_url')
@@ -138,14 +138,14 @@ class BlogForm
             ->accept('image/*')
             ->multiple(true)
             ->maxSize(10240)
-            ->uploadUrl('/api/upload/image')
+            ->uploadUrl('/api/blog-upload/image')
             ->width(12);
 
         $mediaGroup->file('attachments')
             ->label(__('layout.attachments'))
             ->multiple(true)
             ->maxSize(20480)
-            ->uploadUrl('/api/upload/attachment')
+            ->uploadUrl('/api/blog-upload/attachment')
             ->width(12);
 
         // === CATEGORIZATION SECTION ===

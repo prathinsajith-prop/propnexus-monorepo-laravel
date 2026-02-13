@@ -269,6 +269,9 @@ class ListingForm
             ->accept('image/*')
             ->maxSize(5120)
             ->uploadUrl('/api/listing-upload/image')
+            ->editForm(ListingImageEditForm::make('featured-image-edit'))
+            ->preview(false)
+            ->useCropper(true)
             ->width(12);
 
         $mediaGroup->file('images')
@@ -277,6 +280,8 @@ class ListingForm
             ->multiple(true)
             ->maxSize(10240)
             ->uploadUrl('/api/listing-upload/image')
+            ->editForm(ListingImageEditForm::make('featured-image-edit'))
+            ->useCropper(true)
             ->width(12);
 
         $mediaGroup->file('floor_plans')

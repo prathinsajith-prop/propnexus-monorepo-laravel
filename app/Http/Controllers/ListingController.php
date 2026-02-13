@@ -509,14 +509,38 @@ class ListingController extends Controller
     }
 
     /**
-     * Upload a document file (floor plans, brochures)
+     * Upload a document file (floor plans, brochures, images)
+     * Auto-detects file type: images are treated as 'image', PDFs as 'document'
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadDocument(Request $request)
     {
-        return $this->handleUpload($request, 'document');
+        try {
+            $request->validate([
+                'file' => 'required|file|max:' . $this->getMaxFileSize('document'),
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+
+        // Auto-detect file type from MIME type
+        $file = $request->file('file');
+        $mimeType = $file->getMimeType();
+
+        // Treat image MIME types as 'image' type for proper thumbnail generation
+        if (str_starts_with($mimeType, 'image/')) {
+            $type = 'image';
+        } else {
+            $type = 'document';
+        }
+
+        return $this->handleUpload($request, $type);
     }
 
     /**
@@ -562,9 +586,17 @@ class ListingController extends Controller
      */
     private function handleUpload(Request $request, string $type)
     {
-        $request->validate([
-            'file' => 'required|file|max:' . $this->getMaxFileSize($type),
-        ]);
+        try {
+            $request->validate([
+                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        }
 
         $result = FileUploadAction::make(null, [
             'file' => $request->file('file'),
@@ -579,6 +611,7 @@ class ListingController extends Controller
         if (!$result->isSuccess()) {
             return response()->json([
                 'success' => false,
+                'status' => 'error',
                 'message' => $result->getMessage(),
                 'errors' => $result->getErrors(),
             ], 400);
@@ -586,6 +619,7 @@ class ListingController extends Controller
 
         return response()->json([
             'success' => true,
+            'status' => 'uploaded',
             'message' => $result->getMessage(),
             'data' => $result->getData(),
         ], 201);

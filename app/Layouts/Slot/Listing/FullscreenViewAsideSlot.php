@@ -161,6 +161,7 @@ class FullscreenViewAsideSlot
             BadgeComponent::make('status-badge')
                 ->content(__('layout.active'))
                 ->badgeConfig(ListingStatus::badgeConfig())
+                ->color('success')
                 ->bordered(true)
                 ->variant('standard')
                 ->meta(['size' => 'sm'])
@@ -358,7 +359,7 @@ class FullscreenViewAsideSlot
 
         $card->addComponent(
             TextComponent::make('gallery-description')
-                ->content('Click any image to enlarge in lightbox mode. Swipe or use arrows to navigate through all available property images.')
+                ->content(__('layout.gallery_description'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
                 ->gridColumnSpan(12)
@@ -375,7 +376,7 @@ class FullscreenViewAsideSlot
 
         $card->addComponent(
             TextComponent::make('location-address')
-                ->content('123 Main Street, Springfield, IL 62701')
+                ->content(__('layout.location_placeholder'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-700'])
                 ->gridColumnSpan(12)
@@ -392,7 +393,7 @@ class FullscreenViewAsideSlot
 
         $card->addComponent(
             TextComponent::make('price-info')
-                ->content('Listed Price: $450,000 | Days on Market: 45 | Status: Active')
+                ->content(__('layout.price_info_placeholder'))
                 ->variant('caption')
                 ->meta(['color' => 'text-green-700', 'fontWeight' => '500'])
                 ->gridColumnSpan(12)
@@ -409,7 +410,7 @@ class FullscreenViewAsideSlot
 
         $card->addComponent(
             TextComponent::make('type-info')
-                ->content('Type: Single Family Home | Condition: Excellent | Property Class: Residential')
+                ->content(__('layout.type_info_placeholder'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-700'])
                 ->gridColumnSpan(12)
@@ -462,15 +463,15 @@ class FullscreenViewAsideSlot
                 ->addItem(
                     ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1200, 'h' => 675]),
                     [
-                        'alt' => 'Master Bedroom',
-                        'caption' => 'Spacious master bedroom with ensuite'
+                        'alt' => __('layout.image_master_bedroom_alt'),
+                        'caption' => __('layout.image_master_bedroom_caption')
                     ]
                 )
                 ->addItem(
                     ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1200, 'h' => 675]),
                     [
-                        'alt' => 'Backyard',
-                        'caption' => 'Large backyard with patio area'
+                        'alt' => __('layout.image_backyard_alt'),
+                        'caption' => __('layout.image_backyard_caption')
                     ]
                 )
                 ->gridColumnSpan(12)
@@ -487,7 +488,7 @@ class FullscreenViewAsideSlot
 
         $overviewCard->addComponent(
             TextComponent::make('property-description')
-                ->content('This is a beautiful 3-bedroom, 2-bathroom family home located in the heart of the city. Featuring a spacious living area, modern kitchen, and a large backyard perfect for entertaining guests.')
+                ->content(__('layout.property_description_placeholder'))
                 ->variant('body2')
                 ->meta(['color' => 'text-gray-700'])
                 ->gridColumnSpan(12)
@@ -503,10 +504,9 @@ class FullscreenViewAsideSlot
         );
 
         // Create a grid for key details
-        $detailsText = 'Bedrooms: 3 | Bathrooms: 2 | Area: 2,500 sq ft | Year Built: 2018 | Lot Size: 0.5 acres';
         $overviewCard->addComponent(
             TextComponent::make('property-key-details')
-                ->content($detailsText)
+                ->content(__('layout.key_details_placeholder'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
                 ->gridColumnSpan(12)
@@ -521,10 +521,9 @@ class FullscreenViewAsideSlot
                 ->gridColumnSpan(12)
         );
 
-        $amenitiesText = '• Central Air & Heat • Swimming Pool • Garage • Hardwood Floors • Modern Kitchen • Large Backyard';
         $overviewCard->addComponent(
             TextComponent::make('amenities-list')
-                ->content($amenitiesText)
+                ->content(__('layout.amenities_list_placeholder'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
                 ->gridColumnSpan(12)

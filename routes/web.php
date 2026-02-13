@@ -26,6 +26,12 @@ Route::prefix('api')->group(function () {
     Route::delete('/users/{identifier}', [GeneralController::class, 'destroy'])->name('api.users.destroy');
     Route::get('/users-master-data', [GeneralController::class, 'masterData'])->middleware('cache.headers:static')->name('api.users.master-data');
 
+    // User file upload routes
+    Route::post('/user-upload/image', [GeneralController::class, 'uploadImage'])->name('api.user-upload.image');
+    Route::post('/user-upload/document', [GeneralController::class, 'uploadDocument'])->name('api.user-upload.document');
+    Route::post('/user-upload', [GeneralController::class, 'upload'])->name('api.user-upload.generic');
+    Route::delete('/user-files/{path}', [GeneralController::class, 'deleteFile'])->name('api.user-files.delete')->where('path', '.*');
+
     // Blog routes - using route model binding
     Route::get('/blogs', [BlogController::class, 'list'])->name('api.blogs.index');
     Route::get('/blogs-list', [BlogController::class, 'lists'])->name('api.blogs.lists');
@@ -37,14 +43,14 @@ Route::prefix('api')->group(function () {
     Route::post('/blogs/{blog}/view', [BlogController::class, 'incrementView'])->name('api.blogs.view');
     Route::get('/blogs-master-data', [BlogController::class, 'masterData'])->middleware('cache.headers:static')->name('api.blogs.master-data');
 
-    // File upload routes
-    Route::post('/upload/image', [BlogController::class, 'uploadImage'])->name('api.upload.image');
-    Route::post('/upload/video', [BlogController::class, 'uploadVideo'])->name('api.upload.video');
-    Route::post('/upload/document', [BlogController::class, 'uploadDocument'])->name('api.upload.document');
-    Route::post('/upload/audio', [BlogController::class, 'uploadAudio'])->name('api.upload.audio');
-    Route::post('/upload/attachment', [BlogController::class, 'uploadAttachment'])->name('api.upload.attachment');
-    Route::post('/upload', [BlogController::class, 'upload'])->name('api.upload.generic');
-    Route::delete('/files/{path}', [BlogController::class, 'deleteFile'])->name('api.files.delete')->where('path', '.*');
+    // Blog file upload routes
+    Route::post('/blog-upload/image', [BlogController::class, 'uploadImage'])->name('api.blog-upload.image');
+    Route::post('/blog-upload/video', [BlogController::class, 'uploadVideo'])->name('api.blog-upload.video');
+    Route::post('/blog-upload/document', [BlogController::class, 'uploadDocument'])->name('api.blog-upload.document');
+    Route::post('/blog-upload/audio', [BlogController::class, 'uploadAudio'])->name('api.blog-upload.audio');
+    Route::post('/blog-upload/attachment', [BlogController::class, 'uploadAttachment'])->name('api.blog-upload.attachment');
+    Route::post('/blog-upload', [BlogController::class, 'upload'])->name('api.blog-upload.generic');
+    Route::delete('/blog-files/{path}', [BlogController::class, 'deleteFile'])->name('api.blog-files.delete')->where('path', '.*');
 
     // Listing routes - using route model binding
     Route::get('/listing', [ListingController::class, 'list'])->name('api.listings.index');
