@@ -468,6 +468,18 @@ class BlogController extends Controller
                         ['value' => '3', 'label' => 'Bob Johnson'],
                         ['value' => '4', 'label' => 'Alice Williams'],
                     ],
+                    'keywords' => [
+                        ['value' => 'SEO', 'label' => 'SEO'],
+                        ['value' => 'Marketing', 'label' => 'Marketing'],
+                        ['value' => 'Content', 'label' => 'Content'],
+                        ['value' => 'Strategy', 'label' => 'Strategy'],
+                        ['value' => 'Digital', 'label' => 'Digital'],
+                        ['value' => 'Analytics', 'label' => 'Analytics'],
+                        ['value' => 'Growth', 'label' => 'Growth'],
+                        ['value' => 'Optimization', 'label' => 'Optimization'],
+                        ['value' => 'Best Practices', 'label' => 'Best Practices'],
+                        ['value' => 'Web Development', 'label' => 'Web Development'],
+                    ],
                 ];
             }
         );

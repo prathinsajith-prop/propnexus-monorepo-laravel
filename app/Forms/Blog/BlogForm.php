@@ -172,6 +172,7 @@ class BlogForm
 
         $categoryGroup->tags('tags')
             ->label(__('layout.tags'))
+            ->options($masterData['tags'] ?? [])
             ->placeholder(__('layout.tags_placeholder'))
             ->width(6);
 
@@ -197,6 +198,7 @@ class BlogForm
 
         $seoGroup->tags('seo_meta.keywords')
             ->label(__('layout.meta_keywords'))
+            ->options($masterData['keywords'] ?? [])
             ->placeholder(__('layout.meta_keywords_placeholder'))
             ->width(12);
 
