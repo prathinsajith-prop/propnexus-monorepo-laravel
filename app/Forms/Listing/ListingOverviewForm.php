@@ -106,7 +106,10 @@ class ListingOverviewForm
         $form = FormComponent::make($formId)
             ->columns(3)
             ->gap('sm')
-            ->meta(['readOnly' => true]);
+            ->meta(['readOnly' => true])
+            ->actions([
+                'editable' => true,
+            ]);
 
         if ($dataUrl) {
             $form->dataUrl($dataUrl);

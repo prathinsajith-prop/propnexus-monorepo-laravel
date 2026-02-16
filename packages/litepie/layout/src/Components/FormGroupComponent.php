@@ -31,6 +31,7 @@ class FormGroupComponent extends BaseComponent
     protected ?int $gridRowEnd = null;
     protected ?int $gridColumnEnd = null;
     protected ?int $columnSpan = null;
+    protected bool $isEditable = true;
 
     public function __construct(string $name)
     {
@@ -444,6 +445,18 @@ class FormGroupComponent extends BaseComponent
         return $this->getField($name) !== null;
     }
 
+    /**
+     * Set whether the group is editable
+     *
+     * @param bool $editable
+     * @return self
+     */
+    public function editable(bool $editable = true): self
+    {
+        $this->isEditable = $editable;
+        return $this;
+    }
+
     public function toArray(): array
     {
         // Ensure key is always set with proper format
@@ -466,6 +479,7 @@ class FormGroupComponent extends BaseComponent
             'gap' => $this->gap,
             'columnWidths' => !empty($this->columnWidths) ? $this->columnWidths : null,
             'gridPosition' => $this->getGridPosition(),
+            'isEditable' => $this->isEditable,
             'fields' => array_map(
                 fn($field) => (is_object($field) && method_exists($field, 'toArray'))
                     ? $field->toArray()

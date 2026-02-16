@@ -17,40 +17,53 @@ class ListingViewForm
      * Create listing view form structure
      *
      * @param string $formId Form identifier
-     * @param string $dataUrl URL to fetch listing data
+     * @param string $method HTTP method (GET)
+     * @param string $action Form action URL
+     * @param array $masterData Master data for dropdowns
+     * @param string|null $dataUrl URL to fetch existing data
      * @return \Litepie\Layout\Components\FormComponent
      */
-    public static function make($formId, $dataUrl)
+    public static function make($formId, $method, $action, $masterData = [], $dataUrl = null)
     {
         $form = FormComponent::make($formId)
+            ->action($action)
+            ->method($method)
             ->columns(2)
             ->gap('md')
             ->meta([
-                'dataUrl' => $dataUrl,
-                'dataKey' => 'data',
                 'readonly' => true,
                 'width' => '900px',
             ]);
+
+        if ($dataUrl) {
+            $form->meta([
+                'dataUrl' => $dataUrl,
+                'dataKey' => 'data',
+            ]);
+        }
 
         // Property Overview
         $overviewGroup = $form->group('overview')
             ->title(__('layout.property_overview'))
             ->icon('home')
             ->variant('bordered')
-            ->columns(2);
+            ->columns(2)
+            ->editable(true);
 
         $overviewGroup->text('title')
             ->label(__('layout.property_title'))
             ->readonly(true)
             ->width(12);
 
-        $overviewGroup->text('property_type')
+        $overviewGroup->select('property_type')
             ->label(__('layout.property_type'))
+            ->options($masterData['property_types'] ?? [])
             ->readonly(true)
             ->width(4);
 
-        $overviewGroup->text('listing_type')
+        $overviewGroup->select('listing_type')
             ->label(__('layout.listing_type'))
+            ->options($masterData['listing_types'] ?? [])
             ->readonly(true)
             ->width(4);
 
@@ -79,7 +92,8 @@ class ListingViewForm
             ->title(__('layout.location'))
             ->icon('location')
             ->variant('bordered')
-            ->columns(2);
+            ->columns(2)
+            ->editable(false);
 
         $locationGroup->text('full_address')
             ->label(__('layout.address'))
@@ -101,7 +115,8 @@ class ListingViewForm
             ->title(__('layout.description'))
             ->icon('document')
             ->variant('bordered')
-            ->columns(1);
+            ->columns(1)
+            ->editable(false);
 
         $descriptionGroup->textarea('description')
             ->label(__('layout.description'))
@@ -114,7 +129,8 @@ class ListingViewForm
             ->title(__('layout.agent_information'))
             ->icon('person')
             ->variant('bordered')
-            ->columns(2);
+            ->columns(2)
+            ->editable(false);
 
         $agentGroup->text('agent_name')
             ->label(__('layout.agent_name'))
@@ -136,15 +152,18 @@ class ListingViewForm
             ->title(__('layout.status_performance'))
             ->icon('analytics')
             ->variant('bordered')
-            ->columns(3);
+            ->columns(3)
+            ->editable(false);
 
-        $statusGroup->text('status')
+        $statusGroup->select('status')
             ->label(__('layout.status'))
+            ->options($masterData['statuses'] ?? [])
             ->readonly(true)
             ->width(4);
 
-        $statusGroup->text('availability')
+        $statusGroup->select('availability')
             ->label(__('layout.availability'))
+            ->options($masterData['availabilities'] ?? [])
             ->readonly(true)
             ->width(4);
 
@@ -163,7 +182,7 @@ class ListingViewForm
             ->readonly(true)
             ->width(4);
 
-        $statusGroup->text('published_at')
+        $statusGroup->date('published_at')
             ->label(__('layout.published_date'))
             ->readonly(true)
             ->width(4);
