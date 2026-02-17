@@ -357,8 +357,14 @@ class TableColumnsBuilder
             'color' => 'primary',
             'tooltip' => __('layout.view_details'),
             'type' => 'aside',
-            'component' => 'view-listing',
-            'config' => ['width' => '900px'],
+            'component' => 'view-listing-full',
+            'config' => [
+                'width' => '100vw',
+                'height' => '100vh',
+                'anchor' => 'right',
+                'backdrop' => true,
+                'componentType' => 'aside',
+            ],
             'variant' => 'standard',
         ]);
     }

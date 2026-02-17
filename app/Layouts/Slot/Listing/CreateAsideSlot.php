@@ -27,7 +27,7 @@ class CreateAsideSlot
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
-        $formComponent = ListingForm::make('create-listing-form', 'POST', '/api/listing', $masterData);
+        $formComponent = ListingForm::make('create-listing-form', 'POST', '/api/listing', $masterData, null, true);
 
         // Create main grid for form
         $mainGrid = GridSection::make('create-main-grid', 1)

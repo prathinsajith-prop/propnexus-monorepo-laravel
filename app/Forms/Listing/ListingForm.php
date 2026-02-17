@@ -32,7 +32,7 @@ class ListingForm
      * @param string|null $dataUrl URL to fetch existing data
      * @return \Litepie\Layout\Components\FormComponent
      */
-    public static function make($formId, $method, $action, $masterData, $dataUrl = null)
+    public static function make($formId, $method, $action, $masterData, $dataUrl = null, $isCreate = false)
     {
         $form = FormComponent::make($formId)
             ->action($action)
@@ -56,7 +56,8 @@ class ListingForm
             ->title(__('layout.property_details'))
             ->icon('home')
             ->variant('bordered')
-            ->columns(12);
+            ->columns(12)
+            ->create($isCreate);
 
         $propertyGroup->text('title')
             ->label(__('layout.property_title'))
@@ -114,7 +115,9 @@ class ListingForm
             ->title(__('layout.location'))
             ->icon('location')
             ->variant('bordered')
-            ->columns(12);
+            ->columns(12)
+            ->create($isCreate);
+
 
         $locationGroup->text('building_name')
             ->label(__('layout.building_name'))
@@ -169,7 +172,9 @@ class ListingForm
             ->title(__('layout.property_specifications'))
             ->icon('grid')
             ->variant('bordered')
-            ->columns(12);
+            ->columns(12)
+            ->create($isCreate);
+
 
         $specsGroup->number('bedrooms')
             ->label(__('layout.bedrooms'))
@@ -218,7 +223,8 @@ class ListingForm
             ->title(__('layout.features_amenities'))
             ->icon('star')
             ->variant('bordered')
-            ->columns(12);
+            ->columns(12)
+            ->create($isCreate);
 
         $featuresGroup->select('furnishing_status')
             ->label(__('layout.furnishing_status'))
@@ -262,7 +268,8 @@ class ListingForm
             ->title(__('layout.media_photos'))
             ->icon('image')
             ->variant('bordered')
-            ->columns(12);
+            ->columns(12)
+            ->create($isCreate);
 
         $mediaGroup->file('featured_image')
             ->label(__('layout.featured_image'))
@@ -307,7 +314,8 @@ class ListingForm
             ->title(__('layout.status_availability'))
             ->icon('checkmark')
             ->variant('bordered')
-            ->columns(12);
+            ->columns(12)
+            ->create($isCreate);
 
         $statusGroup->select('status')
             ->label(__('layout.listing_status'))
@@ -354,7 +362,8 @@ class ListingForm
             ->title(__('layout.agent_information'))
             ->icon('person')
             ->variant('bordered')
-            ->columns(12);
+            ->columns(12)
+            ->create($isCreate);
 
         $agentGroup->select('agent_id')
             ->label(__('layout.assigned_agent'))
@@ -383,7 +392,8 @@ class ListingForm
             ->title(__('layout.financial_details'))
             ->icon('cash')
             ->variant('bordered')
-            ->columns(3);
+            ->columns(3)
+            ->create($isCreate);
 
         $financialGroup->number('original_price')
             ->label(__('layout.original_price'))
@@ -424,7 +434,8 @@ class ListingForm
             ->title(__('layout.additional_information'))
             ->icon('information')
             ->variant('bordered')
-            ->columns(2);
+            ->columns(2)
+            ->create($isCreate);
 
         $additionalGroup->text('reference_number')
             ->label(__('layout.reference_number'))

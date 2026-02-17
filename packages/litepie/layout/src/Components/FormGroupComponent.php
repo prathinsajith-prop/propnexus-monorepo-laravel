@@ -32,6 +32,7 @@ class FormGroupComponent extends BaseComponent
     protected ?int $gridColumnEnd = null;
     protected ?int $columnSpan = null;
     protected bool $isEditable = true;
+    protected bool $isCreate = false;
 
     public function __construct(string $name)
     {
@@ -457,6 +458,19 @@ class FormGroupComponent extends BaseComponent
         return $this;
     }
 
+    /**
+     * Method create.
+     *
+     * @param bool $isCreate Whether the form group is in create mode
+     *
+     * @return self
+     */
+    public function create(bool $isCreate = true): self
+    {
+        $this->isCreate = $isCreate;
+        return $this;
+    }
+
     public function toArray(): array
     {
         // Ensure key is always set with proper format
@@ -480,6 +494,7 @@ class FormGroupComponent extends BaseComponent
             'columnWidths' => !empty($this->columnWidths) ? $this->columnWidths : null,
             'gridPosition' => $this->getGridPosition(),
             'isEditable' => $this->isEditable,
+            'isCreate' => $this->isCreate,
             'fields' => array_map(
                 fn($field) => (is_object($field) && method_exists($field, 'toArray'))
                     ? $field->toArray()
