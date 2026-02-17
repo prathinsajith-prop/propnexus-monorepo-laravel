@@ -68,6 +68,34 @@ class UpdateListingAction extends BaseAction
             }
 
             $updateData = array_filter($this->data, fn($key) => $key !== 'id', ARRAY_FILTER_USE_KEY);
+
+            // Convert string fields to arrays for those that need it
+            $arrayFields = [
+                'features',
+                'amenities',
+                'images',
+                'documents',
+                'payment_terms',
+                'floor_plans',
+                'seo_meta',
+                'schema_markup',
+                'analytics',
+                'custom_fields'
+            ];
+
+            foreach ($arrayFields as $field) {
+                if (isset($updateData[$field]) && is_string($updateData[$field])) {
+                    // Try to decode as JSON first
+                    $decoded = json_decode($updateData[$field], true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $updateData[$field] = $decoded;
+                    } else {
+                        // Wrap plain string in array
+                        $updateData[$field] = [$updateData[$field]];
+                    }
+                }
+            }
+
             $updateData['last_edited_at'] = now();
             $updateData['last_edited_by'] = auth()->id();
 

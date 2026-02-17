@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Litepie\Database\Traits\Searchable;
 use Litepie\Hashids\Traits\Hashids;
 
@@ -173,16 +174,17 @@ class Listing extends Model
         'listing_type' => ListingType::class,
         'status' => ListingStatus::class,
         'availability' => Availability::class,
-        'features' => 'array',
-        'amenities' => 'array',
-        'images' => 'array',
-        'floor_plans' => 'array',
-        'payment_terms' => 'array',
-        'seo_meta' => 'array',
-        'schema_markup' => 'array',
-        'analytics' => 'array',
-        'documents' => 'array',
-        'custom_fields' => 'array',
+        // Array fields handled by Attribute mutators (removed from casts)
+        // 'features' => 'array',
+        // 'amenities' => 'array',
+        // 'images' => 'array',
+        // 'floor_plans' => 'array',
+        // 'payment_terms' => 'array',
+        // 'seo_meta' => 'array',
+        // 'schema_markup' => 'array',
+        // 'analytics' => 'array',
+        // 'documents' => 'array',
+        // 'custom_fields' => 'array',
         'price' => 'decimal:2',
         'size_sqft' => 'decimal:2',
         'plot_size_sqft' => 'decimal:2',
@@ -212,41 +214,7 @@ class Listing extends Model
         'last_edited_at' => 'datetime',
     ];
 
-    /**
-     * Create a new Eloquent model instance and initialize trait properties
-     *
-     * @param  array  $attributes
-     * @return void
-     */
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
 
-        // Initialize trait properties
-        $this->initializeTraitProperties();
-    }
-
-    /**
-     * Configure traits that require property definitions
-     * (Defined dynamically to avoid trait conflicts)
-     */
-    protected function initializeTraitProperties()
-    {
-        // Sluggable configuration
-        if (!property_exists($this, 'slugs') || empty($this->slugs)) {
-            $this->slugs = ['slug' => 'title'];
-        }
-
-        // Translatable configuration
-        if (!property_exists($this, 'translatable') || empty($this->translatable)) {
-            $this->translatable = ['title', 'description', 'short_description', 'seo_meta'];
-        }
-
-        // Searchable configuration
-        if (!property_exists($this, 'searchable') || empty($this->searchable)) {
-            $this->searchable = ['title', 'description', 'city', 'state', 'building_name', 'reference_number'];
-        }
-    }
 
     /**
      * The accessors to append to the model's array form.
@@ -270,17 +238,20 @@ class Listing extends Model
     {
         // Try to find by primary key (ID)
         if (is_numeric($value)) {
-            return $this->with(['agent', 'owner'])->where('id', $value)->first();
+            $result = $this->with(['agent', 'owner'])->where('id', $value)->first();
+            return $result;
         }
 
-        // Try to decode hashid to get the actual ID
+        // Try to decode as hashid/eid (eid is just encoded id)
         $decoded = hashids_decode($value);
         if ($decoded) {
-            return $this->with(['agent', 'owner'])->where('id', $decoded)->first();
+            $result = $this->with(['agent', 'owner'])->where('id', $decoded)->first();
+            return $result;
         }
 
-        // Try to find by listing_id
-        return $this->with(['agent', 'owner'])->where('listing_id', $value)->first();
+        // Try to find by listing_id (format: LST-XXXXX)
+        $result = $this->with(['agent', 'owner'])->where('listing_id', $value)->first();
+        return $result;
     }
 
     // ==========================================
@@ -312,13 +283,6 @@ class Listing extends Model
      */
     protected $hashidsKey = 'listing_id';
 
-    /**
-     * Use hashids for route model binding
-     */
-    public function getRouteKeyName()
-    {
-        return 'listing_id';
-    }
 
     // ==========================================
     // SLUGGABLE CONFIGURATION
@@ -451,6 +415,206 @@ class Listing extends Model
             get: fn() => $this->original_price
                 ? ($this->original_price - $this->price)
                 : 0
+        );
+    }
+
+    /**
+     * Ensure features is always an array
+     */
+    protected function features(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value]; // Wrap plain string in array
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure amenities is always an array
+     */
+    protected function amenities(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value]; // Wrap plain string in array
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure images is always an array
+     */
+    protected function images(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value]; // Wrap plain string in array
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure documents is always an array
+     */
+    protected function documents(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value]; // Wrap plain string in array
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure payment_terms is always an array
+     */
+    protected function paymentTerms(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value]; // Wrap plain string in array
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure floor_plans is always an array
+     */
+    protected function floorPlans(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value];
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure seo_meta is always an array
+     */
+    protected function seoMeta(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value];
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure schema_markup is always an array
+     */
+    protected function schemaMarkup(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value];
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure analytics is always an array
+     */
+    protected function analytics(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value];
+                }
+                return [];
+            }
+        );
+    }
+
+    /**
+     * Ensure custom_fields is always an array
+     */
+    protected function customFields(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            set: function ($value) {
+                if (is_array($value)) return $value;
+                if (empty($value)) return [];
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
+                    return [$value];
+                }
+                return [];
+            }
         );
     }
 
@@ -633,15 +797,6 @@ class Listing extends Model
     protected static function boot()
     {
         parent::boot();
-
-        // Initialize model instance for property access
-        static::retrieved(function ($listing) {
-            $listing->initializeTraitProperties();
-        });
-
-        static::creating(function ($listing) {
-            $listing->initializeTraitProperties();
-        });
 
         static::creating(function ($listing) {
             if (empty($listing->listing_id)) {

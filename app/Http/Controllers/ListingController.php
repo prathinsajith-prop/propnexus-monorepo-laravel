@@ -215,7 +215,7 @@ class ListingController extends Controller
             cache()->flush();
 
             // Reload with relationships
-            $listing->load(['agent', 'owner', 'lastEditedBy']);
+            $listing->load(['agent', 'owner', 'lastEditor']);
 
             return response()->json([
                 'success' => true,
