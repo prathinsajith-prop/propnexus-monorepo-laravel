@@ -52,9 +52,7 @@ class DeleteListingAction extends BaseAction
                 $message = 'Listing deleted successfully';
             }
 
-            return ActionResult::success([
-                'message' => $message,
-            ]);
+            return ActionResult::success(null, $message);
         } catch (\Exception $e) {
             return ActionResult::failure('Failed to delete listing: ' . $e->getMessage());
         }

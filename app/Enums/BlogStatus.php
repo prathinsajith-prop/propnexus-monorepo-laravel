@@ -65,11 +65,11 @@ enum BlogStatus: string
     public function iconName(): string
     {
         return match ($this) {
-            self::DRAFT => 'edit',
+            self::DRAFT => 'pencil',
             self::REVIEW => 'clock',
-            self::PUBLISHED => 'check',
+            self::PUBLISHED => 'check-circle',
             self::ARCHIVED => 'archive',
-            self::TRASH => 'trash',
+            self::TRASH => 'trash-2',
         };
     }
 

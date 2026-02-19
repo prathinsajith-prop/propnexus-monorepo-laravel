@@ -324,21 +324,21 @@ class FullscreenViewAsideSlot
             ->captions(true)      // Show captions
             ->aspectRatio('16:9') // Widescreen aspect ratio
             ->addItem(
-                ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1600, 'h' => 900]),
+                ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1600, 'h' => 900]),
                 [
                     'alt' => __('layout.image_living_room_alt'),
                     'caption' => __('layout.image_living_room_caption')
                 ]
             )
             ->addItem(
-                ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1600, 'h' => 900]),
+                ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1600, 'h' => 900]),
                 [
                     'alt' => __('layout.image_kitchen_alt'),
                     'caption' => __('layout.image_kitchen_caption')
                 ]
             )
             ->addItem(
-                ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1600, 'h' => 900]),
+                ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1600, 'h' => 900]),
                 [
                     'alt' => __('layout.image_bedroom_alt'),
                     'caption' => __('layout.image_bedroom_caption')
@@ -440,35 +440,35 @@ class FullscreenViewAsideSlot
                 ->captions(true)
                 ->aspectRatio('16:9')
                 ->addItem(
-                    ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1200, 'h' => 675]),
+                    ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_living_room_alt'),
                         'caption' => __('layout.image_living_room_caption')
                     ]
                 )
                 ->addItem(
-                    ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1200, 'h' => 675]),
+                    ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_kitchen_alt'),
                         'caption' => __('layout.image_kitchen_caption')
                     ]
                 )
                 ->addItem(
-                    ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1200, 'h' => 675]),
+                    ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_bedroom_alt'),
                         'caption' => __('layout.image_bedroom_caption')
                     ]
                 )
                 ->addItem(
-                    ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1200, 'h' => 675]),
+                    ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_master_bedroom_alt'),
                         'caption' => __('layout.image_master_bedroom_caption')
                     ]
                 )
                 ->addItem(
-                    ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 1200, 'h' => 675]),
+                    ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_backyard_alt'),
                         'caption' => __('layout.image_backyard_caption')

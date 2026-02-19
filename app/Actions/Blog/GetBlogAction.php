@@ -46,10 +46,10 @@ class GetBlogAction extends BaseAction
                     $numericId = $decoded;
                 } else {
                     // Invalid hashid
-                    return ActionResult::failure('Invalid blog ID format', [], 400);
+                    return ActionResult::failure('Invalid blog ID format');
                 }
             } catch (\Exception $e) {
-                return ActionResult::failure('Invalid blog ID format', [], 400);
+                return ActionResult::failure('Invalid blog ID format');
             }
         }
 
@@ -57,7 +57,7 @@ class GetBlogAction extends BaseAction
         $blog = Blog::find($numericId);
 
         if (!$blog) {
-            return ActionResult::failure('Blog post not found', [], 404);
+            return ActionResult::failure('Blog post not found');
         }
 
         // Increment view count if requested

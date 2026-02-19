@@ -227,6 +227,36 @@ class CardComponent extends BaseComponent
     }
 
     /**
+     * Add a ButtonComponent instance as a card header action.
+     * Accepts a fully configured ButtonComponent and appends it to header actions.
+     *
+     * @param ButtonComponent $button Configured ButtonComponent instance
+     * @return self
+     *
+     * Example:
+     * ->addHeaderButton(
+     *     ButtonComponent::make('add-btn')
+     *         ->icon('plus')
+     *         ->variant('outlined')
+     *         ->size('sm')
+     *         ->isIconButton(true)
+     *         ->data('component', 'create-xyz')
+     *         ->data('type', 'modal')
+     *         ->meta(['tooltip' => 'Add'])
+     * )
+     */
+    public function addHeaderButton(ButtonComponent $button): self
+    {
+        if (!is_array($this->action)) {
+            $this->action = [];
+        }
+
+        $this->action[] = $button->toArray();
+
+        return $this;
+    }
+
+    /**
      * Add a dropdown menu to the card header.
      * 
      * @param string $label The dropdown button label

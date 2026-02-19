@@ -50,7 +50,7 @@ class ViewAsideSlot
                     ->width('300')
                     ->height('150')
                     ->addItem(
-                        ImageHelper::url('listings/Screenshot-2026-02-02-at-1-48-23---pm-1770641982-6989da3ed134e.png', ['w' => 800, 'h' => 600]),
+                        ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 800, 'h' => 600]),
                         [
                             'alt' => 'Living Room',
                             'caption' => 'Spacious living area'

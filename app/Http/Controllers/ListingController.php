@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Actions\File\FileUploadAction;
 use App\Actions\Listing\CreateListingAction;
+use App\Actions\Listing\DeleteListingAction;
 use App\Actions\Listing\ListListingsAction;
+use App\Actions\Listing\UpdateListingAction;
 use App\Enums\Availability;
+use Litepie\Actions\ActionResult;
 use App\Enums\ListingStatus;
 use App\Enums\ListingType;
 use App\Enums\PropertyType;
@@ -122,21 +125,7 @@ class ListingController extends Controller
      */
     public function list(Request $request)
     {
-        $result = ListListingsAction::make(null, $request->all())->run();
-
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], $result->getData()['code'] ?? 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $result->getData()['data'] ?? [],
-            'meta' => $result->getData()['meta'] ?? [],
-        ]);
+        return ListListingsAction::make(null, $request->all())->run();
     }
 
     /**
@@ -148,21 +137,7 @@ class ListingController extends Controller
      */
     public function create(Request $request)
     {
-        $result = CreateListingAction::make(null, $request->all())->run();
-
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => $result->getMessage(),
-            'data' => $result->getData(),
-        ], 201);
+        return CreateListingAction::make(null, $request->all())->run();
     }
 
     /**
@@ -184,13 +159,8 @@ class ListingController extends Controller
             cache()->forget('listings:stats:all');
         }
 
-        // Add settings for the view
-        $listingData = $listing->toArray();
-        $listingData['_settings'] = ListingSettings::forView();
-
-        return response()->json([
-            'success' => true,
-            'data' => $listingData,
+        return ActionResult::success($listing->toArray(), null, [
+            '_settings' => ListingSettings::forView(),
         ]);
     }
 
@@ -204,31 +174,7 @@ class ListingController extends Controller
      */
     public function update(Listing $listing, Request $request)
     {
-        try {
-            $updateData = $request->except(['id', '_method', '_token']);
-            $updateData['last_edited_at'] = now();
-            $updateData['last_edited_by'] = auth()->id();
-
-            $listing->update($updateData);
-
-            // Clear stats cache when listing is updated
-            cache()->flush();
-
-            // Reload with relationships
-            $listing->load(['agent', 'owner', 'lastEditor']);
-
-            return response()->json([
-                'success' => true,
-                'data' => $listing,
-                'message' => 'Listing updated successfully',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update listing',
-                'error' => $e->getMessage(),
-            ], 422);
-        }
+        return UpdateListingAction::make(null, array_merge($request->all(), ['id' => $listing->id]))->run();
     }
 
     /**
@@ -241,31 +187,10 @@ class ListingController extends Controller
      */
     public function delete(Listing $listing, Request $request)
     {
-        try {
-            $force = $request->boolean('force', false);
-
-            if ($force) {
-                $listing->forceDelete();
-                $message = 'Listing permanently deleted';
-            } else {
-                $listing->delete();
-                $message = 'Listing deleted successfully';
-            }
-
-            // Clear stats cache when listing is deleted
-            cache()->flush();
-
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete listing',
-                'error' => $e->getMessage(),
-            ], 400);
-        }
+        return DeleteListingAction::make(null, [
+            'id' => $listing->id,
+            'force' => $request->boolean('force', false),
+        ])->run();
     }
 
     /**
@@ -598,7 +523,7 @@ class ListingController extends Controller
             ], 422);
         }
 
-        $result = FileUploadAction::make(null, [
+        return FileUploadAction::make(null, [
             'file' => $request->file('file'),
             'type' => $type,
             'disk' => $request->input('disk', 'public'),
@@ -607,22 +532,6 @@ class ListingController extends Controller
             'resize' => $request->input('resize', []),
             'quality' => $request->input('quality', 85),
         ])->run();
-
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'status' => 'error',
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'status' => 'uploaded',
-            'message' => $result->getMessage(),
-            'data' => $result->getData(),
-        ], 201);
     }
 
     /**

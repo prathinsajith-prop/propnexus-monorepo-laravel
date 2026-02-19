@@ -3,18 +3,21 @@
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\ProductPropertyController;
 use App\Http\Controllers\ImageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [GeneralController::class, 'index']);
 Route::get('/blog', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/listing', [ListingController::class, 'index'])->name('listings.index');
+Route::get('/product-properties', [ProductPropertyController::class, 'index'])->name('product-properties.index');
 Route::get('/documentation', [GeneralController::class, 'documentation'])->name('documentation');
 
 Route::prefix('pages')->middleware('cache.headers:layout')->group(function () {
     Route::get('/sample', [GeneralController::class, 'sample'])->name('sample');
     Route::get('/blog', [BlogController::class, 'blog'])->name('blog');
     Route::get('/listing', [ListingController::class, 'listing'])->name('listing');
+    Route::get('/product-property', [ProductPropertyController::class, 'listing'])->name('product-property');
 });
 
 Route::prefix('api')->group(function () {
@@ -69,6 +72,24 @@ Route::prefix('api')->group(function () {
     Route::post('/listing-upload', [ListingController::class, 'upload'])->name('api.listing-upload.generic');
     Route::delete('/listing-files/{path}', [ListingController::class, 'deleteFile'])->name('api.listing-files.delete')->where('path', '.*');
 
+    // Product Property routes - using route model binding
+    Route::get('/product-property', [ProductPropertyController::class, 'list'])->name('api.product-properties.index');
+    Route::post('/product-property', [ProductPropertyController::class, 'create'])->name('api.product-properties.store');
+    Route::get('/product-property-master-data', [ProductPropertyController::class, 'getMasterDataApi'])->middleware('cache.headers:static')->name('api.product-properties.master-data');
+    Route::get('/product-property/stats/{id}', [ProductPropertyController::class, 'getStats'])->middleware('cache.headers:api')->name('api.product-properties.stats');
+    Route::get('/product-property/{property}', [ProductPropertyController::class, 'show'])->name('api.product-properties.show');
+    Route::put('/product-property/{property}', [ProductPropertyController::class, 'update'])->name('api.product-properties.update');
+    Route::delete('/product-property/{property}', [ProductPropertyController::class, 'delete'])->name('api.product-properties.destroy');
+    Route::get('/product-property/{property}/activities', [ProductPropertyController::class, 'activities'])->name('api.product-properties.activities');
+
+    // Product Property file upload routes
+    Route::post('/product-property-upload/image', [ProductPropertyController::class, 'uploadImage'])->name('api.product-property-upload.image');
+    Route::post('/product-property-upload/document', [ProductPropertyController::class, 'uploadDocument'])->name('api.product-property-upload.document');
+    Route::post('/product-property-upload/video', [ProductPropertyController::class, 'uploadVideo'])->name('api.product-property-upload.video');
+    Route::post('/product-property-upload/attachment', [ProductPropertyController::class, 'uploadAttachment'])->name('api.product-property-upload.attachment');
+    Route::post('/product-property-upload', [ProductPropertyController::class, 'upload'])->name('api.product-property-upload.generic');
+    Route::delete('/product-property-files/{path}', [ProductPropertyController::class, 'deleteFile'])->name('api.product-property-files.delete')->where('path', '.*');
+
     // Common Image API - Serve images from storage or public with CORS support
     Route::match(['get', 'options'], '/images/{path}', [ImageController::class, 'show'])->name('images.show')->where('path', '.*');
     Route::match(['get', 'options'], '/images/thumbnail/{path}', [ImageController::class, 'thumbnail'])->name('images.thumbnail')->where('path', '.*');
@@ -79,4 +100,5 @@ Route::prefix('layouts')->middleware('cache.headers:layout')->group(function () 
     Route::get('/sample/{type}/{component}', [GeneralController::class, 'getComponentSection'])->name('layouts.user-layout.show');
     Route::get('/blog/{type}/{component}', [BlogController::class, 'getComponentSection'])->name('layouts.blog-layout.show');
     Route::get('/listing/{type}/{component}', [ListingController::class, 'getComponentSection'])->name('layouts.listing-layout.show');
+    Route::get('/product-property/{type}/{component}', [ProductPropertyController::class, 'getComponentSection'])->name('layouts.product-property-layout.show');
 });

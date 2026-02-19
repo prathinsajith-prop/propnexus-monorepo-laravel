@@ -101,10 +101,7 @@ class UpdateListingAction extends BaseAction
 
             $listing->update($updateData);
 
-            return ActionResult::success([
-                'data' => $listing->fresh(),
-                'message' => 'Listing updated successfully',
-            ]);
+            return ActionResult::success($listing->fresh()->toArray(), 'Listing updated successfully');
         } catch (\Exception $e) {
             return ActionResult::failure('Failed to update listing: ' . $e->getMessage());
         }

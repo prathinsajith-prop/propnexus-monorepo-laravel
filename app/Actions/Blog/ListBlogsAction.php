@@ -3,6 +3,7 @@
 namespace App\Actions\Blog;
 
 use App\Models\Blog;
+use Illuminate\Notifications\Action;
 use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
 
@@ -99,25 +100,14 @@ class ListBlogsAction extends BaseAction
         $cacheTtl = $this->data['cache_ttl'] ?? 300; // 5 minutes default
 
         // Apply pagination with caching
-        $result = $this->applyPagination($query, $paginationType, $perPage, $cacheTtl, $useCache);
-
-        // Measure performance
-        $executionTime = microtime(true) - $startTime;
+        $result = $this->applyPagination($query, $paginationType, $perPage, $cacheTtl, $useCache, $searchType);
 
         // Handle export if requested
         if (!empty($this->data['export_format'])) {
             return $this->handleExport($query, $this->data['export_format']);
         }
 
-        // Add performance metrics
-        $result['meta']['performance'] = [
-            'execution_time' => round($executionTime, 4),
-            'search_type' => $searchType,
-            'pagination_type' => $paginationType,
-            'cached' => $useCache,
-        ];
-
-        return ActionResult::success($result);
+        return $result;
     }
 
     /**
@@ -212,23 +202,23 @@ class ListBlogsAction extends BaseAction
     /**
      * Apply pagination based on type
      */
-    protected function applyPagination($query, string $type, int $perPage, int $cacheTtl, bool $useCache): array
+    protected function applyPagination($query, string $type, int $perPage, int $cacheTtl, bool $useCache, string $searchType)
     {
         switch ($type) {
             case 'cursor':
                 // Cursor pagination (best for large datasets, infinite scroll)
                 $paginator = $query->cursorPaginate($perPage);
-                return $this->formatCursorPagination($paginator);
+                return $this->formatCursorPagination($paginator, $searchType, $type, $useCache);
 
             case 'fast':
                 // Fast pagination (no total count, uses LIMIT + 1)
                 $paginator = $query->fastPaginate($perPage);
-                return $this->formatStandardPagination($paginator);
+                return $this->formatStandardPagination($paginator, $searchType, $type, $useCache);
 
             case 'optimized':
                 // Optimized pagination (uses approximate count for large tables)
                 $paginator = $query->optimizedPaginate($perPage);
-                return $this->formatStandardPagination($paginator);
+                return $this->formatStandardPagination($paginator, $searchType, $type, $useCache);
 
             case 'cached':
                 // Cached pagination (caches total count)
@@ -237,59 +227,63 @@ class ListBlogsAction extends BaseAction
                 } else {
                     $paginator = $query->paginate($perPage);
                 }
-                return $this->formatStandardPagination($paginator);
+                return $this->formatStandardPagination($paginator, $searchType, $type, $useCache);
 
             case 'standard':
             default:
                 // Standard Laravel pagination
                 $paginator = $query->paginate($perPage);
-                return $this->formatStandardPagination($paginator);
+                return $this->formatStandardPagination($paginator, $searchType, $type, $useCache);
         }
     }
 
     /**
      * Format standard pagination response
      */
-    protected function formatStandardPagination($paginator): array
+    protected function formatStandardPagination($paginator, $searchType, $paginationType, $useCache): ActionResult
     {
-        return [
-            'data' => $paginator->items(),
-            'meta' => [
-                'total' => $paginator->total(),
-                'per_page' => $paginator->perPage(),
-                'current_page' => $paginator->currentPage(),
-                'last_page' => $paginator->lastPage(),
-                'from' => $paginator->firstItem(),
-                'to' => $paginator->lastItem(),
-                'path' => $paginator->path(),
-                'links' => [
-                    'first' => $paginator->url(1),
-                    'last' => $paginator->url($paginator->lastPage()),
-                    'prev' => $paginator->previousPageUrl(),
-                    'next' => $paginator->nextPageUrl(),
-                ],
+        return ActionResult::success($paginator->items(), null, [
+            'total'        => $paginator->total(),
+            'per_page'     => $paginator->perPage(),
+            'current_page' => $paginator->currentPage(),
+            'last_page'    => $paginator->lastPage(),
+            'from' => $paginator->firstItem(),
+            'to' => $paginator->lastItem(),
+            'path' => $paginator->path(),
+            'links' => [
+                'first' => $paginator->url(1),
+                'last' => $paginator->url($paginator->lastPage()),
+                'prev' => $paginator->previousPageUrl(),
+                'next' => $paginator->nextPageUrl(),
             ],
-        ];
+            'performance' => [
+                'search_type' => $searchType,
+                'pagination_type' => $paginationType,
+                'cached' => $useCache,
+            ]
+        ]);
     }
 
     /**
      * Format cursor pagination response
      */
-    protected function formatCursorPagination($paginator): array
+    protected function formatCursorPagination($paginator, $searchType, $paginationType, $useCache): ActionResult
     {
-        return [
-            'data' => $paginator->items(),
-            'meta' => [
-                'per_page' => $paginator->perPage(),
-                'path' => $paginator->path(),
-                'cursor' => [
-                    'current' => $paginator->cursor()?->encode(),
-                    'prev' => $paginator->previousCursor()?->encode(),
-                    'next' => $paginator->nextCursor()?->encode(),
-                ],
-                'has_more' => $paginator->hasMorePages(),
+        return ActionResult::success($paginator->items(), null, [
+            'per_page' => $paginator->perPage(),
+            'path' => $paginator->path(),
+            'cursor' => [
+                'current' => $paginator->cursor()?->encode(),
+                'prev' => $paginator->previousCursor()?->encode(),
+                'next' => $paginator->nextCursor()?->encode(),
             ],
-        ];
+            'has_more' => $paginator->hasMorePages(),
+            'performance' => [
+                'search_type' => $searchType,
+                'pagination_type' => $paginationType,
+                'cached' => $useCache,
+            ]
+        ]);
     }
 
     /**
@@ -299,25 +293,15 @@ class ListBlogsAction extends BaseAction
     {
         $blogs = $query->get();
 
-        switch ($format) {
-            case 'csv':
-                $export = $blogs->exportToCsv();
-                break;
+        $export = match ($format) {
+            'csv'   => $blogs->exportToCsv(),
+            'excel' => $blogs->exportToExcel(),
+            default => $blogs->exportToJson(),
+        };
 
-            case 'excel':
-                $export = $blogs->exportToExcel();
-                break;
-
-            case 'json':
-            default:
-                $export = $blogs->exportToJson();
-                break;
-        }
-
-        return ActionResult::success([
-            'export' => $export,
+        return ActionResult::success($export, null, [
             'format' => $format,
-            'count' => $blogs->count(),
+            'count'  => $blogs->count(),
         ]);
     }
 }

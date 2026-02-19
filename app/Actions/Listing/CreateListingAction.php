@@ -82,10 +82,7 @@ class CreateListingAction extends BaseAction
 
             $listing = Listing::create($data);
 
-            return ActionResult::success([
-                'data' => $listing,
-                'message' => 'Listing created successfully',
-            ]);
+            return ActionResult::success($listing, 'Listing created successfully');
         } catch (\Exception $e) {
             return ActionResult::failure('Failed to create listing: ' . $e->getMessage());
         }

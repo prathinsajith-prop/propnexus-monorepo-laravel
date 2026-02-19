@@ -25,6 +25,12 @@ class DatabaseSeeder extends Seeder
         );
 
         // Seed blogs
-        $this->call(BlogSeeder::class);
+        $this->call([
+            BlogSeeder::class,
+            ListingSeeder::class,
+            BixoProductPropertiesSeeder::class,
+            BixoProductPortalsSeeder::class,
+            BixoProductDescriptionSeeder::class,
+        ]);
     }
 }

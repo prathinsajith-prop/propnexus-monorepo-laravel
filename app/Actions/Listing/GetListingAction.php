@@ -51,9 +51,7 @@ class GetListingAction extends BaseAction
                 $listing->increment('views_count');
             }
 
-            return ActionResult::success([
-                'data' => $listing,
-            ]);
+            return ActionResult::success($listing->toArray());
         } catch (\Exception $e) {
             return ActionResult::failure('Failed to retrieve listing: ' . $e->getMessage());
         }

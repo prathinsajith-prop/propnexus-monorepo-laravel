@@ -24,7 +24,7 @@ class RightSidebarSlot
         $rightGrid->add(
             TimelineComponent::make('activity-timeline')
                 ->vertical()
-                ->position('left')
+                ->position('right')
                 ->showDates(true)
                 ->showIcons(true)
                 ->dateFormat('relative')

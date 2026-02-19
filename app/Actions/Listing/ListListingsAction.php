@@ -125,28 +125,25 @@ class ListListingsAction extends BaseAction
 
         $executionTime = microtime(true) - $startTime;
 
-        return ActionResult::success([
-            'data' => $listings->items(),
-            'meta' => [
-                'total' => $listings->total(),
-                'per_page' => $listings->perPage(),
-                'current_page' => $listings->currentPage(),
-                'last_page' => $listings->lastPage(),
-                'from' => $listings->firstItem(),
-                'to' => $listings->lastItem(),
-                'path' => $listings->path(),
-                'links' => [
-                    'first' => $listings->url(1),
-                    'last' => $listings->url($listings->lastPage()),
-                    'prev' => $listings->previousPageUrl(),
-                    'next' => $listings->nextPageUrl(),
-                ],
-                'performance' => [
-                    'execution_time' => round($executionTime, 4),
-                    'search_type' => $searchType,
-                    'pagination_type' => $paginationType,
-                    'cached' => $useCache,
-                ],
+        return ActionResult::success($listings->items(), null, [
+            'total' => $listings->total(),
+            'per_page' => $listings->perPage(),
+            'current_page' => $listings->currentPage(),
+            'last_page' => $listings->lastPage(),
+            'from' => $listings->firstItem(),
+            'to' => $listings->lastItem(),
+            'path' => $listings->path(),
+            'links' => [
+                'first' => $listings->url(1),
+                'last' => $listings->url($listings->lastPage()),
+                'prev' => $listings->previousPageUrl(),
+                'next' => $listings->nextPageUrl(),
+            ],
+            'performance' => [
+                'execution_time' => round($executionTime, 4),
+                'search_type' => $searchType,
+                'pagination_type' => $paginationType,
+                'cached' => $useCache,
             ],
         ]);
     }

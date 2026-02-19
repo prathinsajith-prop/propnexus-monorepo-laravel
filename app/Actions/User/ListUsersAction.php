@@ -39,13 +39,13 @@ class ListUsersAction extends BaseAction
         $jsonPath = storage_path('app/users.json');
 
         if (!file_exists($jsonPath)) {
-            return ActionResult::failure('Users data not found', [], ['code' => 404]);
+            return ActionResult::failure('Users data not found');
         }
 
         $allUsers = json_decode(file_get_contents($jsonPath), true);
 
         if (!is_array($allUsers)) {
-            return ActionResult::failure('Invalid data format', [], ['code' => 500]);
+            return ActionResult::failure('Invalid data format');
         }
 
         // Extract parameters with defaults
@@ -87,12 +87,16 @@ class ListUsersAction extends BaseAction
         // Apply pagination
         $paginatedResult = $this->applyPagination($allUsers, $page, $perPage);
 
-        return ActionResult::success([
-            'data' => $paginatedResult['data'],
-            'meta' => $paginatedResult['meta'],
-            'filters' => $filters,
-            'sort' => [
-                'by' => $sortBy,
+        return ActionResult::success($paginatedResult['data'], null, [
+            'total'        => $paginatedResult['meta']['total'],
+            'per_page'     => $paginatedResult['meta']['per_page'],
+            'current_page' => $paginatedResult['meta']['current_page'],
+            'last_page'    => $paginatedResult['meta']['last_page'],
+            'from'         => $paginatedResult['meta']['from'],
+            'to'           => $paginatedResult['meta']['to'],
+            'filters'      => $filters,
+            'sort'         => [
+                'by'        => $sortBy,
                 'direction' => $sortDirection,
             ],
         ]);

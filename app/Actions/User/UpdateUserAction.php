@@ -29,13 +29,13 @@ class UpdateUserAction extends BaseAction
         $jsonPath = storage_path('app/users.json');
 
         if (!file_exists($jsonPath)) {
-            return ActionResult::failure('Users data not found', [], 404);
+            return ActionResult::failure('Users data not found');
         }
 
         $allUsers = json_decode(file_get_contents($jsonPath), true);
 
         if (!is_array($allUsers)) {
-            return ActionResult::failure('Invalid data format', [], 500);
+            return ActionResult::failure('Invalid data format');
         }
 
         $identifier = $this->data['identifier'];
@@ -49,7 +49,7 @@ class UpdateUserAction extends BaseAction
         }
 
         if ($userIndex === null) {
-            return ActionResult::failure('User not found', [], 404);
+            return ActionResult::failure('User not found');
         }
 
         // Remove identifier from update data

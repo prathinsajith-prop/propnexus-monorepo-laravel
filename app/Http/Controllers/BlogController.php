@@ -14,6 +14,7 @@ use App\Support\Settings\BlogSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
+use Litepie\Actions\ActionResult;
 
 /**
  * BlogController
@@ -106,21 +107,7 @@ class BlogController extends Controller
      */
     public function lists(Request $request)
     {
-        $result = ListBlogsAction::make(null, $request->all())->run();
-
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], $result->getData()['code'] ?? 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $result->getData()['data'],
-            'meta' => $result->getData()['meta'],
-        ]);
+        return ListBlogsAction::make(null, $request->all())->run();
     }
 
     /**
@@ -140,20 +127,7 @@ class BlogController extends Controller
      */
     public function list(Request $request)
     {
-        $result = ListBlogsAction::make(null, $request->all())->run();
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], $result->getData()['code'] ?? 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $result->getData()['data'] ?? [],
-            'meta' => $result->getData()['meta'] ?? [],
-        ]);
+        return ListBlogsAction::make(null, $request->all())->run();
     }
 
     /**
@@ -165,21 +139,7 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-        $result = CreateBlogAction::make(null, $request->all())->run();
-
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => $result->getMessage(),
-            'data' => $result->getData(),
-        ], 201);
+        return CreateBlogAction::make(null, $request->all())->run();
     }
 
     /**
@@ -201,12 +161,8 @@ class BlogController extends Controller
             cache()->forget('blogs:stats:all');
         }
 
-        $blogData = $blog->toArray();
-        $blogData['_settings'] = BlogSettings::forView();
-
-        return response()->json([
-            'success' => true,
-            'data' => $blogData,
+        return ActionResult::success($blog->toArray(), null, [
+            '_settings' => BlogSettings::forView(),
         ]);
     }
 
@@ -221,28 +177,7 @@ class BlogController extends Controller
     public function update(Blog $blog, Request $request)
     {
         $updateData = array_merge($request->all(), ['id' => $blog->id]);
-        $result = UpdateBlogAction::make(null, $updateData)->run();
-
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], $result->getData()['code'] ?? 400);
-        }
-
-        // Clear relevant caches
-        cache()->forget('blogs:master-data');
-        cache()->forget('blogs:stats:all');
-
-        // Reload the model to get fresh data
-        $blog->refresh();
-
-        return response()->json([
-            'success' => true,
-            'message' => $result->getMessage(),
-            'data' => $blog->toArray(),
-        ]);
+        return UpdateBlogAction::make(null, $updateData)->run();
     }
 
     /**
@@ -255,27 +190,10 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog, Request $request)
     {
-        $result = DeleteBlogAction::make(null, [
+        return DeleteBlogAction::make(null, [
             'id' => $blog->id,
             'soft_delete' => $request->input('soft_delete', false),
         ])->run();
-
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], $result->getData()['code'] ?? 404);
-        }
-
-        // Clear relevant caches
-        cache()->forget('blogs:master-data');
-        cache()->forget('blogs:stats:all');
-
-        return response()->json([
-            'success' => true,
-            'message' => $result->getMessage(),
-        ]);
     }
 
     /**
@@ -573,7 +491,7 @@ class BlogController extends Controller
             ], 422);
         }
 
-        $result = FileUploadAction::make(null, [
+        return FileUploadAction::make(null, [
             'file' => $request->file('file'),
             'type' => $type,
             'disk' => $request->input('disk', 'public'),
@@ -582,22 +500,6 @@ class BlogController extends Controller
             'resize' => $request->input('resize', []),
             'quality' => $request->input('quality', 85),
         ])->run();
-
-        if (!$result->isSuccess()) {
-            return response()->json([
-                'success' => false,
-                'status' => 'error',
-                'message' => $result->getMessage(),
-                'errors' => $result->getErrors(),
-            ], 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'status' => 'uploaded',
-            'message' => $result->getMessage(),
-            'data' => $result->getData(),
-        ], 201);
     }
 
     /**

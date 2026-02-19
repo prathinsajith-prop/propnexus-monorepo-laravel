@@ -75,8 +75,8 @@ enum ListingStatus: string
     public function iconName(): string
     {
         return match ($this) {
-            self::DRAFT => 'edit',
-            self::ACTIVE => 'check',
+            self::DRAFT => 'pencil',
+            self::ACTIVE => 'check-circle',
             self::PENDING => 'clock',
             self::SOLD => 'cash',
             self::RENTED => 'home',

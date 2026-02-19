@@ -426,14 +426,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value]; // Wrap plain string in array
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -446,14 +446,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value]; // Wrap plain string in array
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -466,14 +466,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value]; // Wrap plain string in array
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -486,14 +486,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value]; // Wrap plain string in array
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -506,14 +506,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value]; // Wrap plain string in array
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -526,14 +526,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value];
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -546,14 +546,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value];
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -566,14 +566,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value];
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -586,14 +586,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value];
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }
@@ -606,14 +606,14 @@ class Listing extends Model
         return Attribute::make(
             get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return $value;
-                if (empty($value)) return [];
+                if (is_array($value)) return json_encode($value);
+                if (empty($value)) return '[]';
                 if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $decoded;
-                    return [$value];
+                    json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    return json_encode([$value]);
                 }
-                return [];
+                return '[]';
             }
         );
     }

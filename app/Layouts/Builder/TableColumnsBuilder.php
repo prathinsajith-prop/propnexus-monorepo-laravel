@@ -4,6 +4,9 @@ namespace App\Layouts\Builder;
 
 use App\Enums\BlogStatus;
 use App\Enums\ListingStatus;
+use App\Enums\ProductCategoryType;
+use App\Enums\ProductPropertyFor;
+use App\Enums\ProductPropertyStatus;
 use App\Enums\PropertyType;
 use Litepie\Layout\Components\ButtonComponent;
 
@@ -414,6 +417,139 @@ class TableColumnsBuilder
                 'action' => 'delete',
                 'dataUrl' => '/api/listing/:id',
                 'method' => 'delete',
+            ],
+        ]);
+    }
+
+    // ============================================================
+    // PRODUCT PROPERTY TABLE COLUMNS
+    // ============================================================
+
+    /**
+     * Get product property table columns configuration
+     *
+     * @return array Column definitions for table view
+     */
+    public static function getProductPropertyTableColumns(): array
+    {
+        return [
+            ['key' => 'ref', 'label' => __('product_property.column_ref'), 'sortable' => true, 'width' => '120px'],
+            ['key' => 'title', 'label' => __('product_property.property_title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
+            [
+                'key'         => 'category_type',
+                'label'       => __('layout.type'),
+                'type'        => 'badge',
+                'sortable'    => true,
+                'filterable'  => true,
+                'filter_key'  => 'category_type',
+                'width'       => '130px',
+                'badgeConfig' => ProductCategoryType::badgeConfig(),
+                'bordered'    => false,
+            ],
+            [
+                'key'         => 'property_for',
+                'label'       => __('product_property.column_for'),
+                'type'        => 'badge',
+                'sortable'    => true,
+                'filterable'  => true,
+                'filter_key'  => 'property_for',
+                'width'       => '110px',
+                'badgeConfig' => ProductPropertyFor::badgeConfig(),
+                'bordered'    => false,
+            ],
+            [
+                'key'         => 'status',
+                'label'       => __('layout.status'),
+                'type'        => 'badge',
+                'sortable'    => true,
+                'filterable'  => true,
+                'filter_key'  => 'status',
+                'width'       => '140px',
+                'badgeConfig' => ProductPropertyStatus::badgeConfig(),
+                'bordered'    => true,
+            ],
+            ['key' => 'price', 'label' => __('product_property.price'), 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
+            ['key' => 'beds', 'label' => __('product_property.beds'), 'sortable' => true, 'width' => '70px', 'align' => 'center'],
+            ['key' => 'baths', 'label' => __('product_property.baths'), 'sortable' => true, 'width' => '70px', 'align' => 'center'],
+            ['key' => 'bua', 'label' => __('product_property.column_bua'), 'sortable' => true, 'width' => '90px', 'align' => 'right'],
+            ['key' => 'created_at_formatted', 'label' => __('product_property.column_created'), 'sortable' => false, 'width' => '130px'],
+            ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getProductPropertyTableActions()],
+        ];
+    }
+
+    /**
+     * Get product property table action buttons
+     *
+     * @return array Action button configurations
+     */
+    public static function getProductPropertyTableActions(): array
+    {
+        return [
+            self::buildViewPropertyButtonAction(),
+            self::buildEditPropertyButtonAction(),
+            self::buildDeletePropertyButtonAction(),
+        ];
+    }
+
+    // ============================================================
+    // BUTTON ACTION BUILDERS - ProductProperty
+    // ============================================================
+
+    private static function buildViewPropertyButtonAction(): array
+    {
+        return self::buildTableActionButton([
+            'id'        => 'view',
+            'icon'      => 'eyeopen',
+            'color'     => 'primary',
+            'variant'   => 'standard',
+            'tooltip'   => __('layout.view_details'),
+            'type'      => 'aside',
+            'component' => 'view-property-full',
+            'config'    => [
+                'width'         => '900px',
+                'height'        => '100vh',
+                'anchor'        => 'right',
+                'backdrop'      => true,
+                'componentType' => 'aside',
+            ],
+        ]);
+    }
+
+    private static function buildEditPropertyButtonAction(): array
+    {
+        return self::buildTableActionButton([
+            'id'        => 'edit',
+            'icon'      => 'pen',
+            'color'     => 'primary',
+            'variant'   => 'standard',
+            'tooltip'   => __('layout.edit'),
+            'type'      => 'aside',
+            'component' => 'edit-property',
+            'config'    => [
+                'width'   => '800px',
+                'height'  => '100vh',
+                'anchor'  => 'right',
+                'backdrop' => true,
+            ],
+        ]);
+    }
+
+    private static function buildDeletePropertyButtonAction(): array
+    {
+        return self::buildTableActionButton([
+            'id'      => 'delete',
+            'icon'    => 'binempty',
+            'color'   => 'danger',
+            'variant' => 'standard',
+            'tooltip' => __('layout.delete'),
+            'confirm' => [
+                'title'        => __('layout.delete_property'),
+                'message'      => __('layout.delete_property_confirmation'),
+                'confirmLabel' => __('layout.delete'),
+                'cancelLabel'  => __('layout.cancel'),
+                'action'       => 'delete',
+                'dataUrl'      => '/api/product-property/:id',
+                'method'       => 'delete',
             ],
         ]);
     }
