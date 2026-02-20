@@ -27,16 +27,15 @@ class UserViewForm
         $formLayout = LayoutBuilder::create($formId . '-layout', 'form');
 
         $formLayout->section('content', function ($section) use ($formId, $masterData, $dataUrl) {
-            if ($dataUrl) {
-                $section->meta([
-                    'dataUrl' => $dataUrl,
-                    'dataKey' => 'data',
-                ]);
-            }
-
             $form = $section->form($formId)
                 ->columns(2)
-                ->gap('lg')
+                ->gap('lg');
+
+            if ($dataUrl) {
+                $form->dataUrl($dataUrl)->dataKey('data');
+            }
+
+            $form
                 // ->readonly(true)
                 ->layoutConfig([
                     [

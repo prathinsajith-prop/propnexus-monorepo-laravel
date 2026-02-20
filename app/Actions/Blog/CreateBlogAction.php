@@ -51,7 +51,7 @@ class CreateBlogAction extends BaseAction
         try {
             $blog = Blog::create($this->data);
 
-            return ActionResult::success($blog->toArray(), 'Blog post created successfully');
+            return ActionResult::success($blog, 'Blog post created successfully');
         } catch (\Exception $e) {
             return ActionResult::failure('Failed to create blog post: ' . $e->getMessage(), [], 500);
         }

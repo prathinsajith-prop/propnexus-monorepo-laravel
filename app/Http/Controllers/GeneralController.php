@@ -11,6 +11,8 @@ use App\Actions\User\UpdateUserAction;
 use App\Layouts\UserLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Litepie\Actions\ActionResult;
+use App\Support\Settings\UserSettings;
 
 /**
  * GeneralController
@@ -100,17 +102,7 @@ class GeneralController extends Controller
      */
     public function users(Request $request)
     {
-        $action = ListUsersAction::make(null, $request->all());
-        $result = $action->run();
-
-        if ($result->isSuccess()) {
-            return response()->json($result->getData());
-        }
-
-        return response()->json([
-            'error' => $result->getMessage(),
-            'errors' => $result->getErrors(),
-        ], $result->getCode() ?: 500);
+        return ListUsersAction::make(null, $request->all())->run();
     }
 
     /**
@@ -122,22 +114,16 @@ class GeneralController extends Controller
      */
     public function store(Request $request)
     {
-        $action = CreateUserAction::make(null, $request->all());
-        $result = $action->run();
+        $result = CreateUserAction::make(null, $request->all())->run();
+        $user   = $result->getData();
 
-        if ($result->isSuccess()) {
-            return response()->json([
-                'success' => true,
-                'message' => $result->getMessage(),
-                'data' => $result->getData(),
-            ], 201);
-        }
-
-        return response()->json([
-            'success' => false,
-            'message' => $result->getMessage(),
-            'errors' => $result->getErrors(),
-        ], $result->getCode() ?: 422);
+        return ActionResult::success(
+            array_merge($user, [
+                '_settings'    => UserSettings::getSettings('create', $user),
+                '_masterdatas' => $this->getMasterData(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**
@@ -150,18 +136,19 @@ class GeneralController extends Controller
      */
     public function getUser(Request $request, $identifier)
     {
-        $action = GetUserAction::make(null, ['identifier' => $identifier]);
-        $result = $action->run();
+        $context = $request->boolean('edit') ? 'edit' : 'view';
+        $result  = GetUserAction::make(null, ['identifier' => $identifier])->run();
+        $user    = $result->getData();
 
-        if ($result->isSuccess()) {
-            return response()->json([
-                'data' => $result->getData(),
-            ]);
-        }
+        $settings = UserSettings::getSettings($context, $user);
 
-        return response()->json([
-            'error' => $result->getMessage(),
-        ], $result->getCode() ?: 404);
+        return ActionResult::success(
+            array_merge($user, [
+                '_settings'    => $settings,
+                '_masterdatas' => $this->getMasterData(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**
@@ -297,23 +284,16 @@ class GeneralController extends Controller
      */
     public function update(Request $request, $identifier)
     {
-        $data = array_merge($request->all(), ['identifier' => $identifier]);
-        $action = UpdateUserAction::make(null, $data);
-        $result = $action->run();
+        $result = UpdateUserAction::make(null, array_merge($request->all(), ['identifier' => $identifier]))->run();
+        $user   = $result->getData();
 
-        if ($result->isSuccess()) {
-            return response()->json([
-                'success' => true,
-                'message' => $result->getMessage(),
-                'data' => $result->getData(),
-            ]);
-        }
-
-        return response()->json([
-            'success' => false,
-            'error' => $result->getMessage(),
-            'errors' => $result->getErrors(),
-        ], $result->getCode() ?: 404);
+        return ActionResult::success(
+            array_merge($user, [
+                '_settings'    => UserSettings::getSettings('edit', $user),
+                '_masterdatas' => $this->getMasterData(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**
@@ -326,21 +306,16 @@ class GeneralController extends Controller
      */
     public function destroy(Request $request, $identifier)
     {
-        $action = DeleteUserAction::make(null, ['identifier' => $identifier]);
-        $result = $action->run();
+        $result = DeleteUserAction::make(null, ['identifier' => $identifier])->run();
+        // Since it's deleted, we might not have the user data, or we return what was deleted
+        $user = $result->getData();
 
-        if ($result->isSuccess()) {
-            return response()->json([
-                'success' => true,
-                'message' => $result->getMessage(),
-                'data' => $result->getData(),
-            ]);
-        }
-
-        return response()->json([
-            'success' => false,
-            'error' => $result->getMessage(),
-        ], $result->getCode() ?: 404);
+        return ActionResult::success(
+            array_merge($user ?? [], [
+                '_settings' => UserSettings::getSettings('view', $user ?? []),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**

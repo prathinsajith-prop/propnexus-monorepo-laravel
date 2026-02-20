@@ -36,10 +36,7 @@ class ListingViewForm
             ]);
 
         if ($dataUrl) {
-            $form->meta([
-                'dataUrl' => $dataUrl,
-                'dataKey' => 'data',
-            ]);
+            $form->dataUrl($dataUrl)->dataKey('data');
         }
 
         // Property Overview

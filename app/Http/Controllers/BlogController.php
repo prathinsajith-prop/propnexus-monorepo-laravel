@@ -10,7 +10,6 @@ use App\Actions\File\FileUploadAction;
 use App\Http\Controllers\Controller;
 use App\Layouts\BlogLayout;
 use App\Models\Blog;
-use App\Support\Settings\BlogSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
@@ -139,7 +138,16 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-        return CreateBlogAction::make(null, $request->all())->run();
+        $result = CreateBlogAction::make(null, $request->all())->run();
+        $blog   = $result->getData();
+
+        return ActionResult::success(
+            array_merge($blog->toArray(), [
+                '_settings'    => $blog->getSettings('create'),
+                '_masterdatas' => $blog->getMasterdata(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**
@@ -161,9 +169,12 @@ class BlogController extends Controller
             cache()->forget('blogs:stats:all');
         }
 
-        return ActionResult::success($blog->toArray(), null, [
-            '_settings' => BlogSettings::forView(),
-        ]);
+        $context = $request->boolean('edit') ? 'edit' : 'view';
+
+        return ActionResult::success(array_merge($blog->toArray(), [
+            '_settings'    => $blog->getSettings($context),
+            '_masterdatas' => $blog->getMasterdata(),
+        ]));
     }
 
     /**
@@ -177,7 +188,16 @@ class BlogController extends Controller
     public function update(Blog $blog, Request $request)
     {
         $updateData = array_merge($request->all(), ['id' => $blog->id]);
-        return UpdateBlogAction::make(null, $updateData)->run();
+        $result     = UpdateBlogAction::make(null, $updateData)->run();
+        $blog->refresh();
+
+        return ActionResult::success(
+            array_merge($blog->toArray(), [
+                '_settings'    => $blog->getSettings('edit'),
+                '_masterdatas' => $blog->getMasterdata(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**
@@ -190,10 +210,17 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog, Request $request)
     {
-        return DeleteBlogAction::make(null, [
+        $deleteResult = DeleteBlogAction::make(null, [
             'id' => $blog->id,
             'soft_delete' => $request->input('soft_delete', false),
         ])->run();
+
+        return ActionResult::success(
+            array_merge($blog->toArray(), [
+                '_settings' => $blog->getSettings('view'),
+            ]),
+            $deleteResult->getMessage()
+        );
     }
 
     /**

@@ -90,7 +90,7 @@ class FullscreenViewAsideSlot
 
         $card->addComponent(
             BadgeComponent::make('ref-badge')
-                ->content('{:ref_number}')
+                ->content(':{ref}')
                 ->variant('standard')
                 ->bordered(true)
                 ->meta([
@@ -557,6 +557,7 @@ class FullscreenViewAsideSlot
                 ->vertical()
                 ->showDates(true)
                 ->showIcons(true)
+                ->addEvent([])
                 ->dateFormat('d M Y, H:i')
                 ->dataUrl('/api/product-property/:id/activities')
                 ->dataParams(['id' => ':id'])
@@ -730,7 +731,7 @@ class FullscreenViewAsideSlot
 
         $leftSlot->setComponent(
             TextComponent::make('footer-ref')
-                ->content('{:ref_number}')
+                ->content(':{ref}')
                 ->variant('caption')
                 ->meta([
                     'key' => 'ref_number',

@@ -16,7 +16,6 @@ use App\Http\Controllers\Controller;
 use App\Layouts\ListingLayout;
 use App\Models\Listing;
 use App\Models\User;
-use App\Support\Settings\ListingSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -137,7 +136,16 @@ class ListingController extends Controller
      */
     public function create(Request $request)
     {
-        return CreateListingAction::make(null, $request->all())->run();
+        $result  = CreateListingAction::make(null, $request->all())->run();
+        $listing = $result->getData();
+
+        return ActionResult::success(
+            array_merge($listing->toArray(), [
+                '_settings'    => $listing->getSettings('create'),
+                '_masterdatas' => $listing->getMasterdata(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**
@@ -159,9 +167,12 @@ class ListingController extends Controller
             cache()->forget('listings:stats:all');
         }
 
-        return ActionResult::success($listing->toArray(), null, [
-            '_settings' => ListingSettings::forView(),
-        ]);
+        $context = $request->boolean('edit') ? 'edit' : 'view';
+
+        return ActionResult::success(array_merge($listing->toArray(), [
+            '_settings'    => $listing->getSettings($context),
+            '_masterdatas' => $listing->getMasterdata(),
+        ]));
     }
 
     /**
@@ -174,7 +185,16 @@ class ListingController extends Controller
      */
     public function update(Listing $listing, Request $request)
     {
-        return UpdateListingAction::make(null, array_merge($request->all(), ['id' => $listing->id]))->run();
+        $result = UpdateListingAction::make(null, array_merge($request->all(), ['id' => $listing->id]))->run();
+        $listing->refresh();
+
+        return ActionResult::success(
+            array_merge($listing->toArray(), [
+                '_settings'    => $listing->getSettings('edit'),
+                '_masterdatas' => $listing->getMasterdata(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**
@@ -187,10 +207,17 @@ class ListingController extends Controller
      */
     public function delete(Listing $listing, Request $request)
     {
-        return DeleteListingAction::make(null, [
+        $deleteResult = DeleteListingAction::make(null, [
             'id' => $listing->id,
             'force' => $request->boolean('force', false),
         ])->run();
+
+        return ActionResult::success(
+            array_merge($listing->toArray(), [
+                '_settings' => $listing->getSettings('view'),
+            ]),
+            $deleteResult->getMessage()
+        );
     }
 
     /**

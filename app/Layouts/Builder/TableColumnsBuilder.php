@@ -504,7 +504,7 @@ class TableColumnsBuilder
             'variant'   => 'standard',
             'tooltip'   => __('layout.view_details'),
             'type'      => 'aside',
-            'component' => 'view-property-full',
+            'component' => 'view-property',
             'config'    => [
                 'width'         => '900px',
                 'height'        => '100vh',

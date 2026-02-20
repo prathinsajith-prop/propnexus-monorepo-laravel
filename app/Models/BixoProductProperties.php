@@ -334,4 +334,144 @@ class BixoProductProperties extends Model
             }
         );
     }
+
+    // ─── Settings & Masterdata ────────────────────────────────────────────────
+
+    /**
+     * Resolve whether the currently authenticated user is an admin.
+     * Extend this check when a role/permission package is introduced.
+     */
+    private function isAdminUser(): bool
+    {
+        $user = auth()->user();
+        if (!$user) return false;
+        return method_exists($user, 'hasRole') && $user->hasRole(['admin', 'superuser']);
+    }
+
+    /**
+     * Compute UI settings (groups + fields visibility/edit flags) for this property.
+     * Adapts based on record status, property_for type, and user role.
+     *
+     * @param  string  $context  'view' | 'edit' | 'create'
+     */
+    public function getSettings(string $context = 'view'): array
+    {
+        $S          = \App\Support\Settings\ProductPropertySettings::class;
+        $isAdmin    = $this->isAdminUser();
+        $statusVal  = $this->status instanceof \App\Enums\ProductPropertyStatus
+            ? $this->status->value : ($this->status ?? null);
+        $propFor    = $this->property_for instanceof \App\Enums\ProductPropertyFor
+            ? $this->property_for->value : ($this->property_for ?? null);
+        $isClosed   = in_array($statusVal, ['Archived', 'Completed', 'Junk', 'Unpublished']);
+        $isPending  = in_array($statusVal, [
+            'Pending',
+            'Waiting Publish',
+            'Waiting Teamleader',
+            'Waiting Team Leader',
+            'Pending Verification'
+        ]);
+        $isRejected = $statusVal === 'Rejected';
+
+        $formId = match ($context) {
+            'create' => $S::FORM_CREATE,
+            'edit'   => $S::FORM_EDIT,
+            default  => $S::FORM_VIEW,
+        };
+
+        $settings = $S::defaults();
+
+        // ── Create: reg-info (Trakheesi/DLD) is filled in the edit phase ───────
+        if ($context === 'create' || !$this->exists) {
+            $createForms = [$S::FORM_CREATE, $S::FORM_CREATE_MODAL];
+            $settings['groups'] = array_merge(
+                $settings['groups'],
+                $S::buildGroups($createForms, ['reg-info'], false, false)
+            );
+            foreach (['trakheesi', 'trakheesi_expiry', 'permit_number', 'dld_status', 'dld_details', 'published_at'] as $field) {
+                $settings['fields'][$field]['show'] = false;
+            }
+        }
+
+        // ── Status: closed → specs/pricing/assignment become read-only ─────────
+        if ($isClosed) {
+            $settings['groups'] = array_merge(
+                $settings['groups'],
+                $S::buildGroups([$formId], ['pricing-info', 'assign-info', 'specs-info'], true, false)
+            );
+            $settings['fields']['price']['edit']  = $isAdmin;
+            $settings['fields']['status']['edit'] = $isAdmin;
+        }
+
+        // ── Status: pending → lock assignment while awaiting approval ──────────
+        if ($isPending) {
+            $settings['groups'] = array_merge(
+                $settings['groups'],
+                $S::buildGroups([$formId], ['assign-info'], true, false)
+            );
+        }
+
+        // ── Status: rejected → re-open everything for re-submission ──────────
+        if ($isRejected) {
+            $settings['groups'] = array_merge(
+                $settings['groups'],
+                $S::buildGroups([$formId], $S::COMMON_GROUPS, true, true)
+            );
+        }
+
+        // ── Property for: hide fields irrelevant to Rental vs Sales ───────────
+        if ($propFor === 'Rental') {
+            foreach (['payment_plan', 'handover_date'] as $field) {
+                $settings['fields'][$field]['show'] = false;
+            }
+        } elseif ($propFor === 'Sales') {
+            foreach (['cheques', 'rented', 'rented_price', 'rent_start', 'rent_end'] as $field) {
+                $settings['fields'][$field]['show'] = false;
+            }
+        }
+
+        // ── Role: non-admins cannot see pricing, reg, or assignment ───────────
+        if (!$isAdmin) {
+            $settings['groups'] = array_merge(
+                $settings['groups'],
+                $S::buildGroups([$formId], ['pricing-info', 'reg-info', 'assign-info'], false, false)
+            );
+            foreach (['commission', 'service_charge', 'portal_settings', 'notes', 'dld_details', 'dld_status'] as $field) {
+                $settings['fields'][$field]['show'] = false;
+            }
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Return dropdown options and reference data for the frontend.
+     * Consumed as `_masterdatas` in API responses.
+     */
+    public function getMasterdata(): array
+    {
+        return [
+            'options' => [
+                'status' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\ProductPropertyStatus::cases()
+                ),
+                'category_type' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\ProductCategoryType::cases()
+                ),
+                'property_for' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\ProductPropertyFor::cases()
+                ),
+                'furnishing' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\ProductFurnishing::cases()
+                ),
+                'frequency' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\ProductFrequency::cases()
+                ),
+            ],
+        ];
+    }
 }

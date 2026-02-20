@@ -125,10 +125,10 @@ class LayoutBuilder
             ->striped(true)
             ->clickableRows(
                 type: 'aside',
-                component: 'view-property',
+                component: 'view-property-full',
                 dataUrl: '/api/product-property/:id',
                 config: [
-                    'width' => '900px',
+                    'width' => '100vw',
                     'height' => '100vh',
                     'anchor' => 'right',
                     'backdrop' => true,
@@ -238,6 +238,17 @@ class LayoutBuilder
             'masterData' => $masterData,
             'apiUrl'     => '/api/product-property',
             'method'     => 'POST',
+        ]);
+    }
+
+    /**
+     * Build create property followup modal
+     */
+    public static function buildCreatePropertyFollowupModal(): array
+    {
+        return ModalSlot::createFollowup([
+            'apiUrl' => '/api/product-property/:id/followups',
+            'method' => 'POST',
         ]);
     }
 

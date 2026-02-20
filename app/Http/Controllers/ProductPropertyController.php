@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Actions\File\FileUploadAction;
 use App\Actions\ProductProperty\CreateProductPropertyAction;
 use App\Actions\ProductProperty\DeleteProductPropertyAction;
-use App\Actions\ProductProperty\GetProductPropertyAction;
 use App\Actions\ProductProperty\ListProductPropertiesAction;
 use App\Actions\ProductProperty\UpdateProductPropertyAction;
 use App\Enums\ProductCategoryType;
@@ -19,6 +18,7 @@ use App\Layouts\ProductPropertyLayout;
 use App\Models\BixoProductProperties;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Litepie\Actions\ActionResult;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
@@ -135,7 +135,16 @@ class ProductPropertyController extends Controller
      */
     public function create(Request $request)
     {
-        return CreateProductPropertyAction::make(null, $request->all())->run();
+        $result   = CreateProductPropertyAction::make(null, $request->all())->run();
+        $property = $result->getData();
+
+        return ActionResult::success(
+            array_merge($property->toArray(), [
+                '_settings'    => $property->getSettings('create'),
+                '_masterdatas' => $property->getMasterdata(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     /**
@@ -147,23 +156,46 @@ class ProductPropertyController extends Controller
      */
     public function show(BixoProductProperties $property, Request $request)
     {
-        return GetProductPropertyAction::make(null, ['id' => $property->getKey()])->run();
+        $context = $request->boolean('edit') ? 'edit' : 'view';
+
+        return ActionResult::success(
+            array_merge($property->toArray(), [
+                '_settings'    => $property->getSettings($context),
+                '_masterdatas' => $property->getMasterdata(),
+            ])
+        );
     }
 
     public function update(BixoProductProperties $property, Request $request)
     {
-        return UpdateProductPropertyAction::make(null, array_merge(
+        $result = UpdateProductPropertyAction::make(null, array_merge(
             $request->except(['_method', '_token']),
             ['id' => $property->getKey()]
         ))->run();
+        $property->refresh();
+
+        return ActionResult::success(
+            array_merge($property->toArray(), [
+                '_settings'    => $property->getSettings('edit'),
+                '_masterdatas' => $property->getMasterdata(),
+            ]),
+            $result->getMessage()
+        );
     }
 
     public function delete(BixoProductProperties $property, Request $request)
     {
-        return DeleteProductPropertyAction::make(null, [
+        $deleteResult = DeleteProductPropertyAction::make(null, [
             'id'    => $property->getKey(),
             'force' => $request->boolean('force', false),
         ])->run();
+
+        return ActionResult::success(
+            array_merge($property->toArray(), [
+                '_settings' => $property->getSettings('view'),
+            ]),
+            $deleteResult->getMessage()
+        );
     }
 
     /**
@@ -467,11 +499,65 @@ class ProductPropertyController extends Controller
 
     public function activities(BixoProductProperties $property)
     {
-        $activities = $property->activities()->with('causer')->latest()->get();
+        $activities = [];
+        $index = 1;
+
+        // Created event
+        $activities[] = [
+            'id'          => $index++,
+            'type'        => 'created',
+            'description' => 'Property record created',
+            'subject'     => ['id' => $property->getKey(), 'ref' => $property->ref, 'title' => $property->title],
+            'properties'  => ['status' => $property->status?->value ?? $property->status],
+            'occurred_at' => $property->created_at?->toIso8601String(),
+        ];
+
+        // Published event
+        if ($property->published_at) {
+            $activities[] = [
+                'id'          => $index++,
+                'type'        => 'published',
+                'description' => 'Property published',
+                'subject'     => ['id' => $property->getKey(), 'ref' => $property->ref],
+                'properties'  => ['published_at' => $property->published_at?->toIso8601String()],
+                'occurred_at' => $property->published_at?->toIso8601String(),
+            ];
+        }
+
+        // Activated event
+        if ($property->activated_at) {
+            $activities[] = [
+                'id'          => $index++,
+                'type'        => 'activated',
+                'description' => 'Property activated',
+                'subject'     => ['id' => $property->getKey(), 'ref' => $property->ref],
+                'properties'  => ['activated_at' => $property->activated_at?->toIso8601String()],
+                'occurred_at' => $property->activated_at?->toIso8601String(),
+            ];
+        }
+
+        // Updated event (if updated after creation)
+        if ($property->updated_at && $property->updated_at->ne($property->created_at)) {
+            $activities[] = [
+                'id'          => $index++,
+                'type'        => 'updated',
+                'description' => 'Property record updated',
+                'subject'     => ['id' => $property->getKey(), 'ref' => $property->ref],
+                'properties'  => ['status' => $property->status?->value ?? $property->status],
+                'occurred_at' => $property->updated_at?->toIso8601String(),
+            ];
+        }
+
+        // Sort descending by occurred_at
+        usort($activities, fn($a, $b) => strcmp((string) ($b['occurred_at'] ?? ''), (string) ($a['occurred_at'] ?? '')));
 
         return response()->json([
             'success' => true,
-            'data' => $activities,
+            'data'    => $activities,
+            'meta'    => [
+                'total'   => count($activities),
+                'subject' => ['id' => $property->getKey(), 'ref' => $property->ref, 'title' => $property->title],
+            ],
         ]);
     }
 

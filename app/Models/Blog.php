@@ -565,4 +565,83 @@ class Blog extends Model
 
         return $array;
     }
+
+    // ─── Settings & Masterdata ────────────────────────────────────────────────
+
+    /**
+     * Resolve whether the currently authenticated user is an admin.
+     * Extend this check when a role/permission package is introduced.
+     */
+    private function isAdminUser(): bool
+    {
+        $user = auth()->user();
+        if (!$user) return false;
+        return method_exists($user, 'hasRole') && $user->hasRole(['admin', 'superuser']);
+    }
+
+    /**
+     * Compute UI settings (groups + fields visibility/edit flags) for this blog post.
+     * All conditional logic is record-state + role aware.
+     *
+     * @param  string  $context  'view' | 'edit' | 'create'
+     */
+    public function getSettings(string $context = 'view'): array
+    {
+        $isAdmin  = $this->isAdminUser();
+        $status   = $this->status ?? 'draft';
+        $isClosed = in_array($status, ['published', 'archived', 'trash']);
+
+        $settings = \App\Support\Settings\BlogSettings::defaults();
+
+        // ── Create: hide derived/stat fields on brand-new posts ────────────────
+        if ($context === 'create' || !$this->exists) {
+            $settings['groups']['form.blog-form-activity.analytics-info'] = ['show' => false, 'edit' => false];
+            foreach (['analytics', 'views_count', 'likes_count', 'shares_count', 'comments_count', 'reading_time'] as $field) {
+                $settings['fields'][$field]['show'] = false;
+            }
+        }
+
+        // ── Status: scheduling locks once published / archived ─────────────────
+        if ($isClosed) {
+            $settings['fields']['scheduled_at']['edit'] = false;
+            $settings['fields']['expired_at']['edit']   = false;
+            $settings['fields']['slug']['edit']         = $isAdmin;
+        }
+
+        // ── Role: non-admins cannot touch analytics, schema, or author ─────────
+        if (!$isAdmin) {
+            $settings['groups']['form.blog-form-activity.analytics-info'] = ['show' => false, 'edit' => false];
+            foreach (['analytics', 'schema_markup', 'custom_fields'] as $field) {
+                $settings['fields'][$field]['show'] = false;
+            }
+            $settings['fields']['author_id']['edit'] = false;
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Return dropdown options and reference data for the frontend.
+     * Consumed as `_masterdatas` in API responses.
+     */
+    public function getMasterdata(): array
+    {
+        return [
+            'options' => [
+                'status' => [
+                    ['value' => 'draft',     'label' => 'Draft'],
+                    ['value' => 'review',    'label' => 'Under Review'],
+                    ['value' => 'published', 'label' => 'Published'],
+                    ['value' => 'archived',  'label' => 'Archived'],
+                    ['value' => 'trash',     'label' => 'Trash'],
+                ],
+                'visibility' => [
+                    ['value' => 'public',     'label' => 'Public'],
+                    ['value' => 'private',    'label' => 'Private'],
+                    ['value' => 'password',   'label' => 'Password Protected'],
+                    ['value' => 'subscriber', 'label' => 'Subscribers Only'],
+                ],
+            ],
+        ];
+    }
 }

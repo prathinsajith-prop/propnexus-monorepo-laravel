@@ -63,8 +63,8 @@ class DetailSlot
                 ->color('primary')
                 ->type('submit')
                 ->data('action', 'submit')
-                ->data('url', '/api/listing')
                 ->data('method', 'POST')
+                ->dataUrl('/api/listing')
         );
 
         $footerSlot->setSection(
@@ -133,8 +133,8 @@ class DetailSlot
                 ->color('primary')
                 ->type('submit')
                 ->data('action', 'submit')
-                ->data('url', '/api/listing/:id')
                 ->data('method', 'PUT')
+                ->dataUrl('/api/listing/:id')
         );
 
         $footerSlot->setSection(

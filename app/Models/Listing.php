@@ -804,4 +804,116 @@ class Listing extends Model
             }
         });
     }
+
+    // ─── Settings & Masterdata ────────────────────────────────────────────────
+
+    /**
+     * Resolve whether the currently authenticated user is an admin.
+     * Extend this check when a role/permission package is introduced.
+     */
+    private function isAdminUser(): bool
+    {
+        $user = auth()->user();
+        if (!$user) return false;
+        return method_exists($user, 'hasRole') && $user->hasRole(['admin', 'superuser']);
+    }
+
+    /**
+     * Compute UI settings (groups + fields visibility/edit flags) for this listing.
+     * Adapts based on record status, listing type, and user role.
+     *
+     * @param  string  $context  'view' | 'edit' | 'create'
+     */
+    public function getSettings(string $context = 'view'): array
+    {
+        $isAdmin   = $this->isAdminUser();
+        $statusVal = $this->status instanceof \App\Enums\ListingStatus
+            ? $this->status->value
+            : ($this->status ?? null);
+        $typeVal   = $this->listing_type instanceof \App\Enums\ListingType
+            ? $this->listing_type->value
+            : ($this->listing_type ?? null);
+        $isClosed  = in_array($statusVal, ['sold', 'rented', 'archived', 'expired']);
+
+        $settings = \App\Support\Settings\ListingSettings::defaults();
+
+        // ── Create: hide system-managed / stat fields ──────────────────────────
+        if ($context === 'create' || !$this->exists) {
+            foreach (['views_count', 'published_at', 'analytics'] as $field) {
+                $settings['fields'][$field]['show'] = false;
+            }
+        }
+
+        // ── Edit: slug changes are admin-only ─────────────────────────────────
+        if ($context === 'edit') {
+            $settings['fields']['slug']['edit'] = $isAdmin;
+        }
+
+        // ── Status: closed listings lock most editable capabilities ───────────
+        if ($isClosed) {
+            $settings['groups']['form.listing-form.specifications-info']['edit'] = false;
+            $settings['fields']['price']['edit']          = $isAdmin;
+            $settings['fields']['status']['edit']         = $isAdmin;
+            $settings['fields']['availability']['edit']   = false;
+            $settings['fields']['available_from']['edit'] = false;
+        }
+
+        // ── Listing type: hide fields irrelevant to sale vs rent ───────────────
+        if ($typeVal === 'sale') {
+            $settings['fields']['payment_terms']['show'] = false;
+        } elseif ($typeVal === 'rent') {
+            $settings['fields']['commission']['show'] = false;
+        }
+
+        // ── Role: non-admins cannot see financial or sensitive agent data ──────
+        if (!$isAdmin) {
+            $settings['groups']['form.listing-form.financial-info'] = ['show' => false, 'edit' => false];
+            $settings['groups']['form.view-listing-form.agent']     = ['show' => false, 'edit' => false];
+            foreach (
+                [
+                    'commission',
+                    'deposit_amount',
+                    'service_charge',
+                    'payment_terms',
+                    'agent_email',
+                    'agent_phone',
+                    'notes',
+                    'analytics',
+                    'schema_markup'
+                ] as $field
+            ) {
+                $settings['fields'][$field]['show'] = false;
+            }
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Return dropdown options and reference data for the frontend.
+     * Consumed as `_masterdatas` in API responses.
+     */
+    public function getMasterdata(): array
+    {
+        return [
+            'options' => [
+                'property_type' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\PropertyType::cases()
+                ),
+                'listing_type' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\ListingType::cases()
+                ),
+                'status' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\ListingStatus::cases()
+                ),
+                'availability' => array_map(
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    \App\Enums\Availability::cases()
+                ),
+            ],
+        ];
+    }
 }

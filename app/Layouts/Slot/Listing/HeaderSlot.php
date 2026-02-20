@@ -95,8 +95,8 @@ class HeaderSlot
                     'iconColor' => 'danger',
                 ])
                 ->data('action', 'delete')
-                ->data('url', '/api/listing/:id')
                 ->data('method', 'DELETE')
+                ->dataUrl('/api/listing/:id')
                 ->meta([
                     'tooltip' => __('layout.delete_listing'),
                     'color' => 'danger',

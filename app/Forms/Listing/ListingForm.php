@@ -44,10 +44,7 @@ class ListingForm
             ]);
 
         if ($dataUrl) {
-            $form->meta([
-                'dataUrl' => $dataUrl,
-                'dataKey' => 'data',
-            ]);
+            $form->dataUrl($dataUrl)->dataKey('data');
         }
 
         /** @var \Litepie\Layout\Components\FormComponent $form */

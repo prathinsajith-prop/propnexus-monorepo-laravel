@@ -21,18 +21,15 @@ class UserForm
         $formLayout = LayoutBuilder::create($formId . '-layout', 'form');
 
         $formLayout->section('content', function ($section) use ($formId, $method, $action, $masterData, $dataUrl) {
-            if ($dataUrl) {
-                $section->meta([
-                    'dataUrl' => $dataUrl,
-                    'dataKey' => 'data',
-                ]);
-            }
-
             $form = $section->form($formId)
                 ->action($action)
                 ->method($method)
                 ->columns(2)
                 ->gap('lg');
+
+            if ($dataUrl) {
+                $form->dataUrl($dataUrl)->dataKey('data');
+            }
 
             // --- Personal Information Section ---
             $personalGroup = $form->group('personal-info')

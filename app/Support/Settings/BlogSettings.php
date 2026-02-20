@@ -4,120 +4,140 @@ namespace App\Support\Settings;
 
 /**
  * BlogSettings
- * 
- * Manages form group visibility and edit permissions for blog forms
- * Provides default settings and allows contextual overrides
- * 
+ *
+ * Pure configuration provider for blog form groups and fields.
+ * Context-aware visibility logic lives in Blog::getSettings().
+ *
  * @package App\Support\Settings
  */
 class BlogSettings
 {
-    /**
-     * Get default settings for all blog form groups
-     *
-     * @return array
-     */
+    // ─── Form IDs ─────────────────────────────────────────────────────────────
+
+    public const FORM_ACTIVITY = 'blog-form-activity';
+    public const FORM_VIEW     = 'blog-view-activity';
+
+    // ─── Group IDs ────────────────────────────────────────────────────────────
+
+    public const GROUPS = [
+        'content-info',
+        'publication-info',
+        'media-info',
+        'category-info',
+        'seo-info',
+        'settings-info',
+        'analytics-info',
+        'custom-info',
+    ];
+
+    // ─── Defaults — every group and field ON and editable ─────────────────────
+
     public static function defaults(): array
     {
         return [
             'groups' => [
-                'form.blog-form-activity.content-info' => ['show' => true, 'edit' => true],
+                'form.blog-form-activity.content-info'     => ['show' => true, 'edit' => true],
                 'form.blog-form-activity.publication-info' => ['show' => true, 'edit' => true],
-                'form.blog-form-activity.media-info' => ['show' => true, 'edit' => true],
-                'form.blog-form-activity.category-info' => ['show' => true, 'edit' => true],
-                'form.blog-form-activity.seo-info' => ['show' => true, 'edit' => true],
-                'form.blog-form-activity.settings-info' => ['show' => true, 'edit' => true],
-                'form.blog-form-activity.analytics-info' => ['show' => true, 'edit' => true],
-                'form.blog-form-activity.custom-info' => ['show' => true, 'edit' => true],
+                'form.blog-form-activity.media-info'       => ['show' => true, 'edit' => true],
+                'form.blog-form-activity.category-info'    => ['show' => true, 'edit' => true],
+                'form.blog-form-activity.seo-info'         => ['show' => true, 'edit' => true],
+                'form.blog-form-activity.settings-info'    => ['show' => true, 'edit' => true],
+                'form.blog-form-activity.analytics-info'   => ['show' => true, 'edit' => true],
+                'form.blog-form-activity.custom-info'      => ['show' => true, 'edit' => true],
+            ],
+            'fields' => [
+                // Content
+                'title'          => ['show' => true, 'edit' => true],
+                'slug'           => ['show' => true, 'edit' => true],
+                'excerpt'        => ['show' => true, 'edit' => true],
+                'content'        => ['show' => true, 'edit' => true],
+                // Publication
+                'status'         => ['show' => true, 'edit' => true],
+                'visibility'     => ['show' => true, 'edit' => true],
+                'password'       => ['show' => true, 'edit' => true],
+                'published_at'   => ['show' => true, 'edit' => true],
+                'scheduled_at'   => ['show' => true, 'edit' => true],
+                'expired_at'     => ['show' => true, 'edit' => true],
+                // Media
+                'featured_image' => ['show' => true, 'edit' => true],
+                'gallery'        => ['show' => true, 'edit' => true],
+                'video_url'      => ['show' => true, 'edit' => true],
+                'attachments'    => ['show' => true, 'edit' => true],
+                // Category
+                'category'       => ['show' => true, 'edit' => true],
+                'categories'     => ['show' => true, 'edit' => true],
+                'tags'           => ['show' => true, 'edit' => true],
+                'is_featured'    => ['show' => true, 'edit' => true],
+                'is_sticky'      => ['show' => true, 'edit' => true],
+                // SEO
+                'seo_meta'       => ['show' => true, 'edit' => true],
+                'schema_markup'  => ['show' => true, 'edit' => true],
+                // Settings
+                'allow_comments' => ['show' => true, 'edit' => true],
+                'language'       => ['show' => true, 'edit' => true],
+                'translations'   => ['show' => true, 'edit' => true],
+                // Analytics (display-only)
+                'analytics'      => ['show' => true, 'edit' => false],
+                'views_count'    => ['show' => true, 'edit' => false],
+                'likes_count'    => ['show' => true, 'edit' => false],
+                'shares_count'   => ['show' => true, 'edit' => false],
+                'comments_count' => ['show' => true, 'edit' => false],
+                'reading_time'   => ['show' => true, 'edit' => false],
+                // Authors / Custom
+                'author_id'      => ['show' => true, 'edit' => true],
+                'co_authors'     => ['show' => true, 'edit' => true],
+                'custom_fields'  => ['show' => true, 'edit' => true],
             ],
         ];
     }
 
-    /**
-     * Get settings with overrides applied
-     * 
-     * Can be customized based on user permissions, blog status, etc.
-     *
-     * @param array $overrides Custom settings to merge
-     * @return array
-     */
+    // ─── Merge ────────────────────────────────────────────────────────────────
+
+    /** Deep-merge $overrides onto defaults. */
     public static function get(array $overrides = []): array
     {
         return array_replace_recursive(self::defaults(), $overrides);
     }
 
-    /**
-     * Get settings for viewing a blog
-     * Example: Hide analytics for non-admin users
-     *
-     * @param bool $isAdmin Whether user is admin
-     * @return array
-     */
-    public static function forView(bool $isAdmin = false): array
-    {
-        $overrides = [];
+    // ─── Generic helpers ──────────────────────────────────────────────────────
 
-        if (!$isAdmin) {
-            $overrides['groups']['form.blog-form-activity.analytics-info'] = [
-                'show' => false,
-                'edit' => false
-            ];
-        }
-
-        return self::get($overrides);
-    }
-
-    /**
-     * Get settings for editing a blog
-     *
-     * @param bool $canEditSeo Whether user can edit SEO fields
-     * @return array
-     */
-    public static function forEdit(bool $canEditSeo = true): array
-    {
-        $overrides = [];
-
-        if (!$canEditSeo) {
-            $overrides['groups']['form.blog-form-activity.seo-info'] = [
-                'show' => true,
-                'edit' => false
-            ];
-        }
-
-        return self::get($overrides);
-    }
-
-    /**
-     * Hide specific groups
-     *
-     * @param array $groupKeys Group keys to hide
-     * @return array
-     */
-    public static function hideGroups(array $groupKeys): array
+    /** Hide groups (show: false, edit: false). */
+    public static function hideGroups(array $keys): array
     {
         $overrides = ['groups' => []];
-
-        foreach ($groupKeys as $key) {
+        foreach ($keys as $key) {
             $overrides['groups'][$key] = ['show' => false, 'edit' => false];
         }
-
         return self::get($overrides);
     }
 
-    /**
-     * Make specific groups read-only
-     *
-     * @param array $groupKeys Group keys to make read-only
-     * @return array
-     */
-    public static function readOnlyGroups(array $groupKeys): array
+    /** Make groups read-only (show: true, edit: false). */
+    public static function readOnlyGroups(array $keys): array
     {
         $overrides = ['groups' => []];
-
-        foreach ($groupKeys as $key) {
+        foreach ($keys as $key) {
             $overrides['groups'][$key] = ['show' => true, 'edit' => false];
         }
+        return self::get($overrides);
+    }
 
+    /** Hide specific fields (show: false, edit: false). */
+    public static function hideFields(array $keys): array
+    {
+        $overrides = ['fields' => []];
+        foreach ($keys as $key) {
+            $overrides['fields'][$key] = ['show' => false, 'edit' => false];
+        }
+        return self::get($overrides);
+    }
+
+    /** Make specific fields read-only (show: true, edit: false). */
+    public static function readOnlyFields(array $keys): array
+    {
+        $overrides = ['fields' => []];
+        foreach ($keys as $key) {
+            $overrides['fields'][$key] = ['show' => true, 'edit' => false];
+        }
         return self::get($overrides);
     }
 }

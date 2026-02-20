@@ -32,10 +32,7 @@ class BlogViewForm
             ]);
 
         if ($dataUrl) {
-            $form->meta([
-                'dataUrl' => $dataUrl,
-                'dataKey' => 'data',
-            ]);
+            $form->dataUrl($dataUrl)->dataKey('data');
         }
 
         $form

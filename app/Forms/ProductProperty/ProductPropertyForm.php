@@ -35,10 +35,7 @@ class ProductPropertyForm
             ->meta(['width' => '1000px']);
 
         if ($dataUrl) {
-            $form->meta([
-                'dataUrl' => $dataUrl,
-                'dataKey' => 'data',
-            ]);
+            $form->dataUrl($dataUrl)->dataKey('data');
         }
 
         // ── BASIC INFORMATION ──────────────────────────────────

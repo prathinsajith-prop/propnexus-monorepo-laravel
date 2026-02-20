@@ -276,7 +276,7 @@ return [
     'delete_listing' => 'Delete Listing',
     'delete_listing_confirmation' => 'Are you sure you want to delete this listing? This action cannot be undone.',
     'share' => 'Share',
-    'property_details' => 'Property Details',
+    'property_details' => ' :{ref} Property Details',
     'property_title' => 'Property Title',
     'property_title_placeholder' => 'e.g., Luxury 3BR Apartment in Dubai Marina',
     'listing_type' => 'Listing Type',
@@ -461,7 +461,7 @@ return [
     'reminder_help' => 'Receive email notification before follow-up',
     'property_overview' => 'Property Overview',
     'property_overview_subtitle' => 'View complete property listing information',
-    'property_details_fullscreen' => 'Property Details (Fullscreen)',
+    'property_details_fullscreen' => ':{ref} Property Details',
     'immersive_property_viewing' => 'Immersive property viewing experience',
     'compare' => 'Compare',
     'property_specs' => 'Property Specifications',
@@ -594,4 +594,5 @@ return [
     'update_property'              => 'Update Property',
     'update_property_details'      => 'Update property details information',
     'create_new_property_description' => 'Add a new property to your collection',
+    'edit_property' => ':{ref} Edit Property',
 ];

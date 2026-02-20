@@ -63,8 +63,9 @@ class ProductPropertyLayout
     {
         if ($type === 'modal') {
             return match ($componentName) {
-                'create-property-modal' => LayoutBuilder::buildCreatePropertyModal($masterData),
-                'delete-property-modal' => LayoutBuilder::buildDeletePropertyModal(),
+                'create-property-modal'    => LayoutBuilder::buildCreatePropertyModal($masterData),
+                'delete-property-modal'    => LayoutBuilder::buildDeletePropertyModal(),
+                'create-property-followup' => LayoutBuilder::buildCreatePropertyFollowupModal(),
                 default => null,
             };
         }

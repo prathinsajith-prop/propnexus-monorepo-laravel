@@ -54,7 +54,7 @@ class CreateProductPropertyAction extends BaseAction
 
             $property = BixoProductProperties::create($data);
 
-            return ActionResult::success($property->toArray(), 'Property created successfully');
+            return ActionResult::success($property, 'Property created successfully');
         } catch (\Exception $e) {
             return ActionResult::failure('Failed to create property: ' . $e->getMessage());
         }
