@@ -132,6 +132,11 @@ class BlogController extends Controller
     public function store(Request $request)
     {
         $result = CreateBlogAction::make(null, $request->all())->run();
+
+        if ($result->isFailure()) {
+            return ActionResult::failure($result->getMessage(), $result->getErrors());
+        }
+
         $blog = $result->getData();
 
         return ActionResult::success(
@@ -180,6 +185,11 @@ class BlogController extends Controller
     {
         $updateData = array_merge($request->all(), ['id' => $blog->id]);
         $result = UpdateBlogAction::make(null, $updateData)->run();
+
+        if ($result->isFailure()) {
+            return ActionResult::failure($result->getMessage(), $result->getErrors());
+        }
+
         $blog->refresh();
 
         return ActionResult::success(

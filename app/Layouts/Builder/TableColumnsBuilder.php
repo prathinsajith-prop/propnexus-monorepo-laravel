@@ -308,6 +308,7 @@ class TableColumnsBuilder
             'tooltip' => __('layout.edit'),
             'type' => 'aside',
             'component' => 'edit-blog',
+            'dataUrl' => '/api/blogs/:id',
             'config' => [
                 'width' => '800px',
                 'height' => '100vh',
@@ -359,6 +360,7 @@ class TableColumnsBuilder
             'tooltip' => __('layout.view_details'),
             'type' => 'aside',
             'component' => 'view-listing-full',
+            'dataUrl' => '/api/listing/:id',
             'config' => [
                 'width' => '100vw',
                 'height' => '100vh',
@@ -384,6 +386,7 @@ class TableColumnsBuilder
             'tooltip' => __('layout.edit'),
             'type' => 'aside',
             'component' => 'edit-listing',
+            'dataUrl' => '/api/listing/:id',
             'variant' => 'standard',
             'config' => [
                 'width' => '800px',
@@ -503,6 +506,7 @@ class TableColumnsBuilder
             'tooltip' => __('layout.view_details'),
             'type' => 'aside',
             'component' => 'view-property',
+            'dataUrl' => '/api/product-property/:id',
             'config' => [
                 'width' => '900px',
                 'height' => '100vh',
@@ -523,6 +527,7 @@ class TableColumnsBuilder
             'tooltip' => __('layout.edit'),
             'type' => 'aside',
             'component' => 'edit-property',
+            'dataUrl' => '/api/product-property/:id',
             'config' => [
                 'width' => '800px',
                 'height' => '100vh',

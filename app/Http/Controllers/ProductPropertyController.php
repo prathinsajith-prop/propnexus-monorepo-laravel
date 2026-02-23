@@ -130,6 +130,11 @@ class ProductPropertyController extends Controller
     public function create(Request $request)
     {
         $result = CreateProductPropertyAction::make(null, $request->all())->run();
+
+        if ($result->isFailure()) {
+            return ActionResult::failure($result->getMessage(), $result->getErrors());
+        }
+
         $property = $result->getData();
 
         return ActionResult::success(
@@ -164,6 +169,11 @@ class ProductPropertyController extends Controller
             $request->except(['_method', '_token']),
             ['id' => $property->getKey()]
         ))->run();
+
+        if ($result->isFailure()) {
+            return ActionResult::failure($result->getMessage(), $result->getErrors());
+        }
+
         $property->refresh();
 
         return ActionResult::success(

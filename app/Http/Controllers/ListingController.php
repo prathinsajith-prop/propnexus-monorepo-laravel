@@ -131,6 +131,11 @@ class ListingController extends Controller
     public function create(Request $request)
     {
         $result = CreateListingAction::make(null, $request->all())->run();
+
+        if ($result->isFailure()) {
+            return ActionResult::failure($result->getMessage(), $result->getErrors());
+        }
+
         $listing = $result->getData();
 
         return ActionResult::success(
@@ -178,6 +183,11 @@ class ListingController extends Controller
     public function update(Listing $listing, Request $request)
     {
         $result = UpdateListingAction::make(null, array_merge($request->all(), ['id' => $listing->id]))->run();
+
+        if ($result->isFailure()) {
+            return ActionResult::failure($result->getMessage(), $result->getErrors());
+        }
+
         $listing->refresh();
 
         return ActionResult::success(
