@@ -9,18 +9,16 @@ use App\Actions\User\GetUserAction;
 use App\Actions\User\ListUsersAction;
 use App\Actions\User\UpdateUserAction;
 use App\Layouts\UserLayout;
+use App\Support\Settings\UserSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Litepie\Actions\ActionResult;
-use App\Support\Settings\UserSettings;
 
 /**
  * GeneralController
- * 
+ *
  * Main controller using Litepie Actions for business logic
  * All CRUD operations delegated to dedicated Action classes
- * 
- * @package App\Http\Controllers
  */
 class GeneralController extends Controller
 {
@@ -42,7 +40,7 @@ class GeneralController extends Controller
 
     /**
      * Get page layout configuration
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function sample()
@@ -58,9 +56,8 @@ class GeneralController extends Controller
      * Returns the specific section configuration for modals, drawers, etc.
      * Used by: /layouts/{type}/{component}
      *
-     * @param Request $request
-     * @param string $type
-     * @param string $component
+     * @param  string  $type
+     * @param  string  $component
      * @return \Illuminate\Http\JsonResponse
      */
     public function getComponentSection(Request $request, $type = null, $component = null)
@@ -69,7 +66,7 @@ class GeneralController extends Controller
         $type = $type ?? $request->input('type');
         $component = $component ?? $request->input('component');
 
-        if (!$type || !$component) {
+        if (! $type || ! $component) {
             return response()->json([
                 'error' => 'Missing required parameters: type and component',
             ], 400);
@@ -81,7 +78,7 @@ class GeneralController extends Controller
         // Build the section data based on type and component using UserLayout
         $sectionData = UserLayout::getComponentDefinition($type, $component, $masterData);
 
-        if (!$sectionData) {
+        if (! $sectionData) {
             return response()->json([
                 'error' => 'Component definition not found',
             ], 404);
@@ -97,7 +94,6 @@ class GeneralController extends Controller
      * List users with filtering, sorting, and pagination
      * Uses ListUsersAction
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function users(Request $request)
@@ -109,17 +105,16 @@ class GeneralController extends Controller
      * Create a new user
      * Uses CreateUserAction
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         $result = CreateUserAction::make(null, $request->all())->run();
-        $user   = $result->getData();
+        $user = $result->getData();
 
         return ActionResult::success(
             array_merge($user, [
-                '_settings'    => UserSettings::getSettings('create', $user),
+                '_settings' => UserSettings::getSettings('create', $user),
                 '_masterdatas' => $this->getMasterData(),
             ]),
             $result->getMessage()
@@ -130,21 +125,20 @@ class GeneralController extends Controller
      * Get individual user details
      * Uses GetUserAction
      *
-     * @param Request $request
-     * @param string $identifier
+     * @param  string  $identifier
      * @return \Illuminate\Http\JsonResponse
      */
     public function getUser(Request $request, $identifier)
     {
         $context = $request->boolean('edit') ? 'edit' : 'view';
-        $result  = GetUserAction::make(null, ['identifier' => $identifier])->run();
-        $user    = $result->getData();
+        $result = GetUserAction::make(null, ['identifier' => $identifier])->run();
+        $user = $result->getData();
 
         $settings = UserSettings::getSettings($context, $user);
 
         return ActionResult::success(
             array_merge($user, [
-                '_settings'    => $settings,
+                '_settings' => $settings,
                 '_masterdatas' => $this->getMasterData(),
             ]),
             $result->getMessage()
@@ -278,18 +272,17 @@ class GeneralController extends Controller
      * Update an existing user
      * Uses UpdateUserAction
      *
-     * @param Request $request
-     * @param string $identifier
+     * @param  string  $identifier
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $identifier)
     {
         $result = UpdateUserAction::make(null, array_merge($request->all(), ['identifier' => $identifier]))->run();
-        $user   = $result->getData();
+        $user = $result->getData();
 
         return ActionResult::success(
             array_merge($user, [
-                '_settings'    => UserSettings::getSettings('edit', $user),
+                '_settings' => UserSettings::getSettings('edit', $user),
                 '_masterdatas' => $this->getMasterData(),
             ]),
             $result->getMessage()
@@ -300,8 +293,7 @@ class GeneralController extends Controller
      * Delete a user
      * Uses DeleteUserAction
      *
-     * @param Request $request
-     * @param string $identifier
+     * @param  string  $identifier
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, $identifier)
@@ -321,7 +313,6 @@ class GeneralController extends Controller
     /**
      * Upload a user profile image
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadImage(Request $request)
@@ -332,7 +323,6 @@ class GeneralController extends Controller
     /**
      * Upload a user document
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadDocument(Request $request)
@@ -343,27 +333,26 @@ class GeneralController extends Controller
     /**
      * Generic user file upload
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function upload(Request $request)
     {
         $type = $request->input('type', 'document');
+
         return $this->handleUpload($request, $type);
     }
 
     /**
      * Handle file upload using FileUploadAction
      *
-     * @param Request $request
-     * @param string $type File type (image, document)
+     * @param  string  $type  File type (image, document)
      * @return \Illuminate\Http\JsonResponse
      */
     private function handleUpload(Request $request, string $type)
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+                'file' => 'required|file|max:'.$this->getMaxFileSize($type),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -383,7 +372,7 @@ class GeneralController extends Controller
             'quality' => $request->input('quality', 85),
         ])->run();
 
-        if (!$result->isSuccess()) {
+        if (! $result->isSuccess()) {
             return response()->json([
                 'success' => false,
                 'message' => $result->getMessage(),
@@ -401,8 +390,7 @@ class GeneralController extends Controller
     /**
      * Delete a user file
      *
-     * @param string $path File path to delete
-     * @param Request $request
+     * @param  string  $path  File path to delete
      * @return \Illuminate\Http\JsonResponse
      */
     public function deleteFile($path, Request $request)
@@ -432,7 +420,7 @@ class GeneralController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete file: ' . $e->getMessage(),
+                'message' => 'Failed to delete file: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -440,7 +428,7 @@ class GeneralController extends Controller
     /**
      * Get maximum file size for upload type (in KB)
      *
-     * @param string $type File type
+     * @param  string  $type  File type
      * @return int Maximum file size in KB
      */
     private function getMaxFileSize(string $type): int

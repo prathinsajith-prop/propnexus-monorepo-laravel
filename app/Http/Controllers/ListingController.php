@@ -8,11 +8,9 @@ use App\Actions\Listing\DeleteListingAction;
 use App\Actions\Listing\ListListingsAction;
 use App\Actions\Listing\UpdateListingAction;
 use App\Enums\Availability;
-use Litepie\Actions\ActionResult;
 use App\Enums\ListingStatus;
 use App\Enums\ListingType;
 use App\Enums\PropertyType;
-use App\Http\Controllers\Controller;
 use App\Layouts\ListingLayout;
 use App\Models\Listing;
 use App\Models\User;
@@ -20,13 +18,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
+use Litepie\Actions\ActionResult;
 
 /**
  * ListingController
- * 
+ *
  * Property listing management controller using Litepie Actions pattern
  * All CRUD operations delegated to dedicated Action classes
- * 
+ *
  * Endpoints:
  * - GET  /listings           - Listing management page (layout)
  * - GET  /api/listing       - List listings (with filters, pagination)
@@ -38,8 +37,6 @@ use Illuminate\Support\Number;
  * - GET  /api/listing-master-data - Get master data for dropdowns
  * - POST /api/upload/*       - File upload endpoints
  * - DELETE /api/files/{path} - Delete uploaded files
- * 
- * @package App\Http\Controllers
  */
 class ListingController extends Controller
 {
@@ -72,9 +69,8 @@ class ListingController extends Controller
      * Returns the specific section configuration for modals, drawers, etc.
      * Used by: /layouts/listings/{type}/{component}
      *
-     * @param Request $request
-     * @param string|null $type
-     * @param string|null $component
+     * @param  string|null  $type
+     * @param  string|null  $component
      * @return \Illuminate\Http\JsonResponse
      */
     public function getComponentSection(Request $request, $type = null, $component = null)
@@ -83,7 +79,7 @@ class ListingController extends Controller
         $type = $type ?? $request->input('type');
         $component = $component ?? $request->input('component');
 
-        if (!$type || !$component) {
+        if (! $type || ! $component) {
             return response()->json([
                 'error' => 'Missing required parameters: type and component',
             ], 400);
@@ -95,7 +91,7 @@ class ListingController extends Controller
         // Build the section data based on type and component using ListingLayout
         $sectionData = ListingLayout::getComponentDefinition($type, $component, $masterData);
 
-        if (!$sectionData) {
+        if (! $sectionData) {
             return response()->json([
                 'error' => 'Component definition not found',
             ], 404);
@@ -119,7 +115,6 @@ class ListingController extends Controller
      * - per_page or limit: Items per page (default: 10)
      * - page: Page number (default: 1)
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function list(Request $request)
@@ -131,17 +126,16 @@ class ListingController extends Controller
      * Create a new listing
      * Uses CreateListingAction
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request)
     {
-        $result  = CreateListingAction::make(null, $request->all())->run();
+        $result = CreateListingAction::make(null, $request->all())->run();
         $listing = $result->getData();
 
         return ActionResult::success(
             array_merge($listing->toArray(), [
-                '_settings'    => $listing->getSettings('create'),
+                '_settings' => $listing->getSettings('create'),
                 '_masterdatas' => $listing->getMasterdata(),
             ]),
             $result->getMessage()
@@ -152,8 +146,7 @@ class ListingController extends Controller
      * Get a single listing
      * Uses route model binding with automatic relationship loading
      *
-     * @param \App\Models\Listing $listing Listing model instance (auto-injected with relationships)
-     * @param Request $request
+     * @param  \App\Models\Listing  $listing  Listing model instance (auto-injected with relationships)
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(Listing $listing, Request $request)
@@ -170,7 +163,7 @@ class ListingController extends Controller
         $context = $request->boolean('edit') ? 'edit' : 'view';
 
         return ActionResult::success(array_merge($listing->toArray(), [
-            '_settings'    => $listing->getSettings($context),
+            '_settings' => $listing->getSettings($context),
             '_masterdatas' => $listing->getMasterdata(),
         ]));
     }
@@ -179,8 +172,7 @@ class ListingController extends Controller
      * Update an existing listing
      * Uses route model binding
      *
-     * @param \App\Models\Listing $listing Listing model instance (auto-injected)
-     * @param Request $request
+     * @param  \App\Models\Listing  $listing  Listing model instance (auto-injected)
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Listing $listing, Request $request)
@@ -190,7 +182,7 @@ class ListingController extends Controller
 
         return ActionResult::success(
             array_merge($listing->toArray(), [
-                '_settings'    => $listing->getSettings('edit'),
+                '_settings' => $listing->getSettings('edit'),
                 '_masterdatas' => $listing->getMasterdata(),
             ]),
             $result->getMessage()
@@ -201,8 +193,7 @@ class ListingController extends Controller
      * Delete a listing
      * Uses route model binding
      *
-     * @param \App\Models\Listing $listing Listing model instance (auto-injected)
-     * @param Request $request
+     * @param  \App\Models\Listing  $listing  Listing model instance (auto-injected)
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(Listing $listing, Request $request)
@@ -224,7 +215,7 @@ class ListingController extends Controller
      * Get statistics for a specific stat card
      * Cached for better performance with proper cache tagging
      *
-     * @param string $statId
+     * @param  string  $statId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getStats($statId)
@@ -280,8 +271,8 @@ class ListingController extends Controller
     /**
      * Calculate trend percentage comparing current month vs. last month
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string|null $sumColumn If provided, calculates trend for sum instead of count
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string|null  $sumColumn  If provided, calculates trend for sum instead of count
      * @return string Formatted trend percentage (e.g., "+10%")
      */
     private function calculateTrend($query, $sumColumn = null): string
@@ -308,7 +299,7 @@ class ListingController extends Controller
         $change = (($currentValue - $lastValue) / $lastValue) * 100;
         $prefix = $change >= 0 ? '+' : '';
 
-        return $prefix . round($change, 1) . '%';
+        return $prefix.round($change, 1).'%';
     }
 
     /**
@@ -327,8 +318,6 @@ class ListingController extends Controller
     /**
      * Get master data for forms
      * Cached for better performance as this data changes infrequently
-     *
-     * @return array
      */
     private function getMasterData(): array
     {
@@ -338,28 +327,28 @@ class ListingController extends Controller
                 config('performance.cache.master_data_ttl', 1800),
                 function () {
                     // Get full enum data with icons and colors
-                    $propertyTypesFull = collect(PropertyType::cases())->map(fn($case) => [
+                    $propertyTypesFull = collect(PropertyType::cases())->map(fn ($case) => [
                         'value' => $case->value,
                         'label' => $case->label(),
                         'icon' => $case->icon(),
                         'color' => $case->color(),
                     ])->keyBy('value')->toArray();
 
-                    $listingTypesFull = collect(ListingType::cases())->map(fn($case) => [
+                    $listingTypesFull = collect(ListingType::cases())->map(fn ($case) => [
                         'value' => $case->value,
                         'label' => $case->label(),
                         'icon' => $case->icon(),
                         'color' => $case->color(),
                     ])->keyBy('value')->toArray();
 
-                    $statusesFull = collect(ListingStatus::cases())->map(fn($case) => [
+                    $statusesFull = collect(ListingStatus::cases())->map(fn ($case) => [
                         'value' => $case->value,
                         'label' => $case->label(),
                         'icon' => $case->icon(),
                         'color' => $case->color(),
                     ])->keyBy('value')->toArray();
 
-                    $availabilitiesFull = collect(Availability::cases())->map(fn($case) => [
+                    $availabilitiesFull = collect(Availability::cases())->map(fn ($case) => [
                         'value' => $case->value,
                         'label' => $case->label(),
                         'icon' => $case->icon(),
@@ -369,19 +358,19 @@ class ListingController extends Controller
                     return [
                         // Form-friendly format (array with value/label for select options)
                         'property_types' => collect($propertyTypesFull)
-                            ->map(fn($item) => ['value' => $item['value'], 'label' => $item['label']])
+                            ->map(fn ($item) => ['value' => $item['value'], 'label' => $item['label']])
                             ->values()
                             ->toArray(),
                         'listing_types' => collect($listingTypesFull)
-                            ->map(fn($item) => ['value' => $item['value'], 'label' => $item['label']])
+                            ->map(fn ($item) => ['value' => $item['value'], 'label' => $item['label']])
                             ->values()
                             ->toArray(),
                         'statuses' => collect($statusesFull)
-                            ->map(fn($item) => ['value' => $item['value'], 'label' => $item['label']])
+                            ->map(fn ($item) => ['value' => $item['value'], 'label' => $item['label']])
                             ->values()
                             ->toArray(),
                         'availabilities' => collect($availabilitiesFull)
-                            ->map(fn($item) => ['value' => $item['value'], 'label' => $item['label']])
+                            ->map(fn ($item) => ['value' => $item['value'], 'label' => $item['label']])
                             ->values()
                             ->toArray(),
 
@@ -426,14 +415,15 @@ class ListingController extends Controller
                         'agents' => User::select('id', 'name')
                             ->orderBy('name')
                             ->get()
-                            ->map(fn($user) => ['value' => $user->id, 'label' => $user->name])
+                            ->map(fn ($user) => ['value' => $user->id, 'label' => $user->name])
                             ->values()
                             ->toArray(),
                     ];
                 }
             );
         } catch (\Exception $e) {
-            Log::error('Failed to fetch master data: ' . $e->getMessage());
+            Log::error('Failed to fetch master data: '.$e->getMessage());
+
             // Return minimal fallback data
             return [
                 'property_types' => [],
@@ -452,7 +442,6 @@ class ListingController extends Controller
     /**
      * Upload an image file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadImage(Request $request)
@@ -464,14 +453,13 @@ class ListingController extends Controller
      * Upload a document file (floor plans, brochures, images)
      * Auto-detects file type: images are treated as 'image', PDFs as 'document'
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadDocument(Request $request)
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:' . $this->getMaxFileSize('document'),
+                'file' => 'required|file|max:'.$this->getMaxFileSize('document'),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -498,7 +486,6 @@ class ListingController extends Controller
     /**
      * Upload a video file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadVideo(Request $request)
@@ -509,7 +496,6 @@ class ListingController extends Controller
     /**
      * Upload an attachment file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadAttachment(Request $request)
@@ -520,27 +506,26 @@ class ListingController extends Controller
     /**
      * Generic file upload
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function upload(Request $request)
     {
         $type = $request->input('type', 'attachment');
+
         return $this->handleUpload($request, $type);
     }
 
     /**
      * Handle file upload using FileUploadAction
      *
-     * @param Request $request
-     * @param string $type File type (image, video, document, attachment)
+     * @param  string  $type  File type (image, video, document, attachment)
      * @return \Illuminate\Http\JsonResponse
      */
     private function handleUpload(Request $request, string $type)
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+                'file' => 'required|file|max:'.$this->getMaxFileSize($type),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -564,8 +549,7 @@ class ListingController extends Controller
     /**
      * Delete a file
      *
-     * @param string $path File path to delete
-     * @param Request $request
+     * @param  string  $path  File path to delete
      * @return \Illuminate\Http\JsonResponse
      */
     public function deleteFile($path, Request $request)
@@ -595,7 +579,7 @@ class ListingController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete file: ' . $e->getMessage(),
+                'message' => 'Failed to delete file: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -603,7 +587,7 @@ class ListingController extends Controller
     /**
      * Get maximum file size for upload type (in KB)
      *
-     * @param string $type File type
+     * @param  string  $type  File type
      * @return int Maximum file size in KB
      */
     private function getMaxFileSize(string $type): int

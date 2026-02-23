@@ -13,7 +13,7 @@ use Litepie\Layout\SlotManager;
 
 /**
  * Create Aside Slot
- * 
+ *
  * Builds the aside for creating a new listing
  */
 class CreateAsideSlot
@@ -21,9 +21,8 @@ class CreateAsideSlot
     /**
      * Build create listing aside
      *
-     * @param array $masterData Master data for form
-     * @param bool $fullscreen Whether to display fullscreen
-     * @return array
+     * @param  array  $masterData  Master data for form
+     * @param  bool  $fullscreen  Whether to display fullscreen
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
@@ -61,8 +60,6 @@ class CreateAsideSlot
 
     /**
      * Build header slot
-     *
-     * @return SlotManager
      */
     private static function buildHeader(): SlotManager
     {
@@ -123,8 +120,6 @@ class CreateAsideSlot
 
     /**
      * Build footer slot
-     *
-     * @return SlotManager
      */
     private static function buildFooter(): SlotManager
     {

@@ -12,26 +12,24 @@ use Litepie\Actions\BaseAction;
  * CreateProductPropertyAction
  *
  * Create a new product property with validation.
- *
- * @package App\Actions\ProductProperty
  */
 class CreateProductPropertyAction extends BaseAction
 {
     protected function rules(): array
     {
         return [
-            'title'         => 'required|string|max:100',
-            'ref'           => 'required|string|max:100|unique:bixo_product_properties,ref',
+            'title' => 'required|string|max:100',
+            'ref' => 'required|string|max:100|unique:bixo_product_properties,ref',
             'category_type' => 'required|in:Commercial,Residential',
-            'property_for'  => 'required|in:Rental,Sales',
+            'property_for' => 'required|in:Rental,Sales',
             'property_type' => 'nullable|in:Live,Pocket,Developer,Verified Pocket',
-            'status'        => 'nullable|string',
-            'price'         => 'required|numeric|min:0',
-            'beds'          => 'nullable|string',
-            'baths'         => 'nullable|integer|min:0',
-            'bua'           => 'nullable|numeric',
-            'description'   => 'nullable|string',
-            'created_by'    => 'nullable|integer',
+            'status' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'beds' => 'nullable|string',
+            'baths' => 'nullable|integer|min:0',
+            'bua' => 'nullable|numeric',
+            'description' => 'nullable|string',
+            'created_by' => 'nullable|integer',
         ];
     }
 
@@ -48,7 +46,7 @@ class CreateProductPropertyAction extends BaseAction
             }
 
             $data['created_by'] = $data['created_by'] ?? auth()->id() ?? 1;
-            $data['status']     = $data['status'] ?? 'Draft';
+            $data['status'] = $data['status'] ?? 'Draft';
             $data['created_at'] = now();
             $data['updated_at'] = now();
 
@@ -56,7 +54,7 @@ class CreateProductPropertyAction extends BaseAction
 
             return ActionResult::success($property, 'Property created successfully');
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to create property: ' . $e->getMessage());
+            return ActionResult::failure('Failed to create property: '.$e->getMessage());
         }
     }
 }

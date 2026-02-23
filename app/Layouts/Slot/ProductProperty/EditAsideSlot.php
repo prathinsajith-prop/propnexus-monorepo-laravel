@@ -15,17 +15,14 @@ use Litepie\Layout\SlotManager;
  * Edit Aside Slot — Product Property
  *
  * Builds the aside drawer for editing an existing product property.
- *
- * @package App\Layouts\Slot\ProductProperty
  */
 class EditAsideSlot
 {
     /**
      * Build edit product property aside.
      *
-     * @param array $masterData Master data for form dropdowns
-     * @param bool  $fullscreen Whether to display fullscreen
-     * @return array
+     * @param  array  $masterData  Master data for form dropdowns
+     * @param  bool  $fullscreen  Whether to display fullscreen
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
@@ -54,7 +51,7 @@ class EditAsideSlot
             ->toArray();
 
         if ($fullscreen && is_array($aside)) {
-            $aside['width']  = '100vw';
+            $aside['width'] = '100vw';
             $aside['height'] = '100vh';
         }
 
@@ -67,11 +64,11 @@ class EditAsideSlot
     {
         $centerSlot = SlotManager::make('edit-property-header-center')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'column',
-                'gap'            => '1',
-                'justify'        => 'center',
-                'items'          => 'start',
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'center',
+                'items' => 'start',
                 'gridColumnSpan' => 8,
             ]);
 
@@ -90,11 +87,11 @@ class EditAsideSlot
 
         $rightSlot = SlotManager::make('edit-property-header-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 4,
             ]);
 
@@ -121,11 +118,11 @@ class EditAsideSlot
     {
         $footerRightSlot = SlotManager::make('edit-property-footer-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 12,
             ]);
 

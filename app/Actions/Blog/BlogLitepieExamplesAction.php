@@ -3,16 +3,14 @@
 namespace App\Actions\Blog;
 
 use App\Models\Blog;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * BlogLitepieExamplesAction
- * 
+ *
  * Demonstrates all Litepie Database features with the Blog model
  * This is a reference implementation showing how to use each trait
- * 
- * @package App\Actions\Blog
  */
 class BlogLitepieExamplesAction extends BaseAction
 {
@@ -29,73 +27,73 @@ class BlogLitepieExamplesAction extends BaseAction
 
         $examples = [
             // Searchable Examples
-            'search_basic' => fn() => Blog::search('Laravel framework')->get(),
-            'search_fulltext' => fn() => Blog::fullTextSearch('Laravel framework')->get(),
-            'search_weighted' => fn() => Blog::weightedSearch('Laravel')->orderByDesc('search_relevance')->get(),
-            'search_fuzzy' => fn() => Blog::fuzzySearch('Laravle', threshold: 2)->get(),
-            'search_boolean' => fn() => Blog::booleanSearch('+Laravel -CodeIgniter')->get(),
+            'search_basic' => fn () => Blog::search('Laravel framework')->get(),
+            'search_fulltext' => fn () => Blog::fullTextSearch('Laravel framework')->get(),
+            'search_weighted' => fn () => Blog::weightedSearch('Laravel')->orderByDesc('search_relevance')->get(),
+            'search_fuzzy' => fn () => Blog::fuzzySearch('Laravle', threshold: 2)->get(),
+            'search_boolean' => fn () => Blog::booleanSearch('+Laravel -CodeIgniter')->get(),
 
             // Cacheable Examples
-            'cache_basic' => fn() => Blog::where('status', 'published')->cacheFor(60)->get(),
-            'cache_tags' => fn() => Blog::where('featured', true)->cacheWithTags(['featured'], 60)->get(),
-            'cache_forever' => fn() => Blog::where('category', 'tech')->cacheForever('tech-posts'),
-            'cache_clear' => fn() => Blog::clearModelCache(),
+            'cache_basic' => fn () => Blog::where('status', 'published')->cacheFor(60)->get(),
+            'cache_tags' => fn () => Blog::where('featured', true)->cacheWithTags(['featured'], 60)->get(),
+            'cache_forever' => fn () => Blog::where('category', 'tech')->cacheForever('tech-posts'),
+            'cache_clear' => fn () => Blog::clearModelCache(),
 
             // Sluggable Examples
-            'find_by_slug' => fn() => Blog::findBySlug('my-amazing-post'),
-            'regenerate_slug' => fn() => Blog::find(1)?->regenerateSlugs(),
+            'find_by_slug' => fn () => Blog::findBySlug('my-amazing-post'),
+            'regenerate_slug' => fn () => Blog::find(1)?->regenerateSlugs(),
 
             // Paginatable Examples
-            'paginate_cursor' => fn() => Blog::where('status', 'published')->cursorPaginate(50),
-            'paginate_fast' => fn() => Blog::where('status', 'published')->fastPaginate(20),
-            'paginate_optimized' => fn() => Blog::where('status', 'published')->optimizedPaginate(50),
-            'paginate_cached' => fn() => Blog::with('category')->cachedPaginate(perPage: 20, cacheTtl: 300),
+            'paginate_cursor' => fn () => Blog::where('status', 'published')->cursorPaginate(50),
+            'paginate_fast' => fn () => Blog::where('status', 'published')->fastPaginate(20),
+            'paginate_optimized' => fn () => Blog::where('status', 'published')->optimizedPaginate(50),
+            'paginate_cached' => fn () => Blog::with('category')->cachedPaginate(perPage: 20, cacheTtl: 300),
 
             // Aggregatable Examples
-            'aggregate_stats' => fn() => Blog::where('status', 'published')->aggregate([
+            'aggregate_stats' => fn () => Blog::where('status', 'published')->aggregate([
                 'sum' => 'views_count',
                 'avg' => 'views_count',
                 'max' => 'views_count',
             ]),
-            'trend_analysis' => fn() => Blog::trend('created_at', 'month', 'views_count', 'sum', 6),
-            'growth_rate' => fn() => Blog::growthRate('views_count', 'month', 6),
-            'yoy_comparison' => fn() => Blog::yearOverYear('views_count', 'sum'),
+            'trend_analysis' => fn () => Blog::trend('created_at', 'month', 'views_count', 'sum', 6),
+            'growth_rate' => fn () => Blog::growthRate('views_count', 'month', 6),
+            'yoy_comparison' => fn () => Blog::yearOverYear('views_count', 'sum'),
 
             // Archivable Examples
-            'archive_blog' => fn() => Blog::find(1)?->archive('Content outdated', auth()->user()),
-            'archived_posts' => fn() => Blog::onlyArchived()->get(),
-            'recently_archived' => fn() => Blog::recentlyArchived(30)->get(),
-            'unarchive_blog' => fn() => Blog::onlyArchived()->first()?->unArchive(),
+            'archive_blog' => fn () => Blog::find(1)?->archive('Content outdated', auth()->user()),
+            'archived_posts' => fn () => Blog::onlyArchived()->get(),
+            'recently_archived' => fn () => Blog::recentlyArchived(30)->get(),
+            'unarchive_blog' => fn () => Blog::onlyArchived()->first()?->unArchive(),
 
             // Versionable Examples
-            'create_version' => fn() => Blog::find(1)?->createVersion('Major update', auth()->user()),
-            'version_history' => fn() => Blog::find(1)?->getVersionHistory(),
-            'rollback_version' => fn() => Blog::find(1)?->rollbackToVersion(5),
-            'compare_versions' => fn() => Blog::find(1)?->compareVersions(1, 5),
+            'create_version' => fn () => Blog::find(1)?->createVersion('Major update', auth()->user()),
+            'version_history' => fn () => Blog::find(1)?->getVersionHistory(),
+            'rollback_version' => fn () => Blog::find(1)?->rollbackToVersion(5),
+            'compare_versions' => fn () => Blog::find(1)?->compareVersions(1, 5),
 
             // Metable Examples
-            'set_meta' => fn() => Blog::find(1)?->setMeta('featured_priority', 10),
-            'get_meta' => fn() => Blog::find(1)?->getMeta('featured_priority'),
-            'increment_meta' => fn() => Blog::find(1)?->incrementMeta('view_count_alt'),
-            'query_meta' => fn() => Blog::whereMeta('featured_priority', '>', 5)->get(),
+            'set_meta' => fn () => Blog::find(1)?->setMeta('featured_priority', 10),
+            'get_meta' => fn () => Blog::find(1)?->getMeta('featured_priority'),
+            'increment_meta' => fn () => Blog::find(1)?->incrementMeta('view_count_alt'),
+            'query_meta' => fn () => Blog::whereMeta('featured_priority', '>', 5)->get(),
 
             // Translatable Examples
-            'translate' => fn() => Blog::find(1)?->translate('es', ['title' => 'Mi Post', 'content' => 'Contenido']),
-            'get_translation' => fn() => Blog::find(1)?->setLocale('es')->title,
-            'translation_completeness' => fn() => Blog::find(1)?->getTranslationCompleteness('es'),
+            'translate' => fn () => Blog::find(1)?->translate('es', ['title' => 'Mi Post', 'content' => 'Contenido']),
+            'get_translation' => fn () => Blog::find(1)?->setLocale('es')->title,
+            'translation_completeness' => fn () => Blog::find(1)?->getTranslationCompleteness('es'),
 
             // Sortable Examples
-            'reorder' => fn() => Blog::find(1)?->moveTo(5),
-            'move_up' => fn() => Blog::find(1)?->moveUp(),
-            'move_down' => fn() => Blog::find(1)?->moveDown(),
+            'reorder' => fn () => Blog::find(1)?->moveTo(5),
+            'move_up' => fn () => Blog::find(1)?->moveUp(),
+            'move_down' => fn () => Blog::find(1)?->moveDown(),
 
             // Exportable Examples
-            'export_csv' => fn() => Blog::where('status', 'published')->get()->exportToCsv(),
-            'export_excel' => fn() => Blog::where('status', 'published')->get()->exportToExcel(),
-            'export_json' => fn() => Blog::where('status', 'published')->get()->exportToJson(),
+            'export_csv' => fn () => Blog::where('status', 'published')->get()->exportToCsv(),
+            'export_excel' => fn () => Blog::where('status', 'published')->get()->exportToExcel(),
+            'export_json' => fn () => Blog::where('status', 'published')->get()->exportToJson(),
 
             // Batch Operations Examples
-            'batch_update' => fn() => Blog::where('status', 'draft')->batch(100, function ($blogs) {
+            'batch_update' => fn () => Blog::where('status', 'draft')->batch(100, function ($blogs) {
                 foreach ($blogs as $blog) {
                     $blog->status = 'review';
                     $blog->save();
@@ -103,11 +101,11 @@ class BlogLitepieExamplesAction extends BaseAction
             }),
 
             // Measurable Examples
-            'measure_performance' => fn() => Blog::measureQuery(fn() => Blog::where('status', 'published')->get()),
+            'measure_performance' => fn () => Blog::measureQuery(fn () => Blog::where('status', 'published')->get()),
         ];
 
-        if (!isset($examples[$example])) {
-            return ActionResult::error('Example not found. Available: ' . implode(', ', array_keys($examples)), 404);
+        if (! isset($examples[$example])) {
+            return ActionResult::error('Example not found. Available: '.implode(', ', array_keys($examples)), 404);
         }
 
         try {

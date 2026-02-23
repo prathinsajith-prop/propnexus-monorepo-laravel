@@ -6,7 +6,7 @@ use Litepie\Layout\Conditional\ExpressionEvaluator;
 
 /**
  * HasVisibility Trait
- * 
+ *
  * Provides conditional visibility logic and authorization control.
  * Controls when components are shown/hidden based on conditions or permissions.
  */

@@ -16,14 +16,14 @@ return new class extends Migration
             $table->string('workflow_name');
             $table->string('state_from');
             $table->string('state_to');
-            
+
             // Model (polymorphic) - explicitly defined to avoid naming conflicts
             $table->unsignedBigInteger('model_id');
             $table->string('model_type');
-            
+
             $table->json('context')->nullable();
             $table->timestamps();
-            
+
             // Explicit indexes with globally unique names
             $table->index(['model_type', 'model_id'], 'flow_executions_model_morph_idx');
             $table->index('workflow_name', 'flow_executions_workflow_name_idx');

@@ -3,16 +3,14 @@
 namespace App\Actions\Blog;
 
 use App\Models\Blog;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * ManageBlogMetaAction
- * 
+ *
  * Manage blog metadata using the Metable trait
  * WordPress-style flexible key-value metadata storage
- * 
- * @package App\Actions\Blog
  */
 class ManageBlogMetaAction extends BaseAction
 {

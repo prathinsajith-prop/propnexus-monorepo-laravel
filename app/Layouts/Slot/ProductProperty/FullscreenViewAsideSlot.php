@@ -4,9 +4,9 @@ namespace App\Layouts\Slot\ProductProperty;
 
 use App\Enums\ProductCategoryType;
 use App\Enums\ProductPropertyFor;
-use App\Forms\ProductProperty\ProductPropertyForm;
 use App\Enums\ProductPropertyStatus;
 use App\Forms\Blog\BlogFeedbackForm;
+use App\Forms\ProductProperty\ProductPropertyForm;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\CardComponent;
@@ -17,7 +17,6 @@ use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Components\TimelineComponent;
 use Litepie\Layout\Sections\DetailSection;
 use Litepie\Layout\Sections\FooterSection;
-use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
@@ -27,16 +26,13 @@ use Litepie\Layout\SlotManager;
  * Two-column immersive layout matching the CRM lead detail reference:
  *   Left  (7/12): Identity header, description highlight, property details, location.
  *   Right (5/12): Price overview card, follow-ups, notes, recent activities.
- *
- * @package App\Layouts\Slot\ProductProperty
  */
 class FullscreenViewAsideSlot
 {
     /**
      * Build fullscreen product property view aside.
      *
-     * @param array $masterData Master data for form dropdowns
-     * @return array
+     * @param  array  $masterData  Master data for form dropdowns
      */
     public static function make(array $masterData = []): array
     {
@@ -98,7 +94,7 @@ class FullscreenViewAsideSlot
                     'color' => 'default',
                     'size' => 'sm',
                     'prefix' => '#',
-                    'tooltip' => __('product_property.column_ref')
+                    'tooltip' => __('product_property.column_ref'),
                 ])
                 ->gridColumnSpan(4)
         );
@@ -132,7 +128,7 @@ class FullscreenViewAsideSlot
                     'icon' => 'eye',
                     'iconSize' => 'sm',
                     'color' => 'text-gray-500',
-                    'suffix' => ' ' . __('layout.views')
+                    'suffix' => ' '.__('layout.views'),
                 ])
                 ->gridColumnSpan(6)
         );
@@ -146,7 +142,7 @@ class FullscreenViewAsideSlot
                     'key' => 'price',
                     'color' => 'text-primary-600',
                     'prefix' => 'AED ',
-                    'format' => 'number'
+                    'format' => 'number',
                 ])
                 ->gridColumnSpan(6)
         );
@@ -199,21 +195,21 @@ class FullscreenViewAsideSlot
             ->dataUrl('/api/product-property/:id')
             ->dataParams(['id' => ':id'])
             ->addHeaderAction(__('layout.edit'), '/api/product-property/:id', [
-                'icon'    => 'pencil',
+                'icon' => 'pencil',
                 'variant' => 'outlined',
-                'size'    => 'sm',
-                'data'    => [
+                'size' => 'sm',
+                'data' => [
                     'component' => 'edit-property-full',
-                    'type'      => 'aside',
-                    'action'    => 'edit',
-                    'config'    => [
+                    'type' => 'aside',
+                    'action' => 'edit',
+                    'config' => [
                         'width' => '800px',
                         'height' => '100vh',
                         'anchor' => 'right',
-                        'backdrop' => true
+                        'backdrop' => true,
                     ],
-                    'params'    => ['id' => ':id'],
-                    'url'       => '/api/product-property/:id',
+                    'params' => ['id' => ':id'],
+                    'url' => '/api/product-property/:id',
                 ],
                 'meta' => ['tooltip' => __('layout.tooltip_edit_property')],
             ]);
@@ -280,11 +276,11 @@ class FullscreenViewAsideSlot
             ->dataUrl('/api/product-property/:id')
             ->dataParams(['id' => ':id'])
             ->addHeaderAction(__('layout.expand'), '#', [
-                'icon'         => 'plus',
-                'variant'      => 'outlined',
-                'size'         => 'sm',
+                'icon' => 'plus',
+                'variant' => 'outlined',
+                'size' => 'sm',
                 'isIconButton' => true,
-                'meta'         => ['action' => 'toggle', 'tooltip' => __('layout.expand')],
+                'meta' => ['action' => 'toggle', 'tooltip' => __('layout.expand')],
             ])
             ->meta(['collapsible' => true, 'collapsed' => false]);
 
@@ -354,7 +350,7 @@ class FullscreenViewAsideSlot
                     'key' => 'price',
                     'color' => 'text-primary-700',
                     'prefix' => 'AED ',
-                    'format' => 'number'
+                    'format' => 'number',
                 ])
                 ->gridColumnSpan(8)
         );
@@ -476,9 +472,9 @@ class FullscreenViewAsideSlot
                     ->data('type', 'modal')
                     ->data('action', 'create')
                     ->data('config', [
-                        'width'    => '500px',
-                        'height'   => '100vh',
-                        'anchor'   => 'right',
+                        'width' => '500px',
+                        'height' => '100vh',
+                        'anchor' => 'right',
                         'backdrop' => true,
                     ])
                     ->data('params', ['property_id' => ':id'])
@@ -491,8 +487,8 @@ class FullscreenViewAsideSlot
                 ->dataParams(['id' => ':id'])
                 ->dense(true)
                 ->meta([
-                    'emptyIcon'    => 'listcheck',
-                    'emptyText'    => __('layout.tasks_empty'),
+                    'emptyIcon' => 'listcheck',
+                    'emptyText' => __('layout.tasks_empty'),
                     'emptySubtext' => __('layout.tasks_empty_hint'),
                 ])
                 ->gridColumnSpan(12)
@@ -519,8 +515,8 @@ class FullscreenViewAsideSlot
                 ->dataUrl('/api/product-property/:id/notes')
                 ->dataParams(['id' => ':id'])
                 ->meta([
-                    'emptyIcon'    => 'chat',
-                    'emptyText'    => __('layout.notes_empty'),
+                    'emptyIcon' => 'chat',
+                    'emptyText' => __('layout.notes_empty'),
                     'emptySubtext' => __('layout.notes_empty_hint'),
                 ])
                 ->gridColumnSpan(12)
@@ -539,15 +535,15 @@ class FullscreenViewAsideSlot
             ->title(__('layout.recent_activities'))
             ->variant('outlined')
             ->addHeaderAction(__('layout.log'), '#', [
-                'icon'    => 'clock',
+                'icon' => 'clock',
                 'variant' => 'outlined',
-                'size'    => 'sm',
-                'color'   => 'info',
-                'data'    => [
+                'size' => 'sm',
+                'color' => 'info',
+                'data' => [
                     'component' => 'create-property-activity',
-                    'type'      => 'aside',
-                    'action'    => 'create',
-                    'params'    => ['property_id' => ':id'],
+                    'type' => 'aside',
+                    'action' => 'create',
+                    'params' => ['property_id' => ':id'],
                 ],
                 'meta' => ['tooltip' => __('layout.log_activity')],
             ]);
@@ -562,8 +558,8 @@ class FullscreenViewAsideSlot
                 ->dataUrl('/api/product-property/:id/activities')
                 ->dataParams(['id' => ':id'])
                 ->meta([
-                    'emptyIcon'    => 'clock',
-                    'emptyText'    => __('layout.activities_empty'),
+                    'emptyIcon' => 'clock',
+                    'emptyText' => __('layout.activities_empty'),
                     'emptySubtext' => __('layout.activities_empty_hint'),
                 ])
                 ->gridColumnSpan(12)
@@ -657,7 +653,7 @@ class FullscreenViewAsideSlot
                     'width' => '800px',
                     'height' => '100vh',
                     'anchor' => 'right',
-                    'backdrop' => true
+                    'backdrop' => true,
                 ])
                 ->data('params', ['id' => ':id'])
                 ->data('url', '/api/product-property/:id')
@@ -665,7 +661,7 @@ class FullscreenViewAsideSlot
                     'action' => 'edit',
                     'type' => 'aside',
                     'component' => 'edit-property-full',
-                    'tooltip' => __('layout.tooltip_edit_property')
+                    'tooltip' => __('layout.tooltip_edit_property'),
                 ])
         );
 
@@ -677,18 +673,18 @@ class FullscreenViewAsideSlot
                 ->isIconButton(true)
                 ->color('error')
                 ->confirm([
-                    'title'        => __('layout.delete_property'),
-                    'message'      => __('layout.delete_property_confirmation'),
+                    'title' => __('layout.delete_property'),
+                    'message' => __('layout.delete_property_confirmation'),
                     'confirmLabel' => __('layout.delete'),
-                    'cancelLabel'  => __('layout.cancel'),
-                    'action'       => 'delete',
-                    'dataUrl'      => '/api/product-property/:id',
-                    'method'       => 'delete',
+                    'cancelLabel' => __('layout.cancel'),
+                    'action' => 'delete',
+                    'dataUrl' => '/api/product-property/:id',
+                    'method' => 'delete',
                 ])
                 ->meta([
                     'action' => 'delete',
                     'tooltip' => __('layout.tooltip_delete_property'),
-                    'color' => 'error'
+                    'color' => 'error',
                 ])
         );
 
@@ -736,7 +732,7 @@ class FullscreenViewAsideSlot
                 ->meta([
                     'key' => 'ref_number',
                     'color' => 'text-gray-500',
-                    'prefix' => __('product_property.column_ref') . ': #'
+                    'prefix' => __('product_property.column_ref').': #',
                 ])
         );
 

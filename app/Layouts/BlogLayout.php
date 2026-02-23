@@ -11,22 +11,21 @@ use Litepie\Layout\LayoutBuilder as LitepieLayoutBuilder;
  * BlogLayout
  *
  * Main entry point for the blog management interface.
- * 
+ *
  * **Structure**:
  * - Entry Point: This class (wires components together)
  * - Builder: App\Layouts\Builder\Blog\LayoutBuilder (construction logic)
  * - Slots: App\Layouts\Slot\Blog\* (reusable components)
- * 
+ *
  * **Responsibilities**:
  * - Define page configuration (title, meta, sections)
  * - Register modal components (create, delete, confirmation)
  * - Register aside panels (view, edit, create, form activity)
  * - Delegate section building to LayoutBuilder
- * 
+ *
  * **Architecture**:
  * Clean separation: Layout (config) → Builder (logic) → Slots (components)
- * 
- * @package App\Layouts
+ *
  * @see \App\Layouts\Builder\Blog\LayoutBuilder
  * @see \App\Layouts\Slot\Blog
  */
@@ -35,7 +34,7 @@ class BlogLayout
     /**
      * Create blog management layout
      *
-     * @param array $masterData Master data for dropdowns and options
+     * @param  array  $masterData  Master data for dropdowns and options
      * @return LayoutBuilder
      */
     public static function make($masterData)
@@ -49,21 +48,21 @@ class BlogLayout
                 'version' => '1.0.0',
                 'refreshInterval' => null,
             ])
-            ->section('header', fn($section) => LayoutBuilder::buildHeaderSection($section))
-            ->section('main', fn($section) => LayoutBuilder::buildMainSection($section, $masterData))
-            ->section('search', fn($section) => LayoutBuilder::buildSearchComponent($section, $masterData))
-            ->section('actions', fn($section) => LayoutBuilder::buildActionsComponent($section, $masterData))
-            ->section('footer', fn($section) => LayoutBuilder::buildFooterSection($section))
+            ->section('header', fn ($section) => LayoutBuilder::buildHeaderSection($section))
+            ->section('main', fn ($section) => LayoutBuilder::buildMainSection($section, $masterData))
+            ->section('search', fn ($section) => LayoutBuilder::buildSearchComponent($section, $masterData))
+            ->section('actions', fn ($section) => LayoutBuilder::buildActionsComponent($section, $masterData))
+            ->section('footer', fn ($section) => LayoutBuilder::buildFooterSection($section))
             ->build();
     }
 
     /**
      * Get component definition for modals and asides
      * Called dynamically when components are requested
-     * 
-     * @param string $type Component type ('modal' or 'aside')
-     * @param string $componentName Component identifier
-     * @param array $masterData Master data for forms
+     *
+     * @param  string  $type  Component type ('modal' or 'aside')
+     * @param  string  $componentName  Component identifier
+     * @param  array  $masterData  Master data for forms
      * @return array|null Component definition
      */
     public static function getComponentDefinition($type, $componentName, $masterData)

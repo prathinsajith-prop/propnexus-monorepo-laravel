@@ -6,20 +6,17 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * ListingImageEditForm
- * 
+ *
  * Form for editing listing image metadata including:
  * - Expiry date for temporary images
  * - Image description for accessibility and SEO
- * 
- * @package App\Forms\Listing
  */
 class ListingImageEditForm
 {
     /**
      * Create image edit form structure
      *
-     * @param string $formId Form identifier
-     * @return \Litepie\Layout\Components\FormComponent
+     * @param  string  $formId  Form identifier
      */
     public static function make(string $formId = 'listing-image-edit'): FormComponent
     {

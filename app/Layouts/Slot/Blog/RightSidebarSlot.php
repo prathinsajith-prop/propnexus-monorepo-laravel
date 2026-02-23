@@ -11,8 +11,6 @@ class RightSidebarSlot
 {
     /**
      * Build right sidebar grid with activity timeline and chat history
-     *
-     * @return SlotManager
      */
     public static function make(): SlotManager
     {
@@ -82,8 +80,6 @@ class RightSidebarSlot
 
     /**
      * Build Chat History card
-     *
-     * @return ListComponent
      */
     private static function buildChatHistoryCard(): ListComponent
     {

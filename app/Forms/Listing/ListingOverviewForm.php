@@ -6,19 +6,17 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * ListingOverviewForm
- * 
+ *
  * Read-only overview form for displaying listing details in a 3-column grid.
  * Used in cards and overview sections.
- * 
- * @package App\Forms\Listing
  */
 class ListingOverviewForm
 {
     /**
      * Create listing overview form structure
      *
-     * @param string $formId Form identifier
-     * @param string|null $dataUrl URL to fetch data from
+     * @param  string  $formId  Form identifier
+     * @param  string|null  $dataUrl  URL to fetch data from
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make(string $formId = 'listing-overview-form', ?string $dataUrl = null)
@@ -97,8 +95,8 @@ class ListingOverviewForm
     /**
      * Create a compact version with fewer fields
      *
-     * @param string $formId Form identifier
-     * @param string|null $dataUrl URL to fetch data from
+     * @param  string  $formId  Form identifier
+     * @param  string|null  $dataUrl  URL to fetch data from
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function makeCompact(string $formId = 'listing-overview-compact', ?string $dataUrl = null)

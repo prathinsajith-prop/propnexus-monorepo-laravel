@@ -14,7 +14,7 @@ use Litepie\Layout\SlotManager;
 
 /**
  * View Aside Slot
- * 
+ *
  * Builds the aside for viewing a blog post
  */
 class ViewAsideSlot
@@ -22,9 +22,8 @@ class ViewAsideSlot
     /**
      * Build view blog aside
      *
-     * @param array $masterData Master data for form
-     * @param bool $fullscreen Whether to display fullscreen
-     * @return array
+     * @param  array  $masterData  Master data for form
+     * @param  bool  $fullscreen  Whether to display fullscreen
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
@@ -62,8 +61,6 @@ class ViewAsideSlot
 
     /**
      * Build header slot
-     *
-     * @return SlotManager
      */
     private static function buildHeader(): SlotManager
     {
@@ -129,7 +126,7 @@ class ViewAsideSlot
                     'action' => 'edit',
                     'type' => 'aside',
                     'component' => 'edit-blog-full',
-                    'tooltip' => __('layout.tooltip_edit_blog_post')
+                    'tooltip' => __('layout.tooltip_edit_blog_post'),
                 ])
         );
         $rightSlot->setComponent(
@@ -234,8 +231,6 @@ class ViewAsideSlot
 
     /**
      * Build footer slot
-     *
-     * @return SlotManager
      */
     private static function buildFooter(): SlotManager
     {

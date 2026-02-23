@@ -10,15 +10,13 @@ use App\Enums\ListingType;
 use App\Enums\PropertyType;
 use App\Models\Listing;
 use Illuminate\Validation\Rules\Enum;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * UpdateListingAction
- * 
+ *
  * Update an existing property listing
- * 
- * @package App\Actions\Listing
  */
 class UpdateListingAction extends BaseAction
 {
@@ -56,18 +54,18 @@ class UpdateListingAction extends BaseAction
             $id = $this->data['id'];
 
             // Try to decode if it's an encoded ID (eid)
-            if (!is_numeric($id)) {
+            if (! is_numeric($id)) {
                 $decodedId = hashids_decode($id);
                 $id = $decodedId ?: $id;
             }
 
             $listing = Listing::where('id', $id)->first();
 
-            if (!$listing) {
+            if (! $listing) {
                 return ActionResult::failure('Listing not found');
             }
 
-            $updateData = array_filter($this->data, fn($key) => $key !== 'id', ARRAY_FILTER_USE_KEY);
+            $updateData = array_filter($this->data, fn ($key) => $key !== 'id', ARRAY_FILTER_USE_KEY);
 
             // Convert string fields to arrays for those that need it
             $arrayFields = [
@@ -80,7 +78,7 @@ class UpdateListingAction extends BaseAction
                 'seo_meta',
                 'schema_markup',
                 'analytics',
-                'custom_fields'
+                'custom_fields',
             ];
 
             foreach ($arrayFields as $field) {
@@ -103,7 +101,7 @@ class UpdateListingAction extends BaseAction
 
             return ActionResult::success($listing->fresh()->toArray(), 'Listing updated successfully');
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to update listing: ' . $e->getMessage());
+            return ActionResult::failure('Failed to update listing: '.$e->getMessage());
         }
     }
 }

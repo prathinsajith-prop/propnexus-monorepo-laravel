@@ -23,8 +23,8 @@ class FormActivityAsideSlot
     /**
      * Build the Forms & Activity aside for viewing a blog post
      *
-     * @param array $masterData The master data containing blog post information
-     * @param bool $fullscreen Whether to display in fullscreen mode
+     * @param  array  $masterData  The master data containing blog post information
+     * @param  bool  $fullscreen  Whether to display in fullscreen mode
      * @return array The aside configuration array
      */
     public static function make(array $masterData, bool $fullscreen = false): array
@@ -57,8 +57,6 @@ class FormActivityAsideSlot
 
     /**
      * Build the header section with title and action buttons
-     *
-     * @return HeaderSection
      */
     private static function buildHeader(): HeaderSection
     {
@@ -131,8 +129,6 @@ class FormActivityAsideSlot
 
     /**
      * Build the footer section with navigation and action buttons
-     *
-     * @return FooterSection
      */
     private static function buildFooter(): FooterSection
     {

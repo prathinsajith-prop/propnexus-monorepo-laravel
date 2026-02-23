@@ -7,7 +7,6 @@ use App\Actions\Blog\DeleteBlogAction;
 use App\Actions\Blog\ListBlogsAction;
 use App\Actions\Blog\UpdateBlogAction;
 use App\Actions\File\FileUploadAction;
-use App\Http\Controllers\Controller;
 use App\Layouts\BlogLayout;
 use App\Models\Blog;
 use Illuminate\Http\Request;
@@ -17,10 +16,10 @@ use Litepie\Actions\ActionResult;
 
 /**
  * BlogController
- * 
+ *
  * Blog management controller using Litepie Actions pattern
  * All CRUD operations delegated to dedicated Action classes
- * 
+ *
  * Endpoints:
  * - GET  /blogs           - Blog management page (layout)
  * - GET  /api/blogs       - List blogs (with filters, pagination)
@@ -28,8 +27,6 @@ use Litepie\Actions\ActionResult;
  * - GET  /api/blogs/{id}  - Get single blog
  * - PUT  /api/blogs/{id}  - Update blog
  * - DELETE /api/blogs/{id} - Delete blog
- * 
- * @package App\Http\Controllers
  */
 class BlogController extends Controller
 {
@@ -62,9 +59,8 @@ class BlogController extends Controller
      * Returns the specific section configuration for modals, drawers, etc.
      * Used by: /layouts/blogs/{type}/{component}
      *
-     * @param Request $request
-     * @param string|null $type
-     * @param string|null $component
+     * @param  string|null  $type
+     * @param  string|null  $component
      * @return \Illuminate\Http\JsonResponse
      */
     public function getComponentSection(Request $request, $type = null, $component = null)
@@ -73,7 +69,7 @@ class BlogController extends Controller
         $type = $type ?? $request->input('type');
         $component = $component ?? $request->input('component');
 
-        if (!$type || !$component) {
+        if (! $type || ! $component) {
             return response()->json([
                 'error' => 'Missing required parameters: type and component',
             ], 400);
@@ -85,7 +81,7 @@ class BlogController extends Controller
         // Build the section data based on type and component using BlogLayout
         $sectionData = BlogLayout::getComponentDefinition($type, $component, $masterData);
 
-        if (!$sectionData) {
+        if (! $sectionData) {
             return response()->json([
                 'error' => 'Component definition not found',
             ], 404);
@@ -101,7 +97,6 @@ class BlogController extends Controller
      * List blogs with filtering, sorting, and pagination
      * Uses ListBlogsAction
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function lists(Request $request)
@@ -121,7 +116,6 @@ class BlogController extends Controller
      * - per_page or limit: Items per page (default: 10)
      * - page: Page number (default: 1)
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function list(Request $request)
@@ -133,17 +127,16 @@ class BlogController extends Controller
      * Create a new blog post
      * Uses CreateBlogAction
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         $result = CreateBlogAction::make(null, $request->all())->run();
-        $blog   = $result->getData();
+        $blog = $result->getData();
 
         return ActionResult::success(
             array_merge($blog->toArray(), [
-                '_settings'    => $blog->getSettings('create'),
+                '_settings' => $blog->getSettings('create'),
                 '_masterdatas' => $blog->getMasterdata(),
             ]),
             $result->getMessage()
@@ -154,8 +147,7 @@ class BlogController extends Controller
      * Get a single blog post by ID
      * Uses route model binding directly
      *
-     * @param \App\Models\Blog $blog Blog model instance (auto-injected)
-     * @param Request $request
+     * @param  \App\Models\Blog  $blog  Blog model instance (auto-injected)
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(Blog $blog, Request $request)
@@ -172,7 +164,7 @@ class BlogController extends Controller
         $context = $request->boolean('edit') ? 'edit' : 'view';
 
         return ActionResult::success(array_merge($blog->toArray(), [
-            '_settings'    => $blog->getSettings($context),
+            '_settings' => $blog->getSettings($context),
             '_masterdatas' => $blog->getMasterdata(),
         ]));
     }
@@ -181,19 +173,18 @@ class BlogController extends Controller
      * Update an existing blog post
      * Uses UpdateBlogAction with route model binding
      *
-     * @param \App\Models\Blog $blog Blog model instance (auto-injected)
-     * @param Request $request
+     * @param  \App\Models\Blog  $blog  Blog model instance (auto-injected)
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Blog $blog, Request $request)
     {
         $updateData = array_merge($request->all(), ['id' => $blog->id]);
-        $result     = UpdateBlogAction::make(null, $updateData)->run();
+        $result = UpdateBlogAction::make(null, $updateData)->run();
         $blog->refresh();
 
         return ActionResult::success(
             array_merge($blog->toArray(), [
-                '_settings'    => $blog->getSettings('edit'),
+                '_settings' => $blog->getSettings('edit'),
                 '_masterdatas' => $blog->getMasterdata(),
             ]),
             $result->getMessage()
@@ -204,8 +195,7 @@ class BlogController extends Controller
      * Delete a blog post
      * Uses DeleteBlogAction with route model binding
      *
-     * @param \App\Models\Blog $blog Blog model instance (auto-injected)
-     * @param Request $request
+     * @param  \App\Models\Blog  $blog  Blog model instance (auto-injected)
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Blog $blog, Request $request)
@@ -227,7 +217,7 @@ class BlogController extends Controller
      * Get statistics for a specific stat card
      * Cached for better performance with proper cache tagging
      *
-     * @param string $statId
+     * @param  string  $statId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getStats($statId)
@@ -283,8 +273,8 @@ class BlogController extends Controller
     /**
      * Calculate trend percentage comparing current month vs. last month
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string|null $sumColumn If provided, calculates trend for sum instead of count
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string|null  $sumColumn  If provided, calculates trend for sum instead of count
      * @return string Formatted trend percentage (e.g., "+10%")
      */
     private function calculateTrend($query, $sumColumn = null): string
@@ -311,14 +301,14 @@ class BlogController extends Controller
         $change = (($currentValue - $lastValue) / $lastValue) * 100;
         $prefix = $change >= 0 ? '+' : '';
 
-        return $prefix . round($change, 1) . '%';
+        return $prefix.round($change, 1).'%';
     }
 
     /**
      * Increment view count for a blog post
      * Uses route model binding directly
      *
-     * @param \App\Models\Blog $blog Blog model instance (auto-injected)
+     * @param  \App\Models\Blog  $blog  Blog model instance (auto-injected)
      * @return \Illuminate\Http\JsonResponse
      */
     public function incrementView(Blog $blog)
@@ -353,8 +343,6 @@ class BlogController extends Controller
     /**
      * Get master data for dropdowns and forms
      * Cached for better performance as this data changes infrequently
-     *
-     * @return array
      */
     private function getMasterData(): array
     {
@@ -433,7 +421,6 @@ class BlogController extends Controller
     /**
      * Upload an image file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadImage(Request $request)
@@ -444,7 +431,6 @@ class BlogController extends Controller
     /**
      * Upload a video file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadVideo(Request $request)
@@ -455,7 +441,6 @@ class BlogController extends Controller
     /**
      * Upload a document file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadDocument(Request $request)
@@ -466,7 +451,6 @@ class BlogController extends Controller
     /**
      * Upload an audio file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadAudio(Request $request)
@@ -477,7 +461,6 @@ class BlogController extends Controller
     /**
      * Upload an attachment file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadAttachment(Request $request)
@@ -488,27 +471,25 @@ class BlogController extends Controller
     /**
      * Generic file upload
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function upload(Request $request)
     {
         $type = $request->input('type', 'attachment');
+
         return $this->handleUpload($request, $type);
     }
 
     /**
      * Handle file upload using FileUploadAction
      *
-     * @param Request $request
-     * @param string $type
      * @return \Illuminate\Http\JsonResponse
      */
     private function handleUpload(Request $request, string $type)
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+                'file' => 'required|file|max:'.$this->getMaxFileSize($type),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -532,8 +513,7 @@ class BlogController extends Controller
     /**
      * Delete a file
      *
-     * @param string $path
-     * @param Request $request
+     * @param  string  $path
      * @return \Illuminate\Http\JsonResponse
      */
     public function deleteFile($path, Request $request)
@@ -557,16 +537,13 @@ class BlogController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete file: ' . $e->getMessage(),
+                'message' => 'Failed to delete file: '.$e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Get maximum file size for upload type (in KB)
-     *
-     * @param string $type
-     * @return int
      */
     private function getMaxFileSize(string $type): int
     {

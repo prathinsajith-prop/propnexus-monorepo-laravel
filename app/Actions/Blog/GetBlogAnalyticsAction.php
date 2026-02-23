@@ -3,16 +3,14 @@
 namespace App\Actions\Blog;
 
 use App\Models\Blog;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * GetBlogAnalyticsAction
- * 
+ *
  * Advanced analytics using the Aggregatable trait
  * Provides comprehensive blog statistics and trends
- * 
- * @package App\Actions\Blog
  */
 class GetBlogAnalyticsAction extends BaseAction
 {
@@ -32,16 +30,16 @@ class GetBlogAnalyticsAction extends BaseAction
         $metric = $this->data['metric'] ?? 'views';
         $period = $this->data['period'] ?? 'month';
         $months = $this->data['months'] ?? 6;
-        $metricColumn = $metric . '_count';
+        $metricColumn = $metric.'_count';
 
         $query = Blog::where('status', 'published');
 
         // Apply filters
-        if (!empty($this->data['category'])) {
+        if (! empty($this->data['category'])) {
             $query->where('category', $this->data['category']);
         }
 
-        if (!empty($this->data['author_id'])) {
+        if (! empty($this->data['author_id'])) {
             $query->where('author_id', $this->data['author_id']);
         }
 
@@ -99,10 +97,10 @@ class GetBlogAnalyticsAction extends BaseAction
 
         // Category distribution
         $categoryStats = Blog::where('status', 'published')
-            ->selectRaw('category, COUNT(*) as count, SUM(' . $metricColumn . ') as total_' . $metric)
+            ->selectRaw('category, COUNT(*) as count, SUM('.$metricColumn.') as total_'.$metric)
             ->whereNotNull('category')
             ->groupBy('category')
-            ->orderByDesc('total_' . $metric)
+            ->orderByDesc('total_'.$metric)
             ->get();
 
         // Weekly distribution
@@ -114,16 +112,17 @@ class GetBlogAnalyticsAction extends BaseAction
             ->get()
             ->mapWithKeys(function ($dayData) {
                 $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
                 return [$days[$dayData->day_of_week - 1] => $dayData->count];
             });
 
         return ActionResult::success([
             'summary' => [
                 'total_posts' => $aggregates->count ?? 0,
-                'total_' . $metric => $aggregates->total_metric ?? 0,
-                'avg_' . $metric => round($aggregates->avg_metric ?? 0, 2),
-                'max_' . $metric => $aggregates->max_metric ?? 0,
-                'min_' . $metric => $aggregates->min_metric ?? 0,
+                'total_'.$metric => $aggregates->total_metric ?? 0,
+                'avg_'.$metric => round($aggregates->avg_metric ?? 0, 2),
+                'max_'.$metric => $aggregates->max_metric ?? 0,
+                'min_'.$metric => $aggregates->min_metric ?? 0,
                 'total_reading_time' => round($aggregates->total_reading_time ?? 0, 1),
             ],
             'trends' => [
@@ -153,18 +152,15 @@ class GetBlogAnalyticsAction extends BaseAction
 
     /**
      * Get date format for SQL grouping
-     *
-     * @param string $period
-     * @return string
      */
     protected function getDateFormat(string $period): string
     {
         return match ($period) {
-            'day' => "DATE(created_at)",
-            'week' => "YEARWEEK(created_at, 1)",
+            'day' => 'DATE(created_at)',
+            'week' => 'YEARWEEK(created_at, 1)',
             'month' => "DATE_FORMAT(created_at, '%Y-%m')",
-            'year' => "YEAR(created_at)",
-            default => "DATE(created_at)"
+            'year' => 'YEAR(created_at)',
+            default => 'DATE(created_at)'
         };
     }
 }

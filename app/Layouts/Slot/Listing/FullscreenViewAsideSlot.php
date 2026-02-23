@@ -12,22 +12,21 @@ use Litepie\Layout\Components\MediaComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Sections\DetailSection;
 use Litepie\Layout\Sections\FooterSection;
-use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
 /**
  * Fullscreen View Aside Slot
- * 
+ *
  * **Purpose**: Builds an optimized fullscreen layout for viewing a listing/property in immersive mode.
- * 
+ *
  * **Component Structure**:
  * - Header: Title, status badge, action buttons (edit, delete, more options) - sticky
  * - Main: Two-column layout:
  *   - Left (70%): Property image gallery with detailed media display
  *   - Right (30%): Property details form with scrollable content
  * - Footer: Action buttons (close, print, export) - sticky
- * 
+ *
  * **Features**:
  * - Fullscreen mode (100vw x 100vh)
  * - Two-column responsive layout optimized for large screens
@@ -36,14 +35,14 @@ use Litepie\Layout\SlotManager;
  * - Sticky header and footer for easy access
  * - Full-width utilization for better visibility
  * - Rich media display with captions and navigation
- * 
+ *
  * **Key Differences from Regular ViewAsideSlot**:
  * - Uses full viewport width instead of aside constrained width
  * - Two-column layout instead of stacked single column
  * - Larger media gallery display
  * - More spacious form layout
  * - Optimized for immersive property viewing experience
- * 
+ *
  * **Architecture Pattern**:
  * This follows the fullscreen-specific slot pattern:
  * 1. make() - Main builder method
@@ -51,8 +50,7 @@ use Litepie\Layout\SlotManager;
  * 3. buildFooter() - Private method for footer construction
  * 4. buildLeftPanel() - Private method for media gallery panel
  * 5. buildRightPanel() - Private method for details form panel
- * 
- * @package App\Layouts\Slot\Listing
+ *
  * @see \App\Layouts\Slot\Listing\ViewAsideSlot Regular view slot (aside drawer)
  */
 class FullscreenViewAsideSlot
@@ -63,8 +61,7 @@ class FullscreenViewAsideSlot
      * Uses proper builder pattern with separate header, main, left, right, footer slots
      * that can be composed together using DetailSection
      *
-     * @param array $masterData Master data for form
-     * @return array
+     * @param  array  $masterData  Master data for form
      */
     public static function make(array $masterData = []): array
     {
@@ -79,8 +76,6 @@ class FullscreenViewAsideSlot
 
     /**
      * Build left slot with image gallery and property details
-     *
-     * @return SlotManager
      */
     private static function buildLeftSlot(array $masterData): SlotManager
     {
@@ -98,8 +93,7 @@ class FullscreenViewAsideSlot
     /**
      * Build right slot with property overview and details form
      *
-     * @param array $masterData Master data for form
-     * @return SlotManager
+     * @param  array  $masterData  Master data for form
      */
     private static function buildRightSlot(array $masterData): SlotManager
     {
@@ -116,8 +110,6 @@ class FullscreenViewAsideSlot
 
     /**
      * Build header slot for fullscreen view
-     *
-     * @return SlotManager
      */
     private static function buildHeaderSlot(): SlotManager
     {
@@ -189,7 +181,7 @@ class FullscreenViewAsideSlot
                     'action' => 'edit',
                     'type' => 'aside',
                     'component' => 'edit-listing-full',
-                    'tooltip' => __('layout.tooltip_edit_listing')
+                    'tooltip' => __('layout.tooltip_edit_listing'),
                 ])
         );
 
@@ -309,8 +301,6 @@ class FullscreenViewAsideSlot
 
     /**
      * Build left panel with image gallery
-     *
-     * @return CardComponent
      */
     private static function buildLeftPanel(): CardComponent
     {
@@ -327,21 +317,21 @@ class FullscreenViewAsideSlot
                 ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1600, 'h' => 900]),
                 [
                     'alt' => __('layout.image_living_room_alt'),
-                    'caption' => __('layout.image_living_room_caption')
+                    'caption' => __('layout.image_living_room_caption'),
                 ]
             )
             ->addItem(
                 ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1600, 'h' => 900]),
                 [
                     'alt' => __('layout.image_kitchen_alt'),
-                    'caption' => __('layout.image_kitchen_caption')
+                    'caption' => __('layout.image_kitchen_caption'),
                 ]
             )
             ->addItem(
                 ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1600, 'h' => 900]),
                 [
                     'alt' => __('layout.image_bedroom_alt'),
-                    'caption' => __('layout.image_bedroom_caption')
+                    'caption' => __('layout.image_bedroom_caption'),
                 ]
             )
             ->gridColumnSpan(12);
@@ -422,8 +412,7 @@ class FullscreenViewAsideSlot
     /**
      * Build right panel with property details form
      *
-     * @param array $masterData Master data for form
-     * @return CardComponent
+     * @param  array  $masterData  Master data for form
      */
     private static function buildRightPanel(array $masterData): CardComponent
     {
@@ -443,35 +432,35 @@ class FullscreenViewAsideSlot
                     ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_living_room_alt'),
-                        'caption' => __('layout.image_living_room_caption')
+                        'caption' => __('layout.image_living_room_caption'),
                     ]
                 )
                 ->addItem(
                     ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_kitchen_alt'),
-                        'caption' => __('layout.image_kitchen_caption')
+                        'caption' => __('layout.image_kitchen_caption'),
                     ]
                 )
                 ->addItem(
                     ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_bedroom_alt'),
-                        'caption' => __('layout.image_bedroom_caption')
+                        'caption' => __('layout.image_bedroom_caption'),
                     ]
                 )
                 ->addItem(
                     ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_master_bedroom_alt'),
-                        'caption' => __('layout.image_master_bedroom_caption')
+                        'caption' => __('layout.image_master_bedroom_caption'),
                     ]
                 )
                 ->addItem(
                     ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 1200, 'h' => 675]),
                     [
                         'alt' => __('layout.image_backyard_alt'),
-                        'caption' => __('layout.image_backyard_caption')
+                        'caption' => __('layout.image_backyard_caption'),
                     ]
                 )
                 ->gridColumnSpan(12)
@@ -534,8 +523,6 @@ class FullscreenViewAsideSlot
 
     /**
      * Build footer slot for fullscreen view
-     *
-     * @return SlotManager
      */
     private static function buildFooterSlot(): SlotManager
     {

@@ -10,10 +10,8 @@ use Litepie\Actions\BaseAction;
 
 /**
  * CreateListingAction
- * 
+ *
  * Create a new property listing with validation and automatic ID generation
- * 
- * @package App\Actions\Listing
  */
 class CreateListingAction extends BaseAction
 {
@@ -64,7 +62,7 @@ class CreateListingAction extends BaseAction
                 'seo_meta',
                 'schema_markup',
                 'analytics',
-                'custom_fields'
+                'custom_fields',
             ];
 
             foreach ($arrayFields as $field) {
@@ -84,7 +82,7 @@ class CreateListingAction extends BaseAction
 
             return ActionResult::success($listing, 'Listing created successfully');
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to create listing: ' . $e->getMessage());
+            return ActionResult::failure('Failed to create listing: '.$e->getMessage());
         }
     }
 }

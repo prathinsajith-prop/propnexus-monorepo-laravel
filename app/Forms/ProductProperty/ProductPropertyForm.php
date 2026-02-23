@@ -9,20 +9,18 @@ use Litepie\Layout\Components\FormComponent;
  *
  * Comprehensive product property form with all sections matching
  * the bixo_product_properties table fields.
- *
- * @package App\Forms\ProductProperty
  */
 class ProductPropertyForm
 {
     /**
      * Create the product property form.
      *
-     * @param string     $formId     Form identifier
-     * @param string     $method     HTTP method (POST/PUT)
-     * @param string     $action     Form action URL
-     * @param array      $masterData Master data for dropdowns
-     * @param string|null $dataUrl   URL to pre-fill data (edit mode)
-     * @param bool        $isCreate  Whether this is a create form
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (POST/PUT)
+     * @param  string  $action  Form action URL
+     * @param  array  $masterData  Master data for dropdowns
+     * @param  string|null  $dataUrl  URL to pre-fill data (edit mode)
+     * @param  bool  $isCreate  Whether this is a create form
      * @return FormComponent
      */
     public static function make($formId, $method, $action, $masterData, $dataUrl = null, $isCreate = false)

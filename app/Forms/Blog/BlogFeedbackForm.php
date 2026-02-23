@@ -6,21 +6,19 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * BlogFeedbackForm
- * 
+ *
  * Form for collecting feedback with:
  * - Feedback message (textarea)
  * - Agree to terms (checkbox)
- * 
- * @package App\Forms\Blog
  */
 class BlogFeedbackForm
 {
     /**
      * Create blog feedback form structure
      *
-     * @param string $formId Form identifier
-     * @param string $method HTTP method (POST/PUT)
-     * @param string $action Form action URL
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (POST/PUT)
+     * @param  string  $action  Form action URL
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make(string $formId = 'feedback-form', string $method = 'POST', string $action = '/api/blogs/:id/feedback')

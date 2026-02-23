@@ -14,22 +14,20 @@ use Litepie\Layout\SlotManager;
 
 /**
  * Blog Modal Slot Builder
- * 
+ *
  * Blog-specific modal configurations using DetailSection structure.
  * Follows the same clean architecture pattern as aside slots.
- * 
- * @package App\Layouts\Slot\Blog
  */
 class ModalSlot
 {
     /**
      * Build create blog modal
      *
-     * @param array $options [
-     *   'masterData' => array,  // Master data for form
-     *   'apiUrl' => string,     // API endpoint (default: /api/blogs)
-     *   'method' => string,     // HTTP method (default: POST)
-     * ]
+     * @param  array  $options  [
+     *                          'masterData' => array,  // Master data for form
+     *                          'apiUrl' => string,     // API endpoint (default: /api/blogs)
+     *                          'method' => string,     // HTTP method (default: POST)
+     *                          ]
      * @return array Modal definition
      */
     public static function createBlog(array $options = []): array
@@ -140,11 +138,11 @@ class ModalSlot
     /**
      * Build delete blog confirmation modal
      *
-     * @param array $options [
-     *   'itemName' => string,    // Optional specific blog title
-     *   'apiUrl' => string,      // API endpoint (default: /api/blogs/:id)
-     *   'method' => string,      // HTTP method (default: DELETE)
-     * ]
+     * @param  array  $options  [
+     *                          'itemName' => string,    // Optional specific blog title
+     *                          'apiUrl' => string,      // API endpoint (default: /api/blogs/:id)
+     *                          'method' => string,      // HTTP method (default: DELETE)
+     *                          ]
      * @return array Modal definition
      */
     public static function deleteBlog(array $options = []): array
@@ -220,7 +218,7 @@ class ModalSlot
                             'action' => 'submit',
                             'dataUrl' => $config['apiUrl'],
                             'method' => $config['method'],
-                            'color' => 'danger'
+                            'color' => 'danger',
                         ])
                 )
         );
@@ -246,11 +244,11 @@ class ModalSlot
     /**
      * Build publish blog confirmation modal
      *
-     * @param array $options [
-     *   'itemName' => string,    // Blog title (required)
-     *   'apiUrl' => string,      // API endpoint (default: /api/blogs/:id/publish)
-     *   'method' => string,      // HTTP method (default: POST)
-     * ]
+     * @param  array  $options  [
+     *                          'itemName' => string,    // Blog title (required)
+     *                          'apiUrl' => string,      // API endpoint (default: /api/blogs/:id/publish)
+     *                          'method' => string,      // HTTP method (default: POST)
+     *                          ]
      * @return array Modal definition
      */
     public static function publishBlog(array $options = []): array
@@ -326,7 +324,7 @@ class ModalSlot
                             'action' => 'submit',
                             'dataUrl' => $config['apiUrl'],
                             'method' => $config['method'],
-                            'color' => 'success'
+                            'color' => 'success',
                         ])
                 )
         );

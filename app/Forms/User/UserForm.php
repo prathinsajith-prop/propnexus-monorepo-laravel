@@ -6,10 +6,8 @@ use Litepie\Layout\LayoutBuilder;
 
 /**
  * UserForm
- * 
+ *
  * Comprehensive user management form with diverse field types
- * 
- * @package App\Forms\User
  */
 class UserForm
 {
@@ -18,7 +16,7 @@ class UserForm
      */
     public static function make($formId, $method, $action, $masterData, $dataUrl = null)
     {
-        $formLayout = LayoutBuilder::create($formId . '-layout', 'form');
+        $formLayout = LayoutBuilder::create($formId.'-layout', 'form');
 
         $formLayout->section('content', function ($section) use ($formId, $method, $action, $masterData, $dataUrl) {
             $form = $section->form($formId)
@@ -110,7 +108,7 @@ class UserForm
                 ->columns(3);
 
             foreach ($masterData['skills'] as $skill) {
-                $skillsGroup->rating('skills[' . $skill['value'] . ']')
+                $skillsGroup->rating('skills['.$skill['value'].']')
                     ->label($skill['label'])
                     ->max(5)
                     ->width(4);

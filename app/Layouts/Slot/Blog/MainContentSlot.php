@@ -9,7 +9,7 @@ use Litepie\Layout\SlotManager;
 
 /**
  * Blog Main Content Slot
- * 
+ *
  * Builds the main content area for blog asides with form and supporting components
  */
 class MainContentSlot
@@ -17,12 +17,11 @@ class MainContentSlot
     /**
      * Build main content slot with blog form and text
      *
-     * @param array $masterData Master data for form
-     * @param string $formId Form identifier
-     * @param string $method HTTP method
-     * @param string $submitUrl Submit URL
-     * @param string|null $dataUrl Optional data URL for editing
-     * @return SlotManager
+     * @param  array  $masterData  Master data for form
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method
+     * @param  string  $submitUrl  Submit URL
+     * @param  string|null  $dataUrl  Optional data URL for editing
      */
     public static function make(
         array $masterData = [],
@@ -44,7 +43,7 @@ class MainContentSlot
         $mainGrid->add($blogForm->gridColumnSpan(12));
 
         // Create form grid for additional form component
-        $blogFormGrid = self::buildBlogFormGrid($formId . '-activity', $method, $submitUrl, $masterData, $dataUrl);
+        $blogFormGrid = self::buildBlogFormGrid($formId.'-activity', $method, $submitUrl, $masterData, $dataUrl);
 
         // Build and return SlotManager
         return SlotManager::make('main-slot')
@@ -63,12 +62,11 @@ class MainContentSlot
     /**
      * Build blog form grid component
      *
-     * @param string $formId Form identifier
-     * @param string $method HTTP method
-     * @param string $submitUrl Submit URL
-     * @param array $masterData Master data
-     * @param string|null $dataUrl Optional data URL
-     * @return GridSection
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method
+     * @param  string  $submitUrl  Submit URL
+     * @param  array  $masterData  Master data
+     * @param  string|null  $dataUrl  Optional data URL
      */
     private static function buildBlogFormGrid(
         string $formId,
@@ -101,8 +99,6 @@ class MainContentSlot
 
     /**
      * Build text component for main content
-     *
-     * @return TextComponent
      */
     private static function buildTextComponent(): TextComponent
     {
@@ -115,8 +111,7 @@ class MainContentSlot
     /**
      * Quick helper to create main content for creating a blog
      *
-     * @param array $masterData Master data
-     * @return SlotManager
+     * @param  array  $masterData  Master data
      */
     public static function forCreate(array $masterData = []): SlotManager
     {
@@ -126,8 +121,7 @@ class MainContentSlot
     /**
      * Quick helper to create main content for editing a blog
      *
-     * @param array $masterData Master data
-     * @return SlotManager
+     * @param  array  $masterData  Master data
      */
     public static function forEdit(array $masterData = []): SlotManager
     {
@@ -137,8 +131,7 @@ class MainContentSlot
     /**
      * Quick helper to create main content for viewing a blog
      *
-     * @param array $masterData Master data
-     * @return SlotManager
+     * @param  array  $masterData  Master data
      */
     public static function forView(array $masterData = []): SlotManager
     {

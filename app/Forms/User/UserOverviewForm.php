@@ -6,19 +6,17 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * UserOverviewForm
- * 
+ *
  * Read-only overview form for displaying user profile details in a 3-column grid.
  * Used in cards and overview sections.
- * 
- * @package App\Forms\User
  */
 class UserOverviewForm
 {
     /**
      * Create user overview form structure
      *
-     * @param string $formId Form identifier
-     * @param string|null $dataUrl URL to fetch data from
+     * @param  string  $formId  Form identifier
+     * @param  string|null  $dataUrl  URL to fetch data from
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make(string $formId = 'user-overview-form', ?string $dataUrl = null)
@@ -94,8 +92,8 @@ class UserOverviewForm
     /**
      * Create a compact version with fewer fields
      *
-     * @param string $formId Form identifier
-     * @param string|null $dataUrl URL to fetch data from
+     * @param  string  $formId  Form identifier
+     * @param  string|null  $dataUrl  URL to fetch data from
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function makeCompact(string $formId = 'user-overview-compact', ?string $dataUrl = null)

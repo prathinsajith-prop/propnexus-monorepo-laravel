@@ -8,14 +8,11 @@ use App\Layouts\Slot\ProductProperty\EditAsideSlot;
 use App\Layouts\Slot\ProductProperty\FullscreenViewAsideSlot;
 use App\Layouts\Slot\ProductProperty\ModalSlot;
 use App\Layouts\Slot\ProductProperty\ViewAsideSlot;
-use Litepie\Layout\Sections\GridSection;
 
 /**
  * ProductProperty LayoutBuilder
- * 
+ *
  * Orchestrates construction of all product property layout sections.
- * 
- * @package App\Layouts\Builder\ProductProperty
  */
 class LayoutBuilder
 {
@@ -75,9 +72,9 @@ class LayoutBuilder
         $colorMap = [
             'primary' => ['color' => '#3b82f6', 'bg' => '#f0f9ff'],
             'success' => ['color' => '#10b981', 'bg' => '#f7fef9'],
-            'info'    => ['color' => '#8b5cf6', 'bg' => '#faf8ff'],
+            'info' => ['color' => '#8b5cf6', 'bg' => '#faf8ff'],
             'warning' => ['color' => '#f59e0b', 'bg' => '#fffef7'],
-            'error'   => ['color' => '#ef4444', 'bg' => '#fef9f9'],
+            'error' => ['color' => '#ef4444', 'bg' => '#fef9f9'],
         ];
 
         $colors = $colorMap[$color] ?? $colorMap['primary'];
@@ -90,14 +87,14 @@ class LayoutBuilder
             ->gridColumnSpan(3)
             ->dataUrl("/api/product-property/stats/{$id}")
             ->meta([
-                'icon'           => $icon,
-                'iconPosition'   => 'top',
-                'iconColor'      => $colors['color'],
-                'iconSize'       => 'md',
-                'iconBgColor'    => $colors['bg'],
-                'trend'          => $trend,
+                'icon' => $icon,
+                'iconPosition' => 'top',
+                'iconColor' => $colors['color'],
+                'iconSize' => 'md',
+                'iconBgColor' => $colors['bg'],
+                'trend' => $trend,
                 'trendDirection' => $trendDir,
-                'displayType'    => $trendIcon,
+                'displayType' => $trendIcon,
             ]);
     }
 
@@ -210,9 +207,9 @@ class LayoutBuilder
             ->data('component', 'create-property')
             ->data('action', 'create')
             ->data('config', [
-                'width'   => '800px',
-                'height'  => '100vh',
-                'anchor'  => 'right',
+                'width' => '800px',
+                'height' => '100vh',
+                'anchor' => 'right',
                 'backdrop' => true,
             ])
             ->meta(['tooltip' => __('layout.create_new_property')]);
@@ -236,8 +233,8 @@ class LayoutBuilder
     {
         return ModalSlot::createProperty([
             'masterData' => $masterData,
-            'apiUrl'     => '/api/product-property',
-            'method'     => 'POST',
+            'apiUrl' => '/api/product-property',
+            'method' => 'POST',
         ]);
     }
 
@@ -259,8 +256,8 @@ class LayoutBuilder
     {
         return ModalSlot::deleteProperty([
             'itemName' => $itemName ?: null,
-            'apiUrl'   => '/api/product-property/:id',
-            'method'   => 'DELETE',
+            'apiUrl' => '/api/product-property/:id',
+            'method' => 'DELETE',
         ]);
     }
 

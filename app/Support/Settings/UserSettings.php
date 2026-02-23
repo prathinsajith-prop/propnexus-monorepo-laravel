@@ -4,11 +4,9 @@ namespace App\Support\Settings;
 
 /**
  * UserSettings
- * 
+ *
  * Manages form group visibility and edit permissions for user forms
  * Provides default settings and allows contextual overrides
- * 
- * @package App\Support\Settings
  */
 class UserSettings
 {
@@ -19,28 +17,28 @@ class UserSettings
     {
         return [
             'groups' => [
-                'form.create-user-form.personal-info'    => ['show' => true,  'edit' => true],
-                'form.create-user-form.employment-info'  => ['show' => true,  'edit' => true],
-                'form.create-user-form.media-info'       => ['show' => true,  'edit' => true],
-                'form.create-user-form.security-info'    => ['show' => true,  'edit' => true],
-                'form.create-user-form.skills-info'      => ['show' => true,  'edit' => true],
-                'form.create-user-form.address-info'     => ['show' => true,  'edit' => true],
+                'form.create-user-form.personal-info' => ['show' => true,  'edit' => true],
+                'form.create-user-form.employment-info' => ['show' => true,  'edit' => true],
+                'form.create-user-form.media-info' => ['show' => true,  'edit' => true],
+                'form.create-user-form.security-info' => ['show' => true,  'edit' => true],
+                'form.create-user-form.skills-info' => ['show' => true,  'edit' => true],
+                'form.create-user-form.address-info' => ['show' => true,  'edit' => true],
 
-                'form.edit-user-form.personal-info'      => ['show' => true,  'edit' => true],
-                'form.edit-user-form.employment-info'    => ['show' => true,  'edit' => true],
-                'form.edit-user-form.media-info'         => ['show' => true,  'edit' => true],
-                'form.edit-user-form.security-info'      => ['show' => true,  'edit' => true],
-                'form.edit-user-form.skills-info'        => ['show' => true,  'edit' => true],
-                'form.edit-user-form.address-info'       => ['show' => true,  'edit' => true],
+                'form.edit-user-form.personal-info' => ['show' => true,  'edit' => true],
+                'form.edit-user-form.employment-info' => ['show' => true,  'edit' => true],
+                'form.edit-user-form.media-info' => ['show' => true,  'edit' => true],
+                'form.edit-user-form.security-info' => ['show' => true,  'edit' => true],
+                'form.edit-user-form.skills-info' => ['show' => true,  'edit' => true],
+                'form.edit-user-form.address-info' => ['show' => true,  'edit' => true],
 
-                'form.view-user-form.personal-info'      => ['show' => true,  'edit' => false],
-                'form.view-user-form.employment-info'    => ['show' => true,  'edit' => false],
-                'form.view-user-form.media-info'         => ['show' => true,  'edit' => false],
-                'form.view-user-form.security-info'      => ['show' => false, 'edit' => false],
-                'form.view-user-form.skills-info'        => ['show' => true,  'edit' => false],
-                'form.view-user-form.address-info'       => ['show' => true,  'edit' => false],
+                'form.view-user-form.personal-info' => ['show' => true,  'edit' => false],
+                'form.view-user-form.employment-info' => ['show' => true,  'edit' => false],
+                'form.view-user-form.media-info' => ['show' => true,  'edit' => false],
+                'form.view-user-form.security-info' => ['show' => false, 'edit' => false],
+                'form.view-user-form.skills-info' => ['show' => true,  'edit' => false],
+                'form.view-user-form.address-info' => ['show' => true,  'edit' => false],
             ],
-            'fields'       => [],
+            'fields' => [],
             'formSettings' => [],
         ];
     }
@@ -50,9 +48,8 @@ class UserSettings
      * Mirrors the Model::getSettings($context) pattern; lives here because
      * User data is array-based (JSON file), not an Eloquent model instance.
      *
-     * @param string $context   'create' | 'edit' | 'view'
-     * @param array  $userData  The user data array returned by the action
-     * @return array
+     * @param  string  $context  'create' | 'edit' | 'view'
+     * @param  array  $userData  The user data array returned by the action
      */
     public static function getSettings(string $context = 'view', array $userData = []): array
     {

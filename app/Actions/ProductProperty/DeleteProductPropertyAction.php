@@ -12,15 +12,13 @@ use Litepie\Actions\BaseAction;
  * DeleteProductPropertyAction
  *
  * Soft-delete (or force-delete) a product property.
- *
- * @package App\Actions\ProductProperty
  */
 class DeleteProductPropertyAction extends BaseAction
 {
     protected function rules(): array
     {
         return [
-            'id'    => 'required|string',
+            'id' => 'required|string',
             'force' => 'sometimes|boolean',
         ];
     }
@@ -30,13 +28,13 @@ class DeleteProductPropertyAction extends BaseAction
         try {
             $id = $this->data['id'];
 
-            if (!is_numeric($id)) {
+            if (! is_numeric($id)) {
                 $decoded = hashids_decode($id);
-                $id      = $decoded ?: $id;
+                $id = $decoded ?: $id;
             }
 
             $property = BixoProductProperties::where('id', $id)->first();
-            if (!$property) {
+            if (! $property) {
                 return ActionResult::failure('Property not found');
             }
 
@@ -52,7 +50,7 @@ class DeleteProductPropertyAction extends BaseAction
 
             return ActionResult::success(null, $message);
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to delete property: ' . $e->getMessage());
+            return ActionResult::failure('Failed to delete property: '.$e->getMessage());
         }
     }
 }

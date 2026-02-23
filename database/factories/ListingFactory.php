@@ -36,12 +36,12 @@ class ListingFactory extends Factory
         $availability = $status === 'sold' ? 'sold' : ($status === 'rented' ? 'rented' : fake()->randomElement($availabilities));
 
         $title = $this->generateTitle($propertyType, $listingType, $bedrooms, $area);
-        $slug = \Illuminate\Support\Str::slug($title) . '-' . fake()->unique()->bothify('###??');
+        $slug = \Illuminate\Support\Str::slug($title).'-'.fake()->unique()->bothify('###??');
         $price = $this->generatePrice($propertyType, $listingType, $bedrooms);
 
         return [
-            'listing_id' => 'LST-' . strtoupper(uniqid()),
-            'mls_number' => 'MLS-' . fake()->unique()->numerify('#####'),
+            'listing_id' => 'LST-'.strtoupper(uniqid()),
+            'mls_number' => 'MLS-'.fake()->unique()->numerify('#####'),
             'title' => $title,
             'slug' => $slug,
             'property_type' => $propertyType,
@@ -78,17 +78,17 @@ class ListingFactory extends Factory
             'pet_friendly' => fake()->boolean(30),
             'description' => $this->generateDescription($propertyType, $bedrooms, $area),
             'short_description' => fake()->sentence(15),
-            'featured_image' => '/images/listings/' . fake()->slug() . '.jpg',
+            'featured_image' => '/images/listings/'.fake()->slug().'.jpg',
             'images' => [
-                '/images/listings/' . fake()->slug() . '-1.jpg',
-                '/images/listings/' . fake()->slug() . '-2.jpg',
-                '/images/listings/' . fake()->slug() . '-3.jpg',
+                '/images/listings/'.fake()->slug().'-1.jpg',
+                '/images/listings/'.fake()->slug().'-2.jpg',
+                '/images/listings/'.fake()->slug().'-3.jpg',
             ],
             'floor_plans' => [
-                '/images/floor-plans/' . fake()->slug() . '.pdf',
+                '/images/floor-plans/'.fake()->slug().'.pdf',
             ],
-            'video_url' => fake()->boolean(40) ? 'https://youtube.com/watch?v=' . fake()->bothify('???########') : null,
-            'virtual_tour_url' => fake()->boolean(30) ? 'https://virtualtour.com/' . fake()->slug() : null,
+            'video_url' => fake()->boolean(40) ? 'https://youtube.com/watch?v='.fake()->bothify('???########') : null,
+            'virtual_tour_url' => fake()->boolean(30) ? 'https://virtualtour.com/'.fake()->slug() : null,
             'status' => $status,
             'availability' => $availability,
             'available_from' => fake()->dateTimeBetween('now', '+2 months'),
@@ -135,7 +135,7 @@ class ListingFactory extends Factory
             'expires_at' => fake()->boolean(20) ? fake()->dateTimeBetween('+1 month', '+6 months') : null,
             'sold_at' => $status === 'sold' ? fake()->dateTimeBetween('-2 months', 'now') : null,
             'rented_at' => $status === 'rented' ? fake()->dateTimeBetween('-2 months', 'now') : null,
-            'reference_number' => 'REF-' . fake()->numerify('#####'),
+            'reference_number' => 'REF-'.fake()->numerify('#####'),
             'documents' => [],
             'custom_fields' => [],
             'internal_notes' => fake()->boolean(40) ? fake()->sentence(10) : null,
@@ -150,7 +150,7 @@ class ListingFactory extends Factory
     private function generateTitle($propertyType, $listingType, $bedrooms, $area): string
     {
         $typeLabel = match ($propertyType) {
-            'residential' => $bedrooms > 0 ? "{$bedrooms}BR Apartment" : "Studio Apartment",
+            'residential' => $bedrooms > 0 ? "{$bedrooms}BR Apartment" : 'Studio Apartment',
             'commercial' => 'Commercial Space',
             'land' => 'Land Plot',
             'industrial' => 'Industrial Unit',
@@ -257,10 +257,10 @@ class ListingFactory extends Factory
     {
         $descriptions = [
             "Stunning property in the heart of {$area}. This exceptional unit offers breathtaking views and modern amenities.",
-            "Luxurious living space featuring contemporary design and premium finishes. Perfect for those seeking comfort and style.",
+            'Luxurious living space featuring contemporary design and premium finishes. Perfect for those seeking comfort and style.',
             "Prime location in {$area} with easy access to major landmarks, shopping, and dining. Don't miss this opportunity!",
-            "Spacious and well-maintained property with high-quality fittings. Ideal for families or professionals.",
-            "Modern property with elegant interiors and state-of-the-art facilities. Experience luxury living at its finest.",
+            'Spacious and well-maintained property with high-quality fittings. Ideal for families or professionals.',
+            'Modern property with elegant interiors and state-of-the-art facilities. Experience luxury living at its finest.',
         ];
 
         return fake()->randomElement($descriptions);
@@ -271,7 +271,7 @@ class ListingFactory extends Factory
      */
     public function residential(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'property_type' => 'residential',
         ]);
     }
@@ -281,7 +281,7 @@ class ListingFactory extends Factory
      */
     public function commercial(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'property_type' => 'commercial',
         ]);
     }
@@ -291,7 +291,7 @@ class ListingFactory extends Factory
      */
     public function forSale(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'listing_type' => 'sale',
         ]);
     }
@@ -301,7 +301,7 @@ class ListingFactory extends Factory
      */
     public function forRent(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'listing_type' => 'rent',
         ]);
     }
@@ -311,7 +311,7 @@ class ListingFactory extends Factory
      */
     public function active(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'status' => 'active',
             'availability' => 'available',
             'published_at' => now(),
@@ -323,7 +323,7 @@ class ListingFactory extends Factory
      */
     public function featured(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'is_featured' => true,
         ]);
     }

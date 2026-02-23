@@ -15,17 +15,14 @@ use Litepie\Layout\SlotManager;
  * Create Aside Slot — Product Property
  *
  * Builds the aside drawer for creating a new product property.
- *
- * @package App\Layouts\Slot\ProductProperty
  */
 class CreateAsideSlot
 {
     /**
      * Build create product property aside.
      *
-     * @param array $masterData Master data for form dropdowns
-     * @param bool  $fullscreen Whether to display fullscreen
-     * @return array
+     * @param  array  $masterData  Master data for form dropdowns
+     * @param  bool  $fullscreen  Whether to display fullscreen
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
@@ -53,7 +50,7 @@ class CreateAsideSlot
             ->toArray();
 
         if ($fullscreen && is_array($aside)) {
-            $aside['width']  = '100vw';
+            $aside['width'] = '100vw';
             $aside['height'] = '100vh';
         }
 
@@ -66,11 +63,11 @@ class CreateAsideSlot
     {
         $centerSlot = SlotManager::make('create-property-header-center')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'column',
-                'gap'            => '1',
-                'justify'        => 'start',
-                'items'          => 'start',
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
                 'gridColumnSpan' => 6,
             ]);
 
@@ -89,11 +86,11 @@ class CreateAsideSlot
 
         $rightSlot = SlotManager::make('create-property-header-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 6,
             ]);
 
@@ -120,11 +117,11 @@ class CreateAsideSlot
     {
         $footerRightSlot = SlotManager::make('create-property-footer-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 12,
             ]);
 

@@ -27,7 +27,7 @@ class BlogFactory extends Factory
         $languages = ['en', 'es', 'fr', 'de'];
 
         return [
-            'blog_id' => 'BLOG-' . strtoupper(uniqid()),
+            'blog_id' => 'BLOG-'.strtoupper(uniqid()),
             'title' => $title,
             'slug' => $slug,
             'excerpt' => fake()->paragraph(2),
@@ -39,14 +39,14 @@ class BlogFactory extends Factory
             'category' => fake()->randomElement($categories),
             'categories' => fake()->randomElements($categories, rand(1, 3)),
             'tags' => fake()->randomElements($tags, rand(2, 5)),
-            'featured_image' => '/images/blogs/' . fake()->slug() . '.jpg',
+            'featured_image' => '/images/blogs/'.fake()->slug().'.jpg',
             'gallery' => fake()->boolean(40) ? [
-                '/images/gallery/' . fake()->slug() . '.jpg',
-                '/images/gallery/' . fake()->slug() . '.jpg',
+                '/images/gallery/'.fake()->slug().'.jpg',
+                '/images/gallery/'.fake()->slug().'.jpg',
             ] : [],
-            'video_url' => fake()->boolean(20) ? 'https://youtube.com/watch?v=' . fake()->bothify('???########') : null,
+            'video_url' => fake()->boolean(20) ? 'https://youtube.com/watch?v='.fake()->bothify('???########') : null,
             'attachments' => fake()->boolean(30) ? [
-                ['name' => 'document.pdf', 'url' => '/files/' . fake()->slug() . '.pdf'],
+                ['name' => 'document.pdf', 'url' => '/files/'.fake()->slug().'.pdf'],
             ] : [],
             'language' => fake()->randomElement($languages),
             'translations' => [],
@@ -89,20 +89,20 @@ class BlogFactory extends Factory
         $numParagraphs = rand(5, 10);
 
         for ($i = 0; $i < $numParagraphs; $i++) {
-            $paragraphs[] = '<p>' . fake()->paragraph(rand(3, 6)) . '</p>';
+            $paragraphs[] = '<p>'.fake()->paragraph(rand(3, 6)).'</p>';
 
             // Randomly add a heading
             if (rand(0, 3) == 0) {
-                $paragraphs[] = '<h2>' . fake()->sentence(rand(3, 5)) . '</h2>';
+                $paragraphs[] = '<h2>'.fake()->sentence(rand(3, 5)).'</h2>';
             }
 
             // Randomly add a list
             if (rand(0, 4) == 0) {
                 $listItems = '';
                 for ($j = 0; $j < rand(3, 5); $j++) {
-                    $listItems .= '<li>' . fake()->sentence() . '</li>';
+                    $listItems .= '<li>'.fake()->sentence().'</li>';
                 }
-                $paragraphs[] = '<ul>' . $listItems . '</ul>';
+                $paragraphs[] = '<ul>'.$listItems.'</ul>';
             }
         }
 
@@ -114,7 +114,7 @@ class BlogFactory extends Factory
      */
     public function published(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'status' => 'published',
             'published_at' => fake()->dateTimeBetween('-6 months', 'now'),
         ]);
@@ -125,7 +125,7 @@ class BlogFactory extends Factory
      */
     public function featured(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'is_featured' => true,
         ]);
     }
@@ -135,7 +135,7 @@ class BlogFactory extends Factory
      */
     public function draft(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'status' => 'draft',
             'published_at' => null,
         ]);

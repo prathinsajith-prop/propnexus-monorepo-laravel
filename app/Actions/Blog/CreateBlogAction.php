@@ -3,16 +3,14 @@
 namespace App\Actions\Blog;
 
 use App\Models\Blog;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * CreateBlogAction
- * 
+ *
  * Handles blog post creation with validation
  * Auto-generates blog_id, slug, and calculates reading time
- * 
- * @package App\Actions\Blog
  */
 class CreateBlogAction extends BaseAction
 {
@@ -53,7 +51,7 @@ class CreateBlogAction extends BaseAction
 
             return ActionResult::success($blog, 'Blog post created successfully');
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to create blog post: ' . $e->getMessage(), [], 500);
+            return ActionResult::failure('Failed to create blog post: '.$e->getMessage());
         }
     }
 }

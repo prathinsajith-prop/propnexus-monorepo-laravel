@@ -13,22 +13,21 @@ use App\Enums\ProductFurnishing;
 use App\Enums\ProductPropertyFor;
 use App\Enums\ProductPropertyStatus;
 use App\Enums\ProductPropertyType;
-use App\Http\Controllers\Controller;
 use App\Layouts\ProductPropertyLayout;
 use App\Models\BixoProductProperties;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Litepie\Actions\ActionResult;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
+use Litepie\Actions\ActionResult;
 
 /**
  * ProductPropertyController
- * 
+ *
  * Product property management controller using Litepie Actions pattern
  * All CRUD operations for bixo_product_properties
- * 
+ *
  * Endpoints:
  * - GET  /product-properties           - Property management page (layout)
  * - GET  /api/product-property        - List properties (with filters, pagination)
@@ -40,8 +39,6 @@ use Illuminate\Support\Number;
  * - GET  /api/product-property-master-data - Get master data for dropdowns
  * - POST /api/upload/*                - File upload endpoints
  * - DELETE /api/files/{path}          - Delete uploaded files
- * 
- * @package App\Http\Controllers
  */
 class ProductPropertyController extends Controller
 {
@@ -73,9 +70,8 @@ class ProductPropertyController extends Controller
      * Get component section data by type and component name
      * Returns the specific section configuration for modals, drawers, etc.
      *
-     * @param Request $request
-     * @param string|null $type
-     * @param string|null $component
+     * @param  string|null  $type
+     * @param  string|null  $component
      * @return \Illuminate\Http\JsonResponse
      */
     public function getComponentSection(Request $request, $type = null, $component = null)
@@ -84,7 +80,7 @@ class ProductPropertyController extends Controller
         $type = $type ?? $request->input('type');
         $component = $component ?? $request->input('component');
 
-        if (!$type || !$component) {
+        if (! $type || ! $component) {
             return response()->json([
                 'error' => 'Missing required parameters: type and component',
             ], 400);
@@ -96,7 +92,7 @@ class ProductPropertyController extends Controller
         // Build the section data using ProductPropertyLayout
         $sectionData = ProductPropertyLayout::getComponentDefinition($type, $component, $masterData);
 
-        if (!$sectionData) {
+        if (! $sectionData) {
             return response()->json([
                 'error' => 'Component definition not found',
             ], 404);
@@ -119,7 +115,6 @@ class ProductPropertyController extends Controller
      * - per_page or limit: Items per page (default: 10)
      * - page: Page number (default: 1)
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function list(Request $request)
@@ -130,17 +125,16 @@ class ProductPropertyController extends Controller
     /**
      * Create a new property
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request)
     {
-        $result   = CreateProductPropertyAction::make(null, $request->all())->run();
+        $result = CreateProductPropertyAction::make(null, $request->all())->run();
         $property = $result->getData();
 
         return ActionResult::success(
             array_merge($property->toArray(), [
-                '_settings'    => $property->getSettings('create'),
+                '_settings' => $property->getSettings('create'),
                 '_masterdatas' => $property->getMasterdata(),
             ]),
             $result->getMessage()
@@ -150,8 +144,6 @@ class ProductPropertyController extends Controller
     /**
      * Get a single property
      *
-     * @param \App\Models\BixoProductProperties $property
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(BixoProductProperties $property, Request $request)
@@ -160,7 +152,7 @@ class ProductPropertyController extends Controller
 
         return ActionResult::success(
             array_merge($property->toArray(), [
-                '_settings'    => $property->getSettings($context),
+                '_settings' => $property->getSettings($context),
                 '_masterdatas' => $property->getMasterdata(),
             ])
         );
@@ -176,7 +168,7 @@ class ProductPropertyController extends Controller
 
         return ActionResult::success(
             array_merge($property->toArray(), [
-                '_settings'    => $property->getSettings('edit'),
+                '_settings' => $property->getSettings('edit'),
                 '_masterdatas' => $property->getMasterdata(),
             ]),
             $result->getMessage()
@@ -186,7 +178,7 @@ class ProductPropertyController extends Controller
     public function delete(BixoProductProperties $property, Request $request)
     {
         $deleteResult = DeleteProductPropertyAction::make(null, [
-            'id'    => $property->getKey(),
+            'id' => $property->getKey(),
             'force' => $request->boolean('force', false),
         ])->run();
 
@@ -201,7 +193,7 @@ class ProductPropertyController extends Controller
     /**
      * Get statistics for a specific stat card
      *
-     * @param string $statId
+     * @param  string  $statId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getStats($statId)
@@ -257,8 +249,7 @@ class ProductPropertyController extends Controller
     /**
      * Calculate trend percentage comparing current month vs. last month
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return string
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      */
     private function calculateTrend($query): string
     {
@@ -279,7 +270,7 @@ class ProductPropertyController extends Controller
         $change = (($currentValue - $lastValue) / $lastValue) * 100;
         $prefix = $change >= 0 ? '+' : '';
 
-        return $prefix . round($change, 1) . '%';
+        return $prefix.round($change, 1).'%';
     }
 
     /**
@@ -297,8 +288,6 @@ class ProductPropertyController extends Controller
 
     /**
      * Get master data for forms
-     *
-     * @return array
      */
     private function getMasterData(): array
     {
@@ -308,12 +297,12 @@ class ProductPropertyController extends Controller
                 config('performance.cache.master_data_ttl', 1800),
                 function () {
                     return [
-                        'category_types'        => ProductCategoryType::options(),
-                        'property_for'          => ProductPropertyFor::options(),
-                        'property_types'        => ProductPropertyType::options(),
-                        'statuses'              => ProductPropertyStatus::options(),
-                        'furnishing_statuses'   => ProductFurnishing::options(),
-                        'frequencies'           => ProductFrequency::options(),
+                        'category_types' => ProductCategoryType::options(),
+                        'property_for' => ProductPropertyFor::options(),
+                        'property_types' => ProductPropertyType::options(),
+                        'statuses' => ProductPropertyStatus::options(),
+                        'furnishing_statuses' => ProductFurnishing::options(),
+                        'frequencies' => ProductFrequency::options(),
                         'construction_statuses' => [
                             ['value' => 'Completed', 'label' => __('product_property.construction_completed')],
                             ['value' => 'Under Construction', 'label' => __('product_property.construction_under_construction')],
@@ -328,24 +317,25 @@ class ProductPropertyController extends Controller
                         'users' => User::select('id', 'name')
                             ->orderBy('name')
                             ->get()
-                            ->map(fn($user) => ['value' => $user->id, 'label' => $user->name])
+                            ->map(fn ($user) => ['value' => $user->id, 'label' => $user->name])
                             ->values()
                             ->toArray(),
                     ];
                 }
             );
         } catch (\Exception $e) {
-            Log::error('Failed to fetch master data: ' . $e->getMessage());
+            Log::error('Failed to fetch master data: '.$e->getMessage());
+
             return [
-                'category_types'        => [],
-                'property_for'          => [],
-                'property_types'        => [],
-                'statuses'              => [],
-                'furnishing_statuses'   => [],
+                'category_types' => [],
+                'property_for' => [],
+                'property_types' => [],
+                'statuses' => [],
+                'furnishing_statuses' => [],
                 'construction_statuses' => [],
-                'frequencies'           => [],
-                'listing_sources'       => [],
-                'users'                 => [],
+                'frequencies' => [],
+                'listing_sources' => [],
+                'users' => [],
             ];
         }
     }
@@ -353,7 +343,6 @@ class ProductPropertyController extends Controller
     /**
      * Upload an image file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadImage(Request $request)
@@ -364,14 +353,13 @@ class ProductPropertyController extends Controller
     /**
      * Upload a document file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadDocument(Request $request)
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:' . $this->getMaxFileSize('document'),
+                'file' => 'required|file|max:'.$this->getMaxFileSize('document'),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -396,7 +384,6 @@ class ProductPropertyController extends Controller
     /**
      * Upload a video file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadVideo(Request $request)
@@ -407,7 +394,6 @@ class ProductPropertyController extends Controller
     /**
      * Upload an attachment file
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadAttachment(Request $request)
@@ -418,27 +404,25 @@ class ProductPropertyController extends Controller
     /**
      * Generic file upload
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function upload(Request $request)
     {
         $type = $request->input('type', 'attachment');
+
         return $this->handleUpload($request, $type);
     }
 
     /**
      * Handle file upload using FileUploadAction
      *
-     * @param Request $request
-     * @param string $type
      * @return \Illuminate\Http\JsonResponse
      */
     private function handleUpload(Request $request, string $type)
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+                'file' => 'required|file|max:'.$this->getMaxFileSize($type),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -462,8 +446,7 @@ class ProductPropertyController extends Controller
     /**
      * Delete a file
      *
-     * @param string $path
-     * @param Request $request
+     * @param  string  $path
      * @return \Illuminate\Http\JsonResponse
      */
     public function deleteFile($path, Request $request)
@@ -492,7 +475,7 @@ class ProductPropertyController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete file: ' . $e->getMessage(),
+                'message' => 'Failed to delete file: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -504,22 +487,22 @@ class ProductPropertyController extends Controller
 
         // Created event
         $activities[] = [
-            'id'          => $index++,
-            'type'        => 'created',
+            'id' => $index++,
+            'type' => 'created',
             'description' => 'Property record created',
-            'subject'     => ['id' => $property->getKey(), 'ref' => $property->ref, 'title' => $property->title],
-            'properties'  => ['status' => $property->status?->value ?? $property->status],
+            'subject' => ['id' => $property->getKey(), 'ref' => $property->ref, 'title' => $property->title],
+            'properties' => ['status' => $property->status?->value ?? $property->status],
             'occurred_at' => $property->created_at?->toIso8601String(),
         ];
 
         // Published event
         if ($property->published_at) {
             $activities[] = [
-                'id'          => $index++,
-                'type'        => 'published',
+                'id' => $index++,
+                'type' => 'published',
                 'description' => 'Property published',
-                'subject'     => ['id' => $property->getKey(), 'ref' => $property->ref],
-                'properties'  => ['published_at' => $property->published_at?->toIso8601String()],
+                'subject' => ['id' => $property->getKey(), 'ref' => $property->ref],
+                'properties' => ['published_at' => $property->published_at?->toIso8601String()],
                 'occurred_at' => $property->published_at?->toIso8601String(),
             ];
         }
@@ -527,11 +510,11 @@ class ProductPropertyController extends Controller
         // Activated event
         if ($property->activated_at) {
             $activities[] = [
-                'id'          => $index++,
-                'type'        => 'activated',
+                'id' => $index++,
+                'type' => 'activated',
                 'description' => 'Property activated',
-                'subject'     => ['id' => $property->getKey(), 'ref' => $property->ref],
-                'properties'  => ['activated_at' => $property->activated_at?->toIso8601String()],
+                'subject' => ['id' => $property->getKey(), 'ref' => $property->ref],
+                'properties' => ['activated_at' => $property->activated_at?->toIso8601String()],
                 'occurred_at' => $property->activated_at?->toIso8601String(),
             ];
         }
@@ -539,23 +522,23 @@ class ProductPropertyController extends Controller
         // Updated event (if updated after creation)
         if ($property->updated_at && $property->updated_at->ne($property->created_at)) {
             $activities[] = [
-                'id'          => $index++,
-                'type'        => 'updated',
+                'id' => $index++,
+                'type' => 'updated',
                 'description' => 'Property record updated',
-                'subject'     => ['id' => $property->getKey(), 'ref' => $property->ref],
-                'properties'  => ['status' => $property->status?->value ?? $property->status],
+                'subject' => ['id' => $property->getKey(), 'ref' => $property->ref],
+                'properties' => ['status' => $property->status?->value ?? $property->status],
                 'occurred_at' => $property->updated_at?->toIso8601String(),
             ];
         }
 
         // Sort descending by occurred_at
-        usort($activities, fn($a, $b) => strcmp((string) ($b['occurred_at'] ?? ''), (string) ($a['occurred_at'] ?? '')));
+        usort($activities, fn ($a, $b) => strcmp((string) ($b['occurred_at'] ?? ''), (string) ($a['occurred_at'] ?? '')));
 
         return response()->json([
             'success' => true,
-            'data'    => $activities,
-            'meta'    => [
-                'total'   => count($activities),
+            'data' => $activities,
+            'meta' => [
+                'total' => count($activities),
                 'subject' => ['id' => $property->getKey(), 'ref' => $property->ref, 'title' => $property->title],
             ],
         ]);
@@ -563,9 +546,6 @@ class ProductPropertyController extends Controller
 
     /**
      * Get maximum file size for upload type (in KB)
-     *
-     * @param string $type
-     * @return int
      */
     private function getMaxFileSize(string $type): int
     {

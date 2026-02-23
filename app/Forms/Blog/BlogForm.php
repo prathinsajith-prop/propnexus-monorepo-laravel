@@ -6,7 +6,7 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * BlogForm
- * 
+ *
  * Comprehensive blog post form with sections for:
  * - Content (title, slug, excerpt, content)
  * - Publication (status, visibility, scheduling)
@@ -14,19 +14,17 @@ use Litepie\Layout\Components\FormComponent;
  * - Categorization (categories, tags)
  * - SEO (meta title, description, keywords, schema)
  * - Settings (comments, featured, sticky)
- * 
- * @package App\Forms\Blog
  */
 class BlogForm
 {
     /**
      * Create blog form structure
      *
-     * @param string $formId Form identifier
-     * @param string $method HTTP method (POST/PUT)
-     * @param string $action Form action URL
-     * @param array $masterData Master data for dropdowns
-     * @param string|null $dataUrl URL to fetch existing data
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (POST/PUT)
+     * @param  string  $action  Form action URL
+     * @param  array  $masterData  Master data for dropdowns
+     * @param  string|null  $dataUrl  URL to fetch existing data
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make($formId, $method, $action, $masterData, $dataUrl = null)

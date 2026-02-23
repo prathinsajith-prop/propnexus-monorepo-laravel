@@ -3,24 +3,22 @@
 namespace App\Actions\Blog;
 
 use App\Models\Blog;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * GetBlogAction
- * 
+ *
  * Retrieves a single blog post by ID (numeric or encoded hashid)
- * 
+ *
  * IMPORTANT: The 'id' parameter can be:
  * - Numeric ID: Direct blog table ID (e.g., 1, 42, 123)
  * - Encoded Hashid: Encoded blog table ID (e.g., "jR", "9x", "YEz")
- * 
+ *
  * Hashids are ALWAYS decoded to the blog table's 'id' column only.
  * No fallback to blog_id or slug when using hashids.
- * 
+ *
  * Optionally increments view count
- * 
- * @package App\Actions\Blog
  */
 class GetBlogAction extends BaseAction
 {
@@ -38,7 +36,7 @@ class GetBlogAction extends BaseAction
         $numericId = $id;
 
         // Decode hashid to get the numeric blog table ID
-        if (is_string($id) && !is_numeric($id)) {
+        if (is_string($id) && ! is_numeric($id)) {
             try {
                 $decoded = hashids_decode($id);
                 if ($decoded && is_numeric($decoded)) {
@@ -56,7 +54,7 @@ class GetBlogAction extends BaseAction
         // Find by numeric ID only (from blog table's id column)
         $blog = Blog::find($numericId);
 
-        if (!$blog) {
+        if (! $blog) {
             return ActionResult::failure('Blog post not found');
         }
 

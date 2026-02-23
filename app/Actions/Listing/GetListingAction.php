@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace App\Actions\Listing;
 
 use App\Models\Listing;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * GetListingAction
- * 
+ *
  * Retrieve a single listing by ID with caching
- * 
- * @package App\Actions\Listing
  */
 class GetListingAction extends BaseAction
 {
@@ -33,7 +31,7 @@ class GetListingAction extends BaseAction
             $incrementViews = $this->data['increment_views'] ?? false;
 
             // Try to decode if it's an encoded ID (eid)
-            if (!is_numeric($id)) {
+            if (! is_numeric($id)) {
                 $decodedId = hashids_decode($id);
                 $id = $decodedId ?: $id;
             }
@@ -42,7 +40,7 @@ class GetListingAction extends BaseAction
                 ->where('id', $id)
                 ->first();
 
-            if (!$listing) {
+            if (! $listing) {
                 return ActionResult::failure('Listing not found');
             }
 
@@ -53,7 +51,7 @@ class GetListingAction extends BaseAction
 
             return ActionResult::success($listing->toArray());
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to retrieve listing: ' . $e->getMessage());
+            return ActionResult::failure('Failed to retrieve listing: '.$e->getMessage());
         }
     }
 }

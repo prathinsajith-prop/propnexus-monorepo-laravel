@@ -91,7 +91,7 @@ enum BlogStatus: string
     /**
      * Get badge configuration for badge component
      * Returns array mapping status values to hex color codes and Lucide icon names
-     * 
+     *
      * Format: [
      *   'draft' => [
      *     'value' => 'draft',
@@ -100,8 +100,6 @@ enum BlogStatus: string
      *     'icon' => 'edit',      // Lucide icon name
      *   ]
      * ]
-     * 
-     * @return array
      */
     public static function badgeConfig(): array
     {
@@ -114,19 +112,17 @@ enum BlogStatus: string
                 'icon' => $status->iconName(),
             ];
         }
+
         return $colors;
     }
 
     /**
      * Get status configuration for a specific value
-     * 
-     * @param string $value
-     * @return array|null
      */
     public static function getStatusConfig(string $value): ?array
     {
         $status = self::tryFrom($value);
-        if (!$status) {
+        if (! $status) {
             return null;
         }
 

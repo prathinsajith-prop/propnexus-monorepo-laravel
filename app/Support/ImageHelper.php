@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * ImageHelper
- * 
+ *
  * High-performance helper class for generating image URLs and handling image paths
  * Uses caching and optimized operations to minimize overhead
  */
@@ -36,6 +36,7 @@ class ImageHelper
      * Cache for file existence checks (LRU cache with max 100 entries)
      */
     protected static array $existsCache = [];
+
     protected static int $maxCacheSize = 100;
 
     /**
@@ -45,9 +46,8 @@ class ImageHelper
 
     /**
      * Set custom base URL for all image URLs
-     * 
-     * @param string|null $url Base URL (e.g., 'http://192.168.1.100:8000')
-     * @return void
+     *
+     * @param  string|null  $url  Base URL (e.g., 'http://192.168.1.100:8000')
      */
     public static function setBaseUrl(?string $url): void
     {
@@ -57,8 +57,6 @@ class ImageHelper
 
     /**
      * Get the base URL (cached)
-     * 
-     * @return string
      */
     protected static function getBaseUrl(): string
     {
@@ -87,8 +85,6 @@ class ImageHelper
 
     /**
      * Get cached storage path (without base URL)
-     * 
-     * @return string
      */
     protected static function getStoragePath(): string
     {
@@ -104,7 +100,7 @@ class ImageHelper
                 self::$cachedStorageUrl = $fullUrl;
             }
 
-            self::$cachedStorageUrl = '/' . trim(self::$cachedStorageUrl, '/');
+            self::$cachedStorageUrl = '/'.trim(self::$cachedStorageUrl, '/');
         }
 
         return self::$cachedStorageUrl;
@@ -112,9 +108,6 @@ class ImageHelper
 
     /**
      * Check if file exists with caching
-     * 
-     * @param string $path
-     * @return bool
      */
     protected static function fileExists(string $path): bool
     {
@@ -136,8 +129,6 @@ class ImageHelper
 
     /**
      * Clear all caches
-     * 
-     * @return void
      */
     public static function clearCache(): void
     {
@@ -150,12 +141,12 @@ class ImageHelper
 
     /**
      * Generate an image URL from a storage path (optimized with caching)
-     * 
-     * @param string|null $path Image path
-     * @param array $params Additional query parameters (w, h, q)
-     * @param bool $forcePrivate Force using API route (for private images)
+     *
+     * @param  string|null  $path  Image path
+     * @param  array  $params  Additional query parameters (w, h, q)
+     * @param  bool  $forcePrivate  Force using API route (for private images)
      * @return string|null
-     * 
+     *
      * Usage:
      * ImageHelper::url('listings/property.jpg')
      * ImageHelper::url('users/avatar.png', ['w' => 300, 'h' => 300])
@@ -168,7 +159,7 @@ class ImageHelper
         }
 
         // Check cache for this exact request
-        $cacheKey = $path . '|' . serialize($params) . '|' . ($forcePrivate ? '1' : '0');
+        $cacheKey = $path.'|'.serialize($params).'|'.($forcePrivate ? '1' : '0');
         if (isset(self::$urlCache[$cacheKey])) {
             return self::$urlCache[$cacheKey];
         }
@@ -181,17 +172,18 @@ class ImageHelper
         $baseUrl = self::getBaseUrl();
 
         // Use direct storage URL for public files (fastest path)
-        if (!$forcePrivate && empty($params) && self::fileExists($path)) {
-            $url = $baseUrl . self::getStoragePath() . '/' . ltrim($path, '/');
+        if (! $forcePrivate && empty($params) && self::fileExists($path)) {
+            $url = $baseUrl.self::getStoragePath().'/'.ltrim($path, '/');
+
             return self::cacheUrl($cacheKey, $url);
         }
 
         // Build API URL directly (faster than route())
-        $url = $baseUrl . '/api/images/' . $path;
+        $url = $baseUrl.'/api/images/'.$path;
 
         // Add query parameters if provided
-        if (!empty($params)) {
-            $url .= '?' . http_build_query($params);
+        if (! empty($params)) {
+            $url .= '?'.http_build_query($params);
         }
 
         return self::cacheUrl($cacheKey, $url);
@@ -199,10 +191,6 @@ class ImageHelper
 
     /**
      * Cache a URL with LRU eviction
-     * 
-     * @param string $key
-     * @param string $url
-     * @return string
      */
     protected static function cacheUrl(string $key, string $url): string
     {
@@ -217,12 +205,11 @@ class ImageHelper
 
     /**
      * Generate a thumbnail URL with specific dimensions (optimized)
-     * 
-     * @param string|null $path Image path
-     * @param int $width Width in pixels
-     * @param int $height Height in pixels
-     * @param int $quality Quality 1-100
-     * @return string|null
+     *
+     * @param  string|null  $path  Image path
+     * @param  int  $width  Width in pixels
+     * @param  int  $height  Height in pixels
+     * @param  int  $quality  Quality 1-100
      */
     public static function thumbnail(?string $path, int $width = 300, int $height = 300, int $quality = 80): ?string
     {
@@ -239,14 +226,14 @@ class ImageHelper
 
     /**
      * Get a placeholder image URL
-     * 
-     * @param int $width Width in pixels
-     * @param int $height Height in pixels
-     * @param string $text Optional text to display
-     * @param string $bg Background color (hex without #)
-     * @param string $color Text color (hex without #)
+     *
+     * @param  int  $width  Width in pixels
+     * @param  int  $height  Height in pixels
+     * @param  string  $text  Optional text to display
+     * @param  string  $bg  Background color (hex without #)
+     * @param  string  $color  Text color (hex without #)
      * @return string
-     * 
+     *
      * Usage:
      * ImageHelper::placeholder(300, 300, 'No Image')
      */
@@ -259,34 +246,33 @@ class ImageHelper
     ): string {
         // Use placeholder.com or similar service
         $text = urlencode($text ?: "{$width}x{$height}");
+
         return "https://via.placeholder.com/{$width}x{$height}/{$bg}/{$color}?text={$text}";
     }
 
     /**
      * Get image URL or placeholder if path is null (optimized)
-     * 
-     * @param string|null $path Image path
-     * @param array $params URL parameters
-     * @param array $placeholderParams Placeholder parameters [width, height, text]
-     * @return string
+     *
+     * @param  string|null  $path  Image path
+     * @param  array  $params  URL parameters
+     * @param  array  $placeholderParams  Placeholder parameters [width, height, text]
      */
     public static function urlOrPlaceholder(
         ?string $path,
         array $params = [],
         array $placeholderParams = [300, 300, 'No Image']
     ): string {
-        return !empty($path)
+        return ! empty($path)
             ? self::url($path, $params)
             : self::placeholder(...$placeholderParams);
     }
 
     /**
      * Get multiple image URLs from an array of paths (optimized batch processing)
-     * 
-     * @param array|null $paths Array of image paths
-     * @param array $params URL parameters
-     * @param bool $forcePrivate Force private URLs for all
-     * @return array
+     *
+     * @param  array|null  $paths  Array of image paths
+     * @param  array  $params  URL parameters
+     * @param  bool  $forcePrivate  Force private URLs for all
      */
     public static function urls(?array $paths, array $params = [], bool $forcePrivate = false): array
     {
@@ -297,8 +283,8 @@ class ImageHelper
         // Pre-compute values that are the same for all URLs
         $baseUrl = self::getBaseUrl();
         $storageBase = self::getStorageUrl();
-        $useParams = !empty($params);
-        $queryString = $useParams ? '?' . http_build_query($params) : '';
+        $useParams = ! empty($params);
+        $queryString = $useParams ? '?'.http_build_query($params) : '';
 
         $urls = [];
 
@@ -310,14 +296,15 @@ class ImageHelper
             // Fast path for already full URLs
             if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
                 $urls[] = $path;
+
                 continue;
             }
 
             // Optimize: Build URLs directly without individual method calls
-            if (!$forcePrivate && !$useParams && self::fileExists($path)) {
-                $urls[] = $baseUrl . $storageBase . '/' . $path;
+            if (! $forcePrivate && ! $useParams && self::fileExists($path)) {
+                $urls[] = $baseUrl.$storageBase.'/'.$path;
             } else {
-                $urls[] = $baseUrl . '/api/images/' . $path . $queryString;
+                $urls[] = $baseUrl.'/api/images/'.$path.$queryString;
             }
         }
 
@@ -326,8 +313,8 @@ class ImageHelper
 
     /**
      * Get image dimensions from path (with caching)
-     * 
-     * @param string $path Image path
+     *
+     * @param  string  $path  Image path
      * @return array|null [width, height] or null if not found
      */
     public static function dimensions(string $path): ?array
@@ -339,9 +326,9 @@ class ImageHelper
             return $dimensionsCache[$path];
         }
 
-        $fullPath = storage_path('app/public/' . $path);
+        $fullPath = storage_path('app/public/'.$path);
 
-        if (!file_exists($fullPath)) {
+        if (! file_exists($fullPath)) {
             return $dimensionsCache[$path] = null;
         }
 
@@ -359,9 +346,8 @@ class ImageHelper
 
     /**
      * Check if path is an image (optimized with static lookup)
-     * 
-     * @param string $path File path
-     * @return bool
+     *
+     * @param  string  $path  File path
      */
     public static function isImage(string $path): bool
     {
@@ -374,9 +360,8 @@ class ImageHelper
 
     /**
      * Get image extension from path
-     * 
-     * @param string $path Image path
-     * @return string|null
+     *
+     * @param  string  $path  Image path
      */
     public static function extension(string $path): ?string
     {
@@ -385,12 +370,11 @@ class ImageHelper
 
     /**
      * Generate multiple thumbnails efficiently (batch processing)
-     * 
-     * @param array $paths Array of image paths
-     * @param int $width Width in pixels
-     * @param int $height Height in pixels
-     * @param int $quality Quality 1-100
-     * @return array
+     *
+     * @param  array  $paths  Array of image paths
+     * @param  int  $width  Width in pixels
+     * @param  int  $height  Height in pixels
+     * @param  int  $quality  Quality 1-100
      */
     public static function thumbnails(array $paths, int $width = 300, int $height = 300, int $quality = 80): array
     {
@@ -403,7 +387,7 @@ class ImageHelper
 
         $thumbnails = [];
         foreach ($paths as $path) {
-            if (!empty($path)) {
+            if (! empty($path)) {
                 $thumbnails[] = "{$baseUrl}/api/images/thumbnail/{$path}{$queryString}";
             }
         }
@@ -414,8 +398,8 @@ class ImageHelper
     /**
      * Warm up the cache for a list of paths (pre-check file existence)
      * Useful for preloading before batch operations
-     * 
-     * @param array $paths Array of image paths to warm cache
+     *
+     * @param  array  $paths  Array of image paths to warm cache
      * @return int Number of files that exist
      */
     public static function warmCache(array $paths): int
@@ -424,7 +408,7 @@ class ImageHelper
         $disk = self::getPublicDisk();
 
         foreach ($paths as $path) {
-            if (!empty($path) && !isset(self::$existsCache[$path])) {
+            if (! empty($path) && ! isset(self::$existsCache[$path])) {
                 $exists = $disk->exists($path);
 
                 if (count(self::$existsCache) >= self::$maxCacheSize) {
@@ -444,8 +428,6 @@ class ImageHelper
 
     /**
      * Get cache statistics for monitoring/debugging
-     * 
-     * @return array
      */
     public static function getCacheStats(): array
     {
@@ -459,8 +441,6 @@ class ImageHelper
 
     /**
      * Calculate cache hit rate (estimation)
-     * 
-     * @return float
      */
     protected static function calculateCacheHitRate(): float
     {
@@ -471,9 +451,6 @@ class ImageHelper
 
     /**
      * Set maximum cache size
-     * 
-     * @param int $size
-     * @return void
      */
     public static function setMaxCacheSize(int $size): void
     {

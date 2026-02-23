@@ -11,8 +11,6 @@ class LeftSidebarSlot
 {
     /**
      * Build left sidebar grid with forms
-     *
-     * @return SlotManager
      */
     public static function make(): SlotManager
     {

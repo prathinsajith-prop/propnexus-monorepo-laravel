@@ -13,7 +13,7 @@ use Litepie\Layout\SlotManager;
 
 /**
  * Edit Aside Slot
- * 
+ *
  * Builds the aside for editing an existing blog post
  */
 class EditAsideSlot
@@ -21,9 +21,8 @@ class EditAsideSlot
     /**
      * Build edit blog aside
      *
-     * @param array $masterData Master data for form
-     * @param bool $fullscreen Whether to display fullscreen
-     * @return array
+     * @param  array  $masterData  Master data for form
+     * @param  bool  $fullscreen  Whether to display fullscreen
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
@@ -61,8 +60,6 @@ class EditAsideSlot
 
     /**
      * Build header slot
-     *
-     * @return SlotManager
      */
     private static function buildHeader(): SlotManager
     {
@@ -76,7 +73,6 @@ class EditAsideSlot
                 'items' => 'start',
                 'gridColumnSpan' => 8,
             ]);
-
 
         $centerSlot->setComponent(
             TextComponent::make('title')
@@ -121,8 +117,6 @@ class EditAsideSlot
 
     /**
      * Build footer slot
-     *
-     * @return SlotManager
      */
     private static function buildFooter(): SlotManager
     {

@@ -2,14 +2,14 @@
 
 namespace App\Actions\File;
 
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Litepie\Actions\ActionResult;
 use Litepie\Actions\BaseAction;
 
 /**
  * FileUploadAction
- * 
+ *
  * Comprehensive file upload handler with:
  * - Multiple file type support (images, videos, documents, audio)
  * - Image optimization and resizing
@@ -18,8 +18,6 @@ use Litepie\Actions\BaseAction;
  * - Virus scanning support
  * - Cloud storage support
  * - Metadata extraction
- * 
- * @package App\Actions\File
  */
 class FileUploadAction extends BaseAction
 {
@@ -47,13 +45,13 @@ class FileUploadAction extends BaseAction
             $folder = $this->data['folder'] ?? $this->getDefaultFolder($type);
 
             // Validate file type
-            if (!$this->validateFileType($file, $type)) {
-                return ActionResult::failure('Invalid file type for ' . $type, [], 400);
+            if (! $this->validateFileType($file, $type)) {
+                return ActionResult::failure('Invalid file type for '.$type);
             }
 
             // Generate unique filename
             $filename = $this->generateUniqueFilename($file);
-            $path = $folder . '/' . $filename;
+            $path = $folder.'/'.$filename;
 
             // Process based on type
             $result = match ($type) {
@@ -65,8 +63,8 @@ class FileUploadAction extends BaseAction
                 default => $this->handleGenericUpload($file, $path, $disk),
             };
 
-            if (!$result['success']) {
-                return ActionResult::failure($result['message'], [], 500);
+            if (! $result['success']) {
+                return ActionResult::failure($result['message']);
             }
 
             // Generate response with file info
@@ -84,14 +82,14 @@ class FileUploadAction extends BaseAction
             ];
 
             // Add thumbnail if generated
-            if (!empty($result['thumbnail'])) {
+            if (! empty($result['thumbnail'])) {
                 $fileInfo['thumbnail'] = Storage::disk($disk)->url($result['thumbnail']);
                 $fileInfo['thumbnail_path'] = $result['thumbnail'];
             }
 
             return ActionResult::success($fileInfo, 'File uploaded successfully');
         } catch (\Exception $e) {
-            return ActionResult::failure('Upload failed: ' . $e->getMessage(), [], 500);
+            return ActionResult::failure('Upload failed: '.$e->getMessage());
         }
     }
 
@@ -139,7 +137,7 @@ class FileUploadAction extends BaseAction
         $basename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $basename = preg_replace('/[^a-z0-9_-]/i', '-', $basename);
 
-        return $basename . '-' . time() . '-' . uniqid() . '.' . $extension;
+        return $basename.'-'.time().'-'.uniqid().'.'.$extension;
     }
 
     /**
@@ -191,8 +189,8 @@ class FileUploadAction extends BaseAction
      */
     private function generateThumbnail(UploadedFile $file, string $disk, string $folder): string
     {
-        $thumbnailName = 'thumb-' . basename($this->generateUniqueFilename($file));
-        $thumbnailPath = $folder . '/' . $thumbnailName;
+        $thumbnailName = 'thumb-'.basename($this->generateUniqueFilename($file));
+        $thumbnailPath = $folder.'/'.$thumbnailName;
 
         // Simple copy for now (can be enhanced with image manipulation library)
         $tempPath = $file->getRealPath();

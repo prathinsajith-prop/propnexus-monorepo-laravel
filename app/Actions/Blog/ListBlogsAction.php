@@ -3,21 +3,18 @@
 namespace App\Actions\Blog;
 
 use App\Models\Blog;
-use Illuminate\Notifications\Action;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * ListBlogsAction
- * 
+ *
  * Enhanced blog listing with Litepie Database package features:
  * - Advanced search (full-text, fuzzy, weighted)
  * - Smart caching with tags and invalidation
  * - Optimized pagination (cursor, fast, cached)
  * - Performance measurement
  * - Export capabilities
- * 
- * @package App\Actions\Blog
  */
 class ListBlogsAction extends BaseAction
 {
@@ -66,7 +63,7 @@ class ListBlogsAction extends BaseAction
         // Handle archived posts
         if ($this->data['only_archived'] ?? false) {
             $query->onlyArchived();
-        } elseif (!($this->data['include_archived'] ?? false)) {
+        } elseif (! ($this->data['include_archived'] ?? false)) {
             // By default, exclude archived posts
             $query->whereNull('archived_at');
         }
@@ -75,13 +72,13 @@ class ListBlogsAction extends BaseAction
         $searchQuery = $this->data['search'] ?? $this->data['q'] ?? null;
         $searchType = $this->data['search_type'] ?? 'basic';
 
-        if (!empty($searchQuery)) {
+        if (! empty($searchQuery)) {
             $query = $this->applySearch($query, $searchQuery, $searchType);
         }
 
         // Apply structured filter format (e.g., "status:EQ(published);category:IN(tech,blog)")
         // Uses Searchable trait's filterQueryString method
-        if (!empty($this->data['filter'])) {
+        if (! empty($this->data['filter'])) {
             $query->filterQueryString($this->data['filter']);
         }
 
@@ -103,7 +100,7 @@ class ListBlogsAction extends BaseAction
         $result = $this->applyPagination($query, $paginationType, $perPage, $cacheTtl, $useCache, $searchType);
 
         // Handle export if requested
-        if (!empty($this->data['export_format'])) {
+        if (! empty($this->data['export_format'])) {
             return $this->handleExport($query, $this->data['export_format']);
         }
 
@@ -144,19 +141,19 @@ class ListBlogsAction extends BaseAction
      */
     protected function applyLegacyFilters($query)
     {
-        if (!empty($this->data['filter_blog_id'])) {
-            $query->where('blog_id', 'like', '%' . $this->data['filter_blog_id'] . '%');
+        if (! empty($this->data['filter_blog_id'])) {
+            $query->where('blog_id', 'like', '%'.$this->data['filter_blog_id'].'%');
         }
 
-        if (!empty($this->data['filter_title'])) {
-            $query->where('title', 'like', '%' . $this->data['filter_title'] . '%');
+        if (! empty($this->data['filter_title'])) {
+            $query->where('title', 'like', '%'.$this->data['filter_title'].'%');
         }
 
-        if (!empty($this->data['filter_status'])) {
+        if (! empty($this->data['filter_status'])) {
             $query->where('status', $this->data['filter_status']);
         }
 
-        if (!empty($this->data['filter_category'])) {
+        if (! empty($this->data['filter_category'])) {
             $query->where(function ($categoryQuery) {
                 $category = $this->data['filter_category'];
                 $categoryQuery->where('category', $category)
@@ -164,35 +161,35 @@ class ListBlogsAction extends BaseAction
             });
         }
 
-        if (!empty($this->data['filter_tag'])) {
+        if (! empty($this->data['filter_tag'])) {
             $query->whereJsonContains('tags', $this->data['filter_tag']);
         }
 
-        if (!empty($this->data['filter_author_id'])) {
+        if (! empty($this->data['filter_author_id'])) {
             $query->where('author_id', $this->data['filter_author_id']);
         }
 
-        if (!empty($this->data['filter_language'])) {
+        if (! empty($this->data['filter_language'])) {
             $query->where('language', $this->data['filter_language']);
         }
 
         if (isset($this->data['filter_is_featured'])) {
-            $query->where('is_featured', (bool)$this->data['filter_is_featured']);
+            $query->where('is_featured', (bool) $this->data['filter_is_featured']);
         }
 
         if (isset($this->data['filter_is_sticky'])) {
-            $query->where('is_sticky', (bool)$this->data['filter_is_sticky']);
+            $query->where('is_sticky', (bool) $this->data['filter_is_sticky']);
         }
 
-        if (!empty($this->data['filter_visibility'])) {
+        if (! empty($this->data['filter_visibility'])) {
             $query->where('visibility', $this->data['filter_visibility']);
         }
 
-        if (!empty($this->data['filter_date_from'])) {
+        if (! empty($this->data['filter_date_from'])) {
             $query->where('created_at', '>=', $this->data['filter_date_from']);
         }
 
-        if (!empty($this->data['filter_date_to'])) {
+        if (! empty($this->data['filter_date_to'])) {
             $query->where('created_at', '<=', $this->data['filter_date_to']);
         }
 
@@ -208,16 +205,19 @@ class ListBlogsAction extends BaseAction
             case 'cursor':
                 // Cursor pagination (best for large datasets, infinite scroll)
                 $paginator = $query->cursorPaginate($perPage);
+
                 return $this->formatCursorPagination($paginator, $searchType, $type, $useCache);
 
             case 'fast':
                 // Fast pagination (no total count, uses LIMIT + 1)
                 $paginator = $query->fastPaginate($perPage);
+
                 return $this->formatStandardPagination($paginator, $searchType, $type, $useCache);
 
             case 'optimized':
                 // Optimized pagination (uses approximate count for large tables)
                 $paginator = $query->optimizedPaginate($perPage);
+
                 return $this->formatStandardPagination($paginator, $searchType, $type, $useCache);
 
             case 'cached':
@@ -227,12 +227,14 @@ class ListBlogsAction extends BaseAction
                 } else {
                     $paginator = $query->paginate($perPage);
                 }
+
                 return $this->formatStandardPagination($paginator, $searchType, $type, $useCache);
 
             case 'standard':
             default:
                 // Standard Laravel pagination
                 $paginator = $query->paginate($perPage);
+
                 return $this->formatStandardPagination($paginator, $searchType, $type, $useCache);
         }
     }
@@ -243,10 +245,10 @@ class ListBlogsAction extends BaseAction
     protected function formatStandardPagination($paginator, $searchType, $paginationType, $useCache): ActionResult
     {
         return ActionResult::success($paginator->items(), null, [
-            'total'        => $paginator->total(),
-            'per_page'     => $paginator->perPage(),
+            'total' => $paginator->total(),
+            'per_page' => $paginator->perPage(),
             'current_page' => $paginator->currentPage(),
-            'last_page'    => $paginator->lastPage(),
+            'last_page' => $paginator->lastPage(),
             'from' => $paginator->firstItem(),
             'to' => $paginator->lastItem(),
             'path' => $paginator->path(),
@@ -260,7 +262,7 @@ class ListBlogsAction extends BaseAction
                 'search_type' => $searchType,
                 'pagination_type' => $paginationType,
                 'cached' => $useCache,
-            ]
+            ],
         ]);
     }
 
@@ -282,7 +284,7 @@ class ListBlogsAction extends BaseAction
                 'search_type' => $searchType,
                 'pagination_type' => $paginationType,
                 'cached' => $useCache,
-            ]
+            ],
         ]);
     }
 
@@ -294,14 +296,14 @@ class ListBlogsAction extends BaseAction
         $blogs = $query->get();
 
         $export = match ($format) {
-            'csv'   => $blogs->exportToCsv(),
+            'csv' => $blogs->exportToCsv(),
             'excel' => $blogs->exportToExcel(),
             default => $blogs->exportToJson(),
         };
 
         return ActionResult::success($export, null, [
             'format' => $format,
-            'count'  => $blogs->count(),
+            'count' => $blogs->count(),
         ]);
     }
 }

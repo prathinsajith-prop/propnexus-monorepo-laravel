@@ -2,33 +2,31 @@
 
 namespace App\Layouts;
 
-use Litepie\Layout\LayoutBuilder;
-use Litepie\Layout\Components\DrawerComponent;
-use Litepie\Layout\Components\ModalComponent;
 use App\Forms\User\UserForm;
 use App\Forms\User\UserViewForm;
+use Litepie\Layout\Components\DrawerComponent;
+use Litepie\Layout\Components\ModalComponent;
+use Litepie\Layout\LayoutBuilder;
 
 /**
  * UserLayout
- * 
+ *
  * Comprehensive layout configuration for user management module.
  * Implements header with statistics, main content with filters and table,
  * and interactive components (drawers, modals) for CRUD operations.
- * 
- * @package App\Layouts
  */
 class UserLayout
 {
     /**
      * Create the complete user management layout
-     * 
+     *
      * Builds a full-featured dashboard with:
      * - Header section with breadcrumbs and statistics cards
      * - Main content section with advanced filters and data table
      * - Drawer components for viewing/editing user details
      * - Modal components for quick user operations
-     * 
-     * @param array $masterData Master data for dropdowns and filters
+     *
+     * @param  array  $masterData  Master data for dropdowns and filters
      * @return array Complete layout configuration
      */
     public static function make($masterData)
@@ -42,19 +40,19 @@ class UserLayout
                 'version' => '1.0.0',
                 'refreshInterval' => null,
             ])
-            ->section('header', fn($section) => self::buildHeaderSection($section))
-            ->section('main', fn($section) => self::buildMainSection($section, $masterData))
+            ->section('header', fn ($section) => self::buildHeaderSection($section))
+            ->section('main', fn ($section) => self::buildMainSection($section, $masterData))
             ->build();
     }
 
     /**
      * Build header section with breadcrumbs and statistics
-     * 
+     *
      * Creates a responsive two-column layout:
      * - Left: Page header with breadcrumb navigation
      * - Right: Statistics cards grid with key metrics
-     * 
-     * @param \Litepie\Layout\Sections\LayoutSection $section
+     *
+     * @param  \Litepie\Layout\Sections\LayoutSection  $section
      * @return void
      */
     private static function buildHeaderSection($section)
@@ -101,17 +99,18 @@ class UserLayout
         self::buildStatsCard($statsGrid, 'stat-new-users', __('layout.new_hires'), '42', 'info', 'userplus', '+15.8%', 'up', 'trend-1');
         self::buildStatsCard($statsGrid, 'stat-pending', __('layout.pending_review'), '15', 'warning', 'userwarning', '-5.4%', 'down', 'trend-1');
     }
+
     /**
      * Build a statistics card with icon, value, and trend indicator
-     * 
-     * @param \Litepie\Layout\Sections\GridSection $grid Parent grid section
-     * @param string $id Unique card identifier
-     * @param string $title Card title/label
-     * @param string $value Primary metric value
-     * @param string $color Theme color (primary, success, info, warning, error)
-     * @param string $icon Lucide icon name
-     * @param string $trend Trend percentage (e.g., '+12.5%')
-     * @param string $trendDir Trend direction ('up' or 'down')
+     *
+     * @param  \Litepie\Layout\Sections\GridSection  $grid  Parent grid section
+     * @param  string  $id  Unique card identifier
+     * @param  string  $title  Card title/label
+     * @param  string  $value  Primary metric value
+     * @param  string  $color  Theme color (primary, success, info, warning, error)
+     * @param  string  $icon  Lucide icon name
+     * @param  string  $trend  Trend percentage (e.g., '+12.5%')
+     * @param  string  $trendDir  Trend direction ('up' or 'down')
      * @return \Litepie\Layout\Components\CardComponent
      */
     private static function buildStatsCard($grid, string $id, string $title, string $value, string $color, string $icon, string $trend, string $trendDir, string $displayType)

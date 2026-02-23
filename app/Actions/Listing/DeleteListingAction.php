@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace App\Actions\Listing;
 
 use App\Models\Listing;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * DeleteListingAction
- * 
+ *
  * Soft delete a property listing
- * 
- * @package App\Actions\Listing
  */
 class DeleteListingAction extends BaseAction
 {
@@ -31,14 +29,14 @@ class DeleteListingAction extends BaseAction
             $id = $this->data['id'];
 
             // Try to decode if it's an encoded ID (eid)
-            if (!is_numeric($id)) {
+            if (! is_numeric($id)) {
                 $decodedId = hashids_decode($id);
                 $id = $decodedId ?: $id;
             }
 
             $listing = Listing::where('id', $id)->first();
 
-            if (!$listing) {
+            if (! $listing) {
                 return ActionResult::failure('Listing not found');
             }
 
@@ -54,7 +52,7 @@ class DeleteListingAction extends BaseAction
 
             return ActionResult::success(null, $message);
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to delete listing: ' . $e->getMessage());
+            return ActionResult::failure('Failed to delete listing: '.$e->getMessage());
         }
     }
 }

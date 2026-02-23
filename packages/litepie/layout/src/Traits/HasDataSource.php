@@ -174,6 +174,7 @@ trait HasDataSource
             if ($value === false || $value === true) {
                 return true; // Keep boolean values
             }
+
             return true;
         });
     }

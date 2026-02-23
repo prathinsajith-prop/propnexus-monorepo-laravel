@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class BixoProductPropertiesFactory extends Factory
 {
@@ -26,7 +25,7 @@ class BixoProductPropertiesFactory extends Factory
             'property_type' => $this->faker->randomElement(['Live', 'Pocket', 'Developer', 'Verified Pocket']),
             'status' => $this->faker->randomElement(['Draft', 'Pending', 'Waiting Publish', 'Published', 'Waiting Unpublish', 'Unpublished', 'Archived', 'Approved', 'Rejected', 'Pocket Publish', 'Pending Verification', 'Verified', 'Completed', 'Public', 'Private', 'Junk', 'Waiting Teamleader', 'Waiting Team Leader']),
             'title' => $this->faker->sentence(3),
-            'ref' => 'MCS-' . $this->faker->unique()->numberBetween(10000, 99999),
+            'ref' => 'MCS-'.$this->faker->unique()->numberBetween(10000, 99999),
             'unit' => $this->faker->bothify('####'),
             'floor' => $this->faker->word,
             'beds' => $this->faker->numberBetween(1, 5),
@@ -44,7 +43,7 @@ class BixoProductPropertiesFactory extends Factory
             'photos' => json_encode([]),
             'documents' => json_encode([]),
             'public_documents' => json_encode([]),
-            'upload_folder' => $this->faker->date('Y/m/d') . '/' . $this->faker->numberBetween(100000000, 999999999),
+            'upload_folder' => $this->faker->date('Y/m/d').'/'.$this->faker->numberBetween(100000000, 999999999),
             'feature_tags' => json_encode(['Company Inventory', 'Hot', 'Pf Premium']),
             'watermark' => 1,
             'lead_auto_assign' => 1,

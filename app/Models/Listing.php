@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Log;
 use Litepie\Database\Traits\Searchable;
 use Litepie\Hashids\Traits\Hashids;
 
@@ -66,13 +65,14 @@ use Litepie\Hashids\Traits\Hashids;
 class Listing extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    // ✅ Advanced search with weighted fields
+
+    // Litepie Hashids
+    use Hashids;
 
     // Litepie Database Traits
-    use Searchable;      // ✅ Advanced search with weighted fields
-
-    // Litepie Hashids  
-    use Hashids;         // ✅ Encode/decode IDs (eid field)
+    use Searchable;
+    use SoftDeletes;         // ✅ Encode/decode IDs (eid field)
 
     /**
      * The table associated with the model.
@@ -168,53 +168,56 @@ class Listing extends Model
 
     /**
      * The attributes that should be cast.
+     *
+     * @return array<string, mixed>
      */
-    protected $casts = [
-        'property_type' => PropertyType::class,
-        'listing_type' => ListingType::class,
-        'status' => ListingStatus::class,
-        'availability' => Availability::class,
-        // Array fields handled by Attribute mutators (removed from casts)
-        // 'features' => 'array',
-        // 'amenities' => 'array',
-        // 'images' => 'array',
-        // 'floor_plans' => 'array',
-        // 'payment_terms' => 'array',
-        // 'seo_meta' => 'array',
-        // 'schema_markup' => 'array',
-        // 'analytics' => 'array',
-        // 'documents' => 'array',
-        // 'custom_fields' => 'array',
-        'price' => 'decimal:2',
-        'size_sqft' => 'decimal:2',
-        'plot_size_sqft' => 'decimal:2',
-        'service_charge' => 'decimal:2',
-        'security_deposit' => 'decimal:2',
-        'original_price' => 'decimal:2',
-        'discount_percentage' => 'decimal:2',
-        'latitude' => 'decimal:7',
-        'longitude' => 'decimal:7',
-        'lead_conversion_rate' => 'decimal:2',
-        'is_furnished' => 'boolean',
-        'has_parking' => 'boolean',
-        'has_balcony' => 'boolean',
-        'has_garden' => 'boolean',
-        'has_pool' => 'boolean',
-        'pet_friendly' => 'boolean',
-        'is_featured' => 'boolean',
-        'is_hot_deal' => 'boolean',
-        'is_verified' => 'boolean',
-        'is_negotiable' => 'boolean',
-        'published_at' => 'datetime',
-        'expires_at' => 'datetime',
-        'sold_at' => 'datetime',
-        'rented_at' => 'datetime',
-        'available_from' => 'date',
-        'available_until' => 'date',
-        'last_edited_at' => 'datetime',
-    ];
-
-
+    public function casts(): array
+    {
+        return [
+            'property_type' => PropertyType::class,
+            'listing_type' => ListingType::class,
+            'status' => ListingStatus::class,
+            'availability' => Availability::class,
+            // Array fields handled by Attribute mutators (removed from casts)
+            // 'features' => 'array',
+            // 'amenities' => 'array',
+            // 'images' => 'array',
+            // 'floor_plans' => 'array',
+            // 'payment_terms' => 'array',
+            // 'seo_meta' => 'array',
+            // 'schema_markup' => 'array',
+            // 'analytics' => 'array',
+            // 'documents' => 'array',
+            // 'custom_fields' => 'array',
+            'price' => 'decimal:2',
+            'size_sqft' => 'decimal:2',
+            'plot_size_sqft' => 'decimal:2',
+            'service_charge' => 'decimal:2',
+            'security_deposit' => 'decimal:2',
+            'original_price' => 'decimal:2',
+            'discount_percentage' => 'decimal:2',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
+            'lead_conversion_rate' => 'decimal:2',
+            'is_furnished' => 'boolean',
+            'has_parking' => 'boolean',
+            'has_balcony' => 'boolean',
+            'has_garden' => 'boolean',
+            'has_pool' => 'boolean',
+            'pet_friendly' => 'boolean',
+            'is_featured' => 'boolean',
+            'is_hot_deal' => 'boolean',
+            'is_verified' => 'boolean',
+            'is_negotiable' => 'boolean',
+            'published_at' => 'datetime',
+            'expires_at' => 'datetime',
+            'sold_at' => 'datetime',
+            'rented_at' => 'datetime',
+            'available_from' => 'date',
+            'available_until' => 'date',
+            'last_edited_at' => 'datetime',
+        ];
+    }
 
     /**
      * The accessors to append to the model's array form.
@@ -239,6 +242,7 @@ class Listing extends Model
         // Try to find by primary key (ID)
         if (is_numeric($value)) {
             $result = $this->with(['agent', 'owner'])->where('id', $value)->first();
+
             return $result;
         }
 
@@ -246,11 +250,13 @@ class Listing extends Model
         $decoded = hashids_decode($value);
         if ($decoded) {
             $result = $this->with(['agent', 'owner'])->where('id', $decoded)->first();
+
             return $result;
         }
 
         // Try to find by listing_id (format: LST-XXXXX)
         $result = $this->with(['agent', 'owner'])->where('listing_id', $value)->first();
+
         return $result;
     }
 
@@ -282,7 +288,6 @@ class Listing extends Model
      * The column to use for hashids
      */
     protected $hashidsKey = 'listing_id';
-
 
     // ==========================================
     // SLUGGABLE CONFIGURATION
@@ -377,7 +382,7 @@ class Listing extends Model
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn() => number_format($this->price, 0) . ' ' . $this->currency
+            get: fn () => number_format($this->price, 0).' '.$this->currency
         );
     }
 
@@ -387,11 +392,11 @@ class Listing extends Model
     protected function fullAddress(): Attribute
     {
         return Attribute::make(
-            get: fn() => implode(', ', array_filter([
+            get: fn () => implode(', ', array_filter([
                 $this->address,
                 $this->area,
                 $this->city,
-                $this->country
+                $this->country,
             ]))
         );
     }
@@ -402,7 +407,7 @@ class Listing extends Model
     protected function isActive(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->status === 'active' && $this->availability === 'available'
+            get: fn () => $this->status === 'active' && $this->availability === 'available'
         );
     }
 
@@ -412,7 +417,7 @@ class Listing extends Model
     protected function discountAmount(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->original_price
+            get: fn () => $this->original_price
                 ? ($this->original_price - $this->price)
                 : 0
         );
@@ -424,15 +429,23 @@ class Listing extends Model
     protected function features(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -444,15 +457,23 @@ class Listing extends Model
     protected function amenities(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -464,15 +485,23 @@ class Listing extends Model
     protected function images(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -484,15 +513,23 @@ class Listing extends Model
     protected function documents(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -504,15 +541,23 @@ class Listing extends Model
     protected function paymentTerms(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -524,15 +569,23 @@ class Listing extends Model
     protected function floorPlans(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -544,15 +597,23 @@ class Listing extends Model
     protected function seoMeta(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -564,15 +625,23 @@ class Listing extends Model
     protected function schemaMarkup(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -584,15 +653,23 @@ class Listing extends Model
     protected function analytics(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -604,15 +681,23 @@ class Listing extends Model
     protected function customFields(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return '[]';
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return '[]';
+                }
                 if (is_string($value)) {
                     json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return '[]';
             }
         );
@@ -800,7 +885,7 @@ class Listing extends Model
 
         static::creating(function ($listing) {
             if (empty($listing->listing_id)) {
-                $listing->listing_id = 'LST-' . strtoupper(uniqid());
+                $listing->listing_id = 'LST-'.strtoupper(uniqid());
             }
         });
     }
@@ -814,7 +899,10 @@ class Listing extends Model
     private function isAdminUser(): bool
     {
         $user = auth()->user();
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
+
         return method_exists($user, 'hasRole') && $user->hasRole(['admin', 'superuser']);
     }
 
@@ -826,19 +914,19 @@ class Listing extends Model
      */
     public function getSettings(string $context = 'view'): array
     {
-        $isAdmin   = $this->isAdminUser();
+        $isAdmin = $this->isAdminUser();
         $statusVal = $this->status instanceof \App\Enums\ListingStatus
             ? $this->status->value
             : ($this->status ?? null);
-        $typeVal   = $this->listing_type instanceof \App\Enums\ListingType
+        $typeVal = $this->listing_type instanceof \App\Enums\ListingType
             ? $this->listing_type->value
             : ($this->listing_type ?? null);
-        $isClosed  = in_array($statusVal, ['sold', 'rented', 'archived', 'expired']);
+        $isClosed = in_array($statusVal, ['sold', 'rented', 'archived', 'expired']);
 
         $settings = \App\Support\Settings\ListingSettings::defaults();
 
         // ── Create: hide system-managed / stat fields ──────────────────────────
-        if ($context === 'create' || !$this->exists) {
+        if ($context === 'create' || ! $this->exists) {
             foreach (['views_count', 'published_at', 'analytics'] as $field) {
                 $settings['fields'][$field]['show'] = false;
             }
@@ -852,9 +940,9 @@ class Listing extends Model
         // ── Status: closed listings lock most editable capabilities ───────────
         if ($isClosed) {
             $settings['groups']['form.listing-form.specifications-info']['edit'] = false;
-            $settings['fields']['price']['edit']          = $isAdmin;
-            $settings['fields']['status']['edit']         = $isAdmin;
-            $settings['fields']['availability']['edit']   = false;
+            $settings['fields']['price']['edit'] = $isAdmin;
+            $settings['fields']['status']['edit'] = $isAdmin;
+            $settings['fields']['availability']['edit'] = false;
             $settings['fields']['available_from']['edit'] = false;
         }
 
@@ -866,9 +954,9 @@ class Listing extends Model
         }
 
         // ── Role: non-admins cannot see financial or sensitive agent data ──────
-        if (!$isAdmin) {
+        if (! $isAdmin) {
             $settings['groups']['form.listing-form.financial-info'] = ['show' => false, 'edit' => false];
-            $settings['groups']['form.view-listing-form.agent']     = ['show' => false, 'edit' => false];
+            $settings['groups']['form.view-listing-form.agent'] = ['show' => false, 'edit' => false];
             foreach (
                 [
                     'commission',
@@ -879,7 +967,7 @@ class Listing extends Model
                     'agent_phone',
                     'notes',
                     'analytics',
-                    'schema_markup'
+                    'schema_markup',
                 ] as $field
             ) {
                 $settings['fields'][$field]['show'] = false;
@@ -898,19 +986,19 @@ class Listing extends Model
         return [
             'options' => [
                 'property_type' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\PropertyType::cases()
                 ),
                 'listing_type' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ListingType::cases()
                 ),
                 'status' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ListingStatus::cases()
                 ),
                 'availability' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\Availability::cases()
                 ),
             ],

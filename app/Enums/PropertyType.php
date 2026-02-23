@@ -75,7 +75,7 @@ enum PropertyType: string
     /**
      * Get badge configuration for badge component
      * Returns array mapping property type values to hex color codes and Lucide icon names
-     * 
+     *
      * Format: [
      *   'residential' => [
      *     'value' => 'residential',
@@ -84,8 +84,6 @@ enum PropertyType: string
      *     'icon' => 'home',      // Lucide icon name
      *   ]
      * ]
-     * 
-     * @return array
      */
     public static function badgeConfig(): array
     {
@@ -98,19 +96,17 @@ enum PropertyType: string
                 'icon' => $type->iconName(),
             ];
         }
+
         return $colors;
     }
 
     /**
      * Get property type configuration for a specific value
-     * 
-     * @param string $value
-     * @return array|null
      */
     public static function getStatusConfig(string $value): ?array
     {
         $type = self::tryFrom($value);
-        if (!$type) {
+        if (! $type) {
             return null;
         }
 

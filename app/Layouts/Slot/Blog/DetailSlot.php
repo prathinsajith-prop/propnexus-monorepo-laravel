@@ -21,7 +21,7 @@ class DetailSlot
     /**
      * Build create blog detail section
      *
-     * @param array $masterData The master data array
+     * @param  array  $masterData  The master data array
      * @return array The detail section configuration array
      */
     public static function createDetail(array $masterData): array
@@ -74,7 +74,7 @@ class DetailSlot
     /**
      * Build edit blog detail section
      *
-     * @param array $masterData The master data array
+     * @param  array  $masterData  The master data array
      * @return array The detail section configuration array
      */
     public static function editDetail(array $masterData): array
@@ -128,7 +128,7 @@ class DetailSlot
     /**
      * Build view blog detail section
      *
-     * @param array $masterData The master data array
+     * @param  array  $masterData  The master data array
      * @return array The detail section configuration array
      */
     public static function viewDetail(array $masterData): array

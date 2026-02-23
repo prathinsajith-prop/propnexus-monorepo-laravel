@@ -4,7 +4,6 @@ namespace App\Layouts\Slot\ProductProperty;
 
 use App\Enums\ProductPropertyStatus;
 use App\Forms\ProductProperty\ProductPropertyForm;
-use App\Support\ImageHelper;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\CardComponent;
@@ -20,17 +19,14 @@ use Litepie\Layout\SlotManager;
  * View Aside Slot — Product Property
  *
  * Builds the aside drawer for viewing a product property.
- *
- * @package App\Layouts\Slot\ProductProperty
  */
 class ViewAsideSlot
 {
     /**
      * Build view product property aside.
      *
-     * @param array $masterData Master data for form dropdowns
-     * @param bool  $fullscreen Whether to display fullscreen
-     * @return array
+     * @param  array  $masterData  Master data for form dropdowns
+     * @param  bool  $fullscreen  Whether to display fullscreen
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
@@ -84,7 +80,7 @@ class ViewAsideSlot
             ->toArray();
 
         if ($fullscreen && is_array($aside)) {
-            $aside['width']  = '100vw';
+            $aside['width'] = '100vw';
             $aside['height'] = '100vh';
         }
 
@@ -97,11 +93,11 @@ class ViewAsideSlot
     {
         $centerSlot = SlotManager::make('view-property-header-center')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'column',
-                'gap'            => '1',
-                'justify'        => 'start',
-                'items'          => 'start',
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
                 'gridColumnSpan' => 6,
             ]);
 
@@ -120,11 +116,11 @@ class ViewAsideSlot
 
         $rightSlot = SlotManager::make('view-property-header-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 6,
             ]);
 
@@ -147,18 +143,18 @@ class ViewAsideSlot
                 ->data('type', 'aside')
                 ->data('action', 'edit')
                 ->data('config', [
-                    'width'   => '800px',
-                    'height'  => '100vh',
-                    'anchor'  => 'right',
+                    'width' => '800px',
+                    'height' => '100vh',
+                    'anchor' => 'right',
                     'backdrop' => true,
                 ])
                 ->dataParams(['id' => ':id'])
                 ->dataUrl('/api/product-property/:id')
                 ->meta([
-                    'action'    => 'edit',
-                    'type'      => 'aside',
+                    'action' => 'edit',
+                    'type' => 'aside',
                     'component' => 'edit-property-full',
-                    'tooltip'   => __('layout.tooltip_edit_property'),
+                    'tooltip' => __('layout.tooltip_edit_property'),
                 ])
         );
 
@@ -169,18 +165,18 @@ class ViewAsideSlot
                 ->size('sm')
                 ->isIconButton(true)
                 ->confirm([
-                    'title'        => __('layout.delete_property'),
-                    'message'      => __('layout.delete_property_confirmation'),
+                    'title' => __('layout.delete_property'),
+                    'message' => __('layout.delete_property_confirmation'),
                     'confirmLabel' => __('layout.delete'),
-                    'cancelLabel'  => __('layout.cancel'),
-                    'action'       => 'delete',
-                    'dataUrl'      => '/api/product-property/:id',
-                    'method'       => 'delete',
+                    'cancelLabel' => __('layout.cancel'),
+                    'action' => 'delete',
+                    'dataUrl' => '/api/product-property/:id',
+                    'method' => 'delete',
                 ])
                 ->meta([
-                    'action'  => 'delete',
+                    'action' => 'delete',
                     'tooltip' => __('layout.tooltip_delete_property'),
-                    'color'   => 'error',
+                    'color' => 'error',
                 ])
         );
 
@@ -207,11 +203,11 @@ class ViewAsideSlot
     {
         $footerRightSlot = SlotManager::make('view-property-footer-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 12,
             ]);
 

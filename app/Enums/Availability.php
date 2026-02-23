@@ -80,7 +80,7 @@ enum Availability: string
     /**
      * Get badge configuration for badge component
      * Returns array mapping availability values to hex color codes and Lucide icon names
-     * 
+     *
      * Format: [
      *   'available' => [
      *     'value' => 'available',
@@ -89,8 +89,6 @@ enum Availability: string
      *     'icon' => 'check-circle',  // Lucide icon name
      *   ]
      * ]
-     * 
-     * @return array
      */
     public static function badgeConfig(): array
     {
@@ -103,19 +101,17 @@ enum Availability: string
                 'icon' => $status->iconName(),
             ];
         }
+
         return $colors;
     }
 
     /**
      * Get availability configuration for a specific value
-     * 
-     * @param string $value
-     * @return array|null
      */
     public static function getStatusConfig(string $value): ?array
     {
         $status = self::tryFrom($value);
-        if (!$status) {
+        if (! $status) {
             return null;
         }
 

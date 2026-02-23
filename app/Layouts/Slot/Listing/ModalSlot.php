@@ -13,23 +13,21 @@ use Litepie\Layout\SlotManager;
 
 /**
  * Listing Modal Slot Builder
- * 
+ *
  * Provides reusable modal configurations for listing operations.
  * Uses DetailSection structure for consistency with aside slots.
  * Follows array parameter pattern for maximum flexibility.
- * 
- * @package App\Layouts\Slot\Listing
  */
 class ModalSlot
 {
     /**
      * Build create listing modal
      *
-     * @param array $options [
-     *   'masterData' => array,  // Master data for form
-     *   'apiUrl' => string,     // API endpoint (default: /api/listing)
-     *   'method' => string,     // HTTP method (default: POST)
-     * ]
+     * @param  array  $options  [
+     *                          'masterData' => array,  // Master data for form
+     *                          'apiUrl' => string,     // API endpoint (default: /api/listing)
+     *                          'method' => string,     // HTTP method (default: POST)
+     *                          ]
      * @return array Modal definition
      */
     public static function createListing(array $options = []): array
@@ -144,11 +142,11 @@ class ModalSlot
     /**
      * Build delete confirmation modal
      *
-     * @param array $options [
-     *   'itemName' => string,    // Optional specific listing title
-     *   'apiUrl' => string,      // API endpoint (default: /api/listing/:id)
-     *   'method' => string,      // HTTP method (default: DELETE)
-     * ]
+     * @param  array  $options  [
+     *                          'itemName' => string,    // Optional specific listing title
+     *                          'apiUrl' => string,      // API endpoint (default: /api/listing/:id)
+     *                          'method' => string,      // HTTP method (default: DELETE)
+     *                          ]
      * @return array Modal definition
      */
     public static function deleteListing(array $options = []): array
@@ -240,7 +238,7 @@ class ModalSlot
                     'action' => 'submit',
                     'dataUrl' => $config['apiUrl'],
                     'method' => $config['method'],
-                    'color' => 'danger'
+                    'color' => 'danger',
                 ])
         );
 

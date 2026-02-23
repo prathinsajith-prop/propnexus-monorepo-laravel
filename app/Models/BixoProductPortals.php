@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class BixoProductPortals extends Model
 {
     use SoftDeletes;
+
     protected $table = 'bixo_product_portals';
+
     protected $guarded = [];
 }

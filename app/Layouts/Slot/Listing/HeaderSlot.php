@@ -13,8 +13,6 @@ class HeaderSlot
 {
     /**
      * Build aside header with grid layout in center section
-     *
-     * @return SlotManager
      */
     public static function make(): SlotManager
     {

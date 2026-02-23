@@ -2,8 +2,8 @@
 
 namespace App\Layouts\Slot\ProductProperty;
 
-use App\Forms\ProductProperty\ProductPropertyForm;
 use App\Forms\ProductProperty\ProductPropertyFollowUpsForm;
+use App\Forms\ProductProperty\ProductPropertyForm;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Sections\DetailSection;
@@ -17,27 +17,25 @@ use Litepie\Layout\SlotManager;
  *
  * Provides reusable modal configurations for product property operations.
  * Follows the same array parameter pattern as ModalSlot for Listing.
- *
- * @package App\Layouts\Slot\ProductProperty
  */
 class ModalSlot
 {
     /**
      * Build create product property modal.
      *
-     * @param array $options [
-     *   'masterData' => array,   // Master data for form
-     *   'apiUrl'     => string,  // API endpoint (default: /api/product-property)
-     *   'method'     => string,  // HTTP method (default: POST)
-     * ]
+     * @param  array  $options  [
+     *                          'masterData' => array,   // Master data for form
+     *                          'apiUrl'     => string,  // API endpoint (default: /api/product-property)
+     *                          'method'     => string,  // HTTP method (default: POST)
+     *                          ]
      * @return array Modal definition
      */
     public static function createProperty(array $options = []): array
     {
         $config = array_merge([
             'masterData' => [],
-            'apiUrl'     => '/api/product-property',
-            'method'     => 'POST',
+            'apiUrl' => '/api/product-property',
+            'method' => 'POST',
         ], $options);
 
         $formComponent = ProductPropertyForm::make(
@@ -55,11 +53,11 @@ class ModalSlot
         // Header
         $centerSlot = SlotManager::make('create-property-modal-header-center')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'column',
-                'gap'            => '1',
-                'justify'        => 'center',
-                'items'          => 'start',
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'center',
+                'items' => 'start',
                 'gridColumnSpan' => 6,
             ]);
 
@@ -72,11 +70,11 @@ class ModalSlot
 
         $rightSlot = SlotManager::make('create-property-modal-header-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 6,
             ]);
 
@@ -99,11 +97,11 @@ class ModalSlot
         // Footer
         $footerRightSlot = SlotManager::make('create-property-modal-footer-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 12,
             ]);
 
@@ -147,22 +145,22 @@ class ModalSlot
     /**
      * Build delete product property confirmation modal.
      *
-     * @param array $options [
-     *   'itemName' => string|null, // Optional property title for the message
-     *   'apiUrl'   => string,      // API endpoint (default: /api/product-property/:id)
-     *   'method'   => string,      // HTTP method (default: DELETE)
-     * ]
+     * @param  array  $options  [
+     *                          'itemName' => string|null, // Optional property title for the message
+     *                          'apiUrl'   => string,      // API endpoint (default: /api/product-property/:id)
+     *                          'method'   => string,      // HTTP method (default: DELETE)
+     *                          ]
      * @return array Modal definition
      */
     public static function deleteProperty(array $options = []): array
     {
         $config = array_merge([
             'itemName' => null,
-            'apiUrl'   => '/api/product-property/:id',
-            'method'   => 'DELETE',
+            'apiUrl' => '/api/product-property/:id',
+            'method' => 'DELETE',
         ], $options);
 
-        $title   = __('layout.delete_property');
+        $title = __('layout.delete_property');
         $message = $config['itemName']
             ? __('layout.delete_item_confirmation', ['item' => $config['itemName']])
             : __('layout.delete_property_confirmation');
@@ -170,10 +168,10 @@ class ModalSlot
         // Header
         $centerSlot = SlotManager::make('delete-property-modal-header-center')
             ->setConfig([
-                'layout'    => 'flex',
+                'layout' => 'flex',
                 'direction' => 'column',
-                'gap'       => '1',
-                'justify'   => 'center',
+                'gap' => '1',
+                'justify' => 'center',
             ]);
 
         $centerSlot->setComponent(
@@ -185,11 +183,11 @@ class ModalSlot
 
         $rightSlot = SlotManager::make('delete-property-modal-header-right')
             ->setConfig([
-                'layout'    => 'flex',
+                'layout' => 'flex',
                 'direction' => 'row',
-                'gap'       => '2',
-                'justify'   => 'end',
-                'items'     => 'center',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
             ]);
 
         $rightSlot->setComponent(
@@ -219,11 +217,11 @@ class ModalSlot
         // Footer
         $footerRightSlot = SlotManager::make('delete-property-modal-footer-right')
             ->setConfig([
-                'layout'    => 'flex',
+                'layout' => 'flex',
                 'direction' => 'row',
-                'gap'       => '2',
-                'justify'   => 'end',
-                'items'     => 'center',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
             ]);
 
         $footerRightSlot->setComponent(
@@ -262,10 +260,10 @@ class ModalSlot
     /**
      * Build create property follow-up modal.
      *
-     * @param array $options [
-     *   'apiUrl' => string,  // API endpoint (default: /api/product-property/:id/followups)
-     *   'method' => string,  // HTTP method (default: POST)
-     * ]
+     * @param  array  $options  [
+     *                          'apiUrl' => string,  // API endpoint (default: /api/product-property/:id/followups)
+     *                          'method' => string,  // HTTP method (default: POST)
+     *                          ]
      * @return array Modal definition
      */
     public static function createFollowup(array $options = []): array
@@ -289,11 +287,11 @@ class ModalSlot
         // Header
         $centerSlot = SlotManager::make('create-followup-modal-header-center')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'column',
-                'gap'            => '1',
-                'justify'        => 'start',
-                'items'          => 'start',
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
                 'gridColumnSpan' => 6,
             ]);
 
@@ -306,11 +304,11 @@ class ModalSlot
 
         $headerRightSlot = SlotManager::make('create-followup-modal-header-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 6,
             ]);
 
@@ -333,11 +331,11 @@ class ModalSlot
         // Footer
         $footerRightSlot = SlotManager::make('create-followup-modal-footer-right')
             ->setConfig([
-                'layout'         => 'flex',
-                'direction'      => 'row',
-                'gap'            => '2',
-                'justify'        => 'end',
-                'items'          => 'center',
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
                 'gridColumnSpan' => 12,
             ]);
 

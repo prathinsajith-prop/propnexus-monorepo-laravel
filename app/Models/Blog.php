@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use App\Enums\BlogStatus;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -72,10 +75,10 @@ class Blog extends Model
         Sortable,
         Translatable,
         Versionable {
-        // Resolve trait conflicts by specifying which methods to use from which trait
-        Paginatable::generatePaginationCacheKey insteadof Cacheable;
-        Exportable::formatBytes insteadof Importable, Batchable, Measurable;
-    }
+            // Resolve trait conflicts by specifying which methods to use from which trait
+            Paginatable::generatePaginationCacheKey insteadof Cacheable;
+            Exportable::formatBytes insteadof Importable, Batchable, Measurable;
+        }
 
     /**
      * The table associated with the model.
@@ -103,7 +106,6 @@ class Blog extends Model
     /**
      * Create a new Eloquent model instance and initialize trait properties
      *
-     * @param  array  $attributes
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -121,17 +123,17 @@ class Blog extends Model
     protected function initializeTraitProperties()
     {
         // Sluggable configuration
-        if (!property_exists($this, 'slugs') || empty($this->slugs)) {
+        if (! property_exists($this, 'slugs') || empty($this->slugs)) {
             $this->slugs = ['slug' => 'title'];
         }
 
         // Translatable configuration
-        if (!property_exists($this, 'translatable') || empty($this->translatable)) {
+        if (! property_exists($this, 'translatable') || empty($this->translatable)) {
             $this->translatable = ['title', 'excerpt', 'content', 'seo_meta'];
         }
 
         // Searchable configuration
-        if (!property_exists($this, 'searchable') || empty($this->searchable)) {
+        if (! property_exists($this, 'searchable') || empty($this->searchable)) {
             $this->searchable = ['title', 'excerpt', 'content', 'tags', 'category'];
         }
 
@@ -139,7 +141,7 @@ class Blog extends Model
             $this->fullTextSearchable = ['title', 'excerpt', 'content'];
         }
 
-        if (!property_exists($this, 'searchWeights') || empty($this->searchWeights)) {
+        if (! property_exists($this, 'searchWeights') || empty($this->searchWeights)) {
             $this->searchWeights = [
                 'title' => 10,
                 'excerpt' => 7,
@@ -172,11 +174,11 @@ class Blog extends Model
         // Auto-generate blog_id before creating
         static::creating(function ($blog) {
             if (empty($blog->blog_id)) {
-                $blog->blog_id = 'BLOG-' . strtoupper(uniqid());
+                $blog->blog_id = 'BLOG-'.strtoupper(uniqid());
             }
 
             // Calculate reading time
-            if (!empty($blog->content)) {
+            if (! empty($blog->content)) {
                 $blog->reading_time = self::calculateReadingTime($blog->content);
             }
         });
@@ -320,47 +322,51 @@ class Blog extends Model
     /**
      * The attributes that should be cast.
      *
-     * @var array<string, string>
+     * @return array<string, mixed>
      */
-    protected $casts = [
-        'co_authors' => 'array',
-        'categories' => 'array',
-        'tags' => 'array',
-        'gallery' => 'array',
-        'attachments' => 'array',
-        'translations' => 'array',
-        'seo_meta' => 'array',
-        'schema_markup' => 'array',
-        'is_featured' => 'boolean',
-        'is_sticky' => 'boolean',
-        'allow_comments' => 'boolean',
-        'comments_count' => 'integer',
-        'views_count' => 'integer',
-        'likes_count' => 'integer',
-        'shares_count' => 'integer',
-        'reading_time' => 'float',
-        'related_posts' => 'array',
-        'published_at' => 'datetime:j F Y h:i A',
-        'scheduled_at' => 'datetime:j F Y h:i A',
-        'expired_at' => 'datetime',
-        'last_edited_at' => 'datetime',
-        'last_edited_by' => 'integer',
-        'revision_number' => 'integer',
-        'custom_fields' => 'array',
-        'analytics' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
-        // Litepie Database casts
-        'position' => 'integer',
-        'meta_data' => 'array',
-        'version_count' => 'integer',
-        'performance_metrics' => 'array',
-        'last_exported_at' => 'datetime',
-        'last_imported_at' => 'datetime',
-        'cache_warmed_at' => 'datetime',
-        'archived_at' => 'datetime',
-    ];
+    public function casts(): array
+    {
+        return [
+            'status' => BlogStatus::class,
+            'co_authors' => 'array',
+            'categories' => 'array',
+            'tags' => 'array',
+            'gallery' => 'array',
+            'attachments' => 'array',
+            'translations' => 'array',
+            'seo_meta' => 'array',
+            'schema_markup' => 'array',
+            'is_featured' => 'boolean',
+            'is_sticky' => 'boolean',
+            'allow_comments' => 'boolean',
+            'comments_count' => 'integer',
+            'views_count' => 'integer',
+            'likes_count' => 'integer',
+            'shares_count' => 'integer',
+            'reading_time' => 'float',
+            'related_posts' => 'array',
+            'published_at' => 'datetime:j F Y h:i A',
+            'scheduled_at' => 'datetime:j F Y h:i A',
+            'expired_at' => 'datetime',
+            'last_edited_at' => 'datetime',
+            'last_edited_by' => 'integer',
+            'revision_number' => 'integer',
+            'custom_fields' => 'array',
+            'analytics' => 'array',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'deleted_at' => 'datetime',
+            // Litepie Database casts
+            'position' => 'integer',
+            'meta_data' => 'array',
+            'version_count' => 'integer',
+            'performance_metrics' => 'array',
+            'last_exported_at' => 'datetime',
+            'last_imported_at' => 'datetime',
+            'cache_warmed_at' => 'datetime',
+            'archived_at' => 'datetime',
+        ];
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -394,9 +400,6 @@ class Blog extends Model
     /**
      * Calculate reading time based on content
      * Average reading speed: 200 words per minute
-     *
-     * @param string $content
-     * @return float
      */
     public static function calculateReadingTime(string $content): float
     {
@@ -464,7 +467,7 @@ class Blog extends Model
     public function url(): Attribute
     {
         return Attribute::make(
-            get: fn() => url('/blog/' . $this->slug)
+            get: fn () => url('/blog/'.$this->slug)
         );
     }
 
@@ -575,7 +578,10 @@ class Blog extends Model
     private function isAdminUser(): bool
     {
         $user = auth()->user();
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
+
         return method_exists($user, 'hasRole') && $user->hasRole(['admin', 'superuser']);
     }
 
@@ -587,14 +593,14 @@ class Blog extends Model
      */
     public function getSettings(string $context = 'view'): array
     {
-        $isAdmin  = $this->isAdminUser();
-        $status   = $this->status ?? 'draft';
-        $isClosed = in_array($status, ['published', 'archived', 'trash']);
+        $isAdmin = $this->isAdminUser();
+        $status = $this->status ?? BlogStatus::DRAFT;
+        $isClosed = in_array($status, [BlogStatus::PUBLISHED, BlogStatus::ARCHIVED, BlogStatus::TRASH]);
 
         $settings = \App\Support\Settings\BlogSettings::defaults();
 
         // ── Create: hide derived/stat fields on brand-new posts ────────────────
-        if ($context === 'create' || !$this->exists) {
+        if ($context === 'create' || ! $this->exists) {
             $settings['groups']['form.blog-form-activity.analytics-info'] = ['show' => false, 'edit' => false];
             foreach (['analytics', 'views_count', 'likes_count', 'shares_count', 'comments_count', 'reading_time'] as $field) {
                 $settings['fields'][$field]['show'] = false;
@@ -604,12 +610,12 @@ class Blog extends Model
         // ── Status: scheduling locks once published / archived ─────────────────
         if ($isClosed) {
             $settings['fields']['scheduled_at']['edit'] = false;
-            $settings['fields']['expired_at']['edit']   = false;
-            $settings['fields']['slug']['edit']         = $isAdmin;
+            $settings['fields']['expired_at']['edit'] = false;
+            $settings['fields']['slug']['edit'] = $isAdmin;
         }
 
         // ── Role: non-admins cannot touch analytics, schema, or author ─────────
-        if (!$isAdmin) {
+        if (! $isAdmin) {
             $settings['groups']['form.blog-form-activity.analytics-info'] = ['show' => false, 'edit' => false];
             foreach (['analytics', 'schema_markup', 'custom_fields'] as $field) {
                 $settings['fields'][$field]['show'] = false;
@@ -628,13 +634,10 @@ class Blog extends Model
     {
         return [
             'options' => [
-                'status' => [
-                    ['value' => 'draft',     'label' => 'Draft'],
-                    ['value' => 'review',    'label' => 'Under Review'],
-                    ['value' => 'published', 'label' => 'Published'],
-                    ['value' => 'archived',  'label' => 'Archived'],
-                    ['value' => 'trash',     'label' => 'Trash'],
-                ],
+                'status' => array_map(
+                    fn (BlogStatus $e) => ['value' => $e->value, 'label' => $e->label()],
+                    BlogStatus::cases()
+                ),
                 'visibility' => [
                     ['value' => 'public',     'label' => 'Public'],
                     ['value' => 'private',    'label' => 'Private'],

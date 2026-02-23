@@ -69,7 +69,7 @@ enum ListingType: string
     /**
      * Get badge configuration for badge component
      * Returns array mapping listing type values to hex color codes and Lucide icon names
-     * 
+     *
      * Format: [
      *   'sale' => [
      *     'value' => 'sale',
@@ -78,8 +78,6 @@ enum ListingType: string
      *     'icon' => 'tag',       // Lucide icon name
      *   ]
      * ]
-     * 
-     * @return array
      */
     public static function badgeConfig(): array
     {
@@ -92,19 +90,17 @@ enum ListingType: string
                 'icon' => $type->iconName(),
             ];
         }
+
         return $colors;
     }
 
     /**
      * Get listing type configuration for a specific value
-     * 
-     * @param string $value
-     * @return array|null
      */
     public static function getStatusConfig(string $value): ?array
     {
         $type = self::tryFrom($value);
-        if (!$type) {
+        if (! $type) {
             return null;
         }
 

@@ -6,19 +6,17 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * BlogOverviewForm
- * 
+ *
  * Read-only overview form for displaying blog post details in a 3-column grid.
  * Used in cards and overview sections.
- * 
- * @package App\Forms\Blog
  */
 class BlogOverviewForm
 {
     /**
      * Create blog overview form structure
      *
-     * @param string $formId Form identifier
-     * @param string|null $dataUrl URL to fetch data from
+     * @param  string  $formId  Form identifier
+     * @param  string|null  $dataUrl  URL to fetch data from
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make(string $formId = 'blog-overview-form', ?string $dataUrl = null)
@@ -94,8 +92,8 @@ class BlogOverviewForm
     /**
      * Create a compact version with fewer fields
      *
-     * @param string $formId Form identifier
-     * @param string|null $dataUrl URL to fetch data from
+     * @param  string  $formId  Form identifier
+     * @param  string|null  $dataUrl  URL to fetch data from
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function makeCompact(string $formId = 'blog-overview-compact', ?string $dataUrl = null)

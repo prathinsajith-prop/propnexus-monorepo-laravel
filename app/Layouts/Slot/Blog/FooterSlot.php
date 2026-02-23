@@ -11,8 +11,6 @@ class FooterSlot
 {
     /**
      * Build aside footer with sections for buttons
-     *
-     * @return SlotManager
      */
     public static function make(): SlotManager
     {

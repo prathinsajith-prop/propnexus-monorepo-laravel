@@ -6,27 +6,25 @@ use Litepie\Layout\LayoutBuilder;
 
 /**
  * UserViewForm
- * 
+ *
  * Read-only user view form for displaying user details in drawer/fullscreen layout
  * All fields are readonly for viewing purposes only
- * 
- * @package App\Forms\User
  */
 class UserViewForm
 {
     /**
      * Create a read-only user view form structure
      *
-     * @param string $formId Form identifier
-     * @param array $masterData Master data for display options
-     * @param string|null $dataUrl URL to fetch user data
+     * @param  string  $formId  Form identifier
+     * @param  array  $masterData  Master data for display options
+     * @param  string|null  $dataUrl  URL to fetch user data
      * @return array|null Form component array
      */
     public static function make($formId, $masterData, $dataUrl = null)
     {
-        $formLayout = LayoutBuilder::create($formId . '-layout', 'form');
+        $formLayout = LayoutBuilder::create($formId.'-layout', 'form');
 
-        $formLayout->section('content', function ($section) use ($formId, $masterData, $dataUrl) {
+        $formLayout->section('content', function ($section) use ($formId, $dataUrl) {
             $form = $section->form($formId)
                 ->columns(2)
                 ->gap('lg');
@@ -57,7 +55,7 @@ class UserViewForm
                             ['key' => 'additional-info', 'columnGrid' => 12],
                             ['key' => 'audit-info', 'columnGrid' => 12],
                         ],
-                    ]
+                    ],
                 ]);
 
             // === PERSONAL INFORMATION ===

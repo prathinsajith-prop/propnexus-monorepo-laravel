@@ -2,15 +2,13 @@
 
 namespace App\Actions\User;
 
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * CreateUserAction
- * 
+ *
  * Handles creating a new user
- * 
- * @package App\Actions\User
  */
 class CreateUserAction extends BaseAction
 {
@@ -35,7 +33,7 @@ class CreateUserAction extends BaseAction
 
         // Load existing data
         $allData = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
-        if (!is_array($allData)) {
+        if (! is_array($allData)) {
             $allData = [];
         }
 
@@ -46,7 +44,7 @@ class CreateUserAction extends BaseAction
         // Prepare user data
         $userData = $this->data;
         $userData['id'] = $newId;
-        $userData['user_id'] = $userData['user_id'] ?? 'USR-' . str_pad($newId, 3, '0', STR_PAD_LEFT);
+        $userData['user_id'] = $userData['user_id'] ?? 'USR-'.str_pad($newId, 3, '0', STR_PAD_LEFT);
         $userData['created_at'] = now()->format('Y-m-d');
         $userData['updated_at'] = now()->format('Y-m-d');
 

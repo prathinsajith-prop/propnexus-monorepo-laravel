@@ -13,27 +13,26 @@ use Litepie\Layout\SlotManager;
 
 /**
  * CreateAsideSlot
- * 
+ *
  * **Purpose**: Builds the drawer panel (aside) for creating a new blog post.
- * 
+ *
  * **Component Structure**:
  * - Header: Title, subtitle, close button
  * - Main: Blog creation form (BlogForm)
  * - Footer: Cancel and create action buttons
- * 
+ *
  * **Features**:
  * - Supports fullscreen mode
  * - Separated header/footer builders for clean code
  * - Consistent button configuration
  * - Flexible parameter handling with defaults
- * 
+ *
  * **Architecture Pattern**:
  * This follows the standard aside slot pattern used across all modules:
  * 1. make() - Main builder method
  * 2. buildHeader() - Private method for header construction
  * 3. buildFooter() - Private method for footer construction
- * 
- * @package App\Layouts\Slot\Blog
+ *
  * @see \App\Layouts\Slot\Listing\CreateAsideSlot Listing equivalent
  */
 class CreateAsideSlot
@@ -41,9 +40,8 @@ class CreateAsideSlot
     /**
      * Build create blog aside
      *
-     * @param array $masterData Master data for form
-     * @param bool $fullscreen Whether to display fullscreen
-     * @return array
+     * @param  array  $masterData  Master data for form
+     * @param  bool  $fullscreen  Whether to display fullscreen
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
@@ -81,8 +79,6 @@ class CreateAsideSlot
 
     /**
      * Build header slot
-     *
-     * @return SlotManager
      */
     private static function buildHeader(): SlotManager
     {
@@ -143,8 +139,6 @@ class CreateAsideSlot
 
     /**
      * Build footer slot
-     *
-     * @return SlotManager
      */
     private static function buildFooter(): SlotManager
     {

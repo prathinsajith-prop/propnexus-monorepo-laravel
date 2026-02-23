@@ -6,21 +6,19 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * ListingViewForm
- * 
+ *
  * Read-only form for viewing listing details in modal/aside
- * 
- * @package App\Forms\Listing
  */
 class ListingViewForm
 {
     /**
      * Create listing view form structure
      *
-     * @param string $formId Form identifier
-     * @param string $method HTTP method (GET)
-     * @param string $action Form action URL
-     * @param array $masterData Master data for dropdowns
-     * @param string|null $dataUrl URL to fetch existing data
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (GET)
+     * @param  string  $action  Form action URL
+     * @param  array  $masterData  Master data for dropdowns
+     * @param  string|null  $dataUrl  URL to fetch existing data
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make($formId, $method, $action, $masterData = [], $dataUrl = null)

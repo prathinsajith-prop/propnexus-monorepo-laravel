@@ -2,15 +2,13 @@
 
 namespace App\Actions\User;
 
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * GetUserAction
- * 
+ *
  * Handles retrieving a single user by ID or user_id
- * 
- * @package App\Actions\User
  */
 class GetUserAction extends BaseAction
 {
@@ -25,13 +23,13 @@ class GetUserAction extends BaseAction
     {
         $jsonPath = storage_path('app/users.json');
 
-        if (!file_exists($jsonPath)) {
+        if (! file_exists($jsonPath)) {
             return ActionResult::failure('Users data not found');
         }
 
         $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (!is_array($allUsers)) {
+        if (! is_array($allUsers)) {
             return ActionResult::failure('Invalid data format');
         }
 
@@ -42,7 +40,7 @@ class GetUserAction extends BaseAction
             return $user['id'] == $identifier || $user['user_id'] == $identifier;
         });
 
-        if (!$user) {
+        if (! $user) {
             return ActionResult::failure('User not found');
         }
 

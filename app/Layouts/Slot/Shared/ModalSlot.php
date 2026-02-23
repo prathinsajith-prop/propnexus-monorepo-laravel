@@ -13,20 +13,18 @@ use Litepie\Layout\SlotManager;
 
 /**
  * Shared Modal Slot Builder
- * 
+ *
  * Provides ONLY generic, reusable modal configurations that can be used
  * across any module. Module-specific modals should be in their respective
  * slot folders (Blog, Listing, etc.)
- * 
+ *
  * Use this for:
  * - Generic confirmation modals
  * - Generic alert modals
  * - Generic info modals
  * - Any truly cross-module modal patterns
- * 
+ *
  * DO NOT add module-specific modals here!
- * 
- * @package App\Layouts\Slot\Shared
  */
 class ModalSlot
 {
@@ -36,14 +34,14 @@ class ModalSlot
      * This is a truly reusable modal that can be used by any module
      * for general confirmation actions.
      *
-     * @param array $options [
-     *   'title' => string,          // Modal title
-     *   'message' => string,        // Confirmation message
-     *   'confirmLabel' => string,   // Confirm button label (default: 'Confirm')
-     *   'confirmAction' => string,  // Action to trigger (default: 'confirm')
-     *   'confirmColor' => string,   // Button color (default: 'primary')
-     *   'confirmIcon' => string,    // Optional icon for confirm button
-     * ]
+     * @param  array  $options  [
+     *                          'title' => string,          // Modal title
+     *                          'message' => string,        // Confirmation message
+     *                          'confirmLabel' => string,   // Confirm button label (default: 'Confirm')
+     *                          'confirmAction' => string,  // Action to trigger (default: 'confirm')
+     *                          'confirmColor' => string,   // Button color (default: 'primary')
+     *                          'confirmIcon' => string,    // Optional icon for confirm button
+     *                          ]
      * @return array Modal definition
      */
     public static function confirmation(array $options = []): array
@@ -116,7 +114,7 @@ class ModalSlot
                         ->variant('contained')
                         ->meta([
                             'action' => $config['confirmAction'],
-                            'color' => $config['confirmColor']
+                            'color' => $config['confirmColor'],
                         ])
                 )
         );
@@ -145,12 +143,12 @@ class ModalSlot
      * Simple modal for displaying information or alerts to the user.
      * No form, just a message with a close button.
      *
-     * @param array $options [
-     *   'title' => string,        // Modal title (required)
-     *   'message' => string,      // Alert message (required)
-     *   'variant' => string,      // Message variant: info, success, warning, error (default: 'info')
-     *   'buttonLabel' => string,  // Button label (default: 'OK')
-     * ]
+     * @param  array  $options  [
+     *                          'title' => string,        // Modal title (required)
+     *                          'message' => string,      // Alert message (required)
+     *                          'variant' => string,      // Message variant: info, success, warning, error (default: 'info')
+     *                          'buttonLabel' => string,  // Button label (default: 'OK')
+     *                          ]
      * @return array Modal definition
      */
     public static function alert(array $options = []): array
@@ -223,7 +221,7 @@ class ModalSlot
                         ->variant('contained')
                         ->meta([
                             'action' => 'close',
-                            'color' => $config['variant'] === 'error' ? 'danger' : 'primary'
+                            'color' => $config['variant'] === 'error' ? 'danger' : 'primary',
                         ])
                 )
         );

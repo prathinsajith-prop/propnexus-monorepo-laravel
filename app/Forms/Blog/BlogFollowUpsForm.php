@@ -6,24 +6,22 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * BlogFollowUpsForm
- * 
+ *
  * Form for scheduling follow-ups on blog posts with:
  * - Follow-up title
  * - Scheduled date and time
  * - Follow-up type (review, update, publish, other)
  * - Description
  * - Email reminder option
- * 
- * @package App\Forms\Blog
  */
 class BlogFollowUpsForm
 {
     /**
      * Create blog follow-ups form structure
      *
-     * @param string $formId Form identifier
-     * @param string $method HTTP method (POST/PUT)
-     * @param string $action Form action URL
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (POST/PUT)
+     * @param  string  $action  Form action URL
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make($formId, $method, $action)

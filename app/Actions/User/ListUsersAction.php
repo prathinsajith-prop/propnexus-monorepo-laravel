@@ -7,10 +7,8 @@ use Litepie\Actions\BaseAction;
 
 /**
  * ListUsersAction
- * 
+ *
  * Handles listing users with filtering, sorting, and pagination
- * 
- * @package App\Actions\User
  */
 class ListUsersAction extends BaseAction
 {
@@ -38,13 +36,13 @@ class ListUsersAction extends BaseAction
     {
         $jsonPath = storage_path('app/users.json');
 
-        if (!file_exists($jsonPath)) {
+        if (! file_exists($jsonPath)) {
             return ActionResult::failure('Users data not found');
         }
 
         $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (!is_array($allUsers)) {
+        if (! is_array($allUsers)) {
             return ActionResult::failure('Invalid data format');
         }
 
@@ -56,7 +54,7 @@ class ListUsersAction extends BaseAction
         $search = $this->data['search'] ?? '';
 
         // Validate sort direction
-        if (!in_array($sortDirection, ['asc', 'desc'])) {
+        if (! in_array($sortDirection, ['asc', 'desc'])) {
             $sortDirection = 'asc';
         }
 
@@ -74,7 +72,7 @@ class ListUsersAction extends BaseAction
         ];
 
         // Apply search filter
-        if (!empty($search)) {
+        if (! empty($search)) {
             $allUsers = $this->applySearch($allUsers, $search);
         }
 
@@ -88,15 +86,15 @@ class ListUsersAction extends BaseAction
         $paginatedResult = $this->applyPagination($allUsers, $page, $perPage);
 
         return ActionResult::success($paginatedResult['data'], null, [
-            'total'        => $paginatedResult['meta']['total'],
-            'per_page'     => $paginatedResult['meta']['per_page'],
+            'total' => $paginatedResult['meta']['total'],
+            'per_page' => $paginatedResult['meta']['per_page'],
             'current_page' => $paginatedResult['meta']['current_page'],
-            'last_page'    => $paginatedResult['meta']['last_page'],
-            'from'         => $paginatedResult['meta']['from'],
-            'to'           => $paginatedResult['meta']['to'],
-            'filters'      => $filters,
-            'sort'         => [
-                'by'        => $sortBy,
+            'last_page' => $paginatedResult['meta']['last_page'],
+            'from' => $paginatedResult['meta']['from'],
+            'to' => $paginatedResult['meta']['to'],
+            'filters' => $filters,
+            'sort' => [
+                'by' => $sortBy,
                 'direction' => $sortDirection,
             ],
         ]);
@@ -112,6 +110,7 @@ class ListUsersAction extends BaseAction
                     return true;
                 }
             }
+
             return false;
         });
     }
@@ -119,13 +118,14 @@ class ListUsersAction extends BaseAction
     protected function applyFilters(array $users, array $filters): array
     {
         foreach ($filters as $column => $filterValue) {
-            if (!empty($filterValue)) {
+            if (! empty($filterValue)) {
                 $users = array_filter($users, function ($user) use ($column, $filterValue) {
-                    if (!isset($user[$column])) {
+                    if (! isset($user[$column])) {
                         return false;
                     }
                     $userValue = strtolower((string) $user[$column]);
                     $filterLower = strtolower((string) $filterValue);
+
                     return stripos($userValue, $filterLower) !== false;
                 });
             }
@@ -136,7 +136,7 @@ class ListUsersAction extends BaseAction
 
     protected function applySorting(array $users, string $sortBy, string $sortDirection): array
     {
-        if (!empty($sortBy) && isset($users[0][$sortBy])) {
+        if (! empty($sortBy) && isset($users[0][$sortBy])) {
             usort($users, function ($a, $b) use ($sortBy, $sortDirection) {
                 $aVal = $a[$sortBy] ?? '';
                 $bVal = $b[$sortBy] ?? '';

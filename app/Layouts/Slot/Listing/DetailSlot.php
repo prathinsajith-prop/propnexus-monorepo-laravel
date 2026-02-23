@@ -17,7 +17,7 @@ class DetailSlot
     /**
      * Build create listing detail section
      *
-     * @param array $masterData Master data for form
+     * @param  array  $masterData  Master data for form
      * @return array Detail section definition
      */
     public static function createDetail(array $masterData): array
@@ -87,7 +87,7 @@ class DetailSlot
     /**
      * Build edit listing detail section
      *
-     * @param array $masterData Master data for form
+     * @param  array  $masterData  Master data for form
      * @return array Detail section definition
      */
     public static function editDetail(array $masterData): array
@@ -157,7 +157,7 @@ class DetailSlot
     /**
      * Build view listing detail section
      *
-     * @param array $masterData Master data for form
+     * @param  array  $masterData  Master data for form
      * @return array Detail section definition
      */
     public static function viewDetail(array $masterData): array

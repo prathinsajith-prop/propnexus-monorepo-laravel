@@ -9,7 +9,7 @@ use Litepie\Layout\SlotManager;
 
 /**
  * Listing Main Content Slot
- * 
+ *
  * Builds the main content area for listing asides with table and supporting components
  */
 class MainContentSlot
@@ -17,10 +17,9 @@ class MainContentSlot
     /**
      * Build main content slot with table and text
      *
-     * @param array $columns Table columns
-     * @param string $dataUrl Data URL for table
-     * @param string $tableId Table identifier
-     * @return SlotManager
+     * @param  array  $columns  Table columns
+     * @param  string  $dataUrl  Data URL for table
+     * @param  string  $tableId  Table identifier
      */
     public static function make(
         array $columns = [],
@@ -52,10 +51,9 @@ class MainContentSlot
     /**
      * Build table component
      *
-     * @param string $tableId Table identifier
-     * @param string $dataUrl Data URL
-     * @param array $columns Table columns
-     * @return TableComponent
+     * @param  string  $tableId  Table identifier
+     * @param  string  $dataUrl  Data URL
+     * @param  array  $columns  Table columns
      */
     private static function buildTableComponent(
         string $tableId,
@@ -75,8 +73,6 @@ class MainContentSlot
 
     /**
      * Build text component for main content
-     *
-     * @return TextComponent
      */
     private static function buildTextComponent(): TextComponent
     {

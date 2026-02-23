@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class BixoProductPortalsSeeder extends Seeder
 {
@@ -30,7 +30,7 @@ class BixoProductPortalsSeeder extends Seeder
                 'sort_order' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ]
+            ],
         ]);
     }
 }

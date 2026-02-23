@@ -13,18 +13,15 @@ use Litepie\Layout\Components\FormComponent;
  * - Follow-up type (call, meeting, viewing, offer, other)
  * - Description / notes
  * - Email reminder option
- *
- * @package App\Forms\ProductProperty
  */
 class ProductPropertyFollowUpsForm
 {
     /**
      * Create the product property follow-up form structure.
      *
-     * @param string $formId  Form identifier
-     * @param string $method  HTTP method (POST/PUT)
-     * @param string $action  Form action URL (e.g. /api/product-property/:id/followups)
-     * @return FormComponent
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (POST/PUT)
+     * @param  string  $action  Form action URL (e.g. /api/product-property/:id/followups)
      */
     public static function make(string $formId, string $method, string $action): FormComponent
     {

@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('file_attachments', function (Blueprint $table) {
             $table->id();
-            
+
             // Attachable (polymorphic) - explicitly defined to avoid naming conflicts
             $table->unsignedBigInteger('attachable_id');
             $table->string('attachable_type');
-            
+
             $table->string('collection')->default('default');
             $table->string('document_type')->nullable();
             $table->string('filename');

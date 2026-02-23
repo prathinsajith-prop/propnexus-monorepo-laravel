@@ -2,15 +2,13 @@
 
 namespace App\Actions\User;
 
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * DeleteUserAction
- * 
+ *
  * Handles deleting a user
- * 
- * @package App\Actions\User
  */
 class DeleteUserAction extends BaseAction
 {
@@ -25,13 +23,13 @@ class DeleteUserAction extends BaseAction
     {
         $jsonPath = storage_path('app/users.json');
 
-        if (!file_exists($jsonPath)) {
+        if (! file_exists($jsonPath)) {
             return ActionResult::failure('Users data not found');
         }
 
         $allUsers = json_decode(file_get_contents($jsonPath), true);
 
-        if (!is_array($allUsers)) {
+        if (! is_array($allUsers)) {
             return ActionResult::failure('Invalid data format');
         }
 

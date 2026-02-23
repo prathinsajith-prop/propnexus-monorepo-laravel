@@ -41,9 +41,11 @@ use Litepie\Hashids\Traits\Hashids;
 class BixoProductProperties extends Model
 {
     use HasFactory;
-    use SoftDeletes;
-    use Searchable;      // ✅ Advanced search
-    use Hashids;         // ✅ Encode/decode IDs
+
+    // ✅ Advanced search
+    use Hashids;
+    use Searchable;
+    use SoftDeletes;         // ✅ Encode/decode IDs
 
     /**
      * The table associated with the model.
@@ -57,43 +59,48 @@ class BixoProductProperties extends Model
 
     /**
      * The attributes that should be cast.
+     *
+     * @return array<string, mixed>
      */
-    protected $casts = [
-        // ── Enum casts ──────────────────────────────────────────
-        'status'        => ProductPropertyStatus::class,
-        'category_type' => ProductCategoryType::class,
-        'property_for'  => ProductPropertyFor::class,
-        'property_type' => ProductPropertyType::class,
-        'furnishing'    => ProductFurnishing::class,
-        'frequency'     => ProductFrequency::class,
-        // ── Booleans ─────────────────────────────────────────────
-        'exclusive' => 'boolean',
-        'price_on_request' => 'boolean',
-        'rented' => 'boolean',
-        'company_listing' => 'boolean',
-        'watermark' => 'boolean',
-        'lead_auto_assign' => 'boolean',
-        'pf_subpermit' => 'boolean',
-        'price' => 'decimal:2',
-        'service_charge' => 'decimal:2',
-        'rented_price' => 'decimal:2',
-        'original_price' => 'decimal:2',
-        'bua' => 'decimal:2',
-        'published_at' => 'datetime',
-        'unpublished_at' => 'datetime',
-        'available_from' => 'date',
-        'rent_start' => 'date',
-        'rent_end' => 'date',
-        'completion_on' => 'date',
-        'form_a_expiry' => 'date',
-        'activated_at' => 'datetime',
-        'trakheesi_expiry' => 'datetime',
-        'dld_checked_at' => 'datetime',
-        'payment_date' => 'datetime',
-        'expires_at' => 'datetime',
-        'handover_date' => 'datetime',
-        'contract_end' => 'datetime',
-    ];
+    public function casts(): array
+    {
+        return [
+            // ── Enum casts ──────────────────────────────────────────
+            'status' => ProductPropertyStatus::class,
+            'category_type' => ProductCategoryType::class,
+            'property_for' => ProductPropertyFor::class,
+            'property_type' => ProductPropertyType::class,
+            'furnishing' => ProductFurnishing::class,
+            'frequency' => ProductFrequency::class,
+            // ── Booleans ─────────────────────────────────────────────
+            'exclusive' => 'boolean',
+            'price_on_request' => 'boolean',
+            'rented' => 'boolean',
+            'company_listing' => 'boolean',
+            'watermark' => 'boolean',
+            'lead_auto_assign' => 'boolean',
+            'pf_subpermit' => 'boolean',
+            'price' => 'decimal:2',
+            'service_charge' => 'decimal:2',
+            'rented_price' => 'decimal:2',
+            'original_price' => 'decimal:2',
+            'bua' => 'decimal:2',
+            'published_at' => 'datetime',
+            'unpublished_at' => 'datetime',
+            'available_from' => 'date',
+            'rent_start' => 'date',
+            'rent_end' => 'date',
+            'completion_on' => 'date',
+            'form_a_expiry' => 'date',
+            'activated_at' => 'datetime',
+            'trakheesi_expiry' => 'datetime',
+            'dld_checked_at' => 'datetime',
+            'payment_date' => 'datetime',
+            'expires_at' => 'datetime',
+            'handover_date' => 'datetime',
+            'contract_end' => 'datetime',
+        ];
+    }
 
     /**
      * The accessors to append to the model's array form.
@@ -221,7 +228,7 @@ class BixoProductProperties extends Model
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn() => number_format($this->price, 0) . ' AED'
+            get: fn () => number_format($this->price, 0).' AED'
         );
     }
 
@@ -231,7 +238,7 @@ class BixoProductProperties extends Model
     protected function isActive(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->status === 'Published'
+            get: fn () => $this->status === 'Published'
         );
     }
 
@@ -241,15 +248,23 @@ class BixoProductProperties extends Model
     protected function photos(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return json_encode([]);
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return json_encode([]);
+                }
                 if (is_string($value)) {
                     $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return json_encode([]);
             }
         );
@@ -261,15 +276,23 @@ class BixoProductProperties extends Model
     protected function features(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return json_encode([]);
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return json_encode([]);
+                }
                 if (is_string($value)) {
                     $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return json_encode([]);
             }
         );
@@ -281,15 +304,23 @@ class BixoProductProperties extends Model
     protected function documents(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return json_encode([]);
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return json_encode([]);
+                }
                 if (is_string($value)) {
                     $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return json_encode([]);
             }
         );
@@ -301,15 +332,23 @@ class BixoProductProperties extends Model
     protected function portals(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return json_encode([]);
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return json_encode([]);
+                }
                 if (is_string($value)) {
                     $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return json_encode([]);
             }
         );
@@ -321,15 +360,23 @@ class BixoProductProperties extends Model
     protected function featureTags(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
-                if (is_array($value)) return json_encode($value);
-                if (empty($value)) return json_encode([]);
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+                if (empty($value)) {
+                    return json_encode([]);
+                }
                 if (is_string($value)) {
                     $decoded = json_decode($value, true);
-                    if (json_last_error() === JSON_ERROR_NONE) return $value;
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        return $value;
+                    }
+
                     return json_encode([$value]);
                 }
+
                 return json_encode([]);
             }
         );
@@ -344,7 +391,10 @@ class BixoProductProperties extends Model
     private function isAdminUser(): bool
     {
         $user = auth()->user();
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
+
         return method_exists($user, 'hasRole') && $user->hasRole(['admin', 'superuser']);
     }
 
@@ -356,32 +406,32 @@ class BixoProductProperties extends Model
      */
     public function getSettings(string $context = 'view'): array
     {
-        $S          = \App\Support\Settings\ProductPropertySettings::class;
-        $isAdmin    = $this->isAdminUser();
-        $statusVal  = $this->status instanceof \App\Enums\ProductPropertyStatus
+        $S = \App\Support\Settings\ProductPropertySettings::class;
+        $isAdmin = $this->isAdminUser();
+        $statusVal = $this->status instanceof \App\Enums\ProductPropertyStatus
             ? $this->status->value : ($this->status ?? null);
-        $propFor    = $this->property_for instanceof \App\Enums\ProductPropertyFor
+        $propFor = $this->property_for instanceof \App\Enums\ProductPropertyFor
             ? $this->property_for->value : ($this->property_for ?? null);
-        $isClosed   = in_array($statusVal, ['Archived', 'Completed', 'Junk', 'Unpublished']);
-        $isPending  = in_array($statusVal, [
+        $isClosed = in_array($statusVal, ['Archived', 'Completed', 'Junk', 'Unpublished']);
+        $isPending = in_array($statusVal, [
             'Pending',
             'Waiting Publish',
             'Waiting Teamleader',
             'Waiting Team Leader',
-            'Pending Verification'
+            'Pending Verification',
         ]);
         $isRejected = $statusVal === 'Rejected';
 
         $formId = match ($context) {
             'create' => $S::FORM_CREATE,
-            'edit'   => $S::FORM_EDIT,
-            default  => $S::FORM_VIEW,
+            'edit' => $S::FORM_EDIT,
+            default => $S::FORM_VIEW,
         };
 
         $settings = $S::defaults();
 
         // ── Create: reg-info (Trakheesi/DLD) is filled in the edit phase ───────
-        if ($context === 'create' || !$this->exists) {
+        if ($context === 'create' || ! $this->exists) {
             $createForms = [$S::FORM_CREATE, $S::FORM_CREATE_MODAL];
             $settings['groups'] = array_merge(
                 $settings['groups'],
@@ -398,7 +448,7 @@ class BixoProductProperties extends Model
                 $settings['groups'],
                 $S::buildGroups([$formId], ['pricing-info', 'assign-info', 'specs-info'], true, false)
             );
-            $settings['fields']['price']['edit']  = $isAdmin;
+            $settings['fields']['price']['edit'] = $isAdmin;
             $settings['fields']['status']['edit'] = $isAdmin;
         }
 
@@ -430,7 +480,7 @@ class BixoProductProperties extends Model
         }
 
         // ── Role: non-admins cannot see pricing, reg, or assignment ───────────
-        if (!$isAdmin) {
+        if (! $isAdmin) {
             $settings['groups'] = array_merge(
                 $settings['groups'],
                 $S::buildGroups([$formId], ['pricing-info', 'reg-info', 'assign-info'], false, false)
@@ -452,23 +502,23 @@ class BixoProductProperties extends Model
         return [
             'options' => [
                 'status' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductPropertyStatus::cases()
                 ),
                 'category_type' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductCategoryType::cases()
                 ),
                 'property_for' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductPropertyFor::cases()
                 ),
                 'furnishing' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductFurnishing::cases()
                 ),
                 'frequency' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductFrequency::cases()
                 ),
             ],

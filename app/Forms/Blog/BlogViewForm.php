@@ -2,23 +2,20 @@
 
 namespace App\Forms\Blog;
 
-
 /**
  * BlogViewForm
- * 
+ *
  * Read-only blog view form for displaying blog post details in drawer/fullscreen layout
  * All fields are readonly for viewing purposes only
- * 
- * @package App\Forms\Blog
  */
 class BlogViewForm
 {
     /**
      * Create a read-only blog view form structure
      *
-     * @param string $formId Form identifier
-     * @param array $masterData Master data for display options
-     * @param string|null $dataUrl URL to fetch blog data
+     * @param  string  $formId  Form identifier
+     * @param  array  $masterData  Master data for display options
+     * @param  string|null  $dataUrl  URL to fetch blog data
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make($formId, $masterData, $dataUrl = null)
@@ -58,7 +55,7 @@ class BlogViewForm
                         ['key' => 'settings-info', 'columnGrid' => 12],
                         ['key' => 'analytics-info', 'columnGrid' => 12],
                     ],
-                ]
+                ],
             ]);
 
         // === CONTENT SECTION ===

@@ -19,7 +19,7 @@ use Litepie\Layout\SlotManager;
 
 /**
  * View Aside Slot
- * 
+ *
  * Builds the aside for viewing a listing
  */
 class ViewAsideSlot
@@ -27,9 +27,8 @@ class ViewAsideSlot
     /**
      * Build view listing aside
      *
-     * @param array $masterData Master data for form
-     * @param bool $fullscreen Whether to display fullscreen
-     * @return array
+     * @param  array  $masterData  Master data for form
+     * @param  bool  $fullscreen  Whether to display fullscreen
      */
     public static function make(array $masterData = [], bool $fullscreen = false): array
     {
@@ -53,7 +52,7 @@ class ViewAsideSlot
                         ImageHelper::url('listings/Screenshot-2026-01-02-at-12-40-43---pm-1770977490-698ef8d2ebadb.png', ['w' => 800, 'h' => 600]),
                         [
                             'alt' => 'Living Room',
-                            'caption' => 'Spacious living area'
+                            'caption' => 'Spacious living area',
                         ]
                     )
                     ->gridColumnSpan(4)
@@ -104,8 +103,6 @@ class ViewAsideSlot
 
     /**
      * Build header slot
-     *
-     * @return SlotManager
      */
     private static function buildHeader(): SlotManager
     {
@@ -174,7 +171,7 @@ class ViewAsideSlot
                     'action' => 'edit',
                     'type' => 'aside',
                     'component' => 'edit-listing-full',
-                    'tooltip' => __('layout.tooltip_edit_listing')
+                    'tooltip' => __('layout.tooltip_edit_listing'),
                 ])
         );
         $rightSlot->setComponent(
@@ -279,8 +276,6 @@ class ViewAsideSlot
 
     /**
      * Build footer slot
-     *
-     * @return SlotManager
      */
     private static function buildFooter(): SlotManager
     {

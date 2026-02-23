@@ -12,8 +12,6 @@ use Litepie\Actions\BaseAction;
  * GetProductPropertyAction
  *
  * Retrieve a single product property by ID, hashid, or ref.
- *
- * @package App\Actions\ProductProperty
  */
 class GetProductPropertyAction extends BaseAction
 {
@@ -33,19 +31,19 @@ class GetProductPropertyAction extends BaseAction
                 $property = BixoProductProperties::find($id);
             } else {
                 // Try hashid decode
-                $decoded  = hashids_decode($id);
+                $decoded = hashids_decode($id);
                 $property = $decoded
                     ? BixoProductProperties::find($decoded)
                     : BixoProductProperties::where('ref', $id)->first();
             }
 
-            if (!$property) {
+            if (! $property) {
                 return ActionResult::failure('Property not found');
             }
 
             return ActionResult::success($property->toArray(), 'Property retrieved successfully');
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to retrieve property: ' . $e->getMessage());
+            return ActionResult::failure('Failed to retrieve property: '.$e->getMessage());
         }
     }
 }

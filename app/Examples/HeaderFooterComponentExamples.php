@@ -2,17 +2,16 @@
 
 namespace App\Examples;
 
-use Litepie\Layout\Sections\HeaderSection;
-use Litepie\Layout\Sections\FooterSection;
-use Litepie\Layout\Components\ButtonComponent;
-use Litepie\Layout\Components\TextComponent;
-use Litepie\Layout\Components\LinkComponent;
-use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\AvatarComponent;
+use Litepie\Layout\Components\BadgeComponent;
+use Litepie\Layout\Components\ButtonComponent;
+use Litepie\Layout\Components\LinkComponent;
+use Litepie\Layout\Components\TextComponent;
+use Litepie\Layout\Sections\HeaderSection;
 
 /**
  * HeaderFooterComponentExamples
- * 
+ *
  * Comprehensive examples of using HeaderComponent and FooterComponent
  * in various contexts: modals, drawers, layouts, cards, etc.
  */
@@ -152,7 +151,7 @@ class HeaderFooterComponentExamples
                     ->variant('h5')
                     ->meta([
                         'subtitle' => 'Software Engineer',
-                        'email' => 'john@example.com'
+                        'email' => 'john@example.com',
                     ]),
             ])
             ->right([

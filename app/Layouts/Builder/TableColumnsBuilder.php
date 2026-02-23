@@ -12,32 +12,30 @@ use Litepie\Layout\Components\ButtonComponent;
 
 /**
  * TableColumnsBuilder
- * 
+ *
  * **Purpose**: Shared table column configurations for all modules.
- * 
+ *
  * **Responsibilities**:
  * - Define table column structures (Blog, Listing)
  * - Configure action buttons (View, Edit, Delete)
  * - Provide consistent column definitions across views
  * - Centralize button builder logic to eliminate duplication
- * 
+ *
  * **Architecture**:
  * - Shared across multiple modules (Blog, Listing)
  * - Reusable button builder pattern
  * - Consistent action configurations
- * 
+ *
  * **Organization**:
  * 1. **Blog Columns**: getBlogTableColumns(), getBlogTableListColumns()
  * 2. **Listing Columns**: getListingTableColumns(), getListingTableListColumns()
  * 3. **Generic Builder**: buildTableActionButton() - eliminates code duplication
  * 4. **Action Builders**: Module-specific button configurations
- * 
+ *
  * **Usage Example**:
  * ```php
  * ->columns(TableColumnsBuilder::getBlogTableColumns())
  * ```
- * 
- * @package App\Layouts\Builder
  */
 class TableColumnsBuilder
 {
@@ -47,7 +45,7 @@ class TableColumnsBuilder
 
     /**
      * Get blog table columns configuration (table view)
-     * 
+     *
      * @return array Column definitions for table view
      */
     public static function getBlogTableColumns(): array
@@ -75,7 +73,7 @@ class TableColumnsBuilder
 
     /**
      * Get blog table list columns configuration (list view)
-     * 
+     *
      * @return array Column definitions for list view
      */
     public static function getBlogTableListColumns(): array
@@ -102,7 +100,7 @@ class TableColumnsBuilder
 
     /**
      * Get blog table action buttons (view, edit, delete)
-     * 
+     *
      * @return array Action button configurations
      */
     public static function getBlogTableActions(): array
@@ -120,7 +118,7 @@ class TableColumnsBuilder
 
     /**
      * Get listing table columns configuration (table view)
-     * 
+     *
      * @return array Column definitions for table view
      */
     public static function getListingTableColumns(): array
@@ -161,7 +159,7 @@ class TableColumnsBuilder
 
     /**
      * Get listing table list columns configuration (list view)
-     * 
+     *
      * @return array Column definitions for list view
      */
     public static function getListingTableListColumns(): array
@@ -197,7 +195,7 @@ class TableColumnsBuilder
 
     /**
      * Get listing table action buttons
-     * 
+     *
      * @return array Action button configurations
      */
     public static function getListingTableActions(): array
@@ -215,19 +213,19 @@ class TableColumnsBuilder
 
     /**
      * Build a generic table action button
-     * 
+     *
      * Centralized button builder that eliminates code duplication.
      * All action buttons (view, edit, delete) use this method with different configurations.
-     * 
-     * @param array $options [
-     *   'id' => string,         // Button identifier (required)
-     *   'icon' => string,       // Lucide icon name (required)
-     *   'color' => string,      // Button color (default: 'primary')
-     *   'tooltip' => string,    // Tooltip text (required)
-     *   'type' => string,       // Component type: 'aside' or 'modal' (required)
-     *   'component' => string,  // Component name to open (required)
-     *   'config' => array,      // Additional configuration like width, height
-     * ]
+     *
+     * @param  array  $options  [
+     *                          'id' => string,         // Button identifier (required)
+     *                          'icon' => string,       // Lucide icon name (required)
+     *                          'color' => string,      // Button color (default: 'primary')
+     *                          'tooltip' => string,    // Tooltip text (required)
+     *                          'type' => string,       // Component type: 'aside' or 'modal' (required)
+     *                          'component' => string,  // Component name to open (required)
+     *                          'config' => array,      // Additional configuration like width, height
+     *                          ]
      * @return array Button configuration
      */
     private static function buildTableActionButton(array $options = []): array
@@ -255,19 +253,19 @@ class TableColumnsBuilder
             ->meta(['tooltip' => $params['tooltip']]);
 
         // Add type and component if provided
-        if (!empty($params['type']) && !empty($params['component'])) {
+        if (! empty($params['type']) && ! empty($params['component'])) {
             $button->data('type', $params['type'])
                 ->data('component', $params['component']);
         }
 
         // Add confirm if provided
-        if (!empty($params['confirm'])) {
+        if (! empty($params['confirm'])) {
             $button->confirm($params['confirm'])
                 ->data('action', 'delete'); // Override action for delete
         }
 
         // Add config if provided
-        if (!empty($params['config'])) {
+        if (! empty($params['config'])) {
             $button->data('config', $params['config']);
         }
 
@@ -280,7 +278,7 @@ class TableColumnsBuilder
 
     /**
      * Build view button action for blog
-     * 
+     *
      * @return array View button configuration
      */
     private static function buildViewButtonAction(): array
@@ -298,7 +296,7 @@ class TableColumnsBuilder
 
     /**
      * Build edit button action for blog
-     * 
+     *
      * @return array Edit button configuration
      */
     private static function buildEditButtonAction(): array
@@ -321,7 +319,7 @@ class TableColumnsBuilder
 
     /**
      * Build delete button action for blog
-     * 
+     *
      * @return array Delete button configuration
      */
     private static function buildDeleteButtonAction(): array
@@ -349,7 +347,7 @@ class TableColumnsBuilder
 
     /**
      * Build view button action for listing
-     * 
+     *
      * @return array View button configuration
      */
     private static function buildViewListingButtonAction(): array
@@ -374,7 +372,7 @@ class TableColumnsBuilder
 
     /**
      * Build edit button action for listing
-     * 
+     *
      * @return array Edit button configuration
      */
     private static function buildEditListingButtonAction(): array
@@ -398,7 +396,7 @@ class TableColumnsBuilder
 
     /**
      * Build delete button action for listing
-     * 
+     *
      * @return array Delete button configuration
      */
     private static function buildDeleteListingButtonAction(): array
@@ -436,37 +434,37 @@ class TableColumnsBuilder
             ['key' => 'ref', 'label' => __('product_property.column_ref'), 'sortable' => true, 'width' => '120px'],
             ['key' => 'title', 'label' => __('product_property.property_title'), 'sortable' => true, 'filterable' => true, 'filter_key' => 'title'],
             [
-                'key'         => 'category_type',
-                'label'       => __('layout.type'),
-                'type'        => 'badge',
-                'sortable'    => true,
-                'filterable'  => true,
-                'filter_key'  => 'category_type',
-                'width'       => '130px',
+                'key' => 'category_type',
+                'label' => __('layout.type'),
+                'type' => 'badge',
+                'sortable' => true,
+                'filterable' => true,
+                'filter_key' => 'category_type',
+                'width' => '130px',
                 'badgeConfig' => ProductCategoryType::badgeConfig(),
-                'bordered'    => false,
+                'bordered' => false,
             ],
             [
-                'key'         => 'property_for',
-                'label'       => __('product_property.column_for'),
-                'type'        => 'badge',
-                'sortable'    => true,
-                'filterable'  => true,
-                'filter_key'  => 'property_for',
-                'width'       => '110px',
+                'key' => 'property_for',
+                'label' => __('product_property.column_for'),
+                'type' => 'badge',
+                'sortable' => true,
+                'filterable' => true,
+                'filter_key' => 'property_for',
+                'width' => '110px',
                 'badgeConfig' => ProductPropertyFor::badgeConfig(),
-                'bordered'    => false,
+                'bordered' => false,
             ],
             [
-                'key'         => 'status',
-                'label'       => __('layout.status'),
-                'type'        => 'badge',
-                'sortable'    => true,
-                'filterable'  => true,
-                'filter_key'  => 'status',
-                'width'       => '140px',
+                'key' => 'status',
+                'label' => __('layout.status'),
+                'type' => 'badge',
+                'sortable' => true,
+                'filterable' => true,
+                'filter_key' => 'status',
+                'width' => '140px',
                 'badgeConfig' => ProductPropertyStatus::badgeConfig(),
-                'bordered'    => true,
+                'bordered' => true,
             ],
             ['key' => 'price', 'label' => __('product_property.price'), 'type' => 'currency', 'sortable' => true, 'width' => '120px', 'align' => 'right'],
             ['key' => 'beds', 'label' => __('product_property.beds'), 'sortable' => true, 'width' => '70px', 'align' => 'center'],
@@ -498,18 +496,18 @@ class TableColumnsBuilder
     private static function buildViewPropertyButtonAction(): array
     {
         return self::buildTableActionButton([
-            'id'        => 'view',
-            'icon'      => 'eyeopen',
-            'color'     => 'primary',
-            'variant'   => 'standard',
-            'tooltip'   => __('layout.view_details'),
-            'type'      => 'aside',
+            'id' => 'view',
+            'icon' => 'eyeopen',
+            'color' => 'primary',
+            'variant' => 'standard',
+            'tooltip' => __('layout.view_details'),
+            'type' => 'aside',
             'component' => 'view-property',
-            'config'    => [
-                'width'         => '900px',
-                'height'        => '100vh',
-                'anchor'        => 'right',
-                'backdrop'      => true,
+            'config' => [
+                'width' => '900px',
+                'height' => '100vh',
+                'anchor' => 'right',
+                'backdrop' => true,
                 'componentType' => 'aside',
             ],
         ]);
@@ -518,17 +516,17 @@ class TableColumnsBuilder
     private static function buildEditPropertyButtonAction(): array
     {
         return self::buildTableActionButton([
-            'id'        => 'edit',
-            'icon'      => 'pen',
-            'color'     => 'primary',
-            'variant'   => 'standard',
-            'tooltip'   => __('layout.edit'),
-            'type'      => 'aside',
+            'id' => 'edit',
+            'icon' => 'pen',
+            'color' => 'primary',
+            'variant' => 'standard',
+            'tooltip' => __('layout.edit'),
+            'type' => 'aside',
             'component' => 'edit-property',
-            'config'    => [
-                'width'   => '800px',
-                'height'  => '100vh',
-                'anchor'  => 'right',
+            'config' => [
+                'width' => '800px',
+                'height' => '100vh',
+                'anchor' => 'right',
                 'backdrop' => true,
             ],
         ]);
@@ -537,19 +535,19 @@ class TableColumnsBuilder
     private static function buildDeletePropertyButtonAction(): array
     {
         return self::buildTableActionButton([
-            'id'      => 'delete',
-            'icon'    => 'binempty',
-            'color'   => 'danger',
+            'id' => 'delete',
+            'icon' => 'binempty',
+            'color' => 'danger',
             'variant' => 'standard',
             'tooltip' => __('layout.delete'),
             'confirm' => [
-                'title'        => __('layout.delete_property'),
-                'message'      => __('layout.delete_property_confirmation'),
+                'title' => __('layout.delete_property'),
+                'message' => __('layout.delete_property_confirmation'),
                 'confirmLabel' => __('layout.delete'),
-                'cancelLabel'  => __('layout.cancel'),
-                'action'       => 'delete',
-                'dataUrl'      => '/api/product-property/:id',
-                'method'       => 'delete',
+                'cancelLabel' => __('layout.cancel'),
+                'action' => 'delete',
+                'dataUrl' => '/api/product-property/:id',
+                'method' => 'delete',
             ],
         ]);
     }

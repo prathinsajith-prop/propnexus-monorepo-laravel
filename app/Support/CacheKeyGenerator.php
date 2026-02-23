@@ -8,10 +8,6 @@ class CacheKeyGenerator
 {
     /**
      * Generate a cache key for a layout response.
-     *
-     * @param  string  $prefix
-     * @param  \Illuminate\Http\Request|null  $request
-     * @return string
      */
     public static function forLayout(string $prefix, ?Request $request = null): string
     {
@@ -34,10 +30,6 @@ class CacheKeyGenerator
 
     /**
      * Generate a cache key for API data.
-     *
-     * @param  string  $prefix
-     * @param  array  $params
-     * @return string
      */
     public static function forApi(string $prefix, array $params = []): string
     {
@@ -52,14 +44,11 @@ class CacheKeyGenerator
 
     /**
      * Normalize query parameters for consistent cache keys.
-     *
-     * @param  array  $params
-     * @return array
      */
     private static function normalizeQueryParams(array $params): array
     {
         // Remove empty values
-        $params = array_filter($params, fn($value) => $value !== null && $value !== '');
+        $params = array_filter($params, fn ($value) => $value !== null && $value !== '');
 
         // Sort by key for consistency
         ksort($params);
@@ -69,15 +58,12 @@ class CacheKeyGenerator
 
     /**
      * Get cache tags for a layout.
-     *
-     * @param  string  $controller
-     * @return array
      */
     public static function tagsForLayout(string $controller): array
     {
         return [
             'layouts',
-            'layout:' . $controller,
+            'layout:'.$controller,
         ];
     }
 }

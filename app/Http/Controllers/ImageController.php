@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * ImageController
- * 
+ *
  * Common API for serving images with proper headers and authentication
  * Supports both storage and public paths
  */
@@ -16,11 +15,10 @@ class ImageController extends Controller
 {
     /**
      * Serve an image by path
-     * 
-     * @param Request $request
-     * @param string $path The image path (can contain slashes)
+     *
+     * @param  string  $path  The image path (can contain slashes)
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
-     * 
+     *
      * Usage:
      * - /api/images/listings/property.jpg
      * - /api/images/users/avatar.png
@@ -34,7 +32,7 @@ class ImageController extends Controller
         }
 
         // Get the full path from the URL if not provided
-        if (!$path) {
+        if (! $path) {
             $path = $request->route('path');
         }
 
@@ -68,19 +66,18 @@ class ImageController extends Controller
         // Image not found
         return response()->json([
             'error' => 'Image not found',
-            'path' => $path
+            'path' => $path,
         ], 404)->header('Access-Control-Allow-Origin', '*');
     }
 
     /**
      * Serve image from storage disk with proper caching and CORS
-     * 
-     * @param Request $request
-     * @param string $disk Storage disk name
-     * @param string $path File path
-     * @param int|null $width Resize width
-     * @param int|null $height Resize height
-     * @param int $quality Image quality (1-100)
+     *
+     * @param  string  $disk  Storage disk name
+     * @param  string  $path  File path
+     * @param  int|null  $width  Resize width
+     * @param  int|null  $height  Resize height
+     * @param  int  $quality  Image quality (1-100)
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\Response
      */
     protected function serveFromStorage(Request $request, string $disk, string $path, $width = null, $height = null, $quality = 80)
@@ -88,7 +85,7 @@ class ImageController extends Controller
         $mimeType = Storage::disk($disk)->mimeType($path);
         $lastModified = Storage::disk($disk)->lastModified($path);
         $fileSize = Storage::disk($disk)->size($path);
-        $etag = md5($path . $lastModified . $fileSize . $width . $height . $quality);
+        $etag = md5($path.$lastModified.$fileSize.$width.$height.$quality);
 
         // Check if client has cached version (304 Not Modified)
         if ($this->isNotModified($request, $etag, $lastModified)) {
@@ -109,20 +106,19 @@ class ImageController extends Controller
             'Content-Type' => $mimeType,
             'Content-Length' => $fileSize,
             'Cache-Control' => 'public, max-age=31536000, immutable',
-            'Last-Modified' => gmdate('D, d M Y H:i:s', $lastModified) . ' GMT',
-            'ETag' => '"' . $etag . '"',
+            'Last-Modified' => gmdate('D, d M Y H:i:s', $lastModified).' GMT',
+            'ETag' => '"'.$etag.'"',
             'Accept-Ranges' => 'bytes',
         ], $this->getCorsHeaders()));
     }
 
     /**
      * Serve image from public directory with proper caching and CORS
-     * 
-     * @param Request $request
-     * @param string $publicPath Full public path
-     * @param int|null $width Resize width
-     * @param int|null $height Resize height
-     * @param int $quality Image quality (1-100)
+     *
+     * @param  string  $publicPath  Full public path
+     * @param  int|null  $width  Resize width
+     * @param  int|null  $height  Resize height
+     * @param  int  $quality  Image quality (1-100)
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\Response
      */
     protected function serveFromPublic(Request $request, string $publicPath, $width = null, $height = null, $quality = 80)
@@ -130,7 +126,7 @@ class ImageController extends Controller
         $mimeType = mime_content_type($publicPath);
         $lastModified = filemtime($publicPath);
         $fileSize = filesize($publicPath);
-        $etag = md5($publicPath . $lastModified . $fileSize . $width . $height . $quality);
+        $etag = md5($publicPath.$lastModified.$fileSize.$width.$height.$quality);
 
         // Check if client has cached version (304 Not Modified)
         if ($this->isNotModified($request, $etag, $lastModified)) {
@@ -149,8 +145,8 @@ class ImageController extends Controller
                 'Content-Type' => $mimeType,
                 'Content-Length' => $fileSize,
                 'Cache-Control' => 'public, max-age=31536000, immutable',
-                'Last-Modified' => gmdate('D, d M Y H:i:s', $lastModified) . ' GMT',
-                'ETag' => '"' . $etag . '"',
+                'Last-Modified' => gmdate('D, d M Y H:i:s', $lastModified).' GMT',
+                'ETag' => '"'.$etag.'"',
                 'Accept-Ranges' => 'bytes',
             ], $this->getCorsHeaders()));
         }
@@ -161,17 +157,15 @@ class ImageController extends Controller
             'Content-Type' => $mimeType,
             'Content-Length' => $fileSize,
             'Cache-Control' => 'public, max-age=31536000, immutable',
-            'Last-Modified' => gmdate('D, d M Y H:i:s', $lastModified) . ' GMT',
-            'ETag' => '"' . $etag . '"',
+            'Last-Modified' => gmdate('D, d M Y H:i:s', $lastModified).' GMT',
+            'ETag' => '"'.$etag.'"',
             'Accept-Ranges' => 'bytes',
         ], $this->getCorsHeaders()));
     }
 
     /**
      * Serve a thumbnail/resized version of the image
-     * 
-     * @param Request $request
-     * @param string $path
+     *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse
      */
     public function thumbnail(Request $request, ?string $path = null)
@@ -185,7 +179,7 @@ class ImageController extends Controller
         $height = $request->input('h', 300);
         $quality = $request->input('q', 80);
 
-        if (!$path) {
+        if (! $path) {
             $path = $request->route('path');
         }
 
@@ -198,11 +192,6 @@ class ImageController extends Controller
 
     /**
      * Check if the client has a cached version (ETags & Last-Modified)
-     * 
-     * @param Request $request
-     * @param string $etag
-     * @param int $lastModified
-     * @return bool
      */
     protected function isNotModified(Request $request, string $etag, int $lastModified): bool
     {
@@ -226,8 +215,6 @@ class ImageController extends Controller
 
     /**
      * Get CORS headers for Next.js and other frontend frameworks
-     * 
-     * @return array
      */
     protected function getCorsHeaders(): array
     {
@@ -241,9 +228,6 @@ class ImageController extends Controller
 
     /**
      * Check if image type can be resized
-     * 
-     * @param string $mimeType
-     * @return bool
      */
     protected function isResizableImage(string $mimeType): bool
     {
@@ -258,12 +242,12 @@ class ImageController extends Controller
 
     /**
      * Resize image using GD library
-     * 
-     * @param string $imageData Binary image data
-     * @param string $mimeType Image MIME type
-     * @param int|null $width Target width
-     * @param int|null $height Target height
-     * @param int $quality Quality for JPEG/WebP (1-100)
+     *
+     * @param  string  $imageData  Binary image data
+     * @param  string  $mimeType  Image MIME type
+     * @param  int|null  $width  Target width
+     * @param  int|null  $height  Target height
+     * @param  int  $quality  Quality for JPEG/WebP (1-100)
      * @return string Resized image data
      */
     protected function resizeImage(string $imageData, string $mimeType, $width = null, $height = null, int $quality = 80): string
@@ -282,27 +266,29 @@ class ImageController extends Controller
         if ($width && $height) {
             // Both specified - maintain aspect ratio, fit within bounds
             $ratio = min($width / $originalWidth, $height / $originalHeight);
-            $newWidth = (int)($originalWidth * $ratio);
-            $newHeight = (int)($originalHeight * $ratio);
+            $newWidth = (int) ($originalWidth * $ratio);
+            $newHeight = (int) ($originalHeight * $ratio);
         } elseif ($width) {
             // Only width specified
             $ratio = $width / $originalWidth;
             $newWidth = $width;
-            $newHeight = (int)($originalHeight * $ratio);
+            $newHeight = (int) ($originalHeight * $ratio);
         } elseif ($height) {
             // Only height specified
             $ratio = $height / $originalHeight;
-            $newWidth = (int)($originalWidth * $ratio);
+            $newWidth = (int) ($originalWidth * $ratio);
             $newHeight = $height;
         } else {
             // No dimensions specified, return original
             imagedestroy($sourceImage);
+
             return $imageData;
         }
 
         // Don't upscale images
         if ($newWidth > $originalWidth || $newHeight > $originalHeight) {
             imagedestroy($sourceImage);
+
             return $imageData;
         }
 
@@ -341,7 +327,7 @@ class ImageController extends Controller
                 break;
             case 'image/png':
                 // PNG quality: 0 (best compression) to 9 (worst)
-                $pngQuality = (int)(9 - ($quality / 100 * 9));
+                $pngQuality = (int) (9 - ($quality / 100 * 9));
                 imagepng($destinationImage, null, $pngQuality);
                 break;
             case 'image/gif':
@@ -365,8 +351,7 @@ class ImageController extends Controller
 
     /**
      * Generate a signed URL for private images
-     * 
-     * @param Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateUrl(Request $request)
@@ -378,7 +363,7 @@ class ImageController extends Controller
 
         $path = $request->input('path');
 
-        if (!$path) {
+        if (! $path) {
             return response()->json(['error' => 'Path is required'], 400)
                 ->withHeaders($this->getCorsHeaders());
         }
@@ -390,7 +375,7 @@ class ImageController extends Controller
 
             return response()->json([
                 'url' => $url,
-                'path' => $path
+                'path' => $path,
             ])->withHeaders($this->getCorsHeaders());
         }
 

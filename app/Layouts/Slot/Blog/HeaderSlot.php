@@ -14,8 +14,6 @@ class HeaderSlot
 {
     /**
      * Build aside header with grid layout in center section
-     *
-     * @return SlotManager
      */
     public static function make(): SlotManager
     {
@@ -170,8 +168,6 @@ class HeaderSlot
 
     /**
      * Get dropdown items for header "More Options" button
-     *
-     * @return array
      */
     private static function getHeaderMoreOptionsDropdownItems(): array
     {

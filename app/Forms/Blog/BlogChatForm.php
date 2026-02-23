@@ -6,21 +6,19 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * BlogChatForm
- * 
+ *
  * Form for adding chat messages to blog posts with:
  * - Message content (textarea)
  * - Internal only flag
- * 
- * @package App\Forms\Blog
  */
 class BlogChatForm
 {
     /**
      * Create blog chat form structure
      *
-     * @param string $formId Form identifier
-     * @param string $method HTTP method (POST/PUT)
-     * @param string $action Form action URL
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (POST/PUT)
+     * @param  string  $action  Form action URL
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make($formId, $method, $action)

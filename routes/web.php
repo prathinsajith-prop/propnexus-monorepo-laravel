@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\GeneralController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ProductPropertyController;
-use App\Http\Controllers\ImageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [GeneralController::class, 'index']);

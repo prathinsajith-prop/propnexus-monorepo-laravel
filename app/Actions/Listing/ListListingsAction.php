@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace App\Actions\Listing;
 
 use App\Enums\Availability;
-use App\Enums\ListingStatus;
-use App\Enums\ListingType;
-use App\Enums\PropertyType;
 use App\Models\Listing;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * ListListingsAction
- * 
+ *
  * Enhanced listing with Litepie Database package features:
  * - Advanced search (full-text, fuzzy, weighted)
  * - Structured filters (e.g., status:EQ(active);property_type:IN(residential,commercial))
@@ -23,8 +20,6 @@ use Litepie\Actions\ActionResult;
  * - Optimized pagination
  * - Performance measurement
  * - Export capabilities
- * 
- * @package App\Actions\Listing
  */
 class ListListingsAction extends BaseAction
 {
@@ -83,7 +78,7 @@ class ListListingsAction extends BaseAction
         // Handle soft-deleted/archived listings
         if ($this->data['only_archived'] ?? false) {
             $query->onlyTrashed();
-        } elseif (!($this->data['include_archived'] ?? false)) {
+        } elseif (! ($this->data['include_archived'] ?? false)) {
             // By default, exclude soft deleted listings (already handled by SoftDeletes trait)
         }
 
@@ -91,13 +86,13 @@ class ListListingsAction extends BaseAction
         $searchQuery = $this->data['search'] ?? $this->data['q'] ?? null;
         $searchType = $this->data['search_type'] ?? 'basic';
 
-        if (!empty($searchQuery)) {
+        if (! empty($searchQuery)) {
             $query = $this->applySearch($query, $searchQuery, $searchType);
         }
 
         // Apply structured filter format (e.g., "status:EQ(active);property_type:IN(residential,commercial)")
         // Uses Searchable trait's filterQueryString method
-        if (!empty($this->data['filter'])) {
+        if (! empty($this->data['filter'])) {
             $query->filterQueryString($this->data['filter']);
         }
 
@@ -110,7 +105,7 @@ class ListListingsAction extends BaseAction
         $query->orderBy($sortBy, $sortDirection);
 
         // Handle export
-        if (!empty($this->data['export_format'])) {
+        if (! empty($this->data['export_format'])) {
             return $this->handleExport($query);
         }
 
@@ -167,73 +162,73 @@ class ListListingsAction extends BaseAction
     private function applyFilters($query)
     {
         // Listing ID filter
-        if (!empty($this->data['filter_listing_id'])) {
+        if (! empty($this->data['filter_listing_id'])) {
             $query->where('listing_id', 'like', "%{$this->data['filter_listing_id']}%");
         }
 
         // MLS Number filter
-        if (!empty($this->data['filter_mls_number'])) {
+        if (! empty($this->data['filter_mls_number'])) {
             $query->where('mls_number', 'like', "%{$this->data['filter_mls_number']}%");
         }
 
         // Title filter
-        if (!empty($this->data['filter_title'])) {
+        if (! empty($this->data['filter_title'])) {
             $query->where('title', 'like', "%{$this->data['filter_title']}%");
         }
 
         // Property Type filter
-        if (!empty($this->data['filter_property_type'])) {
+        if (! empty($this->data['filter_property_type'])) {
             $query->where('property_type', $this->data['filter_property_type']);
         }
 
         // Listing Type filter
-        if (!empty($this->data['filter_listing_type'])) {
+        if (! empty($this->data['filter_listing_type'])) {
             $query->where('listing_type', $this->data['filter_listing_type']);
         }
 
         // Status filter
-        if (!empty($this->data['filter_status'])) {
+        if (! empty($this->data['filter_status'])) {
             $query->where('status', $this->data['filter_status']);
         }
 
         // Availability filter
-        if (!empty($this->data['filter_availability'])) {
+        if (! empty($this->data['filter_availability'])) {
             $query->where('availability', $this->data['filter_availability']);
         }
 
         // City filter
-        if (!empty($this->data['filter_city'])) {
+        if (! empty($this->data['filter_city'])) {
             $query->where('city', $this->data['filter_city']);
         }
 
         // Area filter
-        if (!empty($this->data['filter_area'])) {
+        if (! empty($this->data['filter_area'])) {
             $query->where('area', 'like', "%{$this->data['filter_area']}%");
         }
 
         // Bedrooms filter
-        if (!empty($this->data['filter_bedrooms'])) {
+        if (! empty($this->data['filter_bedrooms'])) {
             $query->where('bedrooms', '>=', $this->data['filter_bedrooms']);
         }
 
         // Bathrooms filter
-        if (!empty($this->data['filter_bathrooms'])) {
+        if (! empty($this->data['filter_bathrooms'])) {
             $query->where('bathrooms', '>=', $this->data['filter_bathrooms']);
         }
 
         // Price range filter
-        if (!empty($this->data['filter_price_min'])) {
+        if (! empty($this->data['filter_price_min'])) {
             $query->where('price', '>=', $this->data['filter_price_min']);
         }
-        if (!empty($this->data['filter_price_max'])) {
+        if (! empty($this->data['filter_price_max'])) {
             $query->where('price', '<=', $this->data['filter_price_max']);
         }
 
         // Size range filter
-        if (!empty($this->data['filter_size_min'])) {
+        if (! empty($this->data['filter_size_min'])) {
             $query->where('size_sqft', '>=', $this->data['filter_size_min']);
         }
-        if (!empty($this->data['filter_size_max'])) {
+        if (! empty($this->data['filter_size_max'])) {
             $query->where('size_sqft', '<=', $this->data['filter_size_max']);
         }
 
@@ -253,15 +248,15 @@ class ListListingsAction extends BaseAction
         }
 
         // Agent filter
-        if (!empty($this->data['filter_agent_id'])) {
+        if (! empty($this->data['filter_agent_id'])) {
             $query->where('agent_id', $this->data['filter_agent_id']);
         }
 
         // Date range filter
-        if (!empty($this->data['filter_date_from'])) {
+        if (! empty($this->data['filter_date_from'])) {
             $query->where('published_at', '>=', $this->data['filter_date_from']);
         }
-        if (!empty($this->data['filter_date_to'])) {
+        if (! empty($this->data['filter_date_to'])) {
             $query->where('published_at', '<=', $this->data['filter_date_to']);
         }
 
@@ -290,7 +285,7 @@ class ListListingsAction extends BaseAction
                 'count' => $listings->count(),
             ]);
         } catch (\Exception $e) {
-            return ActionResult::failure('Export failed: ' . $e->getMessage());
+            return ActionResult::failure('Export failed: '.$e->getMessage());
         }
     }
 
@@ -320,7 +315,7 @@ class ListListingsAction extends BaseAction
             'Area',
             'Status',
             'Availability',
-            'Published At'
+            'Published At',
         ];
         $csv[] = implode(',', $headers);
 
@@ -328,7 +323,7 @@ class ListListingsAction extends BaseAction
             $row = [
                 $listing->listing_id,
                 $listing->mls_number,
-                '"' . str_replace('"', '""', $listing->title) . '"',
+                '"'.str_replace('"', '""', $listing->title).'"',
                 $listing->property_type,
                 $listing->listing_type,
                 $listing->price,
@@ -336,12 +331,12 @@ class ListListingsAction extends BaseAction
                 $listing->bedrooms,
                 $listing->bathrooms,
                 $listing->size_sqft,
-                '"' . str_replace('"', '""', $listing->address) . '"',
+                '"'.str_replace('"', '""', $listing->address).'"',
                 $listing->city,
                 $listing->area,
                 $listing->status,
                 $listing->availability,
-                $listing->published_at ? $listing->published_at->format('Y-m-d') : ''
+                $listing->published_at ? $listing->published_at->format('Y-m-d') : '',
             ];
             $csv[] = implode(',', $row);
         }

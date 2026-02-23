@@ -77,34 +77,34 @@ enum ProductPropertyStatus: string
     public function badgeColor(): string
     {
         return match ($this) {
-            self::DRAFT                => '#6B7280', // gray
-            self::PENDING              => '#F59E0B', // amber
+            self::DRAFT => '#6B7280', // gray
+            self::PENDING => '#F59E0B', // amber
             self::WAITING_PUBLISH,
             self::WAITING_UNPUBLISH,
             self::WAITING_TEAMLEADER,
-            self::WAITING_TEAM_LEADER  => '#F59E0B', // amber
-            self::PUBLISHED            => '#10B981', // green
-            self::APPROVED             => '#22C55E', // green-500
-            self::UNPUBLISHED          => '#94A3B8', // slate
-            self::ARCHIVED             => '#64748B', // slate-600
-            self::REJECTED             => '#EF4444', // red
-            self::JUNK                 => '#DC2626', // red-600
-            self::POCKET_PUBLISH       => '#8B5CF6', // purple
+            self::WAITING_TEAM_LEADER => '#F59E0B', // amber
+            self::PUBLISHED => '#10B981', // green
+            self::APPROVED => '#22C55E', // green-500
+            self::UNPUBLISHED => '#94A3B8', // slate
+            self::ARCHIVED => '#64748B', // slate-600
+            self::REJECTED => '#EF4444', // red
+            self::JUNK => '#DC2626', // red-600
+            self::POCKET_PUBLISH => '#8B5CF6', // purple
             self::PENDING_VERIFICATION => '#F97316', // orange
-            self::VERIFIED             => '#3B82F6', // blue
-            self::COMPLETED            => '#2563EB', // blue-600
-            self::PUBLIC               => '#14B8A6', // teal
-            self::PRIVATE              => '#6366F1', // indigo
+            self::VERIFIED => '#3B82F6', // blue
+            self::COMPLETED => '#2563EB', // blue-600
+            self::PUBLIC => '#14B8A6', // teal
+            self::PRIVATE => '#6366F1', // indigo
         };
     }
 
     public static function options(): array
     {
-        return collect(self::cases())->map(fn($case) => [
+        return collect(self::cases())->map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
             'color' => $case->color(),
-            'icon'  => $case->icon(),
+            'icon' => $case->icon(),
         ])->toArray();
     }
 
@@ -119,7 +119,7 @@ enum ProductPropertyStatus: string
                 'value' => $case->value,
                 'label' => $case->label(),
                 'color' => $case->badgeColor(),
-                'icon'  => $case->icon(),
+                'icon' => $case->icon(),
             ];
         }
 

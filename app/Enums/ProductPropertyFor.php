@@ -32,7 +32,7 @@ enum ProductPropertyFor: string
 
     public static function options(): array
     {
-        return collect(self::cases())->map(fn($case) => [
+        return collect(self::cases())->map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
         ])->toArray();
@@ -42,7 +42,7 @@ enum ProductPropertyFor: string
     {
         return match ($this) {
             self::RENTAL => '#8B5CF6', // Purple
-            self::SALES  => '#3B82F6', // Blue
+            self::SALES => '#3B82F6', // Blue
         };
     }
 
@@ -50,7 +50,7 @@ enum ProductPropertyFor: string
     {
         return match ($this) {
             self::RENTAL => 'key',
-            self::SALES  => 'cash',
+            self::SALES => 'cash',
         };
     }
 
@@ -62,9 +62,10 @@ enum ProductPropertyFor: string
                 'value' => $case->value,
                 'label' => $case->label(),
                 'color' => $case->badgeColor(),
-                'icon'  => $case->iconName(),
+                'icon' => $case->iconName(),
             ];
         }
+
         return $config;
     }
 }

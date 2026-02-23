@@ -6,22 +6,20 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * BlogNotesForm
- * 
+ *
  * Form for adding notes to blog posts with:
  * - Note content (textarea)
  * - Note type (general, important, todo, feedback)
  * - Priority (low, medium, high)
- * 
- * @package App\Forms\Blog
  */
 class BlogNotesForm
 {
     /**
      * Create blog notes form structure
      *
-     * @param string $formId Form identifier
-     * @param string $method HTTP method (POST/PUT)
-     * @param string $action Form action URL
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (POST/PUT)
+     * @param  string  $action  Form action URL
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make($formId, $method, $action)

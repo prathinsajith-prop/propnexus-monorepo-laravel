@@ -6,7 +6,7 @@ use Litepie\Layout\Components\FormComponent;
 
 /**
  * ListingForm
- * 
+ *
  * Comprehensive property listing form with sections for:
  * - Property Details (title, type, price)
  * - Location (address, city, area)
@@ -17,19 +17,17 @@ use Litepie\Layout\Components\FormComponent;
  * - Agent Information
  * - Financial Details
  * - SEO Settings
- * 
- * @package App\Forms\Listing
  */
 class ListingForm
 {
     /**
      * Create listing form structure
      *
-     * @param string $formId Form identifier
-     * @param string $method HTTP method (POST/PUT)
-     * @param string $action Form action URL
-     * @param array $masterData Master data for dropdowns
-     * @param string|null $dataUrl URL to fetch existing data
+     * @param  string  $formId  Form identifier
+     * @param  string  $method  HTTP method (POST/PUT)
+     * @param  string  $action  Form action URL
+     * @param  array  $masterData  Master data for dropdowns
+     * @param  string|null  $dataUrl  URL to fetch existing data
      * @return \Litepie\Layout\Components\FormComponent
      */
     public static function make($formId, $method, $action, $masterData, $dataUrl = null, $isCreate = false)
@@ -115,7 +113,6 @@ class ListingForm
             ->columns(12)
             ->create($isCreate);
 
-
         $locationGroup->text('building_name')
             ->label(__('layout.building_name'))
             ->placeholder(__('layout.building_name_placeholder'))
@@ -171,7 +168,6 @@ class ListingForm
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
-
 
         $specsGroup->number('bedrooms')
             ->label(__('layout.bedrooms'))

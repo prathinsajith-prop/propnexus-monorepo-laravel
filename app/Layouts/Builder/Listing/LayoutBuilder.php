@@ -13,14 +13,14 @@ use Litepie\Layout\Sections\GridSection;
 
 /**
  * Listing LayoutBuilder
- * 
+ *
  * **Purpose**: Orchestrates construction of all property listing layout sections.
- * 
+ *
  * **Architecture Role**:
  * - Receives configuration from ListingLayout (entry point)
  * - Delegates component rendering to Slot classes
  * - Coordinates section assembly and data flow
- * 
+ *
  * **Organization** (mirrors Blog structure for consistency):
  * 1. **Section Builders**: Main page sections (Header, Main, Footer, Search, Actions)
  * 2. **Component Builders**: Individual UI components (Stats, Filters, Buttons)
@@ -28,18 +28,15 @@ use Litepie\Layout\Sections\GridSection;
  * 4. **Aside Builders**: Drawer panels (Create, Edit, View)
  * 5. **Modal Builders**: Dialog modals (Create, Delete, Confirmation)
  * 6. **Form Builders**: Form components with various configurations
- * 
+ *
  * **Naming Convention**:
  * - No "Listing" prefix in class name (namespace provides context)
  * - Module-specific logic lives here
  * - Shared logic goes in parent Builder or TableColumnsBuilder
- * 
- * @package App\Layouts\Builder\Listing
+ *
  * @see \App\Layouts\ListingLayout Main layout entry point
  * @see \App\Layouts\Slot\Listing\* Component slots
  * @see \App\Layouts\Builder\TableColumnsBuilder Shared table configuration
- * 
- * @package App\Layouts\Listing\Builders
  */
 class LayoutBuilder
 {
@@ -49,9 +46,8 @@ class LayoutBuilder
 
     /**
      * Build header section with page title, breadcrumbs, and statistics
-     * 
-     * @param mixed $section Section component
-     * @return void
+     *
+     * @param  mixed  $section  Section component
      */
     public static function buildHeaderSection($section): void
     {
@@ -100,10 +96,9 @@ class LayoutBuilder
 
     /**
      * Build main section with data tables
-     * 
-     * @param mixed $section Section component
-     * @param array $masterData Master data for configuration
-     * @return void
+     *
+     * @param  mixed  $section  Section component
+     * @param  array  $masterData  Master data for configuration
      */
     public static function buildMainSection($section, array $masterData): void
     {
@@ -173,10 +168,9 @@ class LayoutBuilder
 
     /**
      * Build search section with filters
-     * 
-     * @param mixed $section Section component
-     * @param array $masterData Master data for filters
-     * @return void
+     *
+     * @param  mixed  $section  Section component
+     * @param  array  $masterData  Master data for filters
      */
     public static function buildSearchComponent($section, array $masterData): void
     {
@@ -191,10 +185,9 @@ class LayoutBuilder
 
     /**
      * Build actions section with action buttons
-     * 
-     * @param mixed $section Section component
-     * @param array $masterData Master data
-     * @return void
+     *
+     * @param  mixed  $section  Section component
+     * @param  array  $masterData  Master data
      */
     public static function buildActionsComponent($section, array $masterData): void
     {
@@ -209,9 +202,8 @@ class LayoutBuilder
 
     /**
      * Build footer section with copyright and links
-     * 
-     * @param mixed $section Section component
-     * @return void
+     *
+     * @param  mixed  $section  Section component
      */
     public static function buildFooterSection($section): void
     {
@@ -269,16 +261,16 @@ class LayoutBuilder
 
     /**
      * Build a statistics card with icon, value, and trend indicator
-     * 
-     * @param mixed $grid Parent grid section
-     * @param string $id Unique card identifier
-     * @param string $title Card title/label
-     * @param string $value Primary metric value
-     * @param string $color Theme color
-     * @param string $icon Lucide icon name
-     * @param string $trend Trend percentage
-     * @param string $trendDir Trend direction
-     * @param string $displayType Display type
+     *
+     * @param  mixed  $grid  Parent grid section
+     * @param  string  $id  Unique card identifier
+     * @param  string  $title  Card title/label
+     * @param  string  $value  Primary metric value
+     * @param  string  $color  Theme color
+     * @param  string  $icon  Lucide icon name
+     * @param  string  $trend  Trend percentage
+     * @param  string  $trendDir  Trend direction
+     * @param  string  $displayType  Display type
      * @return mixed Card component
      */
     public static function buildStatsCard($grid, string $id, string $title, string $value, string $color, string $icon, string $trend, string $trendDir, string $displayType)
@@ -314,10 +306,9 @@ class LayoutBuilder
 
     /**
      * Build filter column with search and filter controls
-     * 
-     * @param mixed $row Row component
-     * @param array $masterData Master data
-     * @return void
+     *
+     * @param  mixed  $row  Row component
+     * @param  array  $masterData  Master data
      */
     public static function buildFilterColumn($row, array $masterData): void
     {
@@ -404,9 +395,8 @@ class LayoutBuilder
 
     /**
      * Build action column with action buttons
-     * 
-     * @param mixed $row Row component
-     * @return void
+     *
+     * @param  mixed  $row  Row component
      */
     public static function buildActionColumn($row): void
     {
@@ -539,8 +529,8 @@ class LayoutBuilder
 
     /**
      * Build create listing aside
-     * 
-     * @param array $masterData Master data for forms
+     *
+     * @param  array  $masterData  Master data for forms
      * @return array Aside definition
      */
     public static function buildCreateListingAside(array $masterData): array
@@ -550,8 +540,8 @@ class LayoutBuilder
 
     /**
      * Build create listing fullscreen aside
-     * 
-     * @param array $masterData Master data for forms
+     *
+     * @param  array  $masterData  Master data for forms
      * @return array Aside definition
      */
     public static function buildCreateListingAsideFullscreen(array $masterData): array
@@ -561,8 +551,8 @@ class LayoutBuilder
 
     /**
      * Build edit listing aside
-     * 
-     * @param array $masterData Master data for forms
+     *
+     * @param  array  $masterData  Master data for forms
      * @return array Aside definition
      */
     public static function buildEditListingAside(array $masterData): array
@@ -572,8 +562,8 @@ class LayoutBuilder
 
     /**
      * Build view listing aside
-     * 
-     * @param array $masterData Master data for forms
+     *
+     * @param  array  $masterData  Master data for forms
      * @return array Aside definition
      */
     public static function buildViewListingAside(array $masterData): array
@@ -583,12 +573,12 @@ class LayoutBuilder
 
     /**
      * Build view listing fullscreen aside
-     * 
+     *
      * Optimized fullscreen layout with two-column design:
      * - Left: Large image gallery with carousel/lightbox
-     * - Right: Property details form  
-     * 
-     * @param array $masterData Master data for forms
+     * - Right: Property details form
+     *
+     * @param  array  $masterData  Master data for forms
      * @return array Aside definition
      */
     public static function buildViewListingAsideFullscreen(array $masterData): array
@@ -602,8 +592,8 @@ class LayoutBuilder
 
     /**
      * Build create listing modal
-     * 
-     * @param array $masterData Master data for forms
+     *
+     * @param  array  $masterData  Master data for forms
      * @return array Modal definition
      */
     public static function buildCreateListingModal(array $masterData): array
@@ -615,8 +605,8 @@ class LayoutBuilder
 
     /**
      * Build delete confirmation modal
-     * 
-     * @param string $itemName Item name to display
+     *
+     * @param  string  $itemName  Item name to display
      * @return array Modal definition
      */
     public static function buildDeleteListingModal(string $itemName = ''): array
@@ -632,13 +622,13 @@ class LayoutBuilder
 
     /**
      * Build comprehensive listing form component
-     * 
-     * @param string $formId Unique form identifier
-     * @param string $method HTTP method (POST, PUT, PATCH)
-     * @param string $submitUrl URL for form submission
-     * @param array $masterData Master data for form dropdowns and options
-     * @param string|null $dataUrl Optional URL to fetch existing data for editing
-     * @param array $config Optional configuration overrides
+     *
+     * @param  string  $formId  Unique form identifier
+     * @param  string  $method  HTTP method (POST, PUT, PATCH)
+     * @param  string  $submitUrl  URL for form submission
+     * @param  array  $masterData  Master data for form dropdowns and options
+     * @param  string|null  $dataUrl  Optional URL to fetch existing data for editing
+     * @param  array  $config  Optional configuration overrides
      * @return GridSection Grid section containing the listing form
      */
     public static function buildListingFormComponent(
@@ -679,10 +669,9 @@ class LayoutBuilder
 
     /**
      * Create a create listing form
-     * 
-     * @param array $masterData Master data for form
-     * @param string $formId Optional form ID
-     * @return GridSection
+     *
+     * @param  array  $masterData  Master data for form
+     * @param  string  $formId  Optional form ID
      */
     public static function createListingForm(array $masterData = [], string $formId = 'create-listing-form'): GridSection
     {
@@ -696,11 +685,10 @@ class LayoutBuilder
 
     /**
      * Create an edit listing form
-     * 
-     * @param array $masterData Master data for form
-     * @param string $dataUrl URL to fetch listing data
-     * @param string $formId Optional form ID
-     * @return GridSection
+     *
+     * @param  array  $masterData  Master data for form
+     * @param  string  $dataUrl  URL to fetch listing data
+     * @param  string  $formId  Optional form ID
      */
     public static function editListingForm(array $masterData = [], string $dataUrl = '/api/listing/:id', string $formId = 'edit-listing-form'): GridSection
     {

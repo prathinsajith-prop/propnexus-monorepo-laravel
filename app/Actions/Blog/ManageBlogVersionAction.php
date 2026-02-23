@@ -3,15 +3,13 @@
 namespace App\Actions\Blog;
 
 use App\Models\Blog;
-use Litepie\Actions\BaseAction;
 use Litepie\Actions\ActionResult;
+use Litepie\Actions\BaseAction;
 
 /**
  * ManageBlogVersionAction
- * 
+ *
  * Handle blog versioning operations using Versionable trait
- * 
- * @package App\Actions\Blog
  */
 class ManageBlogVersionAction extends BaseAction
 {
