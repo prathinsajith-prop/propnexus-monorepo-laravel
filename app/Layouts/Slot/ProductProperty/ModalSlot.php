@@ -42,7 +42,9 @@ class ModalSlot
             'create-property-form-modal',
             $config['method'],
             $config['apiUrl'],
-            $config['masterData']
+            $config['masterData'],
+            null,
+            true
         );
 
         $mainGrid = GridSection::make('create-property-modal-main-grid', 1)

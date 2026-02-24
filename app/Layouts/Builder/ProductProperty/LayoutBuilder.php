@@ -213,6 +213,52 @@ class LayoutBuilder
                 'backdrop' => true,
             ])
             ->meta(['tooltip' => __('layout.create_new_property')]);
+
+        $actionRow->button('create-btn-modal')
+            ->label(__('layout.create_modal_view'))
+            ->icon('plus')
+            ->size('md')
+            ->color('primary')
+            ->variant('lt-contained')
+            ->data('type', 'modal')
+            ->data('component', 'create-property-modal')
+            ->data('action', 'create')
+            ->data('config', [
+                'width' => '1500px',
+                'height' => 'auto',
+                'anchor' => 'center',
+                'backdrop' => true,
+            ])
+            ->meta(['tooltip' => __('layout.create_new_property')]);
+
+        // View Options - Dropdown
+        $actionRow->button('view-btn')
+            ->label('')
+            ->icon('cols')
+            ->size('md')
+            ->variant('outline')
+            ->dropdown([
+                'id' => 'view-options',
+                'placement' => 'bottom-end',
+                'iconOnly' => true,
+                'items' => [
+                    [
+                        'id' => 'view-table',
+                        'label' => __('layout.table_view'),
+                        'icon' => 'cols',
+                        'action' => 'table-view',
+                        'type' => 'button',
+                    ],
+                    [
+                        'id' => 'view-list',
+                        'label' => __('layout.list_view'),
+                        'icon' => 'list',
+                        'action' => 'list-view',
+                        'type' => 'button',
+                    ],
+                ],
+            ])
+            ->meta(['tooltip' => __('layout.switch_view')]);
     }
 
     /**

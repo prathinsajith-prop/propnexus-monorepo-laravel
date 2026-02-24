@@ -17,30 +17,60 @@ return [
     'validation' => [
         'max_size' => env('FILEHUB_MAX_SIZE', 10240), // KB
         'max_files_per_request' => env('FILEHUB_MAX_FILES', 10),
-        
+
         'allowed_mimes' => [
             // Images
-            'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 
-            'image/svg+xml', 'image/bmp', 'image/tiff',
-            
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'image/svg+xml',
+            'image/bmp',
+            'image/tiff',
+
             // Documents
-            'application/pdf', 'text/plain', 'text/csv', 'application/json',
-            'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            
+            'application/pdf',
+            'text/plain',
+            'text/csv',
+            'application/json',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+
             // Media
-            'video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm',
-            'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm',
-            
+            'video/mp4',
+            'video/quicktime',
+            'video/x-msvideo',
+            'video/webm',
+            'audio/mpeg',
+            'audio/wav',
+            'audio/ogg',
+            'audio/webm',
+
             // Archives
-            'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed',
+            'application/zip',
+            'application/x-rar-compressed',
+            'application/x-7z-compressed',
         ],
-        
+
         'forbidden_extensions' => [
-            'exe', 'bat', 'com', 'cmd', 'scr', 'pif', 'vbs', 'js', 'jar', 'ps1', 'sh'
+            'exe',
+            'bat',
+            'com',
+            'cmd',
+            'scr',
+            'pif',
+            'vbs',
+            'js',
+            'jar',
+            'ps1',
+            'sh',
         ],
-        
+
         'scan_malware' => env('FILEHUB_SCAN_MALWARE', false),
         'check_image_contents' => env('FILEHUB_CHECK_IMAGE_CONTENTS', true),
     ],
@@ -55,7 +85,7 @@ return [
         'quality' => env('FILEHUB_IMAGE_QUALITY', 85),
         'auto_orient' => true,
         'strip_metadata' => env('FILEHUB_STRIP_METADATA', true),
-        
+
         'variants' => [
             'thumbnail' => [
                 'width' => 150,
@@ -108,7 +138,7 @@ return [
         'virus_scan' => env('FILEHUB_VIRUS_SCAN', false),
         'content_type_validation' => true,
         'file_signature_check' => true,
-        
+
         // Upload Security
         'upload_api_key' => env('FILEHUB_UPLOAD_API_KEY'),
         'require_upload_token' => env('FILEHUB_REQUIRE_UPLOAD_TOKEN', true),
@@ -149,13 +179,13 @@ return [
     'middleware' => [
         // Base middleware for all FileHub routes
         'base' => ['api'],
-        
+
         // Authentication middleware for user routes
         'auth' => ['api', 'auth'],
-        
+
         // Admin middleware for admin routes
         'admin' => ['api', 'auth'], // Add your admin middleware here (e.g., 'admin', 'can:manage-files')
-        
+
         // Upload middleware for file upload routes
         'upload' => ['api', 'auth', 'throttle:uploads'],
     ],

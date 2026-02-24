@@ -337,7 +337,7 @@ class FullscreenViewAsideSlot
     {
         $card = CardComponent::make('property-overview-card')
             ->variant('outlined')
-            ->dataUrl('/api/product-property/:id')
+            // ->dataUrl('/api/product-property/:id')
             ->dataParams(['id' => ':id']);
 
         // Prominent price
