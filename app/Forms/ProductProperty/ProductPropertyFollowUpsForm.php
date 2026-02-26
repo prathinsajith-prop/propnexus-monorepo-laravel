@@ -22,14 +22,19 @@ class ProductPropertyFollowUpsForm
      * @param  string  $formId  Form identifier
      * @param  string  $method  HTTP method (POST/PUT)
      * @param  string  $action  Form action URL (e.g. /api/product-property/:id/followups)
+     * @param  string|null  $dataUrl  Optional URL to pre-populate the form (for editing)
      */
-    public static function make(string $formId, string $method, string $action): FormComponent
+    public static function make(string $formId, string $method, string $action, ?string $dataUrl = null): FormComponent
     {
         $form = FormComponent::make($formId)
             ->action($action)
             ->method($method)
             ->columns(2)
             ->gap('md');
+
+        if ($dataUrl) {
+            $form->dataUrl($dataUrl);
+        }
 
         $form->text('followup_title')
             ->label(__('layout.followup_title'))

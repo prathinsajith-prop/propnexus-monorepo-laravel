@@ -378,4 +378,127 @@ class ModalSlot
             ->setFooter($footerSlot)
             ->toArray();
     }
+
+    /**
+     * Build edit product property follow-up modal.
+     *
+     * @param  array  $options  [
+     *                          'apiUrl'  => string, // PUT endpoint
+     *                          'dataUrl' => string, // GET endpoint to pre-populate form
+     *                          'method'  => string, // HTTP method (default: PUT)
+     *                          ]
+     * @return array Modal definition
+     */
+    public static function editFollowup(array $options = []): array
+    {
+        $config = array_merge([
+            'apiUrl' => '/api/product-property/:id/followups/:followup_id',
+            'dataUrl' => '/api/product-property/:id/followups/:followup_id',
+            'method' => 'PUT',
+        ], $options);
+
+        $formComponent = ProductPropertyFollowUpsForm::make(
+            'edit-followup-form',
+            $config['method'],
+            $config['apiUrl'],
+            $config['dataUrl']
+        );
+
+        $mainGrid = GridSection::make('edit-followup-modal-main-grid', 1)
+            ->rows(1)
+            ->gap('md');
+        $mainGrid->add($formComponent);
+
+        // Header
+        $centerSlot = SlotManager::make('edit-followup-modal-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
+                'gridColumnSpan' => 6,
+            ]);
+
+        $centerSlot->setComponent(
+            TextComponent::make('title')
+                ->content(__('layout.edit_property_followup'))
+                ->variant('h4')
+                ->meta(['fontWeight' => 'bold'])
+        );
+
+        $headerRightSlot = SlotManager::make('edit-followup-modal-header-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 6,
+            ]);
+
+        $headerRightSlot->setComponent(
+            ButtonComponent::make('close-btn')
+                ->icon('cross')
+                ->variant('text')
+                ->meta(['action' => 'close'])
+        );
+
+        $headerSlot = SlotManager::make('edit-followup-header-slot');
+        $headerSlot->setSection(
+            HeaderSection::make('edit-followup-modal-header')
+                ->setCenter($centerSlot)
+                ->setRight($headerRightSlot)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        // Footer
+        $footerRightSlot = SlotManager::make('edit-followup-modal-footer-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 12,
+            ]);
+
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('cancel-btn')
+                ->label(__('layout.cancel'))
+                ->variant('outlined')
+                ->meta(['action' => 'close'])
+        );
+
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('update-btn')
+                ->label(__('layout.update_followup'))
+                ->icon('check')
+                ->variant('contained')
+                ->type('submit')
+                ->color('primary')
+                ->data('method', $config['method'])
+                ->dataUrl($config['apiUrl'])
+                ->dataParams(['id' => ':id', 'followup_id' => ':followup_id'])
+                ->meta(['action' => 'submit'])
+        );
+
+        $footerSlot = SlotManager::make('edit-followup-footer-slot');
+        $footerSlot->setSection(
+            FooterSection::make('edit-followup-modal-footer')
+                ->setRight($footerRightSlot)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        return DetailSection::make('edit-property-followup')
+            ->setHeader($headerSlot)
+            ->setMain(
+                SlotManager::make('edit-followup-modal-main-slot')
+                    ->setSection($mainGrid)
+            )
+            ->setFooter($footerSlot)
+            ->toArray();
+    }
 }

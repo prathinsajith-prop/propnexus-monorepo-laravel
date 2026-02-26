@@ -109,12 +109,12 @@ class LayoutBuilder
         ]);
 
         $mainGrid = $section->grid('main-content-grid', 1)->gap('md');
-
+        $getProductPropertyTbl = TableColumnsBuilder::getProductPropertyTableColumns();
         // Table view
         $mainGrid->row('table-row')->gap('none')->table('properties-table')
             ->asTable()
             ->dataUrl('/api/product-property')
-            ->columns(TableColumnsBuilder::getProductPropertyTableColumns())
+            ->columns($getProductPropertyTbl)
             ->selectable(true)
             ->pagination(true)
             ->perPage(10)
@@ -126,6 +126,34 @@ class LayoutBuilder
                 dataUrl: '/api/product-property/:id',
                 config: [
                     'width' => '100vw',
+                    'height' => '100vh',
+                    'anchor' => 'right',
+                    'backdrop' => true,
+                ]
+            )
+            ->meta([
+                'card' => true,
+                'responsive' => true,
+                'stickyHeader' => true,
+                'variant' => 'outlined',
+            ]);
+
+        // List view (optional - can be toggled with a button in the actions section)
+        $mainGrid->row('list-row')->gap('none')->table('properties-list')
+            ->asList()
+            ->dataUrl('/api/product-property')
+            ->columns($getProductPropertyTbl)
+            ->selectable(true)
+            ->pagination(true)
+            ->perPage(10)
+            ->hoverable(true)
+            ->striped(true)
+            ->clickableRows(
+                type: 'aside',
+                component: 'view-property-full',
+                dataUrl: '/api/product-property/:id',
+                config: [
+                    'width' => '900px',
                     'height' => '100vh',
                     'anchor' => 'right',
                     'backdrop' => true,
@@ -292,6 +320,18 @@ class LayoutBuilder
         return ModalSlot::createFollowup([
             'apiUrl' => '/api/product-property/:id/followups',
             'method' => 'POST',
+        ]);
+    }
+
+    /**
+     * Build edit property followup modal
+     */
+    public static function buildEditPropertyFollowupModal(): array
+    {
+        return ModalSlot::editFollowup([
+            'apiUrl' => '/api/product-property/:id/followups/:followup_id',
+            'dataUrl' => '/api/product-property/:id/followups/:followup_id',
+            'method' => 'PUT',
         ]);
     }
 

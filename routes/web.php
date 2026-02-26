@@ -81,6 +81,15 @@ Route::prefix('api')->group(function () {
     Route::put('/product-property/{property}', [ProductPropertyController::class, 'update'])->name('api.product-properties.update');
     Route::delete('/product-property/{property}', [ProductPropertyController::class, 'delete'])->name('api.product-properties.destroy');
     Route::get('/product-property/{property}/activities', [ProductPropertyController::class, 'activities'])->name('api.product-properties.activities');
+    Route::get('/product-property/{property}/followups', [ProductPropertyController::class, 'listFollowUps'])->name('api.product-properties.followups.index');
+    Route::post('/product-property/{property}/followups', [ProductPropertyController::class, 'createFollowUp'])->name('api.product-properties.followups.store');
+    Route::get('/product-property/{property}/followups/{followupEid}', [ProductPropertyController::class, 'showFollowUp'])->name('api.product-properties.followups.show');
+    Route::put('/product-property/{property}/followups/{followupEid}', [ProductPropertyController::class, 'updateFollowUp'])->name('api.product-properties.followups.update');
+    Route::delete('/product-property/{property}/followups/{followupEid}', [ProductPropertyController::class, 'deleteFollowUp'])->name('api.product-properties.followups.destroy');
+    Route::get('/product-property/{property}/notes', [ProductPropertyController::class, 'listNotes'])->name('api.product-properties.notes.index');
+    Route::post('/product-property/{property}/notes', [ProductPropertyController::class, 'createNote'])->name('api.product-properties.notes.store');
+    Route::put('/product-property/{property}/notes/{noteEid}', [ProductPropertyController::class, 'updateNote'])->name('api.product-properties.notes.update');
+    Route::delete('/product-property/{property}/notes/{noteEid}', [ProductPropertyController::class, 'deleteNote'])->name('api.product-properties.notes.destroy');
 
     // Product Property file upload routes
     Route::post('/product-property-upload/image', [ProductPropertyController::class, 'uploadImage'])->name('api.product-property-upload.image');

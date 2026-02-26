@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Actions\File\FileUploadAction;
 use App\Actions\ProductProperty\CreateProductPropertyAction;
+use App\Actions\ProductProperty\CreateProductPropertyFollowUpAction;
+use App\Actions\ProductProperty\CreateProductPropertyNoteAction;
 use App\Actions\ProductProperty\DeleteProductPropertyAction;
+use App\Actions\ProductProperty\DeleteProductPropertyFollowUpAction;
+use App\Actions\ProductProperty\DeleteProductPropertyNoteAction;
 use App\Actions\ProductProperty\ListProductPropertiesAction;
+use App\Actions\ProductProperty\ListProductPropertyFollowUpsAction;
+use App\Actions\ProductProperty\ListProductPropertyNotesAction;
 use App\Actions\ProductProperty\UpdateProductPropertyAction;
+use App\Actions\ProductProperty\UpdateProductPropertyFollowUpAction;
+use App\Actions\ProductProperty\UpdateProductPropertyNoteAction;
 use App\Enums\ProductCategoryType;
 use App\Enums\ProductFrequency;
 use App\Enums\ProductFurnishing;
@@ -280,7 +288,7 @@ class ProductPropertyController extends Controller
         $change = (($currentValue - $lastValue) / $lastValue) * 100;
         $prefix = $change >= 0 ? '+' : '';
 
-        return $prefix.round($change, 1).'%';
+        return $prefix . round($change, 1) . '%';
     }
 
     /**
@@ -327,14 +335,14 @@ class ProductPropertyController extends Controller
                         'users' => User::select('id', 'name')
                             ->orderBy('name')
                             ->get()
-                            ->map(fn ($user) => ['value' => $user->id, 'label' => $user->name])
+                            ->map(fn($user) => ['value' => $user->id, 'label' => $user->name])
                             ->values()
                             ->toArray(),
                     ];
                 }
             );
         } catch (\Exception $e) {
-            Log::error('Failed to fetch master data: '.$e->getMessage());
+            Log::error('Failed to fetch master data: ' . $e->getMessage());
 
             return [
                 'category_types' => [],
@@ -369,7 +377,7 @@ class ProductPropertyController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:'.$this->getMaxFileSize('document'),
+                'file' => 'required|file|max:' . $this->getMaxFileSize('document'),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -432,7 +440,7 @@ class ProductPropertyController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:'.$this->getMaxFileSize($type),
+                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -485,7 +493,7 @@ class ProductPropertyController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete file: '.$e->getMessage(),
+                'message' => 'Failed to delete file: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -542,7 +550,7 @@ class ProductPropertyController extends Controller
         }
 
         // Sort descending by occurred_at
-        usort($activities, fn ($a, $b) => strcmp((string) ($b['occurred_at'] ?? ''), (string) ($a['occurred_at'] ?? '')));
+        usort($activities, fn($a, $b) => strcmp((string) ($b['occurred_at'] ?? ''), (string) ($a['occurred_at'] ?? '')));
 
         return response()->json([
             'success' => true,
@@ -552,6 +560,189 @@ class ProductPropertyController extends Controller
                 'subject' => ['id' => $property->getKey(), 'ref' => $property->ref, 'title' => $property->title],
             ],
         ]);
+    }
+
+    /**
+     * List all follow-ups for a property.
+     * GET /api/product-property/{property}/followups
+     */
+    public function listFollowUps(BixoProductProperties $property, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $result = ListProductPropertyFollowUpsAction::make(null, [
+            'property_id' => $property->getKey(),
+            'limit' => $request->integer('limit') ?: null,
+        ])->run();
+
+        if ($result->isFailure()) {
+            return response()->json(['success' => false, 'message' => $result->getMessage()], 422);
+        }
+
+        return response()->json(['success' => true, 'data' => $result->getData(), 'message' => $result->getMessage()]);
+    }
+
+    /**
+     * Create a follow-up for a property.
+     * POST /api/product-property/{property}/followups
+     */
+    public function createFollowUp(BixoProductProperties $property, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $result = CreateProductPropertyFollowUpAction::make(null, array_merge(
+            $request->all(),
+            ['property_id' => $property->getKey()]
+        ))->run();
+
+        if ($result->isFailure()) {
+            return response()->json(['success' => false, 'message' => $result->getMessage(), 'errors' => $result->getErrors()], 422);
+        }
+
+        return response()->json(['success' => true, 'data' => $result->getData(), 'message' => $result->getMessage()], 201);
+    }
+
+    /**
+     * Get a single follow-up for a property.
+     * GET /api/product-property/{property}/followups/{followupId}
+     */
+    public function showFollowUp(BixoProductProperties $property, string $followupEid): ActionResult
+    {
+        $followUpId = hashids_decode($followupEid);
+
+        if (! $followUpId) {
+            return ActionResult::failure('Follow-up not found');
+        }
+
+        $followUp = \App\Models\BixoSchedulesFollowUp::where('id', $followUpId)
+            ->where('property_id', $property->getKey())
+            ->first();
+
+        if (! $followUp) {
+            return ActionResult::failure('Follow-up not found');
+        }
+
+        $details = $followUp->details ? json_decode($followUp->details, true) : [];
+
+        return ActionResult::success([
+            'eid' => $followUp->eid,
+            'property_id' => $followUp->property->eid,
+            'followup_title' => $followUp->title,
+            'followup_date' => $followUp->start_date?->toISOString(),
+            'followup_type' => $followUp->type,
+            'description' => $followUp->description,
+            'send_reminder' => $details['send_reminder'] ?? false,
+            'status' => $followUp->status?->value,
+            'created_at' => $followUp->created_at?->toISOString(),
+            'updated_at' => $followUp->updated_at?->toISOString(),
+        ]);
+    }
+
+    /**
+     * Update a follow-up for a property.
+     * PUT /api/product-property/{property}/followups/{followupId}
+     */
+    public function updateFollowUp(BixoProductProperties $property, string $followupEid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $result = UpdateProductPropertyFollowUpAction::make(null, array_merge(
+            $request->except(['_method', '_token']),
+            [
+                'property_id' => $property->getKey(),
+                'followup_eid' => $followupEid,
+            ]
+        ))->run();
+
+        if ($result->isFailure()) {
+            return response()->json(['success' => false, 'message' => $result->getMessage(), 'errors' => $result->getErrors()], 422);
+        }
+
+        return response()->json(['success' => true, 'data' => $result->getData(), 'message' => $result->getMessage()]);
+    }
+
+    /**
+     * Delete a follow-up for a property.
+     * DELETE /api/product-property/{property}/followups/{followupId}
+     */
+    public function deleteFollowUp(BixoProductProperties $property, string $followupEid): \Illuminate\Http\JsonResponse
+    {
+        $result = DeleteProductPropertyFollowUpAction::make(null, [
+            'property_id' => $property->getKey(),
+            'followup_eid' => $followupEid,
+        ])->run();
+
+        if ($result->isFailure()) {
+            return response()->json(['success' => false, 'message' => $result->getMessage()], 404);
+        }
+
+        return response()->json(['success' => true, 'message' => $result->getMessage()]);
+    }
+
+    /**
+     * List all notes for a property.
+     * GET /api/product-property/{property}/notes
+     */
+    public function listNotes(BixoProductProperties $property, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $result = ListProductPropertyNotesAction::make(null, [
+            'property_id' => $property->getKey(),
+            'limit' => $request->integer('limit') ?: null,
+        ])->run();
+
+        if ($result->isFailure()) {
+            return response()->json(['success' => false, 'message' => $result->getMessage()], 422);
+        }
+
+        return response()->json(['success' => true, 'data' => $result->getData(), 'message' => $result->getMessage()]);
+    }
+
+    /**
+     * Create a note for a property.
+     * POST /api/product-property/{property}/notes
+     */
+    public function createNote(BixoProductProperties $property, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $result = CreateProductPropertyNoteAction::make(null, array_merge(
+            $request->all(),
+            ['property_id' => $property->getKey()]
+        ))->run();
+
+        if ($result->isFailure()) {
+            return response()->json(['success' => false, 'message' => $result->getMessage(), 'errors' => $result->getErrors()], 422);
+        }
+
+        return response()->json(['success' => true, 'data' => $result->getData(), 'message' => $result->getMessage()], 201);
+    }
+
+    /**
+     * Update a note for a property.
+     * PATCH /api/product-property/{property}/notes/{noteId}
+     */
+    public function updateNote(BixoProductProperties $property, string $noteEid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $result = UpdateProductPropertyNoteAction::make(null, array_merge(
+            $request->all(),
+            ['property_id' => $property->getKey(), 'note_eid' => $noteEid]
+        ))->run();
+
+        if ($result->isFailure()) {
+            return response()->json(['success' => false, 'message' => $result->getMessage(), 'errors' => $result->getErrors()], 422);
+        }
+
+        return response()->json(['success' => true, 'data' => $result->getData(), 'message' => $result->getMessage()]);
+    }
+
+    /**
+     * Delete a note for a property.
+     * DELETE /api/product-property/{property}/notes/{noteId}
+     */
+    public function deleteNote(BixoProductProperties $property, string $noteEid): \Illuminate\Http\JsonResponse
+    {
+        $result = DeleteProductPropertyNoteAction::make(null, [
+            'property_id' => $property->getKey(),
+            'note_eid' => $noteEid,
+        ])->run();
+
+        if ($result->isFailure()) {
+            return response()->json(['success' => false, 'message' => $result->getMessage()], 404);
+        }
+
+        return response()->json(['success' => true, 'message' => $result->getMessage()]);
     }
 
     /**

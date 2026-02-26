@@ -20,6 +20,8 @@ class CommentComponent extends BaseComponent
 
     protected bool $markdown = false;
 
+    protected ?string $fieldName = null;
+
     public function __construct(string $name)
     {
         parent::__construct($name, 'comment');
@@ -86,6 +88,13 @@ class CommentComponent extends BaseComponent
         return $this;
     }
 
+    public function fieldName(string $fieldName): self
+    {
+        $this->fieldName = $fieldName;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return array_merge($this->getCommonProperties(), $this->filterNullValues([
@@ -97,6 +106,7 @@ class CommentComponent extends BaseComponent
             'sort_order' => $this->sortOrder,
             'mentioning' => $this->mentioning,
             'markdown' => $this->markdown,
+            'field_name' => $this->fieldName,
         ]));
     }
 }

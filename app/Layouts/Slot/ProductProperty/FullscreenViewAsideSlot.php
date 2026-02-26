@@ -12,7 +12,6 @@ use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\CardComponent;
 use Litepie\Layout\Components\CommentComponent;
 use Litepie\Layout\Components\DividerComponent;
-use Litepie\Layout\Components\ListComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Components\TimelineComponent;
 use Litepie\Layout\Sections\DetailSection;
@@ -128,7 +127,7 @@ class FullscreenViewAsideSlot
                     'icon' => 'eye',
                     'iconSize' => 'sm',
                     'color' => 'text-gray-500',
-                    'suffix' => ' '.__('layout.views'),
+                    'suffix' => ' ' . __('layout.views'),
                 ])
                 ->gridColumnSpan(6)
         );
@@ -459,9 +458,79 @@ class FullscreenViewAsideSlot
      */
     private static function buildFollowupsCard(): CardComponent
     {
+
+        // Build the per-item template card as an array so it can be embedded in meta().
+        $itemTemplate = CardComponent::make('followup-item')
+            ->title(':{followup_title}')
+            ->addComponent(
+                TextComponent::make('description')
+                    ->content(':{description}')
+                    ->variant('caption')
+                    ->meta(['key' => 'description', 'color' => 'text-gray-600'])
+            )
+            ->addComponent(
+                TextComponent::make('followup-date')
+                    ->content(':{followup_date_formatted}')
+                    ->variant('caption')
+                    ->meta([
+                        'key' => 'followup_date_formatted',
+                        'color' => 'text-gray-500',
+                        'icon' => 'clock',
+                        'iconPosition' => 'left',
+                        'iconSize' => 'xs',
+                    ])
+            )
+            ->addHeaderAction('', '#', [
+                'icon' => 'pen',
+                'iconOnly' => true,
+                'variant' => 'outlined',
+                'size' => 'sm',
+                'data' => [
+                    'component' => 'edit-property-followup',
+                    'type' => 'modal',
+                    'action' => 'edit',
+                    'hasParent' => true,
+                    'config' => [
+                        'width' => '500px',
+                        'height' => '100vh',
+                        'anchor' => 'right',
+                        'backdrop' => true,
+                    ],
+                    'params' => ['property_id' => ':property_id', 'followup_id' => ':eid'],
+                    'url' => '/api/product-property/:property_id/followups/:followup_id',
+                ],
+                'meta' => ['tooltip' => __('layout.edit_followup')],
+            ])
+            ->addHeaderAction('', '#', [
+                'icon' => 'binempty',
+                'iconOnly' => true,
+                'variant' => 'outlined',
+                'size' => 'sm',
+                'color' => 'danger',
+                'data' => [
+                    'component' => 'delete-property-followup',
+                    'type' => 'confirm',
+                    'action' => 'delete',
+                    'hasParent' => true,
+                    'method' => 'DELETE',
+                    'url' => '/api/product-property/:property_id/followups/:followup_id',
+                    'config' => [
+                        'width' => '400px',
+                        'height' => 'auto',
+                        'anchor' => 'center',
+                        'backdrop' => true,
+                    ],
+                    'params' => ['property_id' => ':property_id', 'followup_id' => ':eid'],
+                ],
+                'meta' => ['tooltip' => __('layout.delete_followup')],
+            ])
+            ->toArray();
+
         $card = CardComponent::make('followups-card')
             ->title(__('layout.create_followups'))
             ->variant('outlined')
+            ->dataUrl('/api/product-property/:id/followups')
+            ->dataParams(['id' => ':eid'])
             ->addHeaderButton(
                 ButtonComponent::make('add-followup-btn')
                     ->icon('plus')
@@ -471,28 +540,23 @@ class FullscreenViewAsideSlot
                     ->data('component', 'create-property-followup')
                     ->data('type', 'modal')
                     ->data('action', 'create')
+                    ->data('hasParent', true)
                     ->data('config', [
                         'width' => '500px',
                         'height' => '100vh',
                         'anchor' => 'right',
                         'backdrop' => true,
                     ])
-                    ->data('params', ['property_id' => ':id'])
+                    ->data('params', ['property_id' => ':eid'])
                     ->meta(['tooltip' => __('layout.add_followup')])
             );
 
-        $card->addComponent(
-            ListComponent::make('followups-list')
-                ->dataUrl('/api/product-property/:id/followups')
-                ->dataParams(['id' => ':id'])
-                ->dense(true)
-                ->meta([
-                    'emptyIcon' => 'listcheck',
-                    'emptyText' => __('layout.tasks_empty'),
-                    'emptySubtext' => __('layout.tasks_empty_hint'),
-                ])
-                ->gridColumnSpan(12)
-        );
+        $card->meta([
+            'emptyIcon' => 'listcheck',
+            'emptyText' => __('layout.tasks_empty'),
+            'emptySubtext' => __('layout.tasks_empty_hint'),
+            'template' => $itemTemplate,
+        ]);
 
         return $card;
     }
@@ -512,8 +576,9 @@ class FullscreenViewAsideSlot
                 ->editing(true)
                 ->deleting(true)
                 ->markdown(false)
+                ->fieldName('note')
                 ->dataUrl('/api/product-property/:id/notes')
-                ->dataParams(['id' => ':id'])
+                ->dataParams(['id' => ':eid'])
                 ->meta([
                     'emptyIcon' => 'chat',
                     'emptyText' => __('layout.notes_empty'),
@@ -543,7 +608,7 @@ class FullscreenViewAsideSlot
                     'component' => 'create-property-activity',
                     'type' => 'aside',
                     'action' => 'create',
-                    'params' => ['property_id' => ':id'],
+                    'params' => ['property_id' => ':eid'],
                 ],
                 'meta' => ['tooltip' => __('layout.log_activity')],
             ]);
@@ -556,7 +621,7 @@ class FullscreenViewAsideSlot
                 ->addEvent([])
                 ->dateFormat('d M Y, H:i')
                 ->dataUrl('/api/product-property/:id/activities')
-                ->dataParams(['id' => ':id'])
+                ->dataParams(['id' => ':eid'])
                 ->meta([
                     'emptyIcon' => 'clock',
                     'emptyText' => __('layout.activities_empty'),
@@ -732,7 +797,7 @@ class FullscreenViewAsideSlot
                 ->meta([
                     'key' => 'ref_number',
                     'color' => 'text-gray-500',
-                    'prefix' => __('product_property.column_ref').': #',
+                    'prefix' => __('product_property.column_ref') . ': #',
                 ])
         );
 
