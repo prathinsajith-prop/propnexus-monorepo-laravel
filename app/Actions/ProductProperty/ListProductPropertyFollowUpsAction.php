@@ -26,7 +26,8 @@ class ListProductPropertyFollowUpsAction extends BaseAction
     public function handle(): ActionResult
     {
         try {
-            $query = BixoSchedulesFollowUp::where('property_id', $this->data['property_id'])
+            $query = BixoSchedulesFollowUp::with('property')
+                ->where('property_id', $this->data['property_id'])
                 ->orderBy('start_date', 'asc');
 
             if (! empty($this->data['limit'])) {
@@ -58,7 +59,7 @@ class ListProductPropertyFollowUpsAction extends BaseAction
 
         return [
             'eid' => $item->eid,
-            'property_id' => $item->property_id,
+            'property_id' => $item->property->eid,
             'followup_title' => $item->title,
             'followup_date' => $item->start_date?->toISOString(),
             'followup_date_formatted' => $item->start_date?->format('d M Y H:i'),

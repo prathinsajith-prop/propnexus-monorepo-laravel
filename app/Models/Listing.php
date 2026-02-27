@@ -8,12 +8,14 @@ use App\Enums\Availability;
 use App\Enums\ListingStatus;
 use App\Enums\ListingType;
 use App\Enums\PropertyType;
+use App\Models\Concerns\HandlesActivityLogging;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Litepie\Database\Traits\Searchable;
 use Litepie\Hashids\Traits\Hashids;
+use Litepie\Logs\Traits\LogsActivity;
 
 /**
  * Listing Model - Property Listing Management with Litepie Database Package
@@ -64,15 +66,17 @@ use Litepie\Hashids\Traits\Hashids;
  */
 class Listing extends Model
 {
+    use HandlesActivityLogging,
+        LogsActivity {
+        HandlesActivityLogging::logActivity insteadof LogsActivity;
+    }
     use HasFactory;
-    // ✅ Advanced search with weighted fields
-
-    // Litepie Hashids
     use Hashids;
-
-    // Litepie Database Traits
     use Searchable;
-    use SoftDeletes;         // ✅ Encode/decode IDs (eid field)
+    use SoftDeletes;
+
+    /** Log name used to group activity entries for this model. */
+    protected string $logName = 'listing';
 
     /**
      * The table associated with the model.
@@ -382,7 +386,7 @@ class Listing extends Model
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => number_format($this->price, 0).' '.$this->currency
+            get: fn() => number_format($this->price, 0) . ' ' . $this->currency
         );
     }
 
@@ -392,7 +396,7 @@ class Listing extends Model
     protected function fullAddress(): Attribute
     {
         return Attribute::make(
-            get: fn () => implode(', ', array_filter([
+            get: fn() => implode(', ', array_filter([
                 $this->address,
                 $this->area,
                 $this->city,
@@ -407,7 +411,7 @@ class Listing extends Model
     protected function isActive(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->status === 'active' && $this->availability === 'available'
+            get: fn() => $this->status === 'active' && $this->availability === 'available'
         );
     }
 
@@ -417,7 +421,7 @@ class Listing extends Model
     protected function discountAmount(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->original_price
+            get: fn() => $this->original_price
                 ? ($this->original_price - $this->price)
                 : 0
         );
@@ -429,7 +433,7 @@ class Listing extends Model
     protected function features(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -457,7 +461,7 @@ class Listing extends Model
     protected function amenities(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -485,7 +489,7 @@ class Listing extends Model
     protected function images(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -513,7 +517,7 @@ class Listing extends Model
     protected function documents(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -541,7 +545,7 @@ class Listing extends Model
     protected function paymentTerms(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -569,7 +573,7 @@ class Listing extends Model
     protected function floorPlans(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -597,7 +601,7 @@ class Listing extends Model
     protected function seoMeta(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -625,7 +629,7 @@ class Listing extends Model
     protected function schemaMarkup(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -653,7 +657,7 @@ class Listing extends Model
     protected function analytics(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -681,7 +685,7 @@ class Listing extends Model
     protected function customFields(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -885,7 +889,7 @@ class Listing extends Model
 
         static::creating(function ($listing) {
             if (empty($listing->listing_id)) {
-                $listing->listing_id = 'LST-'.strtoupper(uniqid());
+                $listing->listing_id = 'LST-' . strtoupper(uniqid());
             }
         });
     }
@@ -986,19 +990,19 @@ class Listing extends Model
         return [
             'options' => [
                 'property_type' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\PropertyType::cases()
                 ),
                 'listing_type' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ListingType::cases()
                 ),
                 'status' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ListingStatus::cases()
                 ),
                 'availability' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\Availability::cases()
                 ),
             ],

@@ -13,6 +13,10 @@ Route::get('/listing', [ListingController::class, 'index'])->name('listings.inde
 Route::get('/product-properties', [ProductPropertyController::class, 'index'])->name('product-properties.index');
 Route::get('/documentation', [GeneralController::class, 'documentation'])->name('documentation');
 
+// Serve files at root /media/{path} and /files/{path} — handles stored relative paths
+Route::match(['get', 'options'], '/media/{path}', [ImageController::class, 'show'])->where('path', '.*');
+Route::match(['get', 'options'], '/files/{path}', [ImageController::class, 'show'])->where('path', '.*');
+
 Route::prefix('pages')->middleware('cache.headers:layout')->group(function () {
     Route::get('/sample', [GeneralController::class, 'sample'])->name('sample');
     Route::get('/blog', [BlogController::class, 'blog'])->name('blog');
@@ -63,6 +67,7 @@ Route::prefix('api')->group(function () {
     Route::get('/listing/{listing}', [ListingController::class, 'show'])->name('api.listings.show');
     Route::put('/listing/{listing}', [ListingController::class, 'update'])->name('api.listings.update');
     Route::delete('/listing/{listing}', [ListingController::class, 'delete'])->name('api.listings.destroy');
+    Route::get('/listing/{listing}/activities', [ListingController::class, 'activities'])->name('api.listings.activities');
 
     // Listing file upload routes
     Route::post('/listing-upload/image', [ListingController::class, 'uploadImage'])->name('api.listing-upload.image');
@@ -99,10 +104,10 @@ Route::prefix('api')->group(function () {
     Route::post('/product-property-upload', [ProductPropertyController::class, 'upload'])->name('api.product-property-upload.generic');
     Route::delete('/product-property-files/{path}', [ProductPropertyController::class, 'deleteFile'])->name('api.product-property-files.delete')->where('path', '.*');
 
-    // Common Image API - Serve images from storage or public with CORS support
-    Route::match(['get', 'options'], '/images/{path}', [ImageController::class, 'show'])->name('images.show')->where('path', '.*');
-    Route::match(['get', 'options'], '/images/thumbnail/{path}', [ImageController::class, 'thumbnail'])->name('images.thumbnail')->where('path', '.*');
-    Route::match(['post', 'options'], '/images/generate-url', [ImageController::class, 'generateUrl'])->name('images.generate-url');
+    // Common Media API - Serve images/files from storage or public with CORS support
+    Route::match(['get', 'options'], '/media/{path}', [ImageController::class, 'show'])->name('media.show')->where('path', '.*');
+    Route::match(['get', 'options'], '/media/thumbnail/{path}', [ImageController::class, 'thumbnail'])->name('media.thumbnail')->where('path', '.*');
+    Route::match(['post', 'options'], '/media/generate-url', [ImageController::class, 'generateUrl'])->name('media.generate-url');
 });
 
 Route::prefix('layouts')->middleware('cache.headers:layout')->group(function () {

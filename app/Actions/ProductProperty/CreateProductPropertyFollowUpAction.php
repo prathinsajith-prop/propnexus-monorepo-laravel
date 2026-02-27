@@ -52,7 +52,7 @@ class CreateProductPropertyFollowUpAction extends BaseAction
 
             return ActionResult::success([
                 'eid' => $followUp->eid,
-                'property_eid' => $property->eid,
+                'property_id' => $property->eid,
                 'followup_title' => $followUp->title,
                 'followup_date' => $followUp->start_date?->toISOString(),
                 'followup_type' => $followUp->type,

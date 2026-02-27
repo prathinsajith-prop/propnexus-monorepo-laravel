@@ -131,7 +131,7 @@ class ViewAsideSlot
                         'backdrop' => true,
                     ],
                     'params' => ['id' => ':property_id', 'followup_id' => ':eid'],
-                    'url' => '/api/product-property/:property_id/followups/:eid',
+                    'url' => '/api/product-property/:id/followups/:followup_id',
                 ],
                 'meta' => ['tooltip' => __('layout.edit_followup')],
             ])
@@ -147,7 +147,7 @@ class ViewAsideSlot
                     'action' => 'delete',
                     'hasParent' => true,
                     'method' => 'DELETE',
-                    'url' => '/api/product-property/:property_id/followups/:eid',
+                    'url' => '/api/product-property/:id/followups/:followup_id',
                     'config' => [
                         'width' => '400px',
                         'height' => 'auto',
@@ -181,7 +181,7 @@ class ViewAsideSlot
                         'anchor' => 'right',
                         'backdrop' => true,
                     ])
-                    ->data('params', ['property_id' => ':eid'])
+                    ->data('params', ['id' => ':eid'])
                     ->meta(['tooltip' => __('layout.add_followup')])
             )
             ->meta([

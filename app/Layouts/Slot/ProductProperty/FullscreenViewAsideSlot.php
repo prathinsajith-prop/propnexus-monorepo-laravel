@@ -458,7 +458,6 @@ class FullscreenViewAsideSlot
      */
     private static function buildFollowupsCard(): CardComponent
     {
-
         // Build the per-item template card as an array so it can be embedded in meta().
         $itemTemplate = CardComponent::make('followup-item')
             ->title(':{followup_title}')
@@ -496,8 +495,8 @@ class FullscreenViewAsideSlot
                         'anchor' => 'right',
                         'backdrop' => true,
                     ],
-                    'params' => ['property_id' => ':property_id', 'followup_id' => ':eid'],
-                    'url' => '/api/product-property/:property_id/followups/:followup_id',
+                    'params' => ['id' => ':property_id', 'followup_id' => ':eid'],
+                    'url' => '/api/product-property/:id/followups/:followup_id',
                 ],
                 'meta' => ['tooltip' => __('layout.edit_followup')],
             ])
@@ -513,14 +512,14 @@ class FullscreenViewAsideSlot
                     'action' => 'delete',
                     'hasParent' => true,
                     'method' => 'DELETE',
-                    'url' => '/api/product-property/:property_id/followups/:followup_id',
+                    'url' => '/api/product-property/:id/followups/:followup_id',
                     'config' => [
                         'width' => '400px',
                         'height' => 'auto',
                         'anchor' => 'center',
                         'backdrop' => true,
                     ],
-                    'params' => ['property_id' => ':property_id', 'followup_id' => ':eid'],
+                    'params' => ['id' => ':property_id', 'followup_id' => ':eid'],
                 ],
                 'meta' => ['tooltip' => __('layout.delete_followup')],
             ])
@@ -547,7 +546,8 @@ class FullscreenViewAsideSlot
                         'anchor' => 'right',
                         'backdrop' => true,
                     ])
-                    ->data('params', ['property_id' => ':eid'])
+                    ->dataUrl('/api/product-property/:id/followups')
+                    ->dataParams(['id' => ':eid'])
                     ->meta(['tooltip' => __('layout.add_followup')])
             );
 

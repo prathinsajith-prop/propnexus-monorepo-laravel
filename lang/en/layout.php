@@ -449,6 +449,8 @@ return [
     'system_audit_trail' => 'System & Audit Trail',
     'last_edited' => 'Last Edited',
     'last_edited_by' => 'Last Edited By',
+    'followup_details' => 'Follow-up Details',
+    'notes_and_reminder' => 'Notes & Reminder',
     'followup_title' => 'Follow-up Title',
     'followup_placeholder' => 'e.g., Review content, Update images',
     'followup_date_time' => 'Follow-up Date & Time',

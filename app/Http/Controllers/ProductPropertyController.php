@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 use Litepie\Actions\ActionResult;
+use Litepie\Logs\Models\ActivityLog;
 
 /**
  * ProductPropertyController
@@ -498,66 +499,36 @@ class ProductPropertyController extends Controller
         }
     }
 
-    public function activities(BixoProductProperties $property)
+    public function activities(BixoProductProperties $property): \Illuminate\Http\JsonResponse
     {
-        $activities = [];
-        $index = 1;
+        $logs = $property->activities()
+            ->with('causer')
+            ->latest()
+            ->get();
 
-        // Created event
-        $activities[] = [
-            'id' => $index++,
-            'type' => 'created',
-            'description' => 'Property record created',
-            'subject' => ['id' => $property->getKey(), 'ref' => $property->ref, 'title' => $property->title],
-            'properties' => ['status' => $property->status?->value ?? $property->status],
-            'occurred_at' => $property->created_at?->toIso8601String(),
-        ];
-
-        // Published event
-        if ($property->published_at) {
-            $activities[] = [
-                'id' => $index++,
-                'type' => 'published',
-                'description' => 'Property published',
-                'subject' => ['id' => $property->getKey(), 'ref' => $property->ref],
-                'properties' => ['published_at' => $property->published_at?->toIso8601String()],
-                'occurred_at' => $property->published_at?->toIso8601String(),
-            ];
-        }
-
-        // Activated event
-        if ($property->activated_at) {
-            $activities[] = [
-                'id' => $index++,
-                'type' => 'activated',
-                'description' => 'Property activated',
-                'subject' => ['id' => $property->getKey(), 'ref' => $property->ref],
-                'properties' => ['activated_at' => $property->activated_at?->toIso8601String()],
-                'occurred_at' => $property->activated_at?->toIso8601String(),
-            ];
-        }
-
-        // Updated event (if updated after creation)
-        if ($property->updated_at && $property->updated_at->ne($property->created_at)) {
-            $activities[] = [
-                'id' => $index++,
-                'type' => 'updated',
-                'description' => 'Property record updated',
-                'subject' => ['id' => $property->getKey(), 'ref' => $property->ref],
-                'properties' => ['status' => $property->status?->value ?? $property->status],
-                'occurred_at' => $property->updated_at?->toIso8601String(),
-            ];
-        }
-
-        // Sort descending by occurred_at
-        usort($activities, fn($a, $b) => strcmp((string) ($b['occurred_at'] ?? ''), (string) ($a['occurred_at'] ?? '')));
+        $activities = $logs->map(fn(ActivityLog $log) => [
+            'id' => $log->getKey(),
+            'type' => $log->event ?? 'activity',
+            'description' => $log->description,
+            'subject' => [
+                'eid' => $property->eid,
+                'ref' => $property->ref,
+                'title' => $property->title,
+            ],
+            'causer' => $log->causer ? [
+                'id' => $log->causer->getKey(),
+                'name' => $log->causer->name ?? null,
+            ] : null,
+            'properties' => $log->properties,
+            'occurred_at' => $log->created_at?->toIso8601String(),
+        ])->values()->all();
 
         return response()->json([
             'success' => true,
             'data' => $activities,
             'meta' => [
                 'total' => count($activities),
-                'subject' => ['id' => $property->getKey(), 'ref' => $property->ref, 'title' => $property->title],
+                'subject' => ['eid' => $property->eid, 'ref' => $property->ref, 'title' => $property->title],
             ],
         ]);
     }
@@ -622,7 +593,7 @@ class ProductPropertyController extends Controller
 
         return ActionResult::success([
             'eid' => $followUp->eid,
-            'property_id' => $followUp->property->eid,
+            'property_id' => $property->eid,
             'followup_title' => $followUp->title,
             'followup_date' => $followUp->start_date?->toISOString(),
             'followup_type' => $followUp->type,

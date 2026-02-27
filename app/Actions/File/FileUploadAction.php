@@ -72,7 +72,7 @@ class FileUploadAction extends BaseAction
                 'original_name' => $file->getClientOriginalName(),
                 'filename' => $filename,
                 'path' => $result['path'],
-                'url' => Storage::disk($disk)->url($result['path']),
+                'url' => $this->buildRelativeUrl($disk, $result['path']),
                 'size' => $file->getSize(),
                 'mime_type' => $file->getMimeType(),
                 'extension' => $file->getClientOriginalExtension(),
@@ -83,7 +83,7 @@ class FileUploadAction extends BaseAction
 
             // Add thumbnail if generated
             if (! empty($result['thumbnail'])) {
-                $fileInfo['thumbnail'] = Storage::disk($disk)->url($result['thumbnail']);
+                $fileInfo['thumbnail'] = $this->buildRelativeUrl($disk, $result['thumbnail']);
                 $fileInfo['thumbnail_path'] = $result['thumbnail'];
             }
 
@@ -293,5 +293,23 @@ class FileUploadAction extends BaseAction
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
+    }
+
+    /**
+     * Build a relative URL for the uploaded file.
+     *
+     * Returns a host-independent relative URL (e.g. /storage/blogs/images/file.jpg)
+     * so stored URLs remain valid even when APP_URL or server address changes.
+     */
+    private function buildRelativeUrl(string $disk, string $path): string
+    {
+        $absoluteUrl = Storage::disk($disk)->url($path);
+        $appUrl = rtrim(config('app.url', ''), '/');
+
+        if ($appUrl && str_starts_with($absoluteUrl, $appUrl)) {
+            return substr($absoluteUrl, strlen($appUrl));
+        }
+
+        return $absoluteUrl;
     }
 }

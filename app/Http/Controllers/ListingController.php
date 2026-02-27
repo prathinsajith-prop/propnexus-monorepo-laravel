@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 use Litepie\Actions\ActionResult;
+use Litepie\Logs\Models\ActivityLog;
 
 /**
  * ListingController
@@ -219,6 +220,44 @@ class ListingController extends Controller
             ]),
             $deleteResult->getMessage()
         );
+    }
+
+    /**
+     * Get activity log for a listing.
+     * GET /api/listing/{listing}/activities
+     */
+    public function activities(Listing $listing): \Illuminate\Http\JsonResponse
+    {
+        $logs = $listing->activities()
+            ->with('causer')
+            ->latest()
+            ->get();
+
+        $activities = $logs->map(fn (ActivityLog $log) => [
+            'id' => $log->getKey(),
+            'type' => $log->event ?? 'activity',
+            'description' => $log->description,
+            'subject' => [
+                'eid' => $listing->eid,
+                'mls_number' => $listing->mls_number,
+                'title' => $listing->title,
+            ],
+            'causer' => $log->causer ? [
+                'id' => $log->causer->getKey(),
+                'name' => $log->causer->name ?? null,
+            ] : null,
+            'properties' => $log->properties,
+            'occurred_at' => $log->created_at?->toIso8601String(),
+        ])->values()->all();
+
+        return response()->json([
+            'success' => true,
+            'data' => $activities,
+            'meta' => [
+                'total' => count($activities),
+                'subject' => ['eid' => $listing->eid, 'mls_number' => $listing->mls_number, 'title' => $listing->title],
+            ],
+        ]);
     }
 
     /**

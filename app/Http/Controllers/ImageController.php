@@ -20,9 +20,9 @@ class ImageController extends Controller
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      *
      * Usage:
-     * - /api/images/listings/property.jpg
-     * - /api/images/users/avatar.png
-     * - /api/images/blogs/featured.jpg
+     * - /api/media/listings/property.jpg
+     * - /api/media/users/avatar.png
+     * - /api/media/blogs/featured.jpg
      */
     public function show(Request $request, ?string $path = null)
     {
@@ -39,22 +39,25 @@ class ImageController extends Controller
         // Decode the path in case it's URL encoded
         $path = urldecode($path);
 
+        // Strip leading /storage/ prefix if present (handles absolute storage URLs stored in DB)
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+
         // Get width and height from query params for resizing
         $width = $request->input('w') ?: $request->input('width');
         $height = $request->input('h') ?: $request->input('height');
         $quality = $request->input('q') ?: $request->input('quality', 80);
 
-        // Try to find the image in storage
-        $disk = config('filesystems.default', 'local');
-
-        // Check if file exists in storage
-        if (Storage::disk($disk)->exists($path)) {
-            return $this->serveFromStorage($request, $disk, $path, $width, $height, $quality);
-        }
-
-        // Check if file exists in public storage
+        // Check public disk first — all uploads go here
         if (Storage::disk('public')->exists($path)) {
             return $this->serveFromStorage($request, 'public', $path, $width, $height, $quality);
+        }
+
+        // Fallback: check default/local disk
+        $defaultDisk = config('filesystems.default', 'local');
+        if ($defaultDisk !== 'public' && Storage::disk($defaultDisk)->exists($path)) {
+            return $this->serveFromStorage($request, $defaultDisk, $path, $width, $height, $quality);
         }
 
         // Check if file exists in public directory
@@ -63,9 +66,9 @@ class ImageController extends Controller
             return $this->serveFromPublic($request, $publicPath, $width, $height, $quality);
         }
 
-        // Image not found
+        // File not found
         return response()->json([
-            'error' => 'Image not found',
+            'error' => 'File not found',
             'path' => $path,
         ], 404)->header('Access-Control-Allow-Origin', '*');
     }
@@ -371,7 +374,7 @@ class ImageController extends Controller
         $disk = config('filesystems.default', 'local');
 
         if (Storage::disk($disk)->exists($path)) {
-            $url = route('images.show', ['path' => $path]);
+            $url = route('media.show', ['path' => $path]);
 
             return response()->json([
                 'url' => $url,

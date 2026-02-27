@@ -100,7 +100,7 @@ class ImageHelper
                 self::$cachedStorageUrl = $fullUrl;
             }
 
-            self::$cachedStorageUrl = '/'.trim(self::$cachedStorageUrl, '/');
+            self::$cachedStorageUrl = '/' . trim(self::$cachedStorageUrl, '/');
         }
 
         return self::$cachedStorageUrl;
@@ -159,7 +159,7 @@ class ImageHelper
         }
 
         // Check cache for this exact request
-        $cacheKey = $path.'|'.serialize($params).'|'.($forcePrivate ? '1' : '0');
+        $cacheKey = $path . '|' . serialize($params) . '|' . ($forcePrivate ? '1' : '0');
         if (isset(self::$urlCache[$cacheKey])) {
             return self::$urlCache[$cacheKey];
         }
@@ -173,17 +173,17 @@ class ImageHelper
 
         // Use direct storage URL for public files (fastest path)
         if (! $forcePrivate && empty($params) && self::fileExists($path)) {
-            $url = $baseUrl.self::getStoragePath().'/'.ltrim($path, '/');
+            $url = $baseUrl . self::getStoragePath() . '/' . ltrim($path, '/');
 
             return self::cacheUrl($cacheKey, $url);
         }
 
         // Build API URL directly (faster than route())
-        $url = $baseUrl.'/api/images/'.$path;
+        $url = $baseUrl . '/api/media/' . $path;
 
         // Add query parameters if provided
         if (! empty($params)) {
-            $url .= '?'.http_build_query($params);
+            $url .= '?' . http_build_query($params);
         }
 
         return self::cacheUrl($cacheKey, $url);
@@ -219,7 +219,7 @@ class ImageHelper
 
         // Build URL directly (faster than route())
         $baseUrl = self::getBaseUrl();
-        $url = "{$baseUrl}/api/images/thumbnail/{$path}?w={$width}&h={$height}&q={$quality}";
+        $url = "{$baseUrl}/api/media/thumbnail/{$path}?w={$width}&h={$height}&q={$quality}";
 
         return $url;
     }
@@ -284,7 +284,7 @@ class ImageHelper
         $baseUrl = self::getBaseUrl();
         $storageBase = self::getStorageUrl();
         $useParams = ! empty($params);
-        $queryString = $useParams ? '?'.http_build_query($params) : '';
+        $queryString = $useParams ? '?' . http_build_query($params) : '';
 
         $urls = [];
 
@@ -302,9 +302,9 @@ class ImageHelper
 
             // Optimize: Build URLs directly without individual method calls
             if (! $forcePrivate && ! $useParams && self::fileExists($path)) {
-                $urls[] = $baseUrl.$storageBase.'/'.$path;
+                $urls[] = $baseUrl . $storageBase . '/' . $path;
             } else {
-                $urls[] = $baseUrl.'/api/images/'.$path.$queryString;
+                $urls[] = $baseUrl . '/api/media/' . $path . $queryString;
             }
         }
 
@@ -326,7 +326,7 @@ class ImageHelper
             return $dimensionsCache[$path];
         }
 
-        $fullPath = storage_path('app/public/'.$path);
+        $fullPath = storage_path('app/public/' . $path);
 
         if (! file_exists($fullPath)) {
             return $dimensionsCache[$path] = null;
@@ -388,7 +388,7 @@ class ImageHelper
         $thumbnails = [];
         foreach ($paths as $path) {
             if (! empty($path)) {
-                $thumbnails[] = "{$baseUrl}/api/images/thumbnail/{$path}{$queryString}";
+                $thumbnails[] = "{$baseUrl}/api/media/thumbnail/{$path}{$queryString}";
             }
         }
 
