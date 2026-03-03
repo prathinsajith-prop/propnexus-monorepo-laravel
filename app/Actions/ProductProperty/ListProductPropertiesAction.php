@@ -82,11 +82,14 @@ class ListProductPropertiesAction extends BaseAction
         $perPage = $this->data['per_page'] ?? $this->data['limit'] ?? 20;
         $properties = $query->paginate($perPage);
 
-        // Format items — add created_at_formatted for display
+        // Format items — add created_at_formatted / updated_at_formatted for display
         $items = collect($properties->items())->map(function ($property) {
             $arr = $property->toArray();
             $arr['created_at_formatted'] = $property->created_at
-                ? $property->created_at->format('d M Y')
+                ? $property->created_at->format('d M Y H:i A')
+                : null;
+            $arr['updated_at_formatted'] = $property->updated_at
+                ? $property->updated_at->format('d M Y H:i A')
                 : null;
 
             return $arr;
@@ -108,10 +111,10 @@ class ListProductPropertiesAction extends BaseAction
     private function applyFilters($query): void
     {
         if (! empty($this->data['filter_ref'])) {
-            $query->where('ref', 'like', '%'.$this->data['filter_ref'].'%');
+            $query->where('ref', 'like', '%' . $this->data['filter_ref'] . '%');
         }
         if (! empty($this->data['filter_title'])) {
-            $query->where('title', 'like', '%'.$this->data['filter_title'].'%');
+            $query->where('title', 'like', '%' . $this->data['filter_title'] . '%');
         }
         if (! empty($this->data['filter_status'])) {
             $query->where('status', $this->data['filter_status']);

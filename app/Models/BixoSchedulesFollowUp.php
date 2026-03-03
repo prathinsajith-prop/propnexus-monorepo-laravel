@@ -55,4 +55,12 @@ class BixoSchedulesFollowUp extends Model
     {
         return $this->belongsTo(BixoProductProperties::class, 'property_id');
     }
+
+    /**
+     * The user who created this follow-up.
+     */
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

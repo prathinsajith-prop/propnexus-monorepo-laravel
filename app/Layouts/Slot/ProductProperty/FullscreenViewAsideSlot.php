@@ -2,9 +2,12 @@
 
 namespace App\Layouts\Slot\ProductProperty;
 
+use App\Enums\FollowUpStatus;
+use App\Enums\FollowUpType;
 use App\Enums\ProductCategoryType;
 use App\Enums\ProductPropertyFor;
 use App\Enums\ProductPropertyStatus;
+use App\Enums\ProductPropertyType;
 use App\Forms\Blog\BlogFeedbackForm;
 use App\Forms\ProductProperty\ProductPropertyForm;
 use Litepie\Layout\Components\BadgeComponent;
@@ -12,6 +15,7 @@ use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\CardComponent;
 use Litepie\Layout\Components\CommentComponent;
 use Litepie\Layout\Components\DividerComponent;
+use Litepie\Layout\Components\StatsComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Components\TimelineComponent;
 use Litepie\Layout\Sections\DetailSection;
@@ -50,7 +54,7 @@ class FullscreenViewAsideSlot
     private static function buildLeftSlot(array $masterData): SlotManager
     {
         $leftSlot = SlotManager::make('fullscreen-property-left-slot')
-            ->setConfig(['colSpan' => 7]);
+            ->setConfig(['colSpan' => 8]);
 
         $leftSlot->setComponent(
             ProductPropertyForm::make(
@@ -317,10 +321,11 @@ class FullscreenViewAsideSlot
     private static function buildRightSlot(): SlotManager
     {
         $slot = SlotManager::make('fullscreen-property-right-slot')
-            ->setConfig(['colSpan' => 5]);
+            ->setConfig(['colSpan' => 4]);
 
         $slot->setComponent(self::buildOverviewCard());
         $slot->setComponent(self::buildFollowupsCard());
+        $slot->setComponent(self::buildLeadCountCard());
         $slot->setComponent(self::buildNotesCard());
         $slot->setComponent(self::buildActivitiesCard());
 
@@ -335,9 +340,9 @@ class FullscreenViewAsideSlot
     private static function buildOverviewCard(): CardComponent
     {
         $card = CardComponent::make('property-overview-card')
-            ->variant('outlined')
-            // ->dataUrl('/api/product-property/:id')
-            ->dataParams(['id' => ':id']);
+            ->variant('outlined');
+        // ->dataUrl('/api/product-property/:id')
+        // ->dataParams(['id' => ':eid']);
 
         // Prominent price
         $card->addComponent(
@@ -374,7 +379,7 @@ class FullscreenViewAsideSlot
             ['status-row',   __('layout.status'), null, 'status'],
             ['category-row', __('product_property.category_type'), null, 'category_type'],
             ['for-row',      __('product_property.property_for'), null, 'property_for'],
-            ['portal-row',   __('layout.portal'), 'text', 'portal'],
+            ['type-row',     __('product_property.property_type'), null, 'property_type'],
         ];
 
         foreach ($metaRows as [$id, $label, $valueType, $key]) {
@@ -386,12 +391,22 @@ class FullscreenViewAsideSlot
                     ->gridColumnSpan(5)
             );
 
-            if ($valueType === 'text' || in_array($key, ['portal'])) {
+            if ($valueType === 'text') {
                 $card->addComponent(
                     TextComponent::make("{$id}-value")
                         ->content(":{{$key}}")
                         ->variant('caption')
                         ->meta(['key' => $key, 'color' => 'text-gray-800'])
+                        ->gridColumnSpan(7)
+                );
+            } elseif ($key === 'property_type') {
+                $card->addComponent(
+                    BadgeComponent::make("{$id}-value")
+                        ->content(":{{$key}}")
+                        ->badgeConfig(ProductPropertyType::badgeConfig())
+                        ->variant('standard')
+                        ->bordered(false)
+                        ->meta(['key' => $key, 'size' => 'xs'])
                         ->gridColumnSpan(7)
                 );
             } elseif ($key === 'status') {
@@ -422,6 +437,14 @@ class FullscreenViewAsideSlot
                         ->variant('standard')
                         ->bordered(false)
                         ->meta(['key' => $key, 'size' => 'xs'])
+                        ->gridColumnSpan(7)
+                );
+            } else {
+                $card->addComponent(
+                    TextComponent::make("{$id}-value")
+                        ->content(":{{$key}}")
+                        ->variant('caption')
+                        ->meta(['key' => $key, 'color' => 'text-gray-800'])
                         ->gridColumnSpan(7)
                 );
             }
@@ -459,30 +482,66 @@ class FullscreenViewAsideSlot
     private static function buildFollowupsCard(): CardComponent
     {
         // Build the per-item template card as an array so it can be embedded in meta().
+        // Design: calendar-date avatar on left; type + status badges, title with status dot,
+        // and assigned-user row on the right — matching the CRM follow-up card design.
         $itemTemplate = CardComponent::make('followup-item')
-            ->title(':{followup_title}')
+            ->title(":{followup_title}")
+            ->avatar(':{followup_date_day}')
+            ->meta([
+                'layout' => 'horizontal',
+                'avatarType' => 'calendarDate',
+                'avatarMonthField' => 'followup_date_month',
+                'avatarDayField' => 'followup_date_day',
+                'avatarColor' => 'primary',
+                'componentGap' => 'xs',
+            ])
             ->addComponent(
-                TextComponent::make('description')
-                    ->content(':{description}')
-                    ->variant('caption')
-                    ->meta(['key' => 'description', 'color' => 'text-gray-600'])
+                BadgeComponent::make('followup-type-badge')
+                    ->content(':{followup_type}')
+                    ->badgeConfig(FollowUpType::badgeConfig())
+                    ->variant('standard')
+                    ->bordered(true)
+                    ->meta(['key' => 'followup_type', 'size' => 'sm'])
+                    ->gridColumnSpan(3)
             )
             ->addComponent(
-                TextComponent::make('followup-date')
-                    ->content(':{followup_date_formatted}')
+                BadgeComponent::make('followup-status-badge')
+                    ->content(':{status}')
+                    ->badgeConfig(FollowUpStatus::badgeConfig())
+                    ->variant('standard')
+                    ->bordered(true)
+                    ->meta(['key' => 'status', 'size' => 'sm'])
+                    ->gridColumnSpan(3)
+            )
+            ->addComponent(
+                TextComponent::make('followup-description')
+                    ->content(':{description}')
                     ->variant('caption')
                     ->meta([
-                        'key' => 'followup_date_formatted',
-                        'color' => 'text-gray-500',
-                        'icon' => 'clock',
+                        'key' => 'description',
+                        'icon' => 'user',
                         'iconPosition' => 'left',
                         'iconSize' => 'xs',
+                        'color' => 'text-gray-500',
+                    ])
+            )
+            ->addComponent(
+                TextComponent::make('followup-created-by')
+                    ->content(':{created_by_name}')
+                    ->variant('caption')
+                    ->meta([
+                        'key' => 'created_by_name',
+                        'icon' => 'user',
+                        'iconPosition' => 'left',
+                        'iconSize' => 'xs',
+                        'color' => 'text-gray-500',
                     ])
             )
             ->addHeaderAction('', '#', [
                 'icon' => 'pen',
                 'iconOnly' => true,
-                'variant' => 'outlined',
+                'isIconButton' => true,
+                'variant' => 'text',
                 'size' => 'sm',
                 'data' => [
                     'component' => 'edit-property-followup',
@@ -503,7 +562,8 @@ class FullscreenViewAsideSlot
             ->addHeaderAction('', '#', [
                 'icon' => 'binempty',
                 'iconOnly' => true,
-                'variant' => 'outlined',
+                'variant' => 'text',
+                'isIconButton' => true,
                 'size' => 'sm',
                 'color' => 'danger',
                 'data' => [
@@ -533,7 +593,7 @@ class FullscreenViewAsideSlot
             ->addHeaderButton(
                 ButtonComponent::make('add-followup-btn')
                     ->icon('plus')
-                    ->variant('outlined')
+                    ->variant('text')
                     ->size('sm')
                     ->isIconButton(true)
                     ->data('component', 'create-property-followup')
@@ -556,9 +616,40 @@ class FullscreenViewAsideSlot
             'emptyText' => __('layout.tasks_empty'),
             'emptySubtext' => __('layout.tasks_empty_hint'),
             'template' => $itemTemplate,
+            'componentType' => 'followUpCard',
         ]);
 
         return $card;
+    }
+
+    /**
+     * Lead count card — displays the number of leads associated with the property.
+     */
+    private static function buildLeadCountCard(): CardComponent
+    {
+        $statTemplate = StatsComponent::make('leads-count-stat')
+            ->addMetric('leads_count', __('layout.leads'), [
+                'icon' => 'users',
+                'color' => 'primary',
+                'format' => 'number',
+            ])
+            ->layout('inline')
+            ->size('lg')
+            ->showTrend(false)
+            ->showChange(false)
+            ->toArray();
+
+        return CardComponent::make('lead-count-card')
+            ->title(__('layout.leads'))
+            ->variant('outlined')
+            ->dataUrl('/api/product-property/:id/leads/count')
+            ->dataParams(['id' => ':eid'])
+            ->meta([
+                'template' => $statTemplate,
+                'emptyIcon' => 'users',
+                'emptyText' => __('layout.no_leads_yet'),
+                'emptySubtext' => __('layout.no_leads_yet_hint'),
+            ]);
     }
 
     /**
@@ -576,6 +667,7 @@ class FullscreenViewAsideSlot
                 ->editing(true)
                 ->deleting(true)
                 ->markdown(false)
+                ->sortOrder('newest')
                 ->fieldName('note')
                 ->dataUrl('/api/product-property/:id/notes')
                 ->dataParams(['id' => ':eid'])
@@ -661,6 +753,14 @@ class FullscreenViewAsideSlot
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-600'])
         );
+        $centerSlot->setComponent(
+            BadgeComponent::make('header-center-status-badge')
+                ->content(':{status}')
+                ->badgeConfig(ProductPropertyStatus::badgeConfig())
+                ->bordered(false)
+                ->variant('standard')
+                ->meta(['key' => 'status', 'size' => 'md'])
+        );
 
         $rightSlot = SlotManager::make('fullscreen-property-header-right')
             ->setConfig([
@@ -671,15 +771,6 @@ class FullscreenViewAsideSlot
                 'items' => 'center',
                 'gridColumnSpan' => 6,
             ]);
-
-        $rightSlot->setComponent(
-            BadgeComponent::make('header-status-badge')
-                ->content(':{status}')
-                ->badgeConfig(ProductPropertyStatus::badgeConfig())
-                ->bordered(true)
-                ->variant('standard')
-                ->meta(['key' => 'status', 'size' => 'sm'])
-        );
 
         $rightSlot->setComponent(
             ButtonComponent::make('share-btn')

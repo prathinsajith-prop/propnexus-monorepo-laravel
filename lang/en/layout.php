@@ -601,4 +601,7 @@ return [
     'update_property_details' => 'Update property details information',
     'create_new_property_description' => 'Add a new property to your collection',
     'edit_property' => ':{ref} Edit Property',
+    'leads' => 'Leads',
+    'no_leads_yet' => 'No Leads Yet',
+    'no_leads_yet_hint' => 'Leads linked to this property will appear here.',
 ];

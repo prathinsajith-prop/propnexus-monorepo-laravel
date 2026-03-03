@@ -12,6 +12,7 @@ use App\Enums\ProductPropertyStatus;
 use App\Enums\ProductPropertyType;
 use App\Models\Concerns\HandlesActivityLogging;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -113,7 +114,7 @@ class BixoProductProperties extends Model
     /**
      * The accessors to append to the model's array form.
      */
-    protected $appends = ['eid'];
+    protected $appends = ['eid', 'created_by_formatted', 'created_at_formatted', 'updated_at_formatted'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -237,6 +238,36 @@ class BixoProductProperties extends Model
     {
         return Attribute::make(
             get: fn() => number_format($this->price, 0) . ' AED'
+        );
+    }
+
+    /**
+     * Get formatted name of the user who created the property.
+     */
+    protected function createdByFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->creator?->name ?? 'System'
+        );
+    }
+
+    /**
+     * Formatted created_at timestamp.
+     */
+    protected function createdAtFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->created_at instanceof Carbon ? $this->created_at->format('Y-m-d H:i:s') : null
+        );
+    }
+
+    /**
+     * Formatted updated_at timestamp.
+     */
+    protected function updatedAtFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->updated_at instanceof Carbon ? $this->updated_at->format('Y-m-d H:i:s') : null
         );
     }
 
@@ -531,5 +562,17 @@ class BixoProductProperties extends Model
                 ),
             ],
         ];
+    }
+
+    // ==========================================
+    // RELATIONSHIPS
+    // ==========================================
+
+    /**
+     * Get the user who created the property.
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

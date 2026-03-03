@@ -52,4 +52,12 @@ class BixoNdocsNote extends Model
     {
         return $this->belongsTo(BixoProductProperties::class, 'subject_id');
     }
+
+    /**
+     * The user who authored this note.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

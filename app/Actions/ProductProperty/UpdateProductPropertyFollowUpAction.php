@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\ProductProperty;
 
 use App\Enums\FollowUpStatus;
+use App\Enums\FollowUpType;
 use App\Models\BixoSchedulesFollowUp;
 use Litepie\Actions\ActionResult;
 use Litepie\Actions\BaseAction;
@@ -25,7 +26,7 @@ class UpdateProductPropertyFollowUpAction extends BaseAction
             'followup_eid' => 'required|string',
             'followup_title' => 'sometimes|string|max:200',
             'followup_date' => 'sometimes|nullable|date',
-            'followup_type' => 'sometimes|nullable|in:call,meeting,viewing,offer,other',
+            'followup_type' => 'sometimes|nullable|in:' . implode(',', FollowUpType::values()),
             'description' => 'sometimes|nullable|string',
             'send_reminder' => 'sometimes|boolean',
             'status' => 'sometimes|nullable|in:' . $statusValues,
@@ -77,6 +78,7 @@ class UpdateProductPropertyFollowUpAction extends BaseAction
 
             $followUp->update($updates);
             $followUp->refresh();
+            $followUp->load('createdBy');
 
             $details = $followUp->details ? json_decode($followUp->details, true) : [];
 
@@ -85,11 +87,16 @@ class UpdateProductPropertyFollowUpAction extends BaseAction
                 'property_id' => $followUp->property->eid,
                 'followup_title' => $followUp->title,
                 'followup_date' => $followUp->start_date?->toISOString(),
+                'followup_date_formatted' => $followUp->start_date?->format('d M Y H:i'),
+                'followup_date_day' => $followUp->start_date?->format('j'),
+                'followup_date_month' => $followUp->start_date ? strtoupper($followUp->start_date->format('M')) : null,
                 'followup_type' => $followUp->type,
+                'followup_type_label' => FollowUpType::tryFrom($followUp->type)?->label(),
                 'description' => $followUp->description,
                 'send_reminder' => $details['send_reminder'] ?? false,
                 'status' => $followUp->status?->value,
                 'created_by' => $followUp->created_by,
+                'created_by_name' => $followUp->createdBy?->name,
                 'created_at' => $followUp->created_at?->toISOString(),
                 'updated_at' => $followUp->updated_at?->toISOString(),
             ], 'Follow-up updated successfully');

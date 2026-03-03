@@ -36,9 +36,39 @@ enum ProductPropertyType: string
         };
     }
 
+    public function badgeColor(): string
+    {
+        return match ($this) {
+            self::LIVE => '#10B981',
+            self::POCKET => '#3B82F6',
+            self::DEVELOPER => '#F59E0B',
+            self::VERIFIED_POCKET => '#14B8A6',
+        };
+    }
+
+    public function iconName(): string
+    {
+        return $this->icon();
+    }
+
+    public static function badgeConfig(): array
+    {
+        $config = [];
+        foreach (self::cases() as $case) {
+            $config[$case->value] = [
+                'value' => $case->value,
+                'label' => $case->label(),
+                'color' => $case->badgeColor(),
+                'icon' => $case->iconName(),
+            ];
+        }
+
+        return $config;
+    }
+
     public static function options(): array
     {
-        return collect(self::cases())->map(fn ($case) => [
+        return collect(self::cases())->map(fn($case) => [
             'value' => $case->value,
             'label' => $case->label(),
         ])->toArray();

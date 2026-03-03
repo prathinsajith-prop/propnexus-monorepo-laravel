@@ -2,6 +2,7 @@
 
 namespace App\Forms\ProductProperty;
 
+use App\Enums\FollowUpType;
 use Litepie\Layout\Components\FormComponent;
 
 /**
@@ -52,14 +53,8 @@ class ProductPropertyFollowUpsForm
 
         $form->select('followup_type')
             ->label(__('layout.type'))
-            ->options([
-                ['value' => 'call',    'label' => __('layout.call')],
-                ['value' => 'meeting', 'label' => __('layout.meeting')],
-                ['value' => 'viewing', 'label' => __('layout.viewing')],
-                ['value' => 'offer',   'label' => __('layout.offer')],
-                ['value' => 'other',   'label' => __('layout.other')],
-            ])
-            ->value('call')
+            ->options(FollowUpType::getMasterdata())
+            ->value(FollowUpType::Call->value)
             ->col(6);
 
         $form->textarea('description')

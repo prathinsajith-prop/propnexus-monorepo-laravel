@@ -85,6 +85,7 @@ Route::prefix('api')->group(function () {
     Route::get('/product-property/{property}', [ProductPropertyController::class, 'show'])->name('api.product-properties.show');
     Route::put('/product-property/{property}', [ProductPropertyController::class, 'update'])->name('api.product-properties.update');
     Route::delete('/product-property/{property}', [ProductPropertyController::class, 'delete'])->name('api.product-properties.destroy');
+    Route::get('/product-property/{property}/leads/count', [ProductPropertyController::class, 'leadsCount'])->name('api.product-properties.leads.count');
     Route::get('/product-property/{property}/activities', [ProductPropertyController::class, 'activities'])->name('api.product-properties.activities');
     Route::get('/product-property/{property}/followups', [ProductPropertyController::class, 'listFollowUps'])->name('api.product-properties.followups.index');
     Route::post('/product-property/{property}/followups', [ProductPropertyController::class, 'createFollowUp'])->name('api.product-properties.followups.store');

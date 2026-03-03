@@ -21,22 +21,27 @@ class ListProductPropertyNotesAction extends BaseAction
         return [
             'property_id' => 'required|integer',
             'limit' => 'sometimes|nullable|integer|min:1',
+            'page' => 'sometimes|nullable|integer|min:1',
+            'order_by' => 'sometimes|nullable|string',
+            'order_dir' => 'sometimes|nullable|string',
+            'search' => 'sometimes|nullable|string',
         ];
     }
 
     public function handle(): ActionResult
     {
         try {
-            $query = BixoNdocsNote::where('subject_id', $this->data['property_id'])
+            $query = BixoNdocsNote::with('user')
+                ->where('subject_id', $this->data['property_id'])
                 ->where('subject_type', BixoProductProperties::class)
-                ->orderBy('created_at', 'desc');
+                ->orderBy($this->data['order_by'] ?? 'created_at', $this->data['order_dir'] ?? 'DESC');
 
             if (! empty($this->data['limit'])) {
                 $query->limit((int) $this->data['limit']);
             }
 
             $notes = $query->get()
-                ->map(fn ($item) => $this->formatNote($item))
+                ->map(fn($item) => $this->formatNote($item))
                 ->values()
                 ->all();
 
@@ -45,7 +50,7 @@ class ListProductPropertyNotesAction extends BaseAction
                 'meta' => ['total' => count($notes)],
             ], 'Notes retrieved successfully');
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to retrieve notes: '.$e->getMessage());
+            return ActionResult::failure('Failed to retrieve notes: ' . $e->getMessage());
         }
     }
 
@@ -64,6 +69,7 @@ class ListProductPropertyNotesAction extends BaseAction
             'type' => $item->type?->value,
             'type_label' => $item->type?->label(),
             'user_id' => $item->user_id,
+            'author' => $item->user?->name,
             'created_at' => $item->created_at?->toISOString(),
             'updated_at' => $item->updated_at?->toISOString(),
         ];

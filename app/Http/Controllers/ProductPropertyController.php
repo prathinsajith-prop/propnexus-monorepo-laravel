@@ -15,6 +15,9 @@ use App\Actions\ProductProperty\ListProductPropertyNotesAction;
 use App\Actions\ProductProperty\UpdateProductPropertyAction;
 use App\Actions\ProductProperty\UpdateProductPropertyFollowUpAction;
 use App\Actions\ProductProperty\UpdateProductPropertyNoteAction;
+use App\Enums\ConstructionStatus;
+use App\Enums\FollowUpType;
+use App\Enums\ListingSource;
 use App\Enums\ProductCategoryType;
 use App\Enums\ProductFrequency;
 use App\Enums\ProductFurnishing;
@@ -322,17 +325,8 @@ class ProductPropertyController extends Controller
                         'statuses' => ProductPropertyStatus::options(),
                         'furnishing_statuses' => ProductFurnishing::options(),
                         'frequencies' => ProductFrequency::options(),
-                        'construction_statuses' => [
-                            ['value' => 'Completed', 'label' => __('product_property.construction_completed')],
-                            ['value' => 'Under Construction', 'label' => __('product_property.construction_under_construction')],
-                        ],
-                        'listing_sources' => [
-                            ['value' => 'Direct', 'label' => __('product_property.source_direct')],
-                            ['value' => 'Referral', 'label' => __('product_property.source_referral')],
-                            ['value' => 'Portal', 'label' => __('product_property.source_portal')],
-                            ['value' => 'Social Media', 'label' => __('product_property.source_social_media')],
-                            ['value' => 'Other', 'label' => __('product_property.source_other')],
-                        ],
+                        'construction_statuses' => ConstructionStatus::options(),
+                        'listing_sources' => ListingSource::options(),
                         'users' => User::select('id', 'name')
                             ->orderBy('name')
                             ->get()
@@ -499,6 +493,15 @@ class ProductPropertyController extends Controller
         }
     }
 
+    /**
+     * Return the number of leads associated with a property.
+     * Currently returns 0 — placeholder until a leads module is implemented.
+     */
+    public function leadsCount(BixoProductProperties $property): ActionResult
+    {
+        return ActionResult::success(['leads_count' => 10]);
+    }
+
     public function activities(BixoProductProperties $property): \Illuminate\Http\JsonResponse
     {
         $logs = $property->activities()
@@ -581,7 +584,8 @@ class ProductPropertyController extends Controller
             return ActionResult::failure('Follow-up not found');
         }
 
-        $followUp = \App\Models\BixoSchedulesFollowUp::where('id', $followUpId)
+        $followUp = \App\Models\BixoSchedulesFollowUp::with('createdBy')
+            ->where('id', $followUpId)
             ->where('property_id', $property->getKey())
             ->first();
 
@@ -596,10 +600,16 @@ class ProductPropertyController extends Controller
             'property_id' => $property->eid,
             'followup_title' => $followUp->title,
             'followup_date' => $followUp->start_date?->toISOString(),
+            'followup_date_formatted' => $followUp->start_date?->format('d M Y H:i'),
+            'followup_date_day' => $followUp->start_date?->format('j'),
+            'followup_date_month' => $followUp->start_date ? strtoupper($followUp->start_date->format('M')) : null,
             'followup_type' => $followUp->type,
+            'followup_type_label' => FollowUpType::tryFrom($followUp->type)?->label(),
             'description' => $followUp->description,
             'send_reminder' => $details['send_reminder'] ?? false,
             'status' => $followUp->status?->value,
+            'created_by' => $followUp->created_by,
+            'created_by_name' => $followUp->createdBy?->name,
             'created_at' => $followUp->created_at?->toISOString(),
             'updated_at' => $followUp->updated_at?->toISOString(),
         ]);
@@ -653,6 +663,10 @@ class ProductPropertyController extends Controller
         $result = ListProductPropertyNotesAction::make(null, [
             'property_id' => $property->getKey(),
             'limit' => $request->integer('limit') ?: null,
+            'page' => $request->integer('page') ?: null,
+            'order_by' => $request->input('order_by') ?: 'created_at',
+            'order_dir' => $request->input('order_dir') ?: 'DESC',
+            'search' => $request->input('search') ?: null,
         ])->run();
 
         if ($result->isFailure()) {

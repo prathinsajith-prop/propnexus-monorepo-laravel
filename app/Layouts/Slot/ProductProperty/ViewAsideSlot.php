@@ -8,6 +8,7 @@ use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\CardComponent;
 use Litepie\Layout\Components\CommentComponent;
+use Litepie\Layout\Components\DividerComponent;
 use Litepie\Layout\Components\MediaComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Sections\DetailSection;
@@ -62,6 +63,37 @@ class ViewAsideSlot
                     ->title(__('layout.property_title'))
                     ->meta(['fontWeight' => 'bold'])
                     ->gridColumnSpan(8)
+            )
+            ->addComponent(
+                DividerComponent::make('overview-dates-divider')->gridColumnSpan(12)
+            )
+            ->addComponent(
+                TextComponent::make('created-at-label')
+                    ->content(__('layout.created_at'))
+                    ->variant('caption')
+                    ->meta(['fontWeight' => 'bold', 'color' => 'text-gray-500'])
+                    ->gridColumnSpan(5)
+            )
+            ->addComponent(
+                TextComponent::make('created-at-value')
+                    ->content(':{created_at_formatted}')
+                    ->variant('caption')
+                    ->meta(['key' => 'created_at_formatted', 'color' => 'text-gray-700'])
+                    ->gridColumnSpan(7)
+            )
+            ->addComponent(
+                TextComponent::make('updated-at-label')
+                    ->content(__('layout.updated_at'))
+                    ->variant('caption')
+                    ->meta(['fontWeight' => 'bold', 'color' => 'text-gray-500'])
+                    ->gridColumnSpan(5)
+            )
+            ->addComponent(
+                TextComponent::make('updated-at-value')
+                    ->content(':{updated_at_formatted}')
+                    ->variant('caption')
+                    ->meta(['key' => 'updated_at_formatted', 'color' => 'text-gray-700'])
+                    ->gridColumnSpan(7)
             );
 
         $mainGrid = GridSection::make('view-property-main-grid')
@@ -203,6 +235,7 @@ class ViewAsideSlot
                 ->editing(true)
                 ->deleting(true)
                 ->markdown(false)
+                ->sortOrder('newest')
                 ->fieldName('note')
                 ->dataUrl('/api/product-property/:id/notes')
                 ->dataParams(['id' => ':eid'])
