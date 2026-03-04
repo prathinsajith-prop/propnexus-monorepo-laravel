@@ -131,7 +131,7 @@ class FullscreenViewAsideSlot
                     'icon' => 'eye',
                     'iconSize' => 'sm',
                     'color' => 'text-gray-500',
-                    'suffix' => ' ' . __('layout.views'),
+                    'suffix' => ' '.__('layout.views'),
                 ])
                 ->gridColumnSpan(6)
         );
@@ -484,106 +484,106 @@ class FullscreenViewAsideSlot
         // Build the per-item template card as an array so it can be embedded in meta().
         // Design: calendar-date avatar on left; type + status badges, title with status dot,
         // and assigned-user row on the right — matching the CRM follow-up card design.
-        $itemTemplate = CardComponent::make('followup-item')
-            ->title(":{followup_title}")
-            ->avatar(':{followup_date_day}')
-            ->meta([
-                'layout' => 'horizontal',
-                'avatarType' => 'calendarDate',
-                'avatarMonthField' => 'followup_date_month',
-                'avatarDayField' => 'followup_date_day',
-                'avatarColor' => 'primary',
-                'componentGap' => 'xs',
-            ])
-            ->addComponent(
-                BadgeComponent::make('followup-type-badge')
-                    ->content(':{followup_type}')
-                    ->badgeConfig(FollowUpType::badgeConfig())
-                    ->variant('standard')
-                    ->bordered(true)
-                    ->meta(['key' => 'followup_type', 'size' => 'sm'])
-                    ->gridColumnSpan(3)
-            )
-            ->addComponent(
-                BadgeComponent::make('followup-status-badge')
-                    ->content(':{status}')
-                    ->badgeConfig(FollowUpStatus::badgeConfig())
-                    ->variant('standard')
-                    ->bordered(true)
-                    ->meta(['key' => 'status', 'size' => 'sm'])
-                    ->gridColumnSpan(3)
-            )
-            ->addComponent(
-                TextComponent::make('followup-description')
-                    ->content(':{description}')
-                    ->variant('caption')
-                    ->meta([
-                        'key' => 'description',
-                        'icon' => 'user',
-                        'iconPosition' => 'left',
-                        'iconSize' => 'xs',
-                        'color' => 'text-gray-500',
-                    ])
-            )
-            ->addComponent(
-                TextComponent::make('followup-created-by')
-                    ->content(':{created_by_name}')
-                    ->variant('caption')
-                    ->meta([
-                        'key' => 'created_by_name',
-                        'icon' => 'user',
-                        'iconPosition' => 'left',
-                        'iconSize' => 'xs',
-                        'color' => 'text-gray-500',
-                    ])
-            )
-            ->addHeaderAction('', '#', [
-                'icon' => 'pen',
-                'iconOnly' => true,
-                'isIconButton' => true,
-                'variant' => 'text',
-                'size' => 'sm',
-                'data' => [
-                    'component' => 'edit-property-followup',
-                    'type' => 'modal',
-                    'action' => 'edit',
-                    'hasParent' => true,
-                    'config' => [
-                        'width' => '500px',
-                        'height' => '100vh',
-                        'anchor' => 'right',
-                        'backdrop' => true,
-                    ],
-                    'params' => ['id' => ':property_id', 'followup_id' => ':eid'],
-                    'url' => '/api/product-property/:id/followups/:followup_id',
-                ],
-                'meta' => ['tooltip' => __('layout.edit_followup')],
-            ])
-            ->addHeaderAction('', '#', [
-                'icon' => 'binempty',
-                'iconOnly' => true,
-                'variant' => 'text',
-                'isIconButton' => true,
-                'size' => 'sm',
-                'color' => 'danger',
-                'data' => [
-                    'component' => 'delete-property-followup',
-                    'type' => 'confirm',
-                    'action' => 'delete',
-                    'hasParent' => true,
-                    'method' => 'DELETE',
-                    'url' => '/api/product-property/:id/followups/:followup_id',
-                    'config' => [
-                        'width' => '400px',
-                        'height' => 'auto',
-                        'anchor' => 'center',
-                        'backdrop' => true,
-                    ],
-                    'params' => ['id' => ':property_id', 'followup_id' => ':eid'],
-                ],
-                'meta' => ['tooltip' => __('layout.delete_followup')],
-            ])
-            ->toArray();
+        // $itemTemplate = CardComponent::make('followup-item')
+        //     ->title(":{followup_title}")
+        //     ->avatar(':{followup_date_day}')
+        //     ->meta([
+        //         'layout' => 'horizontal',
+        //         'avatarType' => 'calendarDate',
+        //         'avatarMonthField' => 'followup_date_month',
+        //         'avatarDayField' => 'followup_date_day',
+        //         'avatarColor' => 'primary',
+        //         'componentGap' => 'xs',
+        //     ])
+        //     ->addComponent(
+        //         BadgeComponent::make('followup-type-badge')
+        //             ->content(':{followup_type}')
+        //             ->badgeConfig(FollowUpType::badgeConfig())
+        //             ->variant('standard')
+        //             ->bordered(true)
+        //             ->meta(['key' => 'followup_type', 'size' => 'sm'])
+        //             ->gridColumnSpan(3)
+        //     )
+        //     ->addComponent(
+        //         BadgeComponent::make('followup-status-badge')
+        //             ->content(':{status}')
+        //             ->badgeConfig(FollowUpStatus::badgeConfig())
+        //             ->variant('standard')
+        //             ->bordered(true)
+        //             ->meta(['key' => 'status', 'size' => 'sm'])
+        //             ->gridColumnSpan(3)
+        //     )
+        //     ->addComponent(
+        //         TextComponent::make('followup-description')
+        //             ->content(':{description}')
+        //             ->variant('caption')
+        //             ->meta([
+        //                 'key' => 'description',
+        //                 'icon' => 'user',
+        //                 'iconPosition' => 'left',
+        //                 'iconSize' => 'xs',
+        //                 'color' => 'text-gray-500',
+        //             ])
+        //     )
+        //     ->addComponent(
+        //         TextComponent::make('followup-created-by')
+        //             ->content(':{created_by_name}')
+        //             ->variant('caption')
+        //             ->meta([
+        //                 'key' => 'created_by_name',
+        //                 'icon' => 'user',
+        //                 'iconPosition' => 'left',
+        //                 'iconSize' => 'xs',
+        //                 'color' => 'text-gray-500',
+        //             ])
+        //     )
+        //     ->addHeaderAction('', '#', [
+        //         'icon' => 'pen',
+        //         'iconOnly' => true,
+        //         'isIconButton' => true,
+        //         'variant' => 'text',
+        //         'size' => 'sm',
+        //         'data' => [
+        //             'component' => 'edit-property-followup',
+        //             'type' => 'modal',
+        //             'action' => 'edit',
+        //             'hasParent' => true,
+        //             'config' => [
+        //                 'width' => '500px',
+        //                 'height' => '100vh',
+        //                 'anchor' => 'right',
+        //                 'backdrop' => true,
+        //             ],
+        //             'params' => ['id' => ':property_id', 'followup_id' => ':eid'],
+        //             'url' => '/api/product-property/:id/followups/:followup_id',
+        //         ],
+        //         'meta' => ['tooltip' => __('layout.edit_followup')],
+        //     ])
+        //     ->addHeaderAction('', '#', [
+        //         'icon' => 'binempty',
+        //         'iconOnly' => true,
+        //         'variant' => 'text',
+        //         'isIconButton' => true,
+        //         'size' => 'sm',
+        //         'color' => 'danger',
+        //         'data' => [
+        //             'component' => 'delete-property-followup',
+        //             'type' => 'confirm',
+        //             'action' => 'delete',
+        //             'hasParent' => true,
+        //             'method' => 'DELETE',
+        //             'url' => '/api/product-property/:id/followups/:followup_id',
+        //             'config' => [
+        //                 'width' => '400px',
+        //                 'height' => 'auto',
+        //                 'anchor' => 'center',
+        //                 'backdrop' => true,
+        //             ],
+        //             'params' => ['id' => ':property_id', 'followup_id' => ':eid'],
+        //         ],
+        //         'meta' => ['tooltip' => __('layout.delete_followup')],
+        //     ])
+        //     ->toArray();
 
         $card = CardComponent::make('followups-card')
             ->title(__('layout.create_followups'))
@@ -615,8 +615,9 @@ class FullscreenViewAsideSlot
             'emptyIcon' => 'listcheck',
             'emptyText' => __('layout.tasks_empty'),
             'emptySubtext' => __('layout.tasks_empty_hint'),
-            'template' => $itemTemplate,
+            // 'template' => $itemTemplate,
             'componentType' => 'followUpCard',
+            'limit' => 3,
         ]);
 
         return $card;
@@ -888,7 +889,7 @@ class FullscreenViewAsideSlot
                 ->meta([
                     'key' => 'ref_number',
                     'color' => 'text-gray-500',
-                    'prefix' => __('product_property.column_ref') . ': #',
+                    'prefix' => __('product_property.column_ref').': #',
                 ])
         );
 

@@ -20,37 +20,90 @@ class ListProductPropertyNotesAction extends BaseAction
     {
         return [
             'property_id' => 'required|integer',
-            'limit' => 'sometimes|nullable|integer|min:1',
-            'page' => 'sometimes|nullable|integer|min:1',
-            'order_by' => 'sometimes|nullable|string',
-            'order_dir' => 'sometimes|nullable|string',
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100',
+            'limit' => 'sometimes|integer|min:1|max:100',
+            'sort_by' => 'sometimes|nullable|string',
+            'sort' => 'sometimes|nullable|string',
+            'sort_direction' => 'sometimes|in:asc,desc',
+            'direction' => 'sometimes|in:asc,desc',
             'search' => 'sometimes|nullable|string',
+            'q' => 'sometimes|nullable|string',
+            'filter' => 'sometimes|nullable|string',
+
+            // Note-specific filters
+            'filter_type' => 'sometimes|nullable|string',
+            'filter_user_id' => 'sometimes|nullable|integer',
+            'filter_date_from' => 'sometimes|nullable|date',
+            'filter_date_to' => 'sometimes|nullable|date',
         ];
     }
 
     public function handle(): ActionResult
     {
-        try {
-            $query = BixoNdocsNote::with('user')
-                ->where('subject_id', $this->data['property_id'])
-                ->where('subject_type', BixoProductProperties::class)
-                ->orderBy($this->data['order_by'] ?? 'created_at', $this->data['order_dir'] ?? 'DESC');
+        $startTime = microtime(true);
+        $query = BixoNdocsNote::with('user')
+            ->where('subject_id', $this->data['property_id'])
+            ->where('subject_type', BixoProductProperties::class);
 
-            if (! empty($this->data['limit'])) {
-                $query->limit((int) $this->data['limit']);
-            }
+        // Search
+        $searchQuery = $this->data['search'] ?? $this->data['q'] ?? null;
+        if (! empty($searchQuery)) {
+            $query->whereAny(
+                ['note', 'type'],
+                'like',
+                "%{$searchQuery}%"
+            );
+        }
 
-            $notes = $query->get()
-                ->map(fn($item) => $this->formatNote($item))
-                ->values()
-                ->all();
+        // Structured filter (filterQueryString from Searchable trait)
+        if (! empty($this->data['filter'])) {
+            $query->filterQueryString($this->data['filter']);
+        }
 
-            return ActionResult::success([
-                'data' => $notes,
-                'meta' => ['total' => count($notes)],
-            ], 'Notes retrieved successfully');
-        } catch (\Exception $e) {
-            return ActionResult::failure('Failed to retrieve notes: ' . $e->getMessage());
+        // Individual filters
+        $this->applyFilters($query);
+
+        // Sorting
+        $sortBy = $this->data['sort_by'] ?? $this->data['sort'] ?? 'created_at';
+        $sortDir = $this->data['sort_direction'] ?? $this->data['direction'] ?? 'desc';
+        $query->orderBy($sortBy, $sortDir);
+
+        // Pagination
+        $perPage = $this->data['per_page'] ?? $this->data['limit'] ?? 20;
+        $notes = $query->paginate($perPage);
+
+        // Format items
+        $items = collect($notes->items())->map(function ($note) {
+            return $this->formatNote($note);
+        })->all();
+
+        $executionTime = microtime(true) - $startTime;
+
+        return ActionResult::success($items, 'Notes retrieved successfully', [
+            'total' => $notes->total(),
+            'per_page' => $notes->perPage(),
+            'current_page' => $notes->currentPage(),
+            'last_page' => $notes->lastPage(),
+            'from' => $notes->firstItem(),
+            'to' => $notes->lastItem(),
+            'performance' => ['execution_time' => round($executionTime, 4)],
+        ]);
+    }
+
+    private function applyFilters($query): void
+    {
+        if (! empty($this->data['filter_type'])) {
+            $query->where('type', $this->data['filter_type']);
+        }
+        if (! empty($this->data['filter_user_id'])) {
+            $query->where('user_id', $this->data['filter_user_id']);
+        }
+        if (! empty($this->data['filter_date_from'])) {
+            $query->where('created_at', '>=', $this->data['filter_date_from']);
+        }
+        if (! empty($this->data['filter_date_to'])) {
+            $query->where('created_at', '<=', $this->data['filter_date_to']);
         }
     }
 

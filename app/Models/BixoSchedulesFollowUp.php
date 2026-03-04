@@ -49,6 +49,44 @@ class BixoSchedulesFollowUp extends Model
     }
 
     /**
+     * Get the searchable fields (override Searchable trait).
+     *
+     * @return array<int, string>
+     */
+    public function getSearchFields(): array
+    {
+        return [
+            'title',
+            'description',
+            'type',
+            'status',
+            'priority',
+        ];
+    }
+
+    /**
+     * Get filterable fields for query string filtering (override Searchable trait).
+     *
+     * @return array<int, string>
+     */
+    protected function getFilterableFields(): array
+    {
+        return [
+            'title',
+            'description',
+            'type',
+            'status',
+            'priority',
+            'property_id',
+            'created_by',
+            'assigned_to',
+            'start_date',
+            'created_at',
+            'updated_at',
+        ];
+    }
+
+    /**
      * The product property this follow-up belongs to.
      */
     public function property(): BelongsTo
