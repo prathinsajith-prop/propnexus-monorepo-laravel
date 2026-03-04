@@ -139,7 +139,7 @@ class LayoutBuilder
             ]);
 
         // List view (optional - can be toggled with a button in the actions section)
-        $mainGrid->row('list-row')->gap('none')->table('properties-list')
+        $mainGrid->row('list-row')->table('properties-list')
             ->asList()
             ->dataUrl('/api/product-property')
             ->columns($getProductPropertyTbl)
@@ -153,7 +153,7 @@ class LayoutBuilder
                 component: 'view-property-full',
                 dataUrl: '/api/product-property/:id',
                 config: [
-                    'width' => '900px',
+                    'width' => '100vw',
                     'height' => '100vh',
                     'anchor' => 'right',
                     'backdrop' => true,
