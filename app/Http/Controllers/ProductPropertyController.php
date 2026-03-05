@@ -462,14 +462,16 @@ class ProductPropertyController extends Controller
         return ActionResult::success(['leads_count' => 10]);
     }
 
-    public function activities(BixoProductProperties $property): ActionResult
+    public function activities(BixoProductProperties $property, Request $request): ActionResult
     {
-        $logs = $property->activities()
+        $perPage = (int) $request->get('per_page', 15);
+
+        $paginated = $property->activities()
             ->with('causer')
             ->latest()
-            ->get();
+            ->paginate($perPage);
 
-        $activities = $logs->map(fn(ActivityLog $log) => [
+        $activities = collect($paginated->items())->map(fn(ActivityLog $log) => [
             'id' => $log->getKey(),
             'type' => $log->event ?? 'activity',
             'description' => $log->description,
@@ -487,7 +489,10 @@ class ProductPropertyController extends Controller
         ])->values()->all();
 
         return ActionResult::success($activities, null, [
-            'total' => count($activities),
+            'total' => $paginated->total(),
+            'per_page' => $paginated->perPage(),
+            'current_page' => $paginated->currentPage(),
+            'last_page' => $paginated->lastPage(),
             'subject' => ['eid' => $property->eid, 'ref' => $property->ref, 'title' => $property->title],
         ]);
     }

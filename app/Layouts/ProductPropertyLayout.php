@@ -77,6 +77,7 @@ class ProductPropertyLayout
                 'create-property-full' => LayoutBuilder::buildCreatePropertyAsideFullscreen($masterData),
                 'edit-property' => LayoutBuilder::buildEditPropertyAside($masterData),
                 'edit-property-full' => LayoutBuilder::buildEditPropertyAsideFullscreen($masterData),
+                'view-property-activity' => LayoutBuilder::buildViewPropertyActivityAside(),
                 default => null,
             };
         }

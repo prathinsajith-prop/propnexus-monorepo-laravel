@@ -692,19 +692,19 @@ class FullscreenViewAsideSlot
         $card = CardComponent::make('activities-card')
             ->title(__('layout.recent_activities'))
             ->variant('outlined')
-            ->addHeaderAction(__('layout.log'), '#', [
-                'icon' => 'clock',
-                'variant' => 'outlined',
-                'size' => 'sm',
-                'color' => 'info',
-                'data' => [
-                    'component' => 'create-property-activity',
-                    'type' => 'aside',
-                    'action' => 'create',
-                    'params' => ['property_id' => ':eid'],
-                ],
-                'meta' => ['tooltip' => __('layout.log_activity')],
-            ]);
+            ->addHeaderButton(
+                ButtonComponent::make('log-activity-btn')
+                    ->label(__('layout.log'))
+                    ->icon('clock')
+                    ->variant('outlined')
+                    ->size('sm')
+                    ->color('info')
+                    ->data('component', 'view-property-activity')
+                    ->data('type', 'aside')
+                    ->data('action', 'view')
+                    ->data('params', ['property_id' => ':eid'])
+                    ->meta(['tooltip' => __('layout.log_activity')])
+            );
 
         $card->addComponent(
             TimelineComponent::make('activities-timeline')
@@ -719,6 +719,7 @@ class FullscreenViewAsideSlot
                     'emptyIcon' => 'clock',
                     'emptyText' => __('layout.activities_empty'),
                     'emptySubtext' => __('layout.activities_empty_hint'),
+                    'limit' => 5,
                 ])
                 ->gridColumnSpan(12)
         );

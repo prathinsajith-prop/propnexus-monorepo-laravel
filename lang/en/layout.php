@@ -585,6 +585,7 @@ return [
     'notes_empty' => 'Notes are empty',
     'notes_empty_hint' => "Click the '+' button to add a new one.",
     'recent_activities' => 'Recent Activities',
+    'activity_history_description' => 'Full history of all recorded activities for this property.',
     'log' => 'Log',
     'log_activity' => 'Log Activity',
     'activities_empty' => 'No activities yet',

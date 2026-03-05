@@ -7,6 +7,7 @@ use App\Layouts\Slot\ProductProperty\CreateAsideSlot;
 use App\Layouts\Slot\ProductProperty\EditAsideSlot;
 use App\Layouts\Slot\ProductProperty\FullscreenViewAsideSlot;
 use App\Layouts\Slot\ProductProperty\ModalSlot;
+use App\Layouts\Slot\ProductProperty\ViewActivityAsideSlot;
 use App\Layouts\Slot\ProductProperty\ViewAsideSlot;
 
 /**
@@ -393,5 +394,13 @@ class LayoutBuilder
     public static function buildEditPropertyAsideFullscreen(array $masterData): array
     {
         return EditAsideSlot::make($masterData, true);
+    }
+
+    /**
+     * Build view property activity history aside
+     */
+    public static function buildViewPropertyActivityAside(): array
+    {
+        return ViewActivityAsideSlot::make();
     }
 }
