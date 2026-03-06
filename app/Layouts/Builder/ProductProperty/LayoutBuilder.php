@@ -60,8 +60,8 @@ class LayoutBuilder
             ->gridColumnSpan(7);
 
         self::buildStatsCard($statsGrid, 'stat-total-properties', __('product_property.total_properties'), '0', 'primary', 'home', '+0%', 'neutral', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-published', __('product_property.published'), '0', 'success', 'checkmark', '+0%', 'neutral', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-for-sale', __('product_property.for_sale'), '0', 'info', 'cash', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-published', __('product_property.published'), '0', 'success', 'badgecheck', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-for-sale', __('product_property.for_sale'), '0', 'info', 'chart-bar', '+0%', 'neutral', 'trend-1');
         self::buildStatsCard($statsGrid, 'stat-for-rent', __('product_property.for_rent'), '0', 'warning', 'key', '+0%', 'neutral', 'trend-1');
     }
 
@@ -345,6 +345,28 @@ class LayoutBuilder
             'itemName' => $itemName ?: null,
             'apiUrl' => '/api/product-property/:id',
             'method' => 'DELETE',
+        ]);
+    }
+
+    /**
+     * Build unpublish property modal
+     */
+    public static function buildUnpublishPropertyModal(): array
+    {
+        return ModalSlot::unpublishProperty([
+            'apiUrl' => '/api/product-property/:id/unpublish',
+            'method' => 'POST',
+        ]);
+    }
+
+    /**
+     * Build preview property modal
+     */
+    public static function buildPreviewPropertyModal(): array
+    {
+        return ModalSlot::previewProperty([
+            'apiUrl' => '/api/product-property/:id/preview',
+            'method' => 'POST',
         ]);
     }
 

@@ -39,9 +39,9 @@ enum FollowUpType: string
         return match ($this) {
             self::Call => 'phone',
             self::Meeting => 'users',
-            self::Viewing => 'eye',
-            self::Offer => 'document',
-            self::Other => 'dotshorizontal',
+            self::Viewing => 'eyeopen',
+            self::Offer => 'documentfull',
+            self::Other => 'ellipsishorizontal',
         };
     }
 

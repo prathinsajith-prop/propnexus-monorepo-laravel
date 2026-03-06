@@ -118,7 +118,7 @@ class ProductPropertyForm
         // ── LOCATION ──────────────────────────────────────────
         $locationGroup = $form->group('location-info')
             ->title(__('product_property.location_info'))
-            ->icon('location')
+            ->icon('pin')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -186,7 +186,7 @@ class ProductPropertyForm
         // ── SPECIFICATIONS ────────────────────────────────────
         $specsGroup = $form->group('specs-info')
             ->title(__('product_property.specs_info'))
-            ->icon('grid')
+            ->icon('listcheck')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -233,7 +233,7 @@ class ProductPropertyForm
         // ── PRICING ───────────────────────────────────────────
         $pricingGroup = $form->group('pricing-info')
             ->title(__('product_property.pricing_info'))
-            ->icon('cash')
+            ->icon('price')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -292,7 +292,7 @@ class ProductPropertyForm
         // ── DESCRIPTION ───────────────────────────────────────
         $descGroup = $form->group('desc-info')
             ->title(__('product_property.desc_info'))
-            ->icon('document')
+            ->icon('textleft')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -318,7 +318,7 @@ class ProductPropertyForm
         // ── MEDIA ─────────────────────────────────────────────
         $mediaGroup = $form->group('media-info')
             ->title(__('product_property.media_info'))
-            ->icon('image')
+            ->icon('camera')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -350,7 +350,7 @@ class ProductPropertyForm
         // ── STATUS & AVAILABILITY ─────────────────────────────
         $statusGroup = $form->group('status-info')
             ->title(__('product_property.status_info'))
-            ->icon('checkmark')
+            ->icon('badge')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -428,7 +428,7 @@ class ProductPropertyForm
         // ── ASSIGNMENT ───────────────────────────────────────
         $assignGroup = $form->group('assign-info')
             ->title(__('product_property.assign_info'))
-            ->icon('person')
+            ->icon('users')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);

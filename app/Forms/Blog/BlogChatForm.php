@@ -47,7 +47,7 @@ class BlogChatForm
         // Add form action buttons
         $form->actions([
             ['label' => __('layout.clear'), 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'reset', 'type' => 'reset'],
-            ['label' => __('layout.send_message'), 'color' => 'primary', 'icon' => 'send', 'type' => 'submit'],
+            ['label' => __('layout.send_message'), 'color' => 'primary', 'icon' => 'sendright', 'type' => 'submit'],
         ]);
 
         return $form;

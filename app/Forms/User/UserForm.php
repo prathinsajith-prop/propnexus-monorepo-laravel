@@ -16,7 +16,7 @@ class UserForm
      */
     public static function make($formId, $method, $action, $masterData, $dataUrl = null)
     {
-        $formLayout = LayoutBuilder::create($formId.'-layout', 'form');
+        $formLayout = LayoutBuilder::create($formId . '-layout', 'form');
 
         $formLayout->section('content', function ($section) use ($formId, $method, $action, $masterData, $dataUrl) {
             $form = $section->form($formId)
@@ -70,7 +70,7 @@ class UserForm
             // --- Media & Files ---
             $mediaGroup = $form->group('media-info')
                 ->title(__('layout.documents_media'))
-                ->icon('image')
+                ->icon('camera')
                 ->variant('bordered')
                 ->columns(1);
 
@@ -108,7 +108,7 @@ class UserForm
                 ->columns(3);
 
             foreach ($masterData['skills'] as $skill) {
-                $skillsGroup->rating('skills['.$skill['value'].']')
+                $skillsGroup->rating('skills[' . $skill['value'] . ']')
                     ->label($skill['label'])
                     ->max(5)
                     ->width(4);
@@ -117,7 +117,7 @@ class UserForm
             // --- Address & Additional Info ---
             $addressGroup = $form->group('address-info')
                 ->title(__('layout.address_preferences'))
-                ->icon('mappin')
+                ->icon('pin')
                 ->variant('bordered')
                 ->columns(2);
 

@@ -8,7 +8,6 @@ use App\Enums\ProductCategoryType;
 use App\Enums\ProductPropertyFor;
 use App\Enums\ProductPropertyStatus;
 use App\Enums\ProductPropertyType;
-use App\Forms\Blog\BlogFeedbackForm;
 use App\Forms\ProductProperty\ProductPropertyForm;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
@@ -128,10 +127,10 @@ class FullscreenViewAsideSlot
                 ->variant('caption')
                 ->meta([
                     'key' => 'views_count',
-                    'icon' => 'eye',
+                    'icon' => 'eyeopen',
                     'iconSize' => 'sm',
                     'color' => 'text-gray-500',
-                    'suffix' => ' '.__('layout.views'),
+                    'suffix' => ' ' . __('layout.views'),
                 ])
                 ->gridColumnSpan(6)
         );
@@ -198,7 +197,7 @@ class FullscreenViewAsideSlot
             ->dataUrl('/api/product-property/:id')
             ->dataParams(['id' => ':id'])
             ->addHeaderAction(__('layout.edit'), '/api/product-property/:id', [
-                'icon' => 'pencil',
+                'icon' => 'pen',
                 'variant' => 'outlined',
                 'size' => 'sm',
                 'data' => [
@@ -676,6 +675,7 @@ class FullscreenViewAsideSlot
                     'emptyIcon' => 'chat',
                     'emptyText' => __('layout.notes_empty'),
                     'emptySubtext' => __('layout.notes_empty_hint'),
+                    'limit' => 4,
                 ])
                 ->gridColumnSpan(12)
         );
@@ -719,6 +719,7 @@ class FullscreenViewAsideSlot
                     'emptyIcon' => 'clock',
                     'emptyText' => __('layout.activities_empty'),
                     'emptySubtext' => __('layout.activities_empty_hint'),
+                    'componentType' => 'activityTimeline',
                     'limit' => 5,
                 ])
                 ->gridColumnSpan(12)
@@ -740,7 +741,7 @@ class FullscreenViewAsideSlot
                 'gap' => '1',
                 'justify' => 'start',
                 'items' => 'start',
-                'gridColumnSpan' => 6,
+                'gridColumnSpan' => 4,
             ]);
 
         $centerSlot->setComponent(
@@ -771,8 +772,105 @@ class FullscreenViewAsideSlot
                 'gap' => '2',
                 'justify' => 'end',
                 'items' => 'center',
-                'gridColumnSpan' => 6,
+                'gridColumnSpan' => 8,
             ]);
+
+        // Publish — confirm dialog (no extra fields needed)
+        $rightSlot->setComponent(
+            ButtonComponent::make('publish-btn')
+                ->label(__('layout.publish'))
+                ->icon('badgecheck')
+                ->variant('outlined')
+                ->size('sm')
+                ->color('success')
+                ->confirm([
+                    'title' => __('layout.publish_property'),
+                    'message' => __('layout.publish_property_confirmation'),
+                    'confirmLabel' => __('layout.publish'),
+                    'cancelLabel' => __('layout.cancel'),
+                    'action' => 'publish',
+                    'dataUrl' => '/api/product-property/:id/publish',
+                    'method' => 'POST',
+                ])
+                ->meta(['tooltip' => __('layout.publish_property')])
+        );
+
+        // Unpublish — form modal with reason + description
+        $rightSlot->setComponent(
+            ButtonComponent::make('unpublish-btn')
+                ->label(__('layout.unpublish'))
+                ->icon('eyeclose')
+                ->variant('outlined')
+                ->size('sm')
+                ->color('warning')
+                ->data('component', 'unpublish-property-modal')
+                ->data('type', 'modal')
+                ->data('action', 'create')
+                ->data('config', [
+                    'width' => '500px',
+                    'height' => 'auto',
+                    'anchor' => 'center',
+                    'backdrop' => true,
+                ])
+                ->dataParams(['id' => ':eid'])
+                ->meta(['tooltip' => __('layout.unpublish_property')])
+        );
+
+        // Preview — form modal with preview type + price
+        $rightSlot->setComponent(
+            ButtonComponent::make('preview-btn')
+                ->label(__('layout.preview'))
+                ->icon('eyeopen')
+                ->variant('outlined')
+                ->size('sm')
+                ->data('component', 'preview-property-modal')
+                ->data('type', 'modal')
+                ->data('action', 'create')
+                ->data('config', [
+                    'width' => '600px',
+                    'height' => 'auto',
+                    'anchor' => 'center',
+                    'backdrop' => true,
+                ])
+                ->dataParams(['id' => ':eid'])
+                ->meta(['tooltip' => __('layout.preview_property')])
+        );
+
+        // Actions — dropdown button
+        $rightSlot->setComponent(
+            ButtonComponent::make('actions-btn')
+                ->label(__('layout.actions'))
+                ->icon('chevrondown')
+                ->iconPosition('right')
+                ->variant('outlined')
+                ->size('sm')
+                ->dropdown([
+                    'id' => 'property-actions-dropdown',
+                    'placement' => 'bottom-end',
+                    'offset' => [0, 8],
+                    'closeOnClick' => true,
+                    'items' => self::buildActionsDropdownItems(),
+                ])
+                ->meta(['tooltip' => __('layout.actions')])
+        );
+
+        // Download Photos — dropdown button
+        $rightSlot->setComponent(
+            ButtonComponent::make('download-photos-btn')
+                ->label(__('layout.download_photos'))
+                ->icon('downloadcloud')
+                ->iconPosition('left')
+                ->variant('outlined')
+                ->size('sm')
+                ->dropdown([
+                    'id' => 'property-download-dropdown',
+                    'placement' => 'bottom-end',
+                    'offset' => [0, 8],
+                    'closeOnClick' => true,
+                    'items' => self::buildDownloadDropdownItems(),
+                ])
+                ->meta(['tooltip' => __('layout.download_photos')])
+        );
 
         $rightSlot->setComponent(
             ButtonComponent::make('share-btn')
@@ -788,14 +886,6 @@ class FullscreenViewAsideSlot
                 ->variant('outlined')
                 ->isIconButton(true)
                 ->meta(['action' => 'print', 'tooltip' => __('layout.print')])
-        );
-
-        $rightSlot->setComponent(
-            ButtonComponent::make('feedback-btn')
-                ->icon('message')
-                ->variant('outlined')
-                ->form(BlogFeedbackForm::make('blog-feedback-form', 'POST', '/api/blogs/:id/feedback')->toArray())
-                ->meta(['tooltip' => __('layout.submit_feedback')])
         );
 
         $rightSlot->setComponent(
@@ -867,6 +957,83 @@ class FullscreenViewAsideSlot
         return $headerSlot;
     }
 
+    private static function buildActionsDropdownItems(): array
+    {
+        return [
+            [
+                'id' => 'archive-property',
+                'label' => __('layout.archive'),
+                'icon' => 'archive',
+                'action' => 'archive',
+                'type' => 'button',
+            ],
+            [
+                'id' => 'mark-verified',
+                'label' => __('layout.mark_as_verified'),
+                'icon' => 'badgecheck',
+                'action' => 'mark-verified',
+                'type' => 'button',
+            ],
+            [
+                'id' => 'mark-featured',
+                'label' => __('layout.mark_as_featured'),
+                'icon' => 'star',
+                'action' => 'mark-featured',
+                'type' => 'button',
+            ],
+            ['type' => 'divider'],
+            [
+                'id' => 'duplicate-property',
+                'label' => __('layout.duplicate'),
+                'icon' => 'duplicate',
+                'action' => 'duplicate',
+                'type' => 'button',
+            ],
+            [
+                'id' => 'export-property',
+                'label' => __('layout.export_data'),
+                'icon' => 'downloadcloud',
+                'action' => 'export',
+                'type' => 'button',
+            ],
+        ];
+    }
+
+    private static function buildDownloadDropdownItems(): array
+    {
+        return [
+            [
+                'id' => 'download-all-photos',
+                'label' => __('layout.download_all_photos'),
+                'icon' => 'camera',
+                'action' => 'download-all-photos',
+                'type' => 'button',
+            ],
+            [
+                'id' => 'download-floor-plans',
+                'label' => __('layout.download_floor_plans'),
+                'icon' => 'layout',
+                'action' => 'download-floor-plans',
+                'type' => 'button',
+            ],
+            [
+                'id' => 'download-documents',
+                'label' => __('layout.download_documents'),
+                'icon' => 'documentfull',
+                'action' => 'download-documents',
+                'type' => 'button',
+            ],
+            ['type' => 'divider'],
+            [
+                'id' => 'download-all-files',
+                'label' => __('layout.download_all_files'),
+                'icon' => 'archive',
+                'action' => 'download-all-files',
+                'type' => 'button',
+            ],
+        ];
+    }
+
     // =========================================================================
     // FOOTER SLOT
     // =========================================================================
@@ -890,7 +1057,7 @@ class FullscreenViewAsideSlot
                 ->meta([
                     'key' => 'ref_number',
                     'color' => 'text-gray-500',
-                    'prefix' => __('product_property.column_ref').': #',
+                    'prefix' => __('product_property.column_ref') . ': #',
                 ])
         );
 

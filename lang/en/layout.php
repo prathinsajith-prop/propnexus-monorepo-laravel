@@ -605,4 +605,28 @@ return [
     'leads' => 'Leads',
     'no_leads_yet' => 'No Leads Yet',
     'no_leads_yet_hint' => 'Leads linked to this property will appear here.',
+
+    // Publish / Unpublish / Preview
+    'publish_property' => 'Publish Property',
+    'publish_property_confirmation' => 'Are you sure you want to publish this property? It will be visible to the public.',
+    'unpublish' => 'Unpublish',
+    'unpublish_property' => 'Unpublish Property',
+    'unpublish_reason' => 'Reason',
+    'unpublish_description_placeholder' => 'Provide additional details about the reason...',
+    'preview' => 'Preview',
+    'preview_property' => 'Preview Property',
+    'preview_type' => 'Preview',
+    'price' => 'Price',
+
+    // Actions dropdown
+    'mark_as_verified' => 'Mark as Verified',
+    'mark_as_featured' => 'Mark as Featured',
+    'duplicate' => 'Duplicate',
+
+    // Download Photos dropdown
+    'download_photos' => 'Download Photos',
+    'download_all_photos' => 'Download All Photos',
+    'download_floor_plans' => 'Download Floor Plans',
+    'download_documents' => 'Download Documents',
+    'download_all_files' => 'Download All Files',
 ];

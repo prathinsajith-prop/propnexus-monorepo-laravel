@@ -30,13 +30,13 @@ enum ListingStatus: string
     public function icon(): string
     {
         return match ($this) {
-            self::DRAFT => '✏️',
-            self::ACTIVE => '✅',
-            self::PENDING => '⏳',
-            self::SOLD => '🤝',
-            self::RENTED => '🔑',
-            self::EXPIRED => '⏰',
-            self::ARCHIVED => '📦',
+            self::DRAFT => 'pen',
+            self::ACTIVE => 'badgecheck',
+            self::PENDING => 'clock',
+            self::SOLD => 'price',
+            self::RENTED => 'home',
+            self::EXPIRED => 'calendar',
+            self::ARCHIVED => 'archive',
         };
     }
 
@@ -75,10 +75,10 @@ enum ListingStatus: string
     public function iconName(): string
     {
         return match ($this) {
-            self::DRAFT => 'pencil',
-            self::ACTIVE => 'check-circle',
+            self::DRAFT => 'pen',
+            self::ACTIVE => 'badgecheck',
             self::PENDING => 'clock',
-            self::SOLD => 'cash',
+            self::SOLD => 'price',
             self::RENTED => 'home',
             self::EXPIRED => 'calendar',
             self::ARCHIVED => 'archive',

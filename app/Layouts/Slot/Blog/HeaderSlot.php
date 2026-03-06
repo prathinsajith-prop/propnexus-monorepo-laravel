@@ -127,7 +127,7 @@ class HeaderSlot
 
         $actionsRow->add(
             ButtonComponent::make('more-btn')
-                ->icon('ellipsisVertical')
+                ->icon('ellipsisvertical')
                 ->variant('text')
                 ->dropdown([
                     'id' => 'header-more-options',

@@ -4,6 +4,8 @@ namespace App\Layouts\Slot\ProductProperty;
 
 use App\Forms\ProductProperty\ProductPropertyFollowUpsForm;
 use App\Forms\ProductProperty\ProductPropertyForm;
+use App\Forms\ProductProperty\ProductPropertyPreviewForm;
+use App\Forms\ProductProperty\ProductPropertyUnpublishForm;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Sections\DetailSection;
@@ -496,6 +498,242 @@ class ModalSlot
             ->setHeader($headerSlot)
             ->setMain(
                 SlotManager::make('edit-followup-modal-main-slot')
+                    ->setSection($mainGrid)
+            )
+            ->setFooter($footerSlot)
+            ->toArray();
+    }
+
+    /**
+     * Build unpublish property modal.
+     *
+     * @param  array  $options  [
+     *                          'apiUrl' => string,  // API endpoint
+     *                          'method' => string,  // HTTP method (default: POST)
+     *                          ]
+     * @return array Modal definition
+     */
+    public static function unpublishProperty(array $options = []): array
+    {
+        $config = array_merge([
+            'apiUrl' => '/api/product-property/:id/unpublish',
+            'method' => 'POST',
+        ], $options);
+
+        $formComponent = ProductPropertyUnpublishForm::make(
+            'unpublish-property-form',
+            $config['method'],
+            $config['apiUrl']
+        );
+
+        $mainGrid = GridSection::make('unpublish-property-modal-main-grid', 1)
+            ->rows(1)
+            ->gap('md');
+        $mainGrid->add($formComponent);
+
+        $centerSlot = SlotManager::make('unpublish-property-modal-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
+                'gridColumnSpan' => 6,
+            ]);
+
+        $centerSlot->setComponent(
+            TextComponent::make('title')
+                ->content(__('layout.unpublish_property'))
+                ->variant('h4')
+                ->meta(['fontWeight' => 'bold'])
+        );
+
+        $rightSlot = SlotManager::make('unpublish-property-modal-header-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 6,
+            ]);
+
+        $rightSlot->setComponent(
+            ButtonComponent::make('close-btn')
+                ->icon('cross')
+                ->variant('text')
+                ->meta(['action' => 'close'])
+        );
+
+        $headerSlot = SlotManager::make('unpublish-property-header-slot');
+        $headerSlot->setSection(
+            HeaderSection::make('unpublish-property-modal-header')
+                ->setCenter($centerSlot)
+                ->setRight($rightSlot)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        $footerRightSlot = SlotManager::make('unpublish-property-modal-footer-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 12,
+            ]);
+
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('cancel-btn')
+                ->label(__('layout.cancel'))
+                ->variant('outlined')
+                ->meta(['action' => 'close'])
+        );
+
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('submit-btn')
+                ->label(__('layout.unpublish'))
+                ->icon('eyeclose')
+                ->variant('contained')
+                ->type('submit')
+                ->color('warning')
+                ->data('method', $config['method'])
+                ->dataUrl($config['apiUrl'])
+                ->dataParams(['id' => ':eid'])
+                ->meta(['action' => 'submit'])
+        );
+
+        $footerSlot = SlotManager::make('unpublish-property-footer-slot');
+        $footerSlot->setSection(
+            FooterSection::make('unpublish-property-modal-footer')
+                ->setRight($footerRightSlot)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        return DetailSection::make('unpublish-property-modal')
+            ->setHeader($headerSlot)
+            ->setMain(
+                SlotManager::make('unpublish-property-modal-main-slot')
+                    ->setSection($mainGrid)
+            )
+            ->setFooter($footerSlot)
+            ->toArray();
+    }
+
+    /**
+     * Build preview property modal.
+     *
+     * @param  array  $options  [
+     *                          'apiUrl' => string,  // API endpoint
+     *                          'method' => string,  // HTTP method (default: POST)
+     *                          ]
+     * @return array Modal definition
+     */
+    public static function previewProperty(array $options = []): array
+    {
+        $config = array_merge([
+            'apiUrl' => '/api/product-property/:id/preview',
+            'method' => 'POST',
+        ], $options);
+
+        $formComponent = ProductPropertyPreviewForm::make(
+            'preview-property-form',
+            $config['method'],
+            $config['apiUrl']
+        );
+
+        $mainGrid = GridSection::make('preview-property-modal-main-grid', 1)
+            ->rows(1)
+            ->gap('md');
+        $mainGrid->add($formComponent);
+
+        $centerSlot = SlotManager::make('preview-property-modal-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
+                'gridColumnSpan' => 6,
+            ]);
+
+        $centerSlot->setComponent(
+            TextComponent::make('title')
+                ->content(__('layout.preview_property'))
+                ->variant('h4')
+                ->meta(['fontWeight' => 'bold'])
+        );
+
+        $rightSlot = SlotManager::make('preview-property-modal-header-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 6,
+            ]);
+
+        $rightSlot->setComponent(
+            ButtonComponent::make('close-btn')
+                ->icon('cross')
+                ->variant('text')
+                ->meta(['action' => 'close'])
+        );
+
+        $headerSlot = SlotManager::make('preview-property-header-slot');
+        $headerSlot->setSection(
+            HeaderSection::make('preview-property-modal-header')
+                ->setCenter($centerSlot)
+                ->setRight($rightSlot)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        $footerRightSlot = SlotManager::make('preview-property-modal-footer-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 12,
+            ]);
+
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('cancel-btn')
+                ->label(__('layout.cancel'))
+                ->variant('outlined')
+                ->meta(['action' => 'close'])
+        );
+
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('submit-btn')
+                ->label(__('layout.preview'))
+                ->icon('eyeopen')
+                ->variant('contained')
+                ->type('submit')
+                ->color('primary')
+                ->data('method', $config['method'])
+                ->dataUrl($config['apiUrl'])
+                ->dataParams(['id' => ':eid'])
+                ->meta(['action' => 'submit'])
+        );
+
+        $footerSlot = SlotManager::make('preview-property-footer-slot');
+        $footerSlot->setSection(
+            FooterSection::make('preview-property-modal-footer')
+                ->setRight($footerRightSlot)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        return DetailSection::make('preview-property-modal')
+            ->setHeader($headerSlot)
+            ->setMain(
+                SlotManager::make('preview-property-modal-main-slot')
                     ->setSection($mainGrid)
             )
             ->setFooter($footerSlot)

@@ -33,15 +33,17 @@ enum ProductPropertyStatus: string
     public function icon(): string
     {
         return match ($this) {
-            self::DRAFT => 'pencil',
+            self::DRAFT => 'pen',
             self::PENDING, self::WAITING_PUBLISH, self::WAITING_UNPUBLISH,
             self::WAITING_TEAMLEADER, self::WAITING_TEAM_LEADER => 'clock',
-            self::PUBLISHED, self::APPROVED, self::VERIFIED, self::COMPLETED => 'check-circle',
-            self::UNPUBLISHED, self::REJECTED, self::JUNK => 'cross',
+            self::PUBLISHED, self::APPROVED, self::VERIFIED => 'badgecheck',
+            self::COMPLETED => 'checkfull',
+            self::UNPUBLISHED => 'eyeclose',
+            self::REJECTED, self::JUNK => 'cross',
             self::ARCHIVED => 'archive',
-            self::POCKET_PUBLISH => 'banknote',
-            self::PENDING_VERIFICATION => 'clipboard-check',
-            self::PUBLIC => 'eye',
+            self::POCKET_PUBLISH => 'price',
+            self::PENDING_VERIFICATION => 'documentcheck',
+            self::PUBLIC => 'eyeopen',
             self::PRIVATE => 'lock',
         };
     }
@@ -100,7 +102,7 @@ enum ProductPropertyStatus: string
 
     public static function options(): array
     {
-        return collect(self::cases())->map(fn ($case) => [
+        return collect(self::cases())->map(fn($case) => [
             'value' => $case->value,
             'label' => $case->label(),
             'color' => $case->color(),

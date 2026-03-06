@@ -34,9 +34,9 @@ enum FollowUpStatus: string
     {
         return match ($this) {
             self::Pending => 'clock',
-            self::Completed => 'check-circle',
-            self::Cancelled => 'x-circle',
-            self::Overdue => 'alert-circle',
+            self::Completed => 'checkfull',
+            self::Cancelled => 'crossfull',
+            self::Overdue => 'exclamationsquare',
             self::InProgress => 'loader',
             self::Rescheduled => 'calendar',
         };

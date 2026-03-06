@@ -108,7 +108,7 @@ class ListingForm
         // === LOCATION SECTION ===
         $locationGroup = $form->group('location-info')
             ->title(__('layout.location'))
-            ->icon('location')
+            ->icon('pin')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -164,7 +164,7 @@ class ListingForm
         // === SPECIFICATIONS SECTION ===
         $specsGroup = $form->group('specifications-info')
             ->title(__('layout.property_specifications'))
-            ->icon('grid')
+            ->icon('listcheck')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -305,7 +305,7 @@ class ListingForm
         // === STATUS & AVAILABILITY SECTION ===
         $statusGroup = $form->group('status-info')
             ->title(__('layout.status_availability'))
-            ->icon('checkmark')
+            ->icon('badgecheck')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -353,7 +353,7 @@ class ListingForm
         // === AGENT INFORMATION SECTION ===
         $agentGroup = $form->group('agent-info')
             ->title(__('layout.agent_information'))
-            ->icon('person')
+            ->icon('users')
             ->variant('bordered')
             ->columns(12)
             ->create($isCreate);
@@ -383,7 +383,7 @@ class ListingForm
         // === FINANCIAL DETAILS SECTION ===
         $financialGroup = $form->group('financial-info')
             ->title(__('layout.financial_details'))
-            ->icon('cash')
+            ->icon('price')
             ->variant('bordered')
             ->columns(3)
             ->create($isCreate);
@@ -425,7 +425,7 @@ class ListingForm
         // === ADDITIONAL INFO SECTION ===
         $additionalGroup = $form->group('additional-info')
             ->title(__('layout.additional_information'))
-            ->icon('information')
+            ->icon('infosquare')
             ->variant('bordered')
             ->columns(2)
             ->create($isCreate);

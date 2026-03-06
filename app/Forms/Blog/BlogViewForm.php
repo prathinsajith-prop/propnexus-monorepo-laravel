@@ -123,7 +123,7 @@ class BlogViewForm
         // === MEDIA SECTION ===
         $mediaGroup = $form->group('media-info')
             ->title(__('layout.media_attachments'))
-            ->icon('image')
+            ->icon('camera')
             ->variant('bordered')
             ->columns(1);
 

@@ -197,7 +197,7 @@ class ViewAsideSlot
         );
         $rightSlot->setComponent(
             ButtonComponent::make('more-btn')
-                ->icon('ellipsisVertical')
+                ->icon('ellipsisvertical')
                 ->variant('outlined')
                 ->size('sm')
                 ->isIconButton(true)
@@ -228,7 +228,7 @@ class ViewAsideSlot
                         [
                             'id' => 'duplicate',
                             'label' => __('layout.duplicate'),
-                            'icon' => 'copy',
+                            'icon' => 'duplicate',
                             'action' => 'duplicate',
                             'type' => 'button',
                         ],

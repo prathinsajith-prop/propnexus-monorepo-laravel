@@ -60,9 +60,9 @@ enum Availability: string
     public function iconName(): string
     {
         return match ($this) {
-            self::AVAILABLE => 'check-circle',
+            self::AVAILABLE => 'badgecheck',
             self::RESERVED => 'clock',
-            self::SOLD => 'handshake',
+            self::SOLD => 'price',
             self::RENTED => 'key',
         };
     }

@@ -22,7 +22,7 @@ class UserViewForm
      */
     public static function make($formId, $masterData, $dataUrl = null)
     {
-        $formLayout = LayoutBuilder::create($formId.'-layout', 'form');
+        $formLayout = LayoutBuilder::create($formId . '-layout', 'form');
 
         $formLayout->section('content', function ($section) use ($formId, $dataUrl) {
             $form = $section->form($formId)
@@ -125,7 +125,7 @@ class UserViewForm
             // === DOCUMENTS & MEDIA ===
             $mediaGroup = $form->group('media-info')
                 ->title('Documents & Media')
-                ->icon('image')
+                ->icon('camera')
                 ->variant('bordered')
                 ->columns(1);
 
@@ -159,7 +159,7 @@ class UserViewForm
             // === SKILLS & EXPERTISE ===
             $skillsGroup = $form->group('skills-info')
                 ->title('Skills & Expertise')
-                ->icon('award')
+                ->icon('star')
                 ->variant('bordered')
                 ->columns(1);
 
@@ -177,7 +177,7 @@ class UserViewForm
             // === ADDRESS INFORMATION ===
             $addressGroup = $form->group('address-info')
                 ->title('Address')
-                ->icon('mappin')
+                ->icon('pin')
                 ->variant('bordered')
                 ->columns(2);
 
@@ -214,7 +214,7 @@ class UserViewForm
             // === ADDITIONAL INFORMATION ===
             $additionalGroup = $form->group('additional-info')
                 ->title('Additional Information')
-                ->icon('info')
+                ->icon('infosquare')
                 ->variant('bordered')
                 ->columns(2);
 

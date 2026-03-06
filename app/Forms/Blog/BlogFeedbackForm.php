@@ -59,7 +59,7 @@ class BlogFeedbackForm
         // Add form action buttons
         $form->actions([
             ['label' => __('layout.cancel'), 'variant' => 'outlined', 'color' => 'secondary', 'action' => 'close', 'type' => 'button'],
-            ['label' => __('layout.submit_feedback'), 'color' => 'primary', 'icon' => 'send', 'type' => 'submit'],
+            ['label' => __('layout.submit_feedback'), 'color' => 'primary', 'icon' => 'sendright', 'type' => 'submit'],
         ]);
 
         return $form;

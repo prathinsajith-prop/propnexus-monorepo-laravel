@@ -47,7 +47,7 @@ class RightSidebarSlot
                     'title' => __('layout.featured_image_changed'),
                     'description' => __('layout.new_image_uploaded'),
                     'date' => '1 day ago',
-                    'icon' => 'image',
+                    'icon' => 'camera',
                     'color' => 'warning',
                 ])
                 ->addEvent([
@@ -55,7 +55,7 @@ class RightSidebarSlot
                     'title' => __('layout.draft_created'),
                     'description' => __('layout.initial_draft_description'),
                     'date' => '3 days ago',
-                    'icon' => 'filetext',
+                    'icon' => 'documentfull',
                     'color' => 'default',
                 ])
                 ->meta([

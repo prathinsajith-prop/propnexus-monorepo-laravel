@@ -243,14 +243,14 @@ class LayoutBuilder
 
         $linksRow->button('help-link')
             ->label(__('layout.help'))
-            ->icon('help')
+            ->icon('questionhexagon')
             ->size('sm')
             ->variant('text')
             ->meta(['tooltip' => __('layout.get_help_doc')]);
 
         $linksRow->button('about-link')
             ->label(__('layout.about'))
-            ->icon('infocircle')
+            ->icon('infosquare')
             ->size('sm')
             ->variant('text')
             ->meta(['tooltip' => __('layout.about_this_app')]);
@@ -425,7 +425,7 @@ class LayoutBuilder
         // More Options - Dropdown
         $row->button('more-btn')
             ->label('')
-            ->icon('ellipsisVertical')
+            ->icon('ellipsisvertical')
             ->size('md')
             ->variant('outline')
             ->dropdown([

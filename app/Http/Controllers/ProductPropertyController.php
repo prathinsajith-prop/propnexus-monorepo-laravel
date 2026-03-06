@@ -12,6 +12,9 @@ use App\Actions\ProductProperty\DeleteProductPropertyNoteAction;
 use App\Actions\ProductProperty\ListProductPropertiesAction;
 use App\Actions\ProductProperty\ListProductPropertyFollowUpsAction;
 use App\Actions\ProductProperty\ListProductPropertyNotesAction;
+use App\Actions\ProductProperty\PreviewProductPropertyAction;
+use App\Actions\ProductProperty\PublishProductPropertyAction;
+use App\Actions\ProductProperty\UnpublishProductPropertyAction;
 use App\Actions\ProductProperty\UpdateProductPropertyAction;
 use App\Actions\ProductProperty\UpdateProductPropertyFollowUpAction;
 use App\Actions\ProductProperty\UpdateProductPropertyNoteAction;
@@ -249,7 +252,7 @@ class ProductPropertyController extends Controller
 
             return ActionResult::success($stats);
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to fetch statistics: ' . $e->getMessage());
+            return ActionResult::failure('Failed to fetch statistics: '.$e->getMessage());
         }
     }
 
@@ -277,7 +280,7 @@ class ProductPropertyController extends Controller
         $change = (($currentValue - $lastValue) / $lastValue) * 100;
         $prefix = $change >= 0 ? '+' : '';
 
-        return $prefix . round($change, 1) . '%';
+        return $prefix.round($change, 1).'%';
     }
 
     /**
@@ -310,14 +313,14 @@ class ProductPropertyController extends Controller
                         'users' => User::select('id', 'name')
                             ->orderBy('name')
                             ->get()
-                            ->map(fn($user) => ['value' => $user->id, 'label' => $user->name])
+                            ->map(fn ($user) => ['value' => $user->id, 'label' => $user->name])
                             ->values()
                             ->toArray(),
                     ];
                 }
             );
         } catch (\Exception $e) {
-            Log::error('Failed to fetch master data: ' . $e->getMessage());
+            Log::error('Failed to fetch master data: '.$e->getMessage());
 
             return [
                 'category_types' => [],
@@ -352,7 +355,7 @@ class ProductPropertyController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:' . $this->getMaxFileSize('document'),
+                'file' => 'required|file|max:'.$this->getMaxFileSize('document'),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ActionResult::failure('Validation failed', $e->errors());
@@ -409,7 +412,7 @@ class ProductPropertyController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
+                'file' => 'required|file|max:'.$this->getMaxFileSize($type),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ActionResult::failure('Validation failed', $e->errors());
@@ -449,8 +452,41 @@ class ProductPropertyController extends Controller
 
             return ActionResult::failure('File not found');
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to delete file: ' . $e->getMessage());
+            return ActionResult::failure('Failed to delete file: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Publish a property.
+     * POST /api/product-property/{property}/publish
+     */
+    public function publish(BixoProductProperties $property): ActionResult
+    {
+        return PublishProductPropertyAction::make(null, ['id' => $property->getKey()])->run();
+    }
+
+    /**
+     * Unpublish a property with a reason.
+     * POST /api/product-property/{property}/unpublish
+     */
+    public function unpublish(BixoProductProperties $property, Request $request): ActionResult
+    {
+        return UnpublishProductPropertyAction::make(null, array_merge(
+            $request->only(['reason', 'description']),
+            ['id' => $property->getKey()]
+        ))->run();
+    }
+
+    /**
+     * Generate a preview URL for a property.
+     * POST /api/product-property/{property}/preview
+     */
+    public function preview(BixoProductProperties $property, Request $request): ActionResult
+    {
+        return PreviewProductPropertyAction::make(null, array_merge(
+            $request->only(['preview_type', 'price']),
+            ['id' => $property->getKey()]
+        ))->run();
     }
 
     /**
@@ -471,7 +507,7 @@ class ProductPropertyController extends Controller
             ->latest()
             ->paginate($perPage);
 
-        $activities = collect($paginated->items())->map(fn(ActivityLog $log) => [
+        $activities = collect($paginated->items())->map(fn (ActivityLog $log) => [
             'id' => $log->getKey(),
             'type' => $log->event ?? 'activity',
             'description' => $log->description,

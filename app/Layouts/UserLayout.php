@@ -40,8 +40,8 @@ class UserLayout
                 'version' => '1.0.0',
                 'refreshInterval' => null,
             ])
-            ->section('header', fn ($section) => self::buildHeaderSection($section))
-            ->section('main', fn ($section) => self::buildMainSection($section, $masterData))
+            ->section('header', fn($section) => self::buildHeaderSection($section))
+            ->section('main', fn($section) => self::buildMainSection($section, $masterData))
             ->build();
     }
 
@@ -317,7 +317,7 @@ class UserLayout
         // More Options - Button with Dropdown Menu
         $row->button('more-btn')
             ->label('')
-            ->icon('ellipsisVertical')
+            ->icon('ellipsisvertical')
             ->size('md')
             ->variant('outline')
             // ->isIconButton(true)

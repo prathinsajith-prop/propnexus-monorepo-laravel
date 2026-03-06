@@ -26,11 +26,11 @@ enum BlogStatus: string
     public function icon(): string
     {
         return match ($this) {
-            self::DRAFT => '✏️',
-            self::REVIEW => '⏰',
-            self::PUBLISHED => '✅',
-            self::ARCHIVED => '📦',
-            self::TRASH => '🗑️',
+            self::DRAFT => 'pensquare',
+            self::REVIEW => 'clock',
+            self::PUBLISHED => 'badgecheck',
+            self::ARCHIVED => 'archive',
+            self::TRASH => 'binfull',
         };
     }
 
@@ -65,11 +65,11 @@ enum BlogStatus: string
     public function iconName(): string
     {
         return match ($this) {
-            self::DRAFT => 'pencil',
+            self::DRAFT => 'pensquare',
             self::REVIEW => 'clock',
-            self::PUBLISHED => 'check-circle',
+            self::PUBLISHED => 'badgecheck',
             self::ARCHIVED => 'archive',
-            self::TRASH => 'trash-2',
+            self::TRASH => 'binfull',
         };
     }
 

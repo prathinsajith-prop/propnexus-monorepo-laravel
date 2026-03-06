@@ -19,7 +19,7 @@ enum ProductPropertyType: string
     public function icon(): string
     {
         return match ($this) {
-            self::LIVE => 'bolt',
+            self::LIVE => 'antenna',
             self::POCKET => 'briefcase',
             self::DEVELOPER => 'building',
             self::VERIFIED_POCKET => 'shield',
@@ -68,7 +68,7 @@ enum ProductPropertyType: string
 
     public static function options(): array
     {
-        return collect(self::cases())->map(fn($case) => [
+        return collect(self::cases())->map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
         ])->toArray();

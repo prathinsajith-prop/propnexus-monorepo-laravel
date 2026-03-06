@@ -599,4 +599,22 @@ return [
     'leads' => 'ലീഡുകൾ',
     'no_leads_yet' => 'ഇതുവരെ ലീഡുകളില്ല',
     'no_leads_yet_hint' => 'ഈ പ്രോപ്പർട്ടിയുമായി ബന്ധിപ്പിച്ച ലീഡുകൾ ഇവിടെ ദൃശ്യമാകും.',
+
+    // Publish / Unpublish / Preview
+    'publish_property' => 'പ്രോപ്പർട്ടി പ്രസിദ്ധീകരിക്കുക',
+    'publish_property_confirmation' => 'ഈ പ്രോപ്പർട്ടി പ്രസിദ്ധീകരിക്കണമോ? ഇത് പൊതുജനങ്ങൾക്ക് ദൃശ്യമാകും.',
+    'unpublish' => 'അൺപബ്ലിഷ്',
+    'unpublish_property' => 'പ്രോപ്പർട്ടി അൺപബ്ലിഷ് ചെയ്യുക',
+    'unpublish_reason' => 'കാരണം',
+    'unpublish_description_placeholder' => 'കാരണത്തെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾ നൽകുക...',
+    'preview' => 'പ്രിവ്യൂ',
+    'preview_property' => 'പ്രോപ്പർട്ടി പ്രിവ്യൂ',
+    'preview_type' => 'പ്രിവ്യൂ',
+    'mark_as_verified' => 'സ്ഥിരീകരിച്ചതായി രേഖപ്പെടുത്തുക',
+    'mark_as_featured' => 'ഫീച്ചർഡ് ആയി രേഖപ്പെടുത്തുക',
+    'download_photos' => 'ഫോട്ടോ ഡൗൺലോഡ്',
+    'download_all_photos' => 'എല്ലാ ഫോട്ടോകളും ഡൗൺലോഡ്',
+    'download_floor_plans' => 'ഫ്ലോർ പ്ലാൻ ഡൗൺലോഡ്',
+    'download_documents' => 'ഡോക്യുമെന്റ് ഡൗൺലോഡ്',
+    'download_all_files' => 'എല്ലാ ഫയലുകളും ഡൗൺലോഡ്',
 ];

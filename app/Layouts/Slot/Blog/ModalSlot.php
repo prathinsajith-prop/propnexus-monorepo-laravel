@@ -318,7 +318,7 @@ class ModalSlot
                 ->add(
                     ButtonComponent::make('publish-btn')
                         ->label(__('layout.publish'))
-                        ->icon('checkmark')
+                        ->icon('badgecheck')
                         ->variant('contained')
                         ->meta([
                             'action' => 'submit',

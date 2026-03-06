@@ -85,7 +85,7 @@ class ListingViewForm
         // Location
         $locationGroup = $form->group('location')
             ->title(__('layout.location'))
-            ->icon('location')
+            ->icon('pin')
             ->variant('bordered')
             ->columns(2)
             ->editable(false);
@@ -108,7 +108,7 @@ class ListingViewForm
         // Description
         $descriptionGroup = $form->group('description')
             ->title(__('layout.description'))
-            ->icon('document')
+            ->icon('documentfull')
             ->variant('bordered')
             ->columns(1)
             ->editable(false);
@@ -122,7 +122,7 @@ class ListingViewForm
         // Agent Information
         $agentGroup = $form->group('agent')
             ->title(__('layout.agent_information'))
-            ->icon('person')
+            ->icon('users')
             ->variant('bordered')
             ->columns(2)
             ->editable(false);
@@ -145,7 +145,7 @@ class ListingViewForm
         // Status & Metrics
         $statusGroup = $form->group('status')
             ->title(__('layout.status_performance'))
-            ->icon('analytics')
+            ->icon('chartbar')
             ->variant('bordered')
             ->columns(3)
             ->editable(false);
