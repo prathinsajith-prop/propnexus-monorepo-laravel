@@ -34,6 +34,7 @@ class ViewActivityAsideSlot
             ->meta([
                 'emptyIcon' => 'clock',
                 'emptyText' => __('layout.activities_empty'),
+                'componentType' => 'activityTimeline',
                 'emptySubtext' => __('layout.activities_empty_hint'),
             ])
             ->gridColumnSpan(12);
