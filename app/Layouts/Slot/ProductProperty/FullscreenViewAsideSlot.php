@@ -703,7 +703,12 @@ class FullscreenViewAsideSlot
                     ->data('type', 'aside')
                     ->data('action', 'view')
                     ->data('params', ['property_id' => ':eid'])
-                    ->meta(['tooltip' => __('layout.log_activity')])
+                    ->meta([
+                        'width' => '55vw',
+                        'height' => '100vh',
+                        'anchor' => 'right',
+                        'tooltip' => __('layout.log_activity')
+                    ])
             );
 
         $card->addComponent(
