@@ -149,4 +149,52 @@ return [
     'column_for' => 'For',
     'column_bua' => 'BUA',
     'column_created' => 'Created',
+
+    // Statuses
+    'status_draft' => 'Draft',
+    'status_pending' => 'Pending',
+    'status_waiting_publish' => 'Waiting Publish',
+    'status_published' => 'Published',
+    'status_waiting_unpublish' => 'Waiting Unpublish',
+    'status_unpublished' => 'Unpublished',
+    'status_archived' => 'Archived',
+    'status_approved' => 'Approved',
+    'status_rejected' => 'Rejected',
+    'status_pocket_publish' => 'Pocket Publish',
+    'status_pending_verification' => 'Pending Verification',
+    'status_verified' => 'Verified',
+    'status_completed' => 'Completed',
+    'status_public' => 'Public',
+    'status_private' => 'Private',
+    'status_junk' => 'Junk',
+    'status_waiting_teamleader' => 'Waiting Teamleader',
+    'status_waiting_team_leader' => 'Waiting Team Leader',
+
+    // Categories
+    'category_commercial' => 'Commercial',
+    'category_residential' => 'Residential',
+
+    // Property For
+    'for_rental' => 'Rental',
+    'for_sales' => 'Sales',
+
+    // Property Types
+    'type_live' => 'Live',
+    'type_pocket' => 'Pocket',
+    'type_developer' => 'Developer',
+    'type_verified_pocket' => 'Verified Pocket',
+
+    // Frequencies
+    'frequency_yearly' => 'Yearly',
+    'frequency_monthly' => 'Monthly',
+    'frequency_weekly' => 'Weekly',
+    'frequency_daily' => 'Daily',
+
+    // Furnishing
+    'furnishing_furnished' => 'Furnished',
+    'furnishing_unfurnished' => 'Unfurnished',
+    'furnishing_partly_furnished' => 'Partly Furnished',
+    'furnishing_fitted' => 'Fitted',
+    'furnishing_not_fitted' => 'Not Fitted',
+    'furnishing_shell_and_core' => 'Shell And Core',
 ];

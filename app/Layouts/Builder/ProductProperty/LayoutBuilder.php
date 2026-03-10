@@ -371,6 +371,17 @@ class LayoutBuilder
     }
 
     /**
+     * Build duplicate property modal
+     */
+    public static function buildDuplicatePropertyModal(): array
+    {
+        return ModalSlot::duplicateProperty([
+            'apiUrl' => '/api/product-property/:id/duplicate',
+            'method' => 'POST',
+        ]);
+    }
+
+    /**
      * Build view property aside
      */
     public static function buildViewPropertyAside(array $masterData): array

@@ -596,6 +596,8 @@ return [
     'tooltip_delete_property' => 'Delete Property',
     'delete_property' => 'Delete Property',
     'delete_property_confirmation' => 'Are you sure you want to delete this property?',
+    'archive_property' => 'Archive Property',
+    'archive_property_confirmation' => 'Are you sure you want to archive this property?',
     'create_new_property' => 'Create New Property',
     'create_property' => 'Create Property',
     'update_property' => 'Update Property',
@@ -617,11 +619,23 @@ return [
     'preview_property' => 'Preview Property',
     'preview_type' => 'Preview',
     'price' => 'Price',
+    'verify' => 'Verify',
 
     // Actions dropdown
     'mark_as_verified' => 'Mark as Verified',
+    'mark_as_verified_confirmation' => 'Are you sure you want to mark this property as verified?',
     'mark_as_featured' => 'Mark as Featured',
+    'mark_as_featured_confirmation' => 'Are you sure you want to mark this property as featured?',
     'duplicate' => 'Duplicate',
+    'duplicate_property' => 'Duplicate Property',
+    'duplicate_ref_placeholder' => 'Enter new reference number',
+    'duplicate_title_placeholder' => 'Enter new property title',
+
+    // Follow-ups
+    'create_property_followup' => 'Create Property Follow-up',
+    'edit_property_followup' => 'Edit Property Follow-up',
+    'save_followup' => 'Save Follow-up',
+    'update_followup' => 'Update Follow-up',
 
     // Download Photos dropdown
     'download_photos' => 'Download Photos',

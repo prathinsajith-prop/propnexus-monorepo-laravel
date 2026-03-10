@@ -13,12 +13,12 @@ enum ProductFrequency: string
 
     public function label(): string
     {
-        return ucfirst($this->value);
+        return __('product_property.frequency_' . strtolower($this->value));
     }
 
     public static function options(): array
     {
-        return collect(self::cases())->map(fn ($case) => [
+        return collect(self::cases())->map(fn($case) => [
             'value' => $case->value,
             'label' => $case->label(),
         ])->toArray();

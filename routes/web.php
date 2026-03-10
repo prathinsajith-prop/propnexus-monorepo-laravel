@@ -88,6 +88,15 @@ Route::prefix('api')->group(function () {
     Route::post('/product-property/{property}/publish', [ProductPropertyController::class, 'publish'])->name('api.product-properties.publish');
     Route::post('/product-property/{property}/unpublish', [ProductPropertyController::class, 'unpublish'])->name('api.product-properties.unpublish');
     Route::post('/product-property/{property}/preview', [ProductPropertyController::class, 'preview'])->name('api.product-properties.preview');
+    Route::post('/product-property/{property}/archive', [ProductPropertyController::class, 'archive'])->name('api.product-properties.archive');
+    Route::post('/product-property/{property}/mark-verified', [ProductPropertyController::class, 'markVerified'])->name('api.product-properties.mark-verified');
+    Route::post('/product-property/{property}/mark-featured', [ProductPropertyController::class, 'markFeatured'])->name('api.product-properties.mark-featured');
+    Route::post('/product-property/{property}/duplicate', [ProductPropertyController::class, 'duplicate'])->name('api.product-properties.duplicate');
+    Route::get('/product-property/{property}/download/photos', [ProductPropertyController::class, 'downloadPhotos'])->name('api.product-properties.download.photos');
+    Route::get('/product-property/{property}/download/floor-plans', [ProductPropertyController::class, 'downloadFloorPlans'])->name('api.product-properties.download.floor-plans');
+    Route::get('/product-property/{property}/download/documents', [ProductPropertyController::class, 'downloadDocuments'])->name('api.product-properties.download.documents');
+    Route::get('/product-property/{property}/download/all', [ProductPropertyController::class, 'downloadAll'])->name('api.product-properties.download.all');
+    Route::get('/product-property/{property}/export', [ProductPropertyController::class, 'export'])->name('api.product-properties.export');
     Route::get('/product-property/{property}/leads/count', [ProductPropertyController::class, 'leadsCount'])->name('api.product-properties.leads.count');
     Route::get('/product-property/{property}/activities', [ProductPropertyController::class, 'activities'])->name('api.product-properties.activities');
     Route::get('/product-property/{property}/followups', [ProductPropertyController::class, 'listFollowUps'])->name('api.product-properties.followups.index');

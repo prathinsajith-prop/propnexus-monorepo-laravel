@@ -707,7 +707,7 @@ class FullscreenViewAsideSlot
                         'width' => '55vw',
                         'height' => '100vh',
                         'anchor' => 'right',
-                        'tooltip' => __('layout.log_activity')
+                        'tooltip' => __('layout.log_activity'),
                     ])
             );
 
@@ -965,78 +965,180 @@ class FullscreenViewAsideSlot
     private static function buildActionsDropdownItems(): array
     {
         return [
-            [
-                'id' => 'archive-property',
-                'label' => __('layout.archive'),
-                'icon' => 'archive',
-                'action' => 'archive',
-                'type' => 'button',
-            ],
-            [
-                'id' => 'mark-verified',
-                'label' => __('layout.mark_as_verified'),
-                'icon' => 'badgecheck',
-                'action' => 'mark-verified',
-                'type' => 'button',
-            ],
-            [
-                'id' => 'mark-featured',
-                'label' => __('layout.mark_as_featured'),
-                'icon' => 'star',
-                'action' => 'mark-featured',
-                'type' => 'button',
-            ],
+            self::buildConfirmDropdownButton(
+                'archive-property-btn',
+                __('layout.archive'),
+                'archive',
+                [
+                    'title' => __('layout.archive_property'),
+                    'message' => __('layout.archive_property_confirmation'),
+                    'confirmLabel' => __('layout.archive'),
+                    'cancelLabel' => __('layout.cancel'),
+                    'confirmColor' => 'warning',
+                    'action' => 'archive',
+                    'dataUrl' => '/api/product-property/:id/archive',
+                    'method' => 'POST',
+                ],
+                __('layout.archive_property'),
+            ),
+
+            self::buildConfirmDropdownButton(
+                'mark-verified-btn',
+                __('layout.mark_as_verified'),
+                'badgecheck',
+                [
+                    'title' => __('layout.mark_as_verified'),
+                    'message' => __('layout.mark_as_verified_confirmation'),
+                    'confirmLabel' => __('layout.verify'),
+                    'cancelLabel' => __('layout.cancel'),
+                    'confirmColor' => 'success',
+                    'action' => 'mark-verified',
+                    'dataUrl' => '/api/product-property/:id/mark-verified',
+                    'method' => 'POST',
+                ],
+                __('layout.mark_as_verified'),
+            ),
+
+            self::buildConfirmDropdownButton(
+                'mark-featured-btn',
+                __('layout.mark_as_featured'),
+                'star',
+                [
+                    'title' => __('layout.mark_as_featured'),
+                    'message' => __('layout.mark_as_featured_confirmation'),
+                    'confirmLabel' => __('layout.confirm'),
+                    'cancelLabel' => __('layout.cancel'),
+                    'confirmColor' => 'primary',
+                    'action' => 'mark-featured',
+                    'dataUrl' => '/api/product-property/:id/mark-featured',
+                    'method' => 'POST',
+                ],
+                __('layout.mark_as_featured'),
+            ),
+
             ['type' => 'divider'],
-            [
-                'id' => 'duplicate-property',
-                'label' => __('layout.duplicate'),
-                'icon' => 'duplicate',
-                'action' => 'duplicate',
-                'type' => 'button',
-            ],
-            [
-                'id' => 'export-property',
-                'label' => __('layout.export_data'),
-                'icon' => 'downloadcloud',
-                'action' => 'export',
-                'type' => 'button',
-            ],
+
+            ButtonComponent::make('duplicate-property-btn')
+                ->label(__('layout.duplicate'))
+                ->icon('duplicate')
+                ->variant('text')
+                ->size('sm')
+                ->data('component', 'duplicate-property-modal')
+                ->data('type', 'modal')
+                ->data('action', 'create')
+                ->data('config', [
+                    'width' => '500px',
+                    'height' => 'auto',
+                    'anchor' => 'center',
+                    'backdrop' => true,
+                ])
+                ->dataParams(['id' => ':eid'])
+                ->meta(['tooltip' => __('layout.duplicate')])
+                ->toArray(),
+
+            self::buildDataDropdownButton(
+                'export-property-btn',
+                __('layout.export_data'),
+                'downloadcloud',
+                'export',
+                '/api/product-property/:id/export',
+                'GET',
+                __('layout.export_data'),
+            ),
         ];
     }
 
     private static function buildDownloadDropdownItems(): array
     {
         return [
-            [
-                'id' => 'download-all-photos',
-                'label' => __('layout.download_all_photos'),
-                'icon' => 'camera',
-                'action' => 'download-all-photos',
-                'type' => 'button',
-            ],
-            [
-                'id' => 'download-floor-plans',
-                'label' => __('layout.download_floor_plans'),
-                'icon' => 'layout',
-                'action' => 'download-floor-plans',
-                'type' => 'button',
-            ],
-            [
-                'id' => 'download-documents',
-                'label' => __('layout.download_documents'),
-                'icon' => 'documentfull',
-                'action' => 'download-documents',
-                'type' => 'button',
-            ],
+            self::buildDataDropdownButton(
+                'download-all-photos-btn',
+                __('layout.download_all_photos'),
+                'camera',
+                'download-all-photos',
+                '/api/product-property/:id/download/photos',
+                'GET',
+                __('layout.download_all_photos'),
+            ),
+
+            self::buildDataDropdownButton(
+                'download-floor-plans-btn',
+                __('layout.download_floor_plans'),
+                'layout',
+                'download-floor-plans',
+                '/api/product-property/:id/download/floor-plans',
+                'GET',
+                __('layout.download_floor_plans'),
+            ),
+
+            self::buildDataDropdownButton(
+                'download-documents-btn',
+                __('layout.download_documents'),
+                'documentfull',
+                'download-documents',
+                '/api/product-property/:id/download/documents',
+                'GET',
+                __('layout.download_documents'),
+            ),
+
             ['type' => 'divider'],
-            [
-                'id' => 'download-all-files',
-                'label' => __('layout.download_all_files'),
-                'icon' => 'archive',
-                'action' => 'download-all-files',
-                'type' => 'button',
-            ],
+
+            self::buildDataDropdownButton(
+                'download-all-files-btn',
+                __('layout.download_all_files'),
+                'archive',
+                'download-all-files',
+                '/api/product-property/:id/download/all',
+                'GET',
+                __('layout.download_all_files'),
+            ),
         ];
+    }
+
+    /**
+     * Build a text-variant dropdown button that triggers a confirm dialog.
+     *
+     * @param  array<string, mixed>  $confirm
+     */
+    private static function buildConfirmDropdownButton(
+        string $id,
+        string $label,
+        string $icon,
+        array $confirm,
+        string $tooltip,
+    ): array {
+        return ButtonComponent::make($id)
+            ->label($label)
+            ->icon($icon)
+            ->variant('text')
+            ->size('sm')
+            ->confirm($confirm)
+            ->meta(['tooltip' => $tooltip])
+            ->toArray();
+    }
+
+    /**
+     * Build a text-variant dropdown button that dispatches a data action.
+     */
+    private static function buildDataDropdownButton(
+        string $id,
+        string $label,
+        string $icon,
+        string $action,
+        string $dataUrl,
+        string $method,
+        string $tooltip,
+    ): array {
+        return ButtonComponent::make($id)
+            ->label($label)
+            ->icon($icon)
+            ->variant('text')
+            ->size('sm')
+            ->data('action', $action)
+            ->data('dataUrl', $dataUrl)
+            ->data('method', $method)
+            ->meta(['tooltip' => $tooltip])
+            ->toArray();
     }
 
     // =========================================================================

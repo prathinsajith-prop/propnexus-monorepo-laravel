@@ -149,4 +149,52 @@ return [
     'column_for' => 'വേണ്ടി',
     'column_bua' => 'BUA',
     'column_created' => 'സൃഷ്ടിച്ചത്',
+
+    // Statuses
+    'status_draft' => 'ഡ്രാഫ്റ്റ്',
+    'status_pending' => 'കുടിശ്ശിക',
+    'status_waiting_publish' => 'പ്രസിദ്ധീകരിക്കാൻ കാത്തിരിക്കുന്നു',
+    'status_published' => 'പ്രസിദ്ധീകരിച്ചു',
+    'status_waiting_unpublish' => 'അൺപബ്ലിഷ് ചെയ്യാൻ കാത്തിരിക്കുന്നു',
+    'status_unpublished' => 'അൺപബ്ലിഷ് ചെയ്തു',
+    'status_archived' => 'ആർക്കൈവ് ചെയ്തു',
+    'status_approved' => 'അംഗീകരിച്ചു',
+    'status_rejected' => 'നിരസിച്ചു',
+    'status_pocket_publish' => 'പോക്കറ്റ് പബ്ലിഷ്',
+    'status_pending_verification' => 'പരിശോധനയിൽ',
+    'status_verified' => 'സാക്ഷ്യപ്പെടുത്തി',
+    'status_completed' => 'പൂർത്തിയായി',
+    'status_public' => 'പബ്ലിക്',
+    'status_private' => 'പ്രൈവറ്റ്',
+    'status_junk' => 'ജങ്ക്',
+    'status_waiting_teamleader' => 'ടീം ലീഡറുടെ അംഗീകാരത്തിനായി',
+    'status_waiting_team_leader' => 'ടീം ലീഡറുടെ അംഗീകാരത്തിനായി',
+
+    // Categories
+    'category_commercial' => 'വാണിജ്യം',
+    'category_residential' => 'താമസയോഗ്യം',
+
+    // Property For
+    'for_rental' => 'വാടകയ്ക്ക്',
+    'for_sales' => 'വിൽപനയ്ക്ക്',
+
+    // Property Types
+    'type_live' => 'ലൈവ്',
+    'type_pocket' => 'പോക്കറ്റ്',
+    'type_developer' => 'ഡെവലപ്പർ',
+    'type_verified_pocket' => 'വെരിഫൈഡ് പോക്കറ്റ്',
+
+    // Frequencies
+    'frequency_yearly' => 'പ്രതിവർഷം',
+    'frequency_monthly' => 'പ്രതിമാസം',
+    'frequency_weekly' => 'പ്രതിവാരം',
+    'frequency_daily' => 'പ്രതിദിനം',
+
+    // Furnishing
+    'furnishing_furnished' => 'ഫർണിഷ് ചെയ്തത്',
+    'furnishing_unfurnished' => 'ഫർണിഷ് ചെയ്യാത്തത്',
+    'furnishing_partly_furnished' => 'ഭാഗികമായി ഫർണിഷ് ചെയ്തത്',
+    'furnishing_fitted' => 'ഫിറ്റഡ്',
+    'furnishing_not_fitted' => 'ഫിറ്റ് ചെയ്യാത്തത്',
+    'furnishing_shell_and_core' => 'ഷെൽ ആൻഡ് കോർ',
 ];

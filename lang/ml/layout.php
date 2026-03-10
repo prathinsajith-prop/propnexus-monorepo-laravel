@@ -591,6 +591,8 @@ return [
     'tooltip_delete_property' => 'പ്രോപ്പർട്ടി ഇല്ലാതാക്കുക',
     'delete_property' => 'പ്രോപ്പർട്ടി ഇല്ലാതാക്കുക',
     'delete_property_confirmation' => 'ഈ പ്രോപ്പർട്ടി ഇല്ലാതാക്കണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?',
+    'archive_property' => 'പ്രോപ്പർട്ടി ആർക്കൈവ് ചെയ്യുക',
+    'archive_property_confirmation' => 'ഈ പ്രോപ്പർട്ടി ആർക്കൈവ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?',
     'create_new_property' => 'പുതിയ പ്രോപ്പർട്ടി സൃഷ്ടിക്കുക',
     'create_property' => 'പ്രോപ്പർട്ടി സൃഷ്ടിക്കുക',
     'update_property' => 'പ്രോപ്പർട്ടി പുതുക്കുക',
@@ -610,9 +612,23 @@ return [
     'preview' => 'പ്രിവ്യൂ',
     'preview_property' => 'പ്രോപ്പർട്ടി പ്രിവ്യൂ',
     'preview_type' => 'പ്രിവ്യൂ',
+    'verify' => 'സ്ഥിരീകരിക്കുക',
     'mark_as_verified' => 'സ്ഥിരീകരിച്ചതായി രേഖപ്പെടുത്തുക',
+    'mark_as_verified_confirmation' => 'ഈ പ്രോപ്പർട്ടി സാക്ഷ്യപ്പെടുത്തിയതായി രേഖപ്പെടുത്തണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?',
     'mark_as_featured' => 'ഫീച്ചർഡ് ആയി രേഖപ്പെടുത്തുക',
-    'download_photos' => 'ഫോട്ടോ ഡൗൺലോഡ്',
+    'mark_as_featured_confirmation' => 'ഈ പ്രോപ്പർട്ടി ഫീച്ചർ ചെയ്തതായി രേഖപ്പെടുത്തണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?',
+    'duplicate' => 'ഡ്യൂപ്ലിക്കേറ്റ്',
+    'duplicate_property' => 'പ്രോപ്പർട്ടി ഡ്യൂപ്ലിക്കേറ്റ് ചെയ്യുക',
+    'duplicate_ref_placeholder' => 'പുതിയ റഫറൻസ് നമ്പർ നൽകുക',
+    'duplicate_title_placeholder' => 'പുതിയ പ്രോപ്പർട്ടി തലക്കെട്ട് നൽകുക',
+
+    // Follow-ups
+    'create_property_followup' => 'പ്രോപ്പർട്ടി ഫോളോ-അപ്പ് സൃഷ്ടിക്കുക',
+    'edit_property_followup' => 'പ്രോപ്പർട്ടി ഫോളോ-അപ്പ് തിരുത്തുക',
+    'save_followup' => 'ഫോളോ-അപ്പ് സേവ് ചെയ്യുക',
+    'update_followup' => 'ഫോളോ-അപ്പ് പുതുക്കുക',
+
+    // Download Photos dropdown
     'download_all_photos' => 'എല്ലാ ഫോട്ടോകളും ഡൗൺലോഡ്',
     'download_floor_plans' => 'ഫ്ലോർ പ്ലാൻ ഡൗൺലോഡ്',
     'download_documents' => 'ഡോക്യുമെന്റ് ഡൗൺലോഡ്',

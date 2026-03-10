@@ -2,6 +2,7 @@
 
 namespace App\Layouts\Slot\ProductProperty;
 
+use App\Forms\ProductProperty\ProductPropertyDuplicateForm;
 use App\Forms\ProductProperty\ProductPropertyFollowUpsForm;
 use App\Forms\ProductProperty\ProductPropertyForm;
 use App\Forms\ProductProperty\ProductPropertyPreviewForm;
@@ -734,6 +735,124 @@ class ModalSlot
             ->setHeader($headerSlot)
             ->setMain(
                 SlotManager::make('preview-property-modal-main-slot')
+                    ->setSection($mainGrid)
+            )
+            ->setFooter($footerSlot)
+            ->toArray();
+    }
+
+    /**
+     * Build duplicate property modal.
+     *
+     * @param  array  $options  [
+     *                          'apiUrl' => string,  // API endpoint
+     *                          'method' => string,  // HTTP method (default: POST)
+     *                          ]
+     * @return array Modal definition
+     */
+    public static function duplicateProperty(array $options = []): array
+    {
+        $config = array_merge([
+            'apiUrl' => '/api/product-property/:id/duplicate',
+            'method' => 'POST',
+        ], $options);
+
+        $formComponent = ProductPropertyDuplicateForm::make(
+            'duplicate-property-form',
+            $config['method'],
+            $config['apiUrl']
+        );
+
+        $mainGrid = GridSection::make('duplicate-property-modal-main-grid', 1)
+            ->rows(1)
+            ->gap('md');
+        $mainGrid->add($formComponent);
+
+        $centerSlot = SlotManager::make('duplicate-property-modal-header-center')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'column',
+                'gap' => '1',
+                'justify' => 'start',
+                'items' => 'start',
+                'gridColumnSpan' => 6,
+            ]);
+
+        $centerSlot->setComponent(
+            TextComponent::make('title')
+                ->content(__('layout.duplicate_property'))
+                ->variant('h4')
+                ->meta(['fontWeight' => 'bold'])
+        );
+
+        $rightSlot = SlotManager::make('duplicate-property-modal-header-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 6,
+            ]);
+
+        $rightSlot->setComponent(
+            ButtonComponent::make('close-btn')
+                ->icon('cross')
+                ->variant('text')
+                ->meta(['action' => 'close'])
+        );
+
+        $headerSlot = SlotManager::make('duplicate-property-header-slot');
+        $headerSlot->setSection(
+            HeaderSection::make('duplicate-property-modal-header')
+                ->setCenter($centerSlot)
+                ->setRight($rightSlot)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        $footerRightSlot = SlotManager::make('duplicate-property-modal-footer-right')
+            ->setConfig([
+                'layout' => 'flex',
+                'direction' => 'row',
+                'gap' => '2',
+                'justify' => 'end',
+                'items' => 'center',
+                'gridColumnSpan' => 12,
+            ]);
+
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('cancel-btn')
+                ->label(__('layout.cancel'))
+                ->variant('outlined')
+                ->meta(['action' => 'close'])
+        );
+
+        $footerRightSlot->setComponent(
+            ButtonComponent::make('submit-btn')
+                ->label(__('layout.duplicate'))
+                ->icon('duplicate')
+                ->variant('contained')
+                ->type('submit')
+                ->color('primary')
+                ->data('method', $config['method'])
+                ->dataUrl($config['apiUrl'])
+                ->dataParams(['id' => ':eid'])
+                ->meta(['action' => 'submit'])
+        );
+
+        $footerSlot = SlotManager::make('duplicate-property-footer-slot');
+        $footerSlot->setSection(
+            FooterSection::make('duplicate-property-modal-footer')
+                ->setRight($footerRightSlot)
+                ->variant('elevated')
+                ->padding('md')
+        );
+
+        return DetailSection::make('duplicate-property-modal')
+            ->setHeader($headerSlot)
+            ->setMain(
+                SlotManager::make('duplicate-property-modal-main-slot')
                     ->setSection($mainGrid)
             )
             ->setFooter($footerSlot)

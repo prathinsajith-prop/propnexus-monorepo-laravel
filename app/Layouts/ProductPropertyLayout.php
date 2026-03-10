@@ -67,6 +67,7 @@ class ProductPropertyLayout
                 'edit-property-followup' => LayoutBuilder::buildEditPropertyFollowupModal(),
                 'unpublish-property-modal' => LayoutBuilder::buildUnpublishPropertyModal(),
                 'preview-property-modal' => LayoutBuilder::buildPreviewPropertyModal(),
+                'duplicate-property-modal' => LayoutBuilder::buildDuplicatePropertyModal(),
                 default => null,
             };
         }

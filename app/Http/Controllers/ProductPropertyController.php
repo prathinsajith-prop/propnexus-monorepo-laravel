@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Actions\File\FileUploadAction;
+use App\Actions\ProductProperty\ArchiveProductPropertyAction;
 use App\Actions\ProductProperty\CreateProductPropertyAction;
 use App\Actions\ProductProperty\CreateProductPropertyFollowUpAction;
 use App\Actions\ProductProperty\CreateProductPropertyNoteAction;
 use App\Actions\ProductProperty\DeleteProductPropertyAction;
 use App\Actions\ProductProperty\DeleteProductPropertyFollowUpAction;
 use App\Actions\ProductProperty\DeleteProductPropertyNoteAction;
+use App\Actions\ProductProperty\DuplicateProductPropertyAction;
 use App\Actions\ProductProperty\ListProductPropertiesAction;
 use App\Actions\ProductProperty\ListProductPropertyFollowUpsAction;
 use App\Actions\ProductProperty\ListProductPropertyNotesAction;
+use App\Actions\ProductProperty\MarkFeaturedProductPropertyAction;
+use App\Actions\ProductProperty\MarkVerifiedProductPropertyAction;
 use App\Actions\ProductProperty\PreviewProductPropertyAction;
 use App\Actions\ProductProperty\PublishProductPropertyAction;
 use App\Actions\ProductProperty\UnpublishProductPropertyAction;
@@ -252,7 +256,7 @@ class ProductPropertyController extends Controller
 
             return ActionResult::success($stats);
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to fetch statistics: '.$e->getMessage());
+            return ActionResult::failure('Failed to fetch statistics: ' . $e->getMessage());
         }
     }
 
@@ -280,7 +284,7 @@ class ProductPropertyController extends Controller
         $change = (($currentValue - $lastValue) / $lastValue) * 100;
         $prefix = $change >= 0 ? '+' : '';
 
-        return $prefix.round($change, 1).'%';
+        return $prefix . round($change, 1) . '%';
     }
 
     /**
@@ -313,14 +317,14 @@ class ProductPropertyController extends Controller
                         'users' => User::select('id', 'name')
                             ->orderBy('name')
                             ->get()
-                            ->map(fn ($user) => ['value' => $user->id, 'label' => $user->name])
+                            ->map(fn($user) => ['value' => $user->id, 'label' => $user->name])
                             ->values()
                             ->toArray(),
                     ];
                 }
             );
         } catch (\Exception $e) {
-            Log::error('Failed to fetch master data: '.$e->getMessage());
+            Log::error('Failed to fetch master data: ' . $e->getMessage());
 
             return [
                 'category_types' => [],
@@ -355,7 +359,7 @@ class ProductPropertyController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:'.$this->getMaxFileSize('document'),
+                'file' => 'required|file|max:' . $this->getMaxFileSize('document'),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ActionResult::failure('Validation failed', $e->errors());
@@ -412,7 +416,7 @@ class ProductPropertyController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|file|max:'.$this->getMaxFileSize($type),
+                'file' => 'required|file|max:' . $this->getMaxFileSize($type),
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ActionResult::failure('Validation failed', $e->errors());
@@ -452,7 +456,7 @@ class ProductPropertyController extends Controller
 
             return ActionResult::failure('File not found');
         } catch (\Exception $e) {
-            return ActionResult::failure('Failed to delete file: '.$e->getMessage());
+            return ActionResult::failure('Failed to delete file: ' . $e->getMessage());
         }
     }
 
@@ -490,6 +494,119 @@ class ProductPropertyController extends Controller
     }
 
     /**
+     * Archive a property.
+     * POST /api/product-property/{property}/archive
+     */
+    public function archive(BixoProductProperties $property): ActionResult
+    {
+        return ArchiveProductPropertyAction::make(null, ['id' => $property->getKey()])->run();
+    }
+
+    /**
+     * Mark a property as verified.
+     * POST /api/product-property/{property}/mark-verified
+     */
+    public function markVerified(BixoProductProperties $property): ActionResult
+    {
+        return MarkVerifiedProductPropertyAction::make(null, ['id' => $property->getKey()])->run();
+    }
+
+    /**
+     * Toggle the featured (premium) flag on a property.
+     * POST /api/product-property/{property}/mark-featured
+     */
+    public function markFeatured(BixoProductProperties $property): ActionResult
+    {
+        return MarkFeaturedProductPropertyAction::make(null, ['id' => $property->getKey()])->run();
+    }
+
+    /**
+     * Duplicate a property as a new Draft.
+     * POST /api/product-property/{property}/duplicate
+     */
+    public function duplicate(BixoProductProperties $property, Request $request): ActionResult
+    {
+        return DuplicateProductPropertyAction::make(null, array_merge(
+            $request->only(['ref', 'title']),
+            ['id' => $property->getKey()]
+        ))->run();
+    }
+
+    /**
+     * Export a property's full data as JSON.
+     * GET /api/product-property/{property}/export
+     */
+    public function export(BixoProductProperties $property): ActionResult
+    {
+        return ActionResult::success(
+            array_merge($property->toArray(), [
+                '_masterdatas' => $property->getMasterdata(),
+            ]),
+            'Property exported successfully'
+        );
+    }
+
+    /**
+     * Return download URLs for all photos.
+     * GET /api/product-property/{property}/download/photos
+     */
+    public function downloadPhotos(BixoProductProperties $property): ActionResult
+    {
+        $photos = is_array($property->photos) ? $property->photos : [];
+
+        return ActionResult::success([
+            'files' => $photos,
+            'count' => count($photos),
+        ]);
+    }
+
+    /**
+     * Return download URLs for floor plans.
+     * GET /api/product-property/{property}/download/floor-plans
+     */
+    public function downloadFloorPlans(BixoProductProperties $property): ActionResult
+    {
+        $floorPlans = is_array($property->floor_plans) ? $property->floor_plans : [];
+
+        return ActionResult::success([
+            'files' => $floorPlans,
+            'count' => count($floorPlans),
+        ]);
+    }
+
+    /**
+     * Return download URLs for documents.
+     * GET /api/product-property/{property}/download/documents
+     */
+    public function downloadDocuments(BixoProductProperties $property): ActionResult
+    {
+        $documents = is_array($property->documents) ? $property->documents : [];
+
+        return ActionResult::success([
+            'files' => $documents,
+            'count' => count($documents),
+        ]);
+    }
+
+    /**
+     * Return download URLs for all files (photos + floor plans + documents).
+     * GET /api/product-property/{property}/download/all
+     */
+    public function downloadAll(BixoProductProperties $property): ActionResult
+    {
+        $photos = is_array($property->photos) ? $property->photos : [];
+        $floorPlans = is_array($property->floor_plans) ? $property->floor_plans : [];
+        $documents = is_array($property->documents) ? $property->documents : [];
+
+        return ActionResult::success([
+            'photos' => $photos,
+            'floor_plans' => $floorPlans,
+            'documents' => $documents,
+            'count' => count($photos) + count($floorPlans) + count($documents),
+        ]);
+    }
+
+    /**
      * Return the number of leads associated with a property.
      * Currently returns 0 — placeholder until a leads module is implemented.
      */
@@ -507,7 +624,7 @@ class ProductPropertyController extends Controller
             ->latest()
             ->paginate($perPage);
 
-        $activities = collect($paginated->items())->map(fn (ActivityLog $log) => [
+        $activities = collect($paginated->items())->map(fn(ActivityLog $log) => [
             'id' => $log->getKey(),
             'type' => $log->event ?? 'activity',
             'description' => $log->description,
