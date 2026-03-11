@@ -42,6 +42,10 @@ class ListProductPropertiesAction extends BaseAction
             'filter_price_max' => 'sometimes|numeric',
             'filter_bua_min' => 'sometimes|numeric',
             'filter_bua_max' => 'sometimes|numeric',
+            'filter_furnishing' => 'sometimes|string',
+            'filter_construction_status' => 'sometimes|string',
+            'filter_frequency' => 'sometimes|string',
+            'filter_parking' => 'sometimes|integer',
             'filter_location_id' => 'sometimes|integer',
             'filter_building_id' => 'sometimes|integer',
             'filter_user_id' => 'sometimes|integer',
@@ -111,10 +115,10 @@ class ListProductPropertiesAction extends BaseAction
     private function applyFilters($query): void
     {
         if (! empty($this->data['filter_ref'])) {
-            $query->where('ref', 'like', '%' . $this->data['filter_ref'] . '%');
+            $query->where('ref', 'like', '%'.$this->data['filter_ref'].'%');
         }
         if (! empty($this->data['filter_title'])) {
-            $query->where('title', 'like', '%' . $this->data['filter_title'] . '%');
+            $query->where('title', 'like', '%'.$this->data['filter_title'].'%');
         }
         if (! empty($this->data['filter_status'])) {
             $query->where('status', $this->data['filter_status']);
@@ -145,6 +149,18 @@ class ListProductPropertiesAction extends BaseAction
         }
         if (! empty($this->data['filter_bua_max'])) {
             $query->where('bua', '<=', $this->data['filter_bua_max']);
+        }
+        if (! empty($this->data['filter_furnishing'])) {
+            $query->where('furnishing', $this->data['filter_furnishing']);
+        }
+        if (! empty($this->data['filter_construction_status'])) {
+            $query->where('construction_status', $this->data['filter_construction_status']);
+        }
+        if (! empty($this->data['filter_frequency'])) {
+            $query->where('frequency', $this->data['filter_frequency']);
+        }
+        if (isset($this->data['filter_parking']) && $this->data['filter_parking'] !== '') {
+            $query->where('parking', $this->data['filter_parking']);
         }
         if (! empty($this->data['filter_location_id'])) {
             $query->where('location_id', $this->data['filter_location_id']);

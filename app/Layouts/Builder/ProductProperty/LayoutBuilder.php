@@ -2,6 +2,13 @@
 
 namespace App\Layouts\Builder\ProductProperty;
 
+use App\Enums\ConstructionStatus;
+use App\Enums\ProductCategoryType;
+use App\Enums\ProductFrequency;
+use App\Enums\ProductFurnishing;
+use App\Enums\ProductPropertyFor;
+use App\Enums\ProductPropertyStatus;
+use App\Enums\ProductPropertyType;
 use App\Layouts\Builder\TableColumnsBuilder;
 use App\Layouts\Slot\ProductProperty\CreateAsideSlot;
 use App\Layouts\Slot\ProductProperty\EditAsideSlot;
@@ -184,23 +191,37 @@ class LayoutBuilder
             ->addQuickFilter('search', __('layout.search'), 'text')
             ->addQuickFilter('category_type', __('layout.category_type'), 'select', array_merge(
                 [['value' => '', 'label' => __('layout.all_types')]],
-                $masterData['category_types'] ?? []
+                ProductCategoryType::options()
             ))
             ->addQuickFilter('property_for', __('layout.property_for'), 'select', array_merge(
                 [['value' => '', 'label' => __('layout.all')]],
-                $masterData['property_for'] ?? []
+                ProductPropertyFor::options()
             ))
             ->addQuickFilter('status', __('layout.status'), 'select', array_merge(
                 [['value' => '', 'label' => __('layout.all_statuses')]],
-                $masterData['statuses'] ?? []
+                ProductPropertyStatus::options()
             ))
             ->addSelectFilter('property_type', __('layout.property_type'), array_merge(
                 [['value' => '', 'label' => __('layout.all')]],
-                $masterData['property_types'] ?? []
+                ProductPropertyType::options()
+            ))
+            ->addSelectFilter('furnishing', __('layout.furnishing_status'), array_merge(
+                [['value' => '', 'label' => __('layout.all')]],
+                ProductFurnishing::options()
+            ))
+            ->addSelectFilter('construction_status', __('product_property.construction_status'), array_merge(
+                [['value' => '', 'label' => __('layout.all')]],
+                ConstructionStatus::options()
+            ))
+            ->addSelectFilter('frequency', __('product_property.frequency'), array_merge(
+                [['value' => '', 'label' => __('layout.all')]],
+                ProductFrequency::options()
             ))
             ->addPriceRangeFilter('price', __('layout.price_range'), 0, 100000000)
             ->addRangeFilter('beds', __('layout.beds'), 0, 20)
             ->addRangeFilter('baths', __('layout.baths'), 0, 20)
+            ->addRangeFilter('bua', __('layout.bua'), 0, 50000)
+            ->addNumberFilter('parking', __('layout.parking'))
             ->collapsible()
             ->collapsed(true)
             ->liveFilter(true, 300)

@@ -90,7 +90,7 @@ class LayoutBuilder
 
         self::buildStatsCard($statsGrid, 'stat-total-listings', __('layout.total_listings'), '0', 'primary', 'home', '+0%', 'neutral', 'trend-1');
         self::buildStatsCard($statsGrid, 'stat-active', __('layout.active_listings'), '0', 'success', 'badgecheck', '+0%', 'neutral', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-sold', __('layout.sold_rented'), '0', 'info', 'cash', '+0%', 'neutral', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-sold', __('layout.sold_rented'), '0', 'info', 'tag', '+0%', 'neutral', 'trend-1');
         self::buildStatsCard($statsGrid, 'stat-total-views', __('layout.total_views'), '0', 'warning', 'eyeopen', '+0%', 'neutral', 'trend-1');
     }
 
