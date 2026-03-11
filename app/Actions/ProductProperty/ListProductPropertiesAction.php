@@ -29,28 +29,42 @@ class ListProductPropertiesAction extends BaseAction
             'q' => 'sometimes|string',
             'filter' => 'sometimes|string',
 
-            // Property-specific filters
+            // Property-specific filters (filter_ prefix and bare names both accepted)
             'filter_ref' => 'sometimes|string',
             'filter_title' => 'sometimes|string',
             'filter_status' => 'sometimes|string',
+            'status' => 'sometimes|string',
             'filter_category_type' => 'sometimes|string',
+            'category_type' => 'sometimes|string',
             'filter_property_for' => 'sometimes|string',
+            'property_for' => 'sometimes|string',
             'filter_property_type' => 'sometimes|string',
+            'property_type' => 'sometimes|string',
             'filter_beds' => 'sometimes|string',
+            'beds' => 'sometimes|string',
             'filter_baths' => 'sometimes|integer',
+            'baths' => 'sometimes|integer',
             'filter_price_min' => 'sometimes|numeric',
             'filter_price_max' => 'sometimes|numeric',
             'filter_bua_min' => 'sometimes|numeric',
             'filter_bua_max' => 'sometimes|numeric',
             'filter_furnishing' => 'sometimes|string',
+            'furnishing' => 'sometimes|string',
             'filter_construction_status' => 'sometimes|string',
+            'construction_status' => 'sometimes|string',
             'filter_frequency' => 'sometimes|string',
+            'frequency' => 'sometimes|string',
             'filter_parking' => 'sometimes|integer',
+            'parking' => 'sometimes|integer',
             'filter_location_id' => 'sometimes|integer',
             'filter_building_id' => 'sometimes|integer',
             'filter_user_id' => 'sometimes|integer',
             'filter_date_from' => 'sometimes|date',
             'filter_date_to' => 'sometimes|date',
+            'filter_published_at_from' => 'sometimes|date',
+            'filter_published_at_to' => 'sometimes|date',
+            'filter_created_at_from' => 'sometimes|date',
+            'filter_created_at_to' => 'sometimes|date',
         ];
     }
 
@@ -95,6 +109,9 @@ class ListProductPropertiesAction extends BaseAction
             $arr['updated_at_formatted'] = $property->updated_at
                 ? $property->updated_at->format('d M Y H:i A')
                 : null;
+            $arr['published_at_formatted'] = $property->published_at
+                ? $property->published_at->format('d M Y H:i A')
+                : null;
 
             return $arr;
         })->all();
@@ -120,23 +137,29 @@ class ListProductPropertiesAction extends BaseAction
         if (! empty($this->data['filter_title'])) {
             $query->where('title', 'like', '%'.$this->data['filter_title'].'%');
         }
-        if (! empty($this->data['filter_status'])) {
-            $query->where('status', $this->data['filter_status']);
+        $status = $this->data['filter_status'] ?? $this->data['status'] ?? null;
+        if (! empty($status)) {
+            $query->where('status', $status);
         }
-        if (! empty($this->data['filter_category_type'])) {
-            $query->where('category_type', $this->data['filter_category_type']);
+        $categoryType = $this->data['filter_category_type'] ?? $this->data['category_type'] ?? null;
+        if (! empty($categoryType)) {
+            $query->where('category_type', $categoryType);
         }
-        if (! empty($this->data['filter_property_for'])) {
-            $query->where('property_for', $this->data['filter_property_for']);
+        $propertyFor = $this->data['filter_property_for'] ?? $this->data['property_for'] ?? null;
+        if (! empty($propertyFor)) {
+            $query->where('property_for', $propertyFor);
         }
-        if (! empty($this->data['filter_property_type'])) {
-            $query->where('property_type', $this->data['filter_property_type']);
+        $propertyType = $this->data['filter_property_type'] ?? $this->data['property_type'] ?? null;
+        if (! empty($propertyType)) {
+            $query->where('property_type', $propertyType);
         }
-        if (! empty($this->data['filter_beds'])) {
-            $query->where('beds', $this->data['filter_beds']);
+        $beds = $this->data['filter_beds'] ?? $this->data['beds'] ?? null;
+        if (! empty($beds)) {
+            $query->where('beds', $beds);
         }
-        if (! empty($this->data['filter_baths'])) {
-            $query->where('baths', $this->data['filter_baths']);
+        $baths = $this->data['filter_baths'] ?? $this->data['baths'] ?? null;
+        if (! empty($baths)) {
+            $query->where('baths', $baths);
         }
         if (! empty($this->data['filter_price_min'])) {
             $query->where('price', '>=', $this->data['filter_price_min']);
@@ -150,17 +173,21 @@ class ListProductPropertiesAction extends BaseAction
         if (! empty($this->data['filter_bua_max'])) {
             $query->where('bua', '<=', $this->data['filter_bua_max']);
         }
-        if (! empty($this->data['filter_furnishing'])) {
-            $query->where('furnishing', $this->data['filter_furnishing']);
+        $furnishing = $this->data['filter_furnishing'] ?? $this->data['furnishing'] ?? null;
+        if (! empty($furnishing)) {
+            $query->where('furnishing', $furnishing);
         }
-        if (! empty($this->data['filter_construction_status'])) {
-            $query->where('construction_status', $this->data['filter_construction_status']);
+        $constructionStatus = $this->data['filter_construction_status'] ?? $this->data['construction_status'] ?? null;
+        if (! empty($constructionStatus)) {
+            $query->where('construction_status', $constructionStatus);
         }
-        if (! empty($this->data['filter_frequency'])) {
-            $query->where('frequency', $this->data['filter_frequency']);
+        $frequency = $this->data['filter_frequency'] ?? $this->data['frequency'] ?? null;
+        if (! empty($frequency)) {
+            $query->where('frequency', $frequency);
         }
-        if (isset($this->data['filter_parking']) && $this->data['filter_parking'] !== '') {
-            $query->where('parking', $this->data['filter_parking']);
+        $parking = $this->data['filter_parking'] ?? $this->data['parking'] ?? null;
+        if (isset($parking) && $parking !== '') {
+            $query->where('parking', $parking);
         }
         if (! empty($this->data['filter_location_id'])) {
             $query->where('location_id', $this->data['filter_location_id']);
@@ -176,6 +203,18 @@ class ListProductPropertiesAction extends BaseAction
         }
         if (! empty($this->data['filter_date_to'])) {
             $query->where('created_at', '<=', $this->data['filter_date_to']);
+        }
+        if (! empty($this->data['filter_published_at_from'])) {
+            $query->where('published_at', '>=', $this->data['filter_published_at_from']);
+        }
+        if (! empty($this->data['filter_published_at_to'])) {
+            $query->where('published_at', '<=', $this->data['filter_published_at_to']);
+        }
+        if (! empty($this->data['filter_created_at_from'])) {
+            $query->where('created_at', '>=', $this->data['filter_created_at_from']);
+        }
+        if (! empty($this->data['filter_created_at_to'])) {
+            $query->where('created_at', '<=', $this->data['filter_created_at_to']);
         }
     }
 }

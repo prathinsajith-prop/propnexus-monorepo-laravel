@@ -12,10 +12,10 @@ use App\Enums\ProductPropertyStatus;
 use App\Enums\ProductPropertyType;
 use App\Models\Concerns\HandlesActivityLogging;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Litepie\Database\Traits\Searchable;
 use Litepie\Hashids\Traits\Hashids;
 use Litepie\Logs\Traits\LogsActivity;
@@ -45,8 +45,8 @@ class BixoProductProperties extends Model
 {
     use HandlesActivityLogging,
         LogsActivity {
-        HandlesActivityLogging::logActivity insteadof LogsActivity;
-    }
+            HandlesActivityLogging::logActivity insteadof LogsActivity;
+        }
     use HasFactory;
     use Hashids;
     use Searchable;
@@ -64,6 +64,59 @@ class BixoProductProperties extends Model
      * The attributes that are mass assignable.
      */
     protected $guarded = [];
+
+    /**
+     * Fields allowed for filterQueryString() scope.
+     */
+    protected function getFilterableFields(): array
+    {
+        return [
+            'status',
+            'category_type',
+            'property_for',
+            'property_type',
+            'furnishing',
+            'construction_status',
+            'frequency',
+            'beds',
+            'baths',
+            'parking',
+            'price',
+            'service_charge',
+            'original_price',
+            'bua',
+            'ref',
+            'ref_pf',
+            'ref_byt',
+            'title',
+            'unit',
+            'floor',
+            'tower_name',
+            'location_id',
+            'sublocation_id',
+            'building_id',
+            'tower_id',
+            'country_id',
+            'region_id',
+            'user_id',
+            'assign_to',
+            'marketed_by',
+            'created_by',
+            'contact_id',
+            'developer_id',
+            'exclusive',
+            'premium',
+            'price_on_request',
+            'company_listing',
+            'rented',
+            'published_at',
+            'unpublished_at',
+            'available_from',
+            'created_at',
+            'updated_at',
+            'archived_at',
+        ];
+    }
 
     /**
      * The attributes that should be cast.
@@ -237,7 +290,7 @@ class BixoProductProperties extends Model
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn() => number_format($this->price, 0) . ' AED'
+            get: fn () => number_format($this->price, 0).' AED'
         );
     }
 
@@ -247,7 +300,7 @@ class BixoProductProperties extends Model
     protected function createdByFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->creator?->name ?? 'System'
+            get: fn () => $this->creator?->name ?? 'System'
         );
     }
 
@@ -257,7 +310,7 @@ class BixoProductProperties extends Model
     protected function createdAtFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->created_at instanceof Carbon ? $this->created_at->format('Y-m-d H:i:s') : null
+            get: fn () => $this->created_at instanceof Carbon ? $this->created_at->format('Y-m-d H:i:s') : null
         );
     }
 
@@ -267,7 +320,7 @@ class BixoProductProperties extends Model
     protected function updatedAtFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->updated_at instanceof Carbon ? $this->updated_at->format('Y-m-d H:i:s') : null
+            get: fn () => $this->updated_at instanceof Carbon ? $this->updated_at->format('Y-m-d H:i:s') : null
         );
     }
 
@@ -277,7 +330,7 @@ class BixoProductProperties extends Model
     protected function isActive(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->status === 'Published'
+            get: fn () => $this->status === 'Published'
         );
     }
 
@@ -287,7 +340,7 @@ class BixoProductProperties extends Model
     protected function photos(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -315,7 +368,7 @@ class BixoProductProperties extends Model
     protected function features(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -343,7 +396,7 @@ class BixoProductProperties extends Model
     protected function documents(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -371,7 +424,7 @@ class BixoProductProperties extends Model
     protected function portals(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -399,7 +452,7 @@ class BixoProductProperties extends Model
     protected function featureTags(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -541,23 +594,23 @@ class BixoProductProperties extends Model
         return [
             'options' => [
                 'status' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductPropertyStatus::cases()
                 ),
                 'category_type' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductCategoryType::cases()
                 ),
                 'property_for' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductPropertyFor::cases()
                 ),
                 'furnishing' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductFurnishing::cases()
                 ),
                 'frequency' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductFrequency::cases()
                 ),
             ],

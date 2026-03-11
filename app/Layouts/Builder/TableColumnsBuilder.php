@@ -473,6 +473,7 @@ class TableColumnsBuilder
             ['key' => 'beds', 'label' => __('product_property.beds'), 'sortable' => true, 'width' => '70px', 'align' => 'center'],
             ['key' => 'baths', 'label' => __('product_property.baths'), 'sortable' => true, 'width' => '70px', 'align' => 'center'],
             ['key' => 'bua', 'label' => __('product_property.column_bua'), 'sortable' => true, 'width' => '90px', 'align' => 'right'],
+            ['key' => 'published_at_formatted', 'label' => __('product_property.column_published_at'), 'sortable' => false, 'width' => '150px'],
             ['key' => 'created_at_formatted', 'label' => __('product_property.column_created'), 'sortable' => false, 'width' => '130px'],
             ['key' => 'updated_at_formatted', 'label' => __('layout.updated_at'), 'sortable' => false, 'width' => '130px'],
             ['key' => 'actions', 'label' => __('layout.actions'), 'sortable' => false, 'width' => '150px', 'align' => 'center', 'type' => 'actions', 'actions' => self::getProductPropertyTableActions()],

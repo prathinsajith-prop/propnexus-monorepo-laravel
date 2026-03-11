@@ -149,6 +149,7 @@ return [
     'column_for' => 'For',
     'column_bua' => 'BUA',
     'column_created' => 'Created',
+    'column_published_at' => 'Published At',
 
     // Statuses
     'status_draft' => 'Draft',

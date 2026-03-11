@@ -201,6 +201,18 @@ class LayoutBuilder
                 [['value' => '', 'label' => __('layout.all_statuses')]],
                 ProductPropertyStatus::options()
             ))
+            ->addSelectFilter('status', __('layout.status'), array_merge(
+                [['value' => '', 'label' => __('layout.all_statuses')]],
+                ProductPropertyStatus::options()
+            ))
+            ->addSelectFilter('category_type', __('layout.category_type'), array_merge(
+                [['value' => '', 'label' => __('layout.all_types')]],
+                ProductCategoryType::options()
+            ))
+            ->addSelectFilter('property_for', __('layout.property_for'), array_merge(
+                [['value' => '', 'label' => __('layout.all')]],
+                ProductPropertyFor::options()
+            ))
             ->addSelectFilter('property_type', __('layout.property_type'), array_merge(
                 [['value' => '', 'label' => __('layout.all')]],
                 ProductPropertyType::options()
@@ -222,6 +234,8 @@ class LayoutBuilder
             ->addRangeFilter('baths', __('layout.baths'), 0, 20)
             ->addRangeFilter('bua', __('layout.bua'), 0, 50000)
             ->addNumberFilter('parking', __('layout.parking'))
+            ->addDateRangeFilter('published_at', __('layout.published_date'))
+            ->addDateRangeFilter('created_at', __('layout.listed_date'))
             ->collapsible()
             ->collapsed(true)
             ->liveFilter(true, 300)

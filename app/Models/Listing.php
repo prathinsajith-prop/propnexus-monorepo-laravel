@@ -68,8 +68,8 @@ class Listing extends Model
 {
     use HandlesActivityLogging,
         LogsActivity {
-        HandlesActivityLogging::logActivity insteadof LogsActivity;
-    }
+            HandlesActivityLogging::logActivity insteadof LogsActivity;
+        }
     use HasFactory;
     use Hashids;
     use Searchable;
@@ -269,6 +269,70 @@ class Listing extends Model
     // ==========================================
 
     /**
+     * Fields allowed for filterQueryString() scope.
+     */
+    protected function getFilterableFields(): array
+    {
+        return [
+            'listing_id',
+            'mls_number',
+            'reference_number',
+            'title',
+            'slug',
+            'description',
+            'short_description',
+            'property_type',
+            'listing_type',
+            'status',
+            'availability',
+            'price',
+            'currency',
+            'original_price',
+            'discount_percentage',
+            'service_charge',
+            'service_charge_period',
+            'security_deposit',
+            'address',
+            'city',
+            'state',
+            'country',
+            'postal_code',
+            'area',
+            'sub_area',
+            'building_name',
+            'unit_number',
+            'floor_number',
+            'bedrooms',
+            'bathrooms',
+            'size_sqft',
+            'plot_size_sqft',
+            'year_built',
+            'furnishing_status',
+            'parking_spaces',
+            'is_furnished',
+            'has_parking',
+            'has_balcony',
+            'has_garden',
+            'has_pool',
+            'pet_friendly',
+            'is_negotiable',
+            'is_featured',
+            'is_hot_deal',
+            'is_verified',
+            'agent_id',
+            'owner_id',
+            'available_from',
+            'available_until',
+            'published_at',
+            'expires_at',
+            'sold_at',
+            'rented_at',
+            'created_at',
+            'updated_at',
+        ];
+    }
+
+    /**
      * Define searchable fields with weights
      */
     protected function searchableFields(): array
@@ -386,7 +450,7 @@ class Listing extends Model
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn() => number_format($this->price, 0) . ' ' . $this->currency
+            get: fn () => number_format($this->price, 0).' '.$this->currency
         );
     }
 
@@ -396,7 +460,7 @@ class Listing extends Model
     protected function fullAddress(): Attribute
     {
         return Attribute::make(
-            get: fn() => implode(', ', array_filter([
+            get: fn () => implode(', ', array_filter([
                 $this->address,
                 $this->area,
                 $this->city,
@@ -411,7 +475,7 @@ class Listing extends Model
     protected function isActive(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->status === 'active' && $this->availability === 'available'
+            get: fn () => $this->status === 'active' && $this->availability === 'available'
         );
     }
 
@@ -421,7 +485,7 @@ class Listing extends Model
     protected function discountAmount(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->original_price
+            get: fn () => $this->original_price
                 ? ($this->original_price - $this->price)
                 : 0
         );
@@ -433,7 +497,7 @@ class Listing extends Model
     protected function features(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -461,7 +525,7 @@ class Listing extends Model
     protected function amenities(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -489,7 +553,7 @@ class Listing extends Model
     protected function images(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -517,7 +581,7 @@ class Listing extends Model
     protected function documents(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -545,7 +609,7 @@ class Listing extends Model
     protected function paymentTerms(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -573,7 +637,7 @@ class Listing extends Model
     protected function floorPlans(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -601,7 +665,7 @@ class Listing extends Model
     protected function seoMeta(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -629,7 +693,7 @@ class Listing extends Model
     protected function schemaMarkup(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -657,7 +721,7 @@ class Listing extends Model
     protected function analytics(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -685,7 +749,7 @@ class Listing extends Model
     protected function customFields(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -889,7 +953,7 @@ class Listing extends Model
 
         static::creating(function ($listing) {
             if (empty($listing->listing_id)) {
-                $listing->listing_id = 'LST-' . strtoupper(uniqid());
+                $listing->listing_id = 'LST-'.strtoupper(uniqid());
             }
         });
     }
@@ -990,19 +1054,19 @@ class Listing extends Model
         return [
             'options' => [
                 'property_type' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\PropertyType::cases()
                 ),
                 'listing_type' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ListingType::cases()
                 ),
                 'status' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ListingStatus::cases()
                 ),
                 'availability' => array_map(
-                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\Availability::cases()
                 ),
             ],
