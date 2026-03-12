@@ -37,9 +37,9 @@ enum NoteType: string
     public function iconName(): string
     {
         return match ($this) {
-            self::Rejected => 'x-circle',
-            self::LeadComment => 'chat-bubble-left',
-            self::PublicNotes => 'document-text',
+            self::Rejected => 'crossfull',
+            self::LeadComment => 'message',
+            self::PublicNotes => 'documentfull',
             self::LeadInterested => 'star',
             self::LeadContactLater => 'clock',
         };

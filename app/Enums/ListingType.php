@@ -57,7 +57,7 @@ enum ListingType: string
         return match ($this) {
             self::SALE => 'tag',
             self::RENT => 'key',
-            self::LEASE => 'file-text',
+            self::LEASE => 'documentfull',
         };
     }
 

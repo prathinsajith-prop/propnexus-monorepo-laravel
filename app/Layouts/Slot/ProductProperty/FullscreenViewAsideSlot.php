@@ -672,7 +672,7 @@ class FullscreenViewAsideSlot
                 ->dataUrl('/api/product-property/:id/notes')
                 ->dataParams(['id' => ':eid'])
                 ->meta([
-                    'emptyIcon' => 'chat',
+                    'emptyIcon' => 'message',
                     'emptyText' => __('layout.notes_empty'),
                     'emptySubtext' => __('layout.notes_empty_hint'),
                     'limit' => 4,

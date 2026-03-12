@@ -63,7 +63,7 @@ enum PropertyType: string
             self::RESIDENTIAL => 'home',
             self::COMMERCIAL => 'building',
             self::LAND => 'map',
-            self::INDUSTRIAL => 'factory',
+            self::INDUSTRIAL => 'building',
         };
     }
 

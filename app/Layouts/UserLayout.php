@@ -97,7 +97,7 @@ class UserLayout
         self::buildStatsCard($statsGrid, 'stat-total-users', __('layout.total_users'), '1,284', 'primary', 'users', '+12.5%', 'up', 'trend-1');
         self::buildStatsCard($statsGrid, 'stat-active', __('layout.active_users'), '1,156', 'success', 'usercheck', '+3.2%', 'up', 'trend-1');
         self::buildStatsCard($statsGrid, 'stat-new-users', __('layout.new_hires'), '42', 'info', 'userplus', '+15.8%', 'up', 'trend-1');
-        self::buildStatsCard($statsGrid, 'stat-pending', __('layout.pending_review'), '15', 'warning', 'userwarning', '-5.4%', 'down', 'trend-1');
+        self::buildStatsCard($statsGrid, 'stat-pending', __('layout.pending_review'), '15', 'warning', 'exclamationsquare', '-5.4%', 'down', 'trend-1');
     }
 
     /**
