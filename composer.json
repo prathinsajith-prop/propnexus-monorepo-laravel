@@ -15,7 +15,7 @@
         "litepie/flow": "^1.0",
         "litepie/form": "^1.0",
         "litepie/hashids": "^1.0",
-        "litepie/layout": "^1.0",
+        "litepie/layout": "^1.0|dev-main",
         "litepie/logs": "^1.0"
     },
     "require-dev": {
@@ -75,6 +75,15 @@
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ]
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./packages/litepie/layout",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "extra": {
         "laravel": {
             "dont-discover": []
