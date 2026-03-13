@@ -242,12 +242,12 @@ class ProductPropertyForm
             ->label(__('product_property.price'))
             ->placeholder(__('product_property.price_placeholder'))
             ->required(true)
-            ->width(4);
+            ->width(6);
 
         $pricingGroup->number('original_price')
             ->label(__('product_property.original_price'))
             ->placeholder(__('product_property.original_price_placeholder'))
-            ->width(4);
+            ->width(6);
 
         $pricingGroup->number('service_charge')
             ->label(__('product_property.service_charge'))
@@ -257,22 +257,22 @@ class ProductPropertyForm
         $pricingGroup->select('frequency')
             ->label(__('product_property.frequency'))
             ->options($masterData['frequencies'] ?? [])
-            ->width(3);
+            ->width(4);
 
         $pricingGroup->number('cheques')
             ->label(__('product_property.cheques'))
             ->placeholder(__('product_property.cheques_placeholder'))
-            ->width(3);
+            ->width(4);
 
         $pricingGroup->number('deposit')
             ->label(__('product_property.deposit'))
             ->placeholder(__('product_property.deposit_placeholder'))
-            ->width(3);
+            ->width(4);
 
         $pricingGroup->number('deposit_amount')
             ->label(__('product_property.deposit_amount'))
             ->placeholder(__('product_property.deposit_amount_placeholder'))
-            ->width(3);
+            ->width(4);
 
         $pricingGroup->number('conmmission_split')
             ->label(__('product_property.conmmission_split'))
@@ -367,10 +367,6 @@ class ProductPropertyForm
             ->label(__('product_property.expires_at'))
             ->width(4);
 
-        $statusGroup->checkbox('rented')
-            ->label(__('product_property.rented'))
-            ->width(4);
-
         $statusGroup->number('rented_price')
             ->label(__('product_property.rented_price'))
             ->placeholder('0')
@@ -391,7 +387,11 @@ class ProductPropertyForm
                 ['value' => 'No', 'label' => __('product_property.no')],
                 ['value' => 'Pending', 'label' => __('product_property.pending')],
             ])
-            ->width(4);
+            ->width(6);
+
+        $statusGroup->checkbox('rented')
+            ->label(__('product_property.rented'))
+            ->width(6);
 
         // ── TRAKHEESI / DLD ──────────────────────────────────
         $regGroup = $form->group('reg-info')
@@ -463,17 +463,17 @@ class ProductPropertyForm
             ->options($masterData['users'] ?? [])
             ->width(4);
 
+        $assignGroup->select('listing_source')
+            ->label(__('product_property.listing_source'))
+            ->options($masterData['listing_sources'] ?? [])
+            ->width(4);
+
         $assignGroup->checkbox('lead_auto_assign')
             ->label(__('product_property.lead_auto_assign'))
             ->width(4);
 
         $assignGroup->checkbox('watermark')
             ->label(__('product_property.watermark'))
-            ->width(4);
-
-        $assignGroup->select('listing_source')
-            ->label(__('product_property.listing_source'))
-            ->options($masterData['listing_sources'] ?? [])
             ->width(4);
 
         return $form;
