@@ -45,8 +45,8 @@ class BixoProductProperties extends Model
 {
     use HandlesActivityLogging,
         LogsActivity {
-            HandlesActivityLogging::logActivity insteadof LogsActivity;
-        }
+        HandlesActivityLogging::logActivity insteadof LogsActivity;
+    }
     use HasFactory;
     use Hashids;
     use Searchable;
@@ -167,7 +167,7 @@ class BixoProductProperties extends Model
     /**
      * The accessors to append to the model's array form.
      */
-    protected $appends = ['eid', 'created_by_formatted', 'created_at_formatted', 'updated_at_formatted'];
+    protected $appends = ['eid', 'created_by_formatted', 'created_by_company', 'created_by_avatar', 'primary_photo_url', 'photo_urls', 'photo_media_items', 'created_at_formatted', 'updated_at_formatted'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -290,7 +290,7 @@ class BixoProductProperties extends Model
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => number_format($this->price, 0).' AED'
+            get: fn() => number_format($this->price, 0) . ' AED'
         );
     }
 
@@ -300,7 +300,107 @@ class BixoProductProperties extends Model
     protected function createdByFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->creator?->name ?? 'System'
+            get: fn() => $this->creator?->name ?? 'System'
+        );
+    }
+
+    /**
+     * Get avatar URL for the creator/assigned user.
+     */
+    protected function createdByAvatar(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->creator?->profile_image_url ?? '/storage/avatars/temp-profile-image.png'
+        );
+    }
+
+    /**
+     * Get creator company/agency with a stable default fallback.
+     */
+    protected function createdByCompany(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => is_string($this->marketed_by) && trim($this->marketed_by) !== ''
+                ? $this->marketed_by
+                : 'Metropolitan Capital Real Estate'
+        );
+    }
+
+    /**
+     * Resolve first available property photo URL for summary media blocks.
+     */
+    protected function primaryPhotoUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?string {
+                $photos = $this->photos;
+
+                if (! is_array($photos) || empty($photos)) {
+                    return null;
+                }
+
+                $firstPhoto = $photos[0] ?? null;
+
+                if (is_array($firstPhoto)) {
+                    $url = $firstPhoto['url'] ?? $firstPhoto['path'] ?? null;
+
+                    return is_string($url) ? $url : null;
+                }
+
+                return is_string($firstPhoto) ? $firstPhoto : null;
+            }
+        );
+    }
+
+    /**
+     * Resolve all property photo URLs for gallery rendering.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<array<int, string>, never>
+     */
+    protected function photoUrls(): Attribute
+    {
+        return Attribute::make(
+            get: function (): array {
+                $photos = $this->photos;
+
+                if (! is_array($photos) || $photos === []) {
+                    return [];
+                }
+
+                return collect($photos)
+                    ->map(function ($photo): ?string {
+                        if (is_array($photo)) {
+                            $url = $photo['url'] ?? $photo['path'] ?? null;
+
+                            return is_string($url) && $url !== '' ? $url : null;
+                        }
+
+                        return is_string($photo) && $photo !== '' ? $photo : null;
+                    })
+                    ->filter(fn(?string $url): bool => $url !== null)
+                    ->values()
+                    ->all();
+            }
+        );
+    }
+
+    /**
+     * Resolve property photo items in MediaComponent gallery shape.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<array<int, array{src:string, alt:string|null}>, never>
+     */
+    protected function photoMediaItems(): Attribute
+    {
+        return Attribute::make(
+            get: function (): array {
+                return collect($this->photo_urls)
+                    ->map(fn(string $url): array => [
+                        'src' => $url,
+                        'alt' => $this->title,
+                    ])
+                    ->values()
+                    ->all();
+            }
         );
     }
 
@@ -310,7 +410,7 @@ class BixoProductProperties extends Model
     protected function createdAtFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->created_at instanceof Carbon ? $this->created_at->format('Y-m-d H:i:s') : null
+            get: fn() => $this->created_at instanceof Carbon ? $this->created_at->format('Y-m-d H:i:s') : null
         );
     }
 
@@ -320,7 +420,7 @@ class BixoProductProperties extends Model
     protected function updatedAtFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->updated_at instanceof Carbon ? $this->updated_at->format('Y-m-d H:i:s') : null
+            get: fn() => $this->updated_at instanceof Carbon ? $this->updated_at->format('Y-m-d H:i:s') : null
         );
     }
 
@@ -330,7 +430,7 @@ class BixoProductProperties extends Model
     protected function isActive(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->status === 'Published'
+            get: fn() => $this->status === 'Published'
         );
     }
 
@@ -340,7 +440,7 @@ class BixoProductProperties extends Model
     protected function photos(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -368,7 +468,7 @@ class BixoProductProperties extends Model
     protected function features(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -396,7 +496,7 @@ class BixoProductProperties extends Model
     protected function documents(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -424,7 +524,7 @@ class BixoProductProperties extends Model
     protected function portals(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -452,7 +552,7 @@ class BixoProductProperties extends Model
     protected function featureTags(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
+            get: fn($value) => is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []),
             set: function ($value) {
                 if (is_array($value)) {
                     return json_encode($value);
@@ -594,23 +694,23 @@ class BixoProductProperties extends Model
         return [
             'options' => [
                 'status' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductPropertyStatus::cases()
                 ),
                 'category_type' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductCategoryType::cases()
                 ),
                 'property_for' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductPropertyFor::cases()
                 ),
                 'furnishing' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductFurnishing::cases()
                 ),
                 'frequency' => array_map(
-                    fn ($e) => ['value' => $e->value, 'label' => $e->label()],
+                    fn($e) => ['value' => $e->value, 'label' => $e->label()],
                     \App\Enums\ProductFrequency::cases()
                 ),
             ],

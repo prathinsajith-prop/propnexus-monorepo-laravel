@@ -405,8 +405,6 @@ class LayoutBuilder
             ->icon('refresh')
             ->size('md')
             ->variant('outline')
-            ->data('type', 'refresh')
-            ->data('action', 'refresh-table')
             ->meta(['tooltip' => __('layout.refresh_data')]);
 
         $row->button('create-btn')

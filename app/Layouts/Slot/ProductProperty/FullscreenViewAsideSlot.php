@@ -9,11 +9,13 @@ use App\Enums\ProductPropertyFor;
 use App\Enums\ProductPropertyStatus;
 use App\Enums\ProductPropertyType;
 use App\Forms\ProductProperty\ProductPropertyForm;
+use Litepie\Layout\Components\AvatarComponent;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\CardComponent;
 use Litepie\Layout\Components\CommentComponent;
 use Litepie\Layout\Components\DividerComponent;
+use Litepie\Layout\Components\MediaComponent;
 use Litepie\Layout\Components\StatsComponent;
 use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Components\TimelineComponent;
@@ -55,6 +57,8 @@ class FullscreenViewAsideSlot
         $leftSlot = SlotManager::make('fullscreen-property-left-slot')
             ->setConfig(['colSpan' => 8]);
 
+        $leftSlot->setComponent(self::buildLeftSummaryCard());
+
         $leftSlot->setComponent(
             ProductPropertyForm::make(
                 'view-property-fullscreen-form',
@@ -66,13 +70,162 @@ class FullscreenViewAsideSlot
         );
 
         return $leftSlot;
+    }
 
-        // $slot->setComponent(self::buildIdentityCard());
-        // $slot->setComponent(self::buildDescriptionCard());
-        // $slot->setComponent(self::buildPropertyDetailsCard());
-        // $slot->setComponent(self::buildLocationCard());
+    /**
+     * Single summary card shown before the form in the left slot.
+     */
+    private static function buildLeftSummaryCard(): CardComponent
+    {
+        $card = CardComponent::make('property-summary-card')
+            ->variant('outlined');
+        $card->addComponent(
+            MediaComponent::make('summary-property-photos')
+                ->gallery()
+                ->grid()
+                ->columns(1)
+                ->lightbox(true)
+                ->captions(false)
+                ->aspectRatio('16:9')
+                ->height(220)
+                ->mediaType('photo_gallery')
+                ->meta(['key' => 'photo_media_items', 'emptyText' => __('layout.tasks_empty'), 'limit' => 5])
+                ->gridColumnSpan(4)
+        );
 
-        // return $slot;
+        $card->addComponent(
+            BadgeComponent::make('summary-ref-badge')
+                ->content(':{ref}')
+                ->variant('standard')
+                ->bordered(true)
+                ->meta([
+                    'key' => 'ref_number',
+                    'color' => 'default',
+                    'size' => 'sm',
+                    'prefix' => '#',
+                    'tooltip' => __('product_property.column_ref'),
+                ])
+                ->gridColumnSpan(4)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-title')
+                ->content(':{title}')
+                ->variant('h5')
+                ->weight('bold')
+                ->meta(['key' => 'title', 'color' => 'text-gray-900'])
+                ->gridColumnSpan(12)
+        );
+
+        $card->addComponent(
+            BadgeComponent::make('summary-category-type-badge')
+                ->content(':category_type')
+                ->badgeConfig(ProductCategoryType::badgeConfig())
+                ->variant('standard')
+                ->bordered(false)
+                ->meta(['key' => 'category_type', 'size' => 'sm'])
+                ->gridColumnSpan(2)
+        );
+
+        $card->addComponent(
+            BadgeComponent::make('summary-property-for-badge')
+                ->content(':property_for')
+                ->badgeConfig(ProductPropertyFor::badgeConfig())
+                ->variant('standard')
+                ->bordered(false)
+                ->meta(['key' => 'property_for', 'size' => 'sm'])
+                ->gridColumnSpan(2)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-location')
+                ->content(':{community}, :{city}')
+                ->variant('body2')
+                ->meta(['color' => 'text-gray-700'])
+                ->gridColumnSpan(4)
+        );
+
+        $card->addComponent(
+            BadgeComponent::make('summary-status')
+                ->content(':{status}')
+                ->badgeConfig(ProductPropertyStatus::badgeConfig())
+                ->variant('standard')
+                ->bordered(true)
+                ->meta(['key' => 'status', 'size' => 'sm'])
+                ->gridColumnSpan(4)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-building')
+                ->content(':{building_name}')
+                ->variant('body2')
+                ->meta(['key' => 'building_name', 'color' => 'text-gray-600'])
+                ->gridColumnSpan(8)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-price')
+                ->content(':{price}')
+                ->variant('h5')
+                ->weight('bold')
+                ->meta([
+                    'key' => 'price',
+                    'color' => 'text-primary-600',
+                    'prefix' => 'AED ',
+                    'format' => 'number',
+                ])
+                ->gridColumnSpan(12)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-beds')
+                ->content(':{beds}')
+                ->variant('h6')
+                ->weight('bold')
+                ->meta(['key' => 'beds', 'suffix' => ' ' . __('product_property.beds')])
+                ->gridColumnSpan(4)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-baths')
+                ->content(':{baths}')
+                ->variant('h6')
+                ->weight('bold')
+                ->meta(['key' => 'baths', 'suffix' => ' ' . __('product_property.baths')])
+                ->gridColumnSpan(4)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-bua')
+                ->content(':{bua}')
+                ->variant('h6')
+                ->weight('bold')
+                ->meta(['key' => 'bua', 'suffix' => ' sqft'])
+                ->gridColumnSpan(4)
+        );
+
+        $card->addComponent(
+            DividerComponent::make('summary-divider-5')->gridColumnSpan(12)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-description-label')
+                ->content(__('product_property.description'))
+                ->variant('caption')
+                ->weight('bold')
+                ->meta(['color' => 'text-gray-500'])
+                ->gridColumnSpan(12)
+        );
+
+        $card->addComponent(
+            TextComponent::make('summary-description-value')
+                ->content(':description')
+                ->variant('body2')
+                ->meta(['key' => 'description', 'color' => 'text-gray-900'])
+                ->gridColumnSpan(12)
+        );
+
+        return $card;
     }
 
     /**
@@ -323,6 +476,7 @@ class FullscreenViewAsideSlot
             ->setConfig(['colSpan' => 4]);
 
         $slot->setComponent(self::buildOverviewCard());
+        $slot->setComponent(self::buildAssignedAgentCard());
         $slot->setComponent(self::buildFollowupsCard());
         $slot->setComponent(self::buildLeadCountCard());
         $slot->setComponent(self::buildNotesCard());
@@ -340,8 +494,6 @@ class FullscreenViewAsideSlot
     {
         $card = CardComponent::make('property-overview-card')
             ->variant('outlined');
-        // ->dataUrl('/api/product-property/:id')
-        // ->dataParams(['id' => ':eid']);
 
         // Prominent price
         $card->addComponent(
@@ -470,6 +622,81 @@ class FullscreenViewAsideSlot
                     ->gridColumnSpan(7)
             );
         }
+
+        return $card;
+    }
+
+    /**
+     * Assigned agent contact card shown above the follow-ups card.
+     */
+    private static function buildAssignedAgentCard(): CardComponent
+    {
+        $card = CardComponent::make('assigned-agent-card')
+            ->variant('outlined');
+
+        // Col 1: Avatar (4 cols, spanning full card height)
+        $card->addComponent(
+            AvatarComponent::make('assigned-agent-avatar')
+                ->src(':{created_by_avatar}')
+                ->size(80)
+                ->bgColor('primary')
+                ->color('white')
+                ->alt('Assigned Agent')
+                ->meta(['key' => 'created_by_avatar'])
+                ->gridColumnSpan(4)
+        );
+
+        // Col 2 Row 1: Agent name/title (8 cols)
+        $card->addComponent(
+            TextComponent::make('assigned-agent-name')
+                ->content(':{created_by_formatted}')
+                ->variant('body1')
+                ->weight('bold')
+                ->meta(['key' => 'created_by_formatted', 'color' => 'text-gray-900'])
+                ->gridColumnSpan(8)
+        );
+
+        $card->addComponent(
+            DividerComponent::make('assigned-agent-divider')->gridColumnSpan(12)
+        );
+
+        $card->addComponent(
+            ButtonComponent::make('assigned-agent-call-btn')
+                ->icon('phone')
+                ->isIconButton(true)
+                ->variant('text')
+                ->size('sm')
+                ->meta(['tooltip' => __('layout.call')])
+                ->gridColumnSpan(2)
+        );
+
+        $card->addComponent(
+            ButtonComponent::make('assigned-agent-mail-btn')
+                ->icon('email')
+                ->isIconButton(true)
+                ->variant('text')
+                ->size('sm')
+                ->meta(['tooltip' => __('layout.email')])
+                ->gridColumnSpan(2)
+        );
+
+        $card->addComponent(
+            ButtonComponent::make('assigned-agent-whatsapp-btn')
+                ->icon('message')
+                ->isIconButton(true)
+                ->variant('text')
+                ->size('sm')
+                ->meta(['tooltip' => __('layout.message')])
+                ->gridColumnSpan(2)
+        );
+
+        $card->addComponent(
+            TextComponent::make('assigned-agent-label')
+                ->content(__('layout.assigned_agent'))
+                ->variant('caption')
+                ->meta(['color' => 'text-gray-500'])
+                ->gridColumnSpan(6)
+        );
 
         return $card;
     }
