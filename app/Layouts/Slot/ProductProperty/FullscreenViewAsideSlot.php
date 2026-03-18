@@ -21,6 +21,7 @@ use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Components\TimelineComponent;
 use Litepie\Layout\Sections\DetailSection;
 use Litepie\Layout\Sections\FooterSection;
+use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\Sections\HeaderSection;
 use Litepie\Layout\SlotManager;
 
@@ -79,7 +80,16 @@ class FullscreenViewAsideSlot
     {
         $card = CardComponent::make('property-summary-card')
             ->variant('outlined');
-        $card->addComponent(
+
+        // ── Two-column grid: photo (5fr) | details (7fr) ──────────────────
+        $grid = GridSection::make('summary-main-grid')
+            ->columns(2)
+            ->columnSizes([5, 7])
+            ->gap('sm')
+            ->alignItems('stretch');
+
+        // Grid col 1: photo gallery
+        $grid->add(
             MediaComponent::make('summary-property-photos')
                 ->gallery()
                 ->grid()
@@ -90,10 +100,20 @@ class FullscreenViewAsideSlot
                 ->height(220)
                 ->mediaType('photo_gallery')
                 ->meta(['key' => 'photo_media_items', 'emptyText' => __('layout.tasks_empty'), 'limit' => 5])
-                ->gridColumnSpan(4)
         );
 
-        $card->addComponent(
+        // Grid col 2: single-column grid stacks detail items vertically
+        $detailGrid = GridSection::make('summary-details-grid')
+            ->columns(1)
+            ->gap('xs');
+
+        // Inline grid: ref badge + status badge
+        $refStatusRow = GridSection::make('summary-ref-status-row')
+            ->columns(2)
+            ->templateColumns('auto auto')
+            ->gap('sm')
+            ->alignItems('center');
+        $refStatusRow->add(
             BadgeComponent::make('summary-ref-badge')
                 ->content(':{ref}')
                 ->variant('standard')
@@ -105,65 +125,64 @@ class FullscreenViewAsideSlot
                     'prefix' => '#',
                     'tooltip' => __('product_property.column_ref'),
                 ])
-                ->gridColumnSpan(4)
         );
-
-        $card->addComponent(
-            TextComponent::make('summary-title')
-                ->content(':{title}')
-                ->variant('h5')
-                ->weight('bold')
-                ->meta(['key' => 'title', 'color' => 'text-gray-900'])
-                ->gridColumnSpan(12)
-        );
-
-        $card->addComponent(
-            BadgeComponent::make('summary-category-type-badge')
-                ->content(':category_type')
-                ->badgeConfig(ProductCategoryType::badgeConfig())
-                ->variant('standard')
-                ->bordered(false)
-                ->meta(['key' => 'category_type', 'size' => 'sm'])
-                ->gridColumnSpan(2)
-        );
-
-        $card->addComponent(
-            BadgeComponent::make('summary-property-for-badge')
-                ->content(':property_for')
-                ->badgeConfig(ProductPropertyFor::badgeConfig())
-                ->variant('standard')
-                ->bordered(false)
-                ->meta(['key' => 'property_for', 'size' => 'sm'])
-                ->gridColumnSpan(2)
-        );
-
-        $card->addComponent(
-            TextComponent::make('summary-location')
-                ->content(':{community}, :{city}')
-                ->variant('body2')
-                ->meta(['color' => 'text-gray-700'])
-                ->gridColumnSpan(4)
-        );
-
-        $card->addComponent(
+        $refStatusRow->add(
             BadgeComponent::make('summary-status')
                 ->content(':{status}')
                 ->badgeConfig(ProductPropertyStatus::badgeConfig())
                 ->variant('standard')
                 ->bordered(true)
                 ->meta(['key' => 'status', 'size' => 'sm'])
-                ->gridColumnSpan(4)
+        );
+        $detailGrid->addComponent($refStatusRow);
+
+        $detailGrid->add(
+            TextComponent::make('summary-title')
+                ->content(':{title}')
+                ->variant('h5')
+                ->weight('bold')
+                ->meta(['key' => 'title', 'color' => 'text-gray-900'])
         );
 
-        $card->addComponent(
+        // Inline grid: category type + property for
+        $catForRow = GridSection::make('summary-cat-for-row')
+            ->columns(2)
+            ->templateColumns('auto auto')
+            ->gap('sm')
+            ->alignItems('center');
+        $catForRow->add(
+            BadgeComponent::make('summary-category-type-badge')
+                ->content(':category_type')
+                ->badgeConfig(ProductCategoryType::badgeConfig())
+                ->variant('standard')
+                ->bordered(false)
+                ->meta(['key' => 'category_type', 'size' => 'sm'])
+        );
+        $catForRow->add(
+            BadgeComponent::make('summary-property-for-badge')
+                ->content(':property_for')
+                ->badgeConfig(ProductPropertyFor::badgeConfig())
+                ->variant('standard')
+                ->bordered(false)
+                ->meta(['key' => 'property_for', 'size' => 'sm'])
+        );
+        $detailGrid->addComponent($catForRow);
+
+        $detailGrid->add(
+            TextComponent::make('summary-location')
+                ->content(':{community}, :{city}')
+                ->variant('body2')
+                ->meta(['color' => 'text-gray-700'])
+        );
+
+        $detailGrid->add(
             TextComponent::make('summary-building')
                 ->content(':{building_name}')
                 ->variant('body2')
                 ->meta(['key' => 'building_name', 'color' => 'text-gray-600'])
-                ->gridColumnSpan(8)
         );
 
-        $card->addComponent(
+        $detailGrid->add(
             TextComponent::make('summary-price')
                 ->content(':{price}')
                 ->variant('h5')
@@ -174,36 +193,41 @@ class FullscreenViewAsideSlot
                     'prefix' => 'AED ',
                     'format' => 'number',
                 ])
-                ->gridColumnSpan(12)
         );
 
-        $card->addComponent(
+        // Inline grid: beds + baths + BUA side by side
+        $specsRow = GridSection::make('summary-specs-row')
+            ->columns(3)
+            ->templateColumns('auto auto auto')
+            ->gap('md')
+            ->alignItems('center');
+        $specsRow->add(
             TextComponent::make('summary-beds')
                 ->content(':{beds}')
                 ->variant('h6')
                 ->weight('bold')
                 ->meta(['key' => 'beds', 'suffix' => ' ' . __('product_property.beds')])
-                ->gridColumnSpan(4)
         );
-
-        $card->addComponent(
+        $specsRow->add(
             TextComponent::make('summary-baths')
                 ->content(':{baths}')
                 ->variant('h6')
                 ->weight('bold')
                 ->meta(['key' => 'baths', 'suffix' => ' ' . __('product_property.baths')])
-                ->gridColumnSpan(4)
         );
-
-        $card->addComponent(
+        $specsRow->add(
             TextComponent::make('summary-bua')
                 ->content(':{bua}')
                 ->variant('h6')
                 ->weight('bold')
                 ->meta(['key' => 'bua', 'suffix' => ' sqft'])
-                ->gridColumnSpan(4)
         );
+        $detailGrid->addComponent($specsRow);
 
+        $grid->addComponent($detailGrid);
+        $card->addComponent($grid);
+
+        // ── Full-width description below the grid ──────────────────────────
         $card->addComponent(
             DividerComponent::make('summary-divider-5')->gridColumnSpan(12)
         );
