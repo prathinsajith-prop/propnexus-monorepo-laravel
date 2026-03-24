@@ -13,6 +13,7 @@ use Litepie\Layout\Components\AvatarComponent;
 use Litepie\Layout\Components\BadgeComponent;
 use Litepie\Layout\Components\ButtonComponent;
 use Litepie\Layout\Components\CardComponent;
+use Litepie\Layout\Components\ChartComponent;
 use Litepie\Layout\Components\CommentComponent;
 use Litepie\Layout\Components\DividerComponent;
 use Litepie\Layout\Components\MediaComponent;
@@ -110,9 +111,10 @@ class FullscreenViewAsideSlot
         // Inline grid: ref badge + status badge
         $refStatusRow = GridSection::make('summary-ref-status-row')
             ->columns(2)
-            ->templateColumns('auto auto')
-            ->gap('sm')
+            ->templateColumns('auto 1fr')
+            ->gap(1)
             ->alignItems('center');
+
         $refStatusRow->add(
             BadgeComponent::make('summary-ref-badge')
                 ->content(':{ref}')
@@ -121,7 +123,7 @@ class FullscreenViewAsideSlot
                 ->meta([
                     'key' => 'ref_number',
                     'color' => 'default',
-                    'size' => 'sm',
+                    'size' => 'xs',
                     'prefix' => '#',
                     'tooltip' => __('product_property.column_ref'),
                 ])
@@ -132,8 +134,9 @@ class FullscreenViewAsideSlot
                 ->badgeConfig(ProductPropertyStatus::badgeConfig())
                 ->variant('standard')
                 ->bordered(true)
-                ->meta(['key' => 'status', 'size' => 'sm'])
+                ->meta(['key' => 'status', 'size' => 'xs'])
         );
+
         $detailGrid->addComponent($refStatusRow);
 
         $detailGrid->add(
@@ -147,16 +150,17 @@ class FullscreenViewAsideSlot
         // Inline grid: category type + property for
         $catForRow = GridSection::make('summary-cat-for-row')
             ->columns(2)
-            ->templateColumns('auto auto')
-            ->gap('sm')
+            ->templateColumns('auto 1fr')
+            ->gap(1)
             ->alignItems('center');
+
         $catForRow->add(
             BadgeComponent::make('summary-category-type-badge')
                 ->content(':category_type')
                 ->badgeConfig(ProductCategoryType::badgeConfig())
                 ->variant('standard')
                 ->bordered(false)
-                ->meta(['key' => 'category_type', 'size' => 'sm'])
+                ->meta(['key' => 'category_type', 'size' => 'xs'])
         );
         $catForRow->add(
             BadgeComponent::make('summary-property-for-badge')
@@ -164,7 +168,7 @@ class FullscreenViewAsideSlot
                 ->badgeConfig(ProductPropertyFor::badgeConfig())
                 ->variant('standard')
                 ->bordered(false)
-                ->meta(['key' => 'property_for', 'size' => 'sm'])
+                ->meta(['key' => 'property_for', 'size' => 'xs'])
         );
         $detailGrid->addComponent($catForRow);
 
@@ -198,9 +202,10 @@ class FullscreenViewAsideSlot
         // Inline grid: beds + baths + BUA side by side
         $specsRow = GridSection::make('summary-specs-row')
             ->columns(3)
-            ->templateColumns('auto auto auto')
-            ->gap('md')
+            ->templateColumns('1fr 1fr 1fr')
+            ->gap(2)
             ->alignItems('center');
+
         $specsRow->add(
             TextComponent::make('summary-beds')
                 ->content(':{beds}')
@@ -525,6 +530,7 @@ class FullscreenViewAsideSlot
                 ->content(':{price}')
                 ->variant('h4')
                 ->weight('bold')
+                ->color('text-primary-700')
                 ->meta([
                     'key' => 'price',
                     'color' => 'text-primary-700',
@@ -549,7 +555,18 @@ class FullscreenViewAsideSlot
             DividerComponent::make('overview-divider-1')->gridColumnSpan(12)
         );
 
-        // Meta rows: label (5 cols) / value (7 cols)
+        // Two-column grid: meta rows (left) | donut chart (right)
+        $metaChartGrid = GridSection::make('overview-meta-chart-grid')
+            ->columns(2)
+            ->templateColumns('auto 1fr')
+            ->gap(1)
+            ->alignItems('start');
+
+        // Left column: meta rows in a 12-col sub-grid
+        $metaSubGrid = GridSection::make('overview-meta-sub-grid')
+            ->columns(1)
+            ->gap('xs');
+
         $metaRows = [
             ['status-row',   __('layout.status'), null, 'status'],
             ['category-row', __('product_property.category_type'), null, 'category_type'],
@@ -558,77 +575,106 @@ class FullscreenViewAsideSlot
         ];
 
         foreach ($metaRows as [$id, $label, $valueType, $key]) {
-            $card->addComponent(
+            $metaSubGrid->addComponent(
                 TextComponent::make("{$id}-label")
                     ->content($label)
                     ->variant('caption')
                     ->meta(['fontWeight' => 'bold', 'color' => 'text-gray-500'])
-                    ->gridColumnSpan(5)
+                // ->gridColumnSpan(5)
             );
 
             if ($valueType === 'text') {
-                $card->addComponent(
+                $metaSubGrid->addComponent(
                     TextComponent::make("{$id}-value")
                         ->content(":{{$key}}")
                         ->variant('caption')
                         ->meta(['key' => $key, 'color' => 'text-gray-800'])
-                        ->gridColumnSpan(7)
+                    // ->gridColumnSpan(7)
                 );
             } elseif ($key === 'property_type') {
-                $card->addComponent(
+                $metaSubGrid->addComponent(
                     BadgeComponent::make("{$id}-value")
                         ->content(":{{$key}}")
                         ->badgeConfig(ProductPropertyType::badgeConfig())
                         ->variant('standard')
                         ->bordered(false)
                         ->meta(['key' => $key, 'size' => 'xs'])
-                        ->gridColumnSpan(7)
+                    // ->gridColumnSpan(7)
                 );
             } elseif ($key === 'status') {
-                $card->addComponent(
+                $metaSubGrid->addComponent(
                     BadgeComponent::make("{$id}-value")
                         ->content(":{{$key}}")
                         ->badgeConfig(ProductPropertyStatus::badgeConfig())
                         ->variant('standard')
                         ->bordered(true)
                         ->meta(['key' => $key, 'size' => 'xs'])
-                        ->gridColumnSpan(7)
+                    // ->gridColumnSpan(7)
                 );
             } elseif ($key === 'category_type') {
-                $card->addComponent(
+                $metaSubGrid->addComponent(
                     BadgeComponent::make("{$id}-value")
                         ->content(":{{$key}}")
                         ->badgeConfig(ProductCategoryType::badgeConfig())
                         ->variant('standard')
                         ->bordered(false)
                         ->meta(['key' => $key, 'size' => 'xs'])
-                        ->gridColumnSpan(7)
+                    // ->gridColumnSpan(7)
                 );
             } elseif ($key === 'property_for') {
-                $card->addComponent(
+                $metaSubGrid->addComponent(
                     BadgeComponent::make("{$id}-value")
                         ->content(":{{$key}}")
                         ->badgeConfig(ProductPropertyFor::badgeConfig())
                         ->variant('standard')
                         ->bordered(false)
                         ->meta(['key' => $key, 'size' => 'xs'])
-                        ->gridColumnSpan(7)
+                    // ->gridColumnSpan(7)
                 );
             } else {
-                $card->addComponent(
+                $metaSubGrid->addComponent(
                     TextComponent::make("{$id}-value")
                         ->content(":{{$key}}")
                         ->variant('caption')
                         ->meta(['key' => $key, 'color' => 'text-gray-800'])
-                        ->gridColumnSpan(7)
+                    // ->gridColumnSpan(7)
                 );
             }
         }
 
-        $card->addComponent(
-            DividerComponent::make('overview-divider-2')->gridColumnSpan(12)
+        $metaChartGrid->addComponent($metaSubGrid);
+
+        // Right column: property mix donut chart
+        $metaChartGrid->addComponent(
+            ChartComponent::make('property-category-type-pie')
+                ->donut()
+                ->url('/api/product-property/:id/stats')
+                ->dataMethod('GET')
+                ->dataParams(['id' => ':eid'])
+                ->height(180)
+                ->responsive(true)
+                ->animated(true)
+                ->loadOnInit(true)
+                ->addSeries('category_type_counts', __('product_property.property_mix'))
+                ->colors(['#1869ea', '#e9faf4'])
+                ->labels([
+                    __('product_property.commercial'),
+                    __('product_property.residential'),
+                ])
+                ->options([
+                    'legendPosition' => 'bottom',
+                    'showLabels' => true,
+                    'showPercentages' => true,
+                    'showLegend' => false,
+                    'dataKey' => 'category_type_distribution',
+                ])
         );
 
+        $card->addComponent($metaChartGrid->gridColumnSpan(12));
+
+        $card->addComponent(
+            DividerComponent::make('overview-divider-1')->gridColumnSpan(12)
+        );
         // Dates
         foreach (['updated_at_formatted' => __('layout.updated_at'), 'created_at_formatted' => __('layout.created_at')] as $key => $label) {
             $card->addComponent(
@@ -670,57 +716,83 @@ class FullscreenViewAsideSlot
                 ->gridColumnSpan(4)
         );
 
-        // Col 2 Row 1: Agent name/title (8 cols)
-        $card->addComponent(
+        // Col 2: 2-row grid — Row 1: name, Row 2: company name
+        $agentInfoGrid = GridSection::make('assigned-agent-info-grid')
+            ->columns(1)
+            ->gap('xs');
+
+        $agentInfoGrid->add(
             TextComponent::make('assigned-agent-name')
                 ->content(':{created_by_formatted}')
                 ->variant('body1')
                 ->weight('bold')
                 ->meta(['key' => 'created_by_formatted', 'color' => 'text-gray-900'])
-                ->gridColumnSpan(8)
         );
+
+        $agentInfoGrid->add(
+            TextComponent::make('assigned-agent-company')
+                ->content(':{created_by_company}')
+                ->variant('caption')
+                ->meta(['key' => 'created_by_company', 'color' => 'text-gray-500'])
+        );
+
+        $card->addComponent($agentInfoGrid->gridColumnSpan(8));
 
         $card->addComponent(
             DividerComponent::make('assigned-agent-divider')->gridColumnSpan(12)
         );
 
-        $card->addComponent(
+        // Row 2: spans both main-grid columns — buttons left, label right
+        $actionsRow = GridSection::make('assigned-agent-actions-row')
+            ->columns(2)
+            ->templateColumns('auto 1fr')
+            ->gap(2)
+            ->alignItems('center')
+            ->gridColumnSpan(2);
+
+        $buttonsGrid = GridSection::make('assigned-agent-buttons-grid')
+            ->columns(3)
+            ->templateColumns('auto auto auto 1fr')
+            ->gap(1)
+            ->alignItems('center');
+
+        $buttonsGrid->add(
             ButtonComponent::make('assigned-agent-call-btn')
                 ->icon('phone')
                 ->isIconButton(true)
-                ->variant('text')
+                ->variant('outlined')
                 ->size('sm')
                 ->meta(['tooltip' => __('layout.call')])
-                ->gridColumnSpan(2)
         );
 
-        $card->addComponent(
+        $buttonsGrid->add(
             ButtonComponent::make('assigned-agent-mail-btn')
                 ->icon('email')
                 ->isIconButton(true)
-                ->variant('text')
+                ->variant('outlined')
                 ->size('sm')
                 ->meta(['tooltip' => __('layout.email')])
-                ->gridColumnSpan(2)
         );
 
-        $card->addComponent(
+        $buttonsGrid->add(
             ButtonComponent::make('assigned-agent-whatsapp-btn')
                 ->icon('message')
                 ->isIconButton(true)
-                ->variant('text')
+                ->variant('outlined')
                 ->size('sm')
                 ->meta(['tooltip' => __('layout.message')])
-                ->gridColumnSpan(2)
         );
 
-        $card->addComponent(
+        $card->addComponent($buttonsGrid->gridColumnSpan(6));
+
+        $actionsRow->add(
             TextComponent::make('assigned-agent-label')
                 ->content(__('layout.assigned_agent'))
                 ->variant('caption')
                 ->meta(['color' => 'text-gray-500'])
-                ->gridColumnSpan(6)
         );
+
+        $card->addComponent($actionsRow->gridColumnSpan(6));
 
         return $card;
     }

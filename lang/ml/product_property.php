@@ -170,6 +170,10 @@ return [
     'status_waiting_teamleader' => 'ടീം ലീഡറുടെ അംഗീകാരത്തിനായി',
     'status_waiting_team_leader' => 'ടീം ലീഡറുടെ അംഗീകാരത്തിനായി',
 
+    'property_mix' => 'പ്രോപ്പർട്ടി മിക്സ്',
+    'commercial' => 'വാണിജ്യം',
+    'residential' => 'താമസയോഗ്യം',
+
     // Categories
     'category_commercial' => 'വാണിജ്യം',
     'category_residential' => 'താമസയോഗ്യം',

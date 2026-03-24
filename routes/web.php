@@ -82,6 +82,7 @@ Route::prefix('api')->group(function () {
     Route::post('/product-property', [ProductPropertyController::class, 'create'])->name('api.product-properties.store');
     Route::get('/product-property-master-data', [ProductPropertyController::class, 'getMasterDataApi'])->middleware('cache.headers:static')->name('api.product-properties.master-data');
     Route::get('/product-property/stats/{id}', [ProductPropertyController::class, 'getStats'])->middleware('cache.headers:api')->name('api.product-properties.stats');
+    Route::get('/product-property/{property}/stats', [ProductPropertyController::class, 'getPropertyStats'])->middleware('cache.headers:api')->name('api.product-properties.property-stats');
     Route::get('/product-property/{property}', [ProductPropertyController::class, 'show'])->name('api.product-properties.show');
     Route::put('/product-property/{property}', [ProductPropertyController::class, 'update'])->name('api.product-properties.update');
     Route::delete('/product-property/{property}', [ProductPropertyController::class, 'delete'])->name('api.product-properties.destroy');

@@ -34,11 +34,17 @@ use App\Enums\ProductPropertyStatus;
 use App\Enums\ProductPropertyType;
 use App\Layouts\ProductPropertyLayout;
 use App\Models\BixoProductProperties;
+use App\Models\BixoSchedulesFollowUp;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Litepie\Actions\ActionResult;
 use Litepie\Logs\Models\ActivityLog;
 
@@ -65,7 +71,7 @@ class ProductPropertyController extends Controller
     /**
      * Display product property management page
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function index()
     {
@@ -76,7 +82,7 @@ class ProductPropertyController extends Controller
      * Get product property layout configuration
      * Returns complete layout structure for frontend rendering
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function listing()
     {
@@ -127,7 +133,7 @@ class ProductPropertyController extends Controller
      * - per_page or limit: Items per page (default: 10)
      * - page: Page number (default: 1)
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function list(Request $request)
     {
@@ -137,7 +143,7 @@ class ProductPropertyController extends Controller
     /**
      * Create a new property
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function create(Request $request)
     {
@@ -161,7 +167,7 @@ class ProductPropertyController extends Controller
     /**
      * Get a single property
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(BixoProductProperties $property, Request $request)
     {
@@ -210,6 +216,39 @@ class ProductPropertyController extends Controller
             ]),
             $deleteResult->getMessage()
         );
+    }
+
+    /**
+     * Get statistics for a specific property — used by the fullscreen detail view charts.
+     * Returns category_type distribution across all properties for portfolio context.
+     */
+    public function getPropertyStats(BixoProductProperties $property): ActionResult
+    {
+        try {
+            $stats = cache()->remember(
+                'product-properties:property-stats:global',
+                config('performance.cache.stats_ttl', 300),
+                function () {
+                    $distribution = BixoProductProperties::query()
+                        ->select('category_type', DB::raw('count(*) as count'))
+                        ->whereNotNull('category_type')
+                        ->groupBy('category_type')
+                        ->pluck('count', 'category_type')
+                        ->toArray();
+
+                    return [
+                        'category_type_distribution' => [
+                            $distribution['Commercial'] ?? 0,
+                            $distribution['Residential'] ?? 0,
+                        ],
+                    ];
+                }
+            );
+
+            return ActionResult::success($stats);
+        } catch (\Exception $e) {
+            return ActionResult::failure('Failed to fetch property statistics: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -263,7 +302,7 @@ class ProductPropertyController extends Controller
     /**
      * Calculate trend percentage comparing current month vs. last month
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      */
     private function calculateTrend($query): string
     {
@@ -343,7 +382,7 @@ class ProductPropertyController extends Controller
     /**
      * Upload an image file
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function uploadImage(Request $request)
     {
@@ -353,7 +392,7 @@ class ProductPropertyController extends Controller
     /**
      * Upload a document file
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function uploadDocument(Request $request)
     {
@@ -361,7 +400,7 @@ class ProductPropertyController extends Controller
             $request->validate([
                 'file' => 'required|file|max:' . $this->getMaxFileSize('document'),
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return ActionResult::failure('Validation failed', $e->errors());
         }
 
@@ -380,7 +419,7 @@ class ProductPropertyController extends Controller
     /**
      * Upload a video file
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function uploadVideo(Request $request)
     {
@@ -390,7 +429,7 @@ class ProductPropertyController extends Controller
     /**
      * Upload an attachment file
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function uploadAttachment(Request $request)
     {
@@ -400,7 +439,7 @@ class ProductPropertyController extends Controller
     /**
      * Generic file upload
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function upload(Request $request)
     {
@@ -418,7 +457,7 @@ class ProductPropertyController extends Controller
             $request->validate([
                 'file' => 'required|file|max:' . $this->getMaxFileSize($type),
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return ActionResult::failure('Validation failed', $e->errors());
         }
 
@@ -739,7 +778,7 @@ class ProductPropertyController extends Controller
             return ActionResult::failure('Follow-up not found');
         }
 
-        $followUp = \App\Models\BixoSchedulesFollowUp::with('createdBy')
+        $followUp = BixoSchedulesFollowUp::with('createdBy')
             ->where('id', $followUpId)
             ->where('property_id', $property->getKey())
             ->first();

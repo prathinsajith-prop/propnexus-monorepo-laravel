@@ -171,6 +171,10 @@ return [
     'status_waiting_teamleader' => 'Waiting Teamleader',
     'status_waiting_team_leader' => 'Waiting Team Leader',
 
+    'property_mix' => 'Property Mix',
+    'commercial' => 'Commercial',
+    'residential' => 'Residential',
+
     // Categories
     'category_commercial' => 'Commercial',
     'category_residential' => 'Residential',
