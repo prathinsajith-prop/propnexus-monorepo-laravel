@@ -211,21 +211,21 @@ class FullscreenViewAsideSlot
                 ->content(':{beds}')
                 ->variant('h6')
                 ->weight('bold')
-                ->meta(['key' => 'beds', 'suffix' => ' ' . __('product_property.beds')])
+                ->meta(['key' => 'beds', 'icon' => 'bed', 'iconSize' => 'sm', 'suffix' => ' ' . __('product_property.beds')])
         );
         $specsRow->add(
             TextComponent::make('summary-baths')
                 ->content(':{baths}')
                 ->variant('h6')
                 ->weight('bold')
-                ->meta(['key' => 'baths', 'suffix' => ' ' . __('product_property.baths')])
+                ->meta(['key' => 'baths', 'icon' => 'bath', 'iconSize' => 'sm', 'suffix' => ' ' . __('product_property.baths')])
         );
         $specsRow->add(
             TextComponent::make('summary-bua')
                 ->content(':{bua}')
                 ->variant('h6')
                 ->weight('bold')
-                ->meta(['key' => 'bua', 'suffix' => ' sqft'])
+                ->meta(['key' => 'bua', 'icon' => 'area', 'iconSize' => 'sm', 'suffix' => ' sqft'])
         );
         $detailGrid->addComponent($specsRow);
 
