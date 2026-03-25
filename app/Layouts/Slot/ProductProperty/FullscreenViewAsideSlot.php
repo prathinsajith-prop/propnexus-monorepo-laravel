@@ -233,26 +233,26 @@ class FullscreenViewAsideSlot
         $card->addComponent($grid);
 
         // ── Full-width description below the grid ──────────────────────────
-        $card->addComponent(
-            DividerComponent::make('summary-divider-5')->gridColumnSpan(12)
-        );
+        // $card->addComponent(
+        //     DividerComponent::make('summary-divider-5')->gridColumnSpan(12)
+        // );
 
-        $card->addComponent(
-            TextComponent::make('summary-description-label')
-                ->content(__('product_property.description'))
-                ->variant('caption')
-                ->weight('bold')
-                ->meta(['color' => 'text-gray-500'])
-                ->gridColumnSpan(12)
-        );
+        // $card->addComponent(
+        //     TextComponent::make('summary-description-label')
+        //         ->content(__('product_property.description'))
+        //         ->variant('caption')
+        //         ->weight('bold')
+        //         ->meta(['color' => 'text-gray-500'])
+        //         ->gridColumnSpan(12)
+        // );
 
-        $card->addComponent(
-            TextComponent::make('summary-description-value')
-                ->content(':description')
-                ->variant('body2')
-                ->meta(['key' => 'description', 'color' => 'text-gray-900'])
-                ->gridColumnSpan(12)
-        );
+        // $card->addComponent(
+        //     TextComponent::make('summary-description-value')
+        //         ->content(':description')
+        //         ->variant('body2')
+        //         ->meta(['key' => 'description', 'color' => 'text-gray-900'])
+        //         ->gridColumnSpan(12)
+        // );
 
         return $card;
     }
